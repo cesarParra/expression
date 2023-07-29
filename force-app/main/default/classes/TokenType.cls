@@ -3,13 +3,13 @@ public enum TokenType {
     PLUS, MINUS, STAR, SLASH, EXPONENT, LEFT_PAREN, RIGHT_PAREN, COMMA,
 
     // One or two character
-    EQUAL, EQUAL_EQUAL,
     LESS, LESS_GREATER, LESS_EQUAL,
     BANG, BANG_EQUAL,
     GREATER, GREATER_EQUAL,
     AMPERSAND, DOUBLE_AMPERSAND,
 
     // Two character
+    EQUAL_EQUAL,
     DOUBLE_PIPE,
 
     // Literals

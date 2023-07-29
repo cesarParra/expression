@@ -50,7 +50,13 @@ public with sharing class Scanner {
 
             // One or more character tokens
             when '=' {
-                addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
+                String next = peek();
+                if (next == '=') {
+                    advance();
+                    addToken(TokenType.EQUAL_EQUAL);
+                } else {
+                    throw new ScannerException('Unexpected character' + next + ' Expected another = for an equality comparison');
+                }
             }
             when '<' {
                 String next = peek();
@@ -169,7 +175,7 @@ public with sharing class Scanner {
             }
         }
 
-        addToken(TokenType.NUMBER_LITERAL, Double.valueOf(source.substring(start, current)));
+        addToken(TokenType.NUMBER_LITERAL, Decimal.valueOf(source.substring(start, current)));
 
     }
 

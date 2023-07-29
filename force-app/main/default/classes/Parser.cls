@@ -41,7 +41,9 @@ public with sharing class Parser {
     private Expr term() {
         Expr expr = factor();
 
-        while (match2(TokenType.MINUS, TokenType.PLUS)) {
+        while (match(new List<TokenType>{
+                TokenType.MINUS, TokenType.PLUS, TokenType.AMPERSAND
+        })) {
             Token operator = previous();
             Expr right = factor();
             expr = new Expr.Binary(expr, operator, right);
@@ -53,7 +55,9 @@ public with sharing class Parser {
     private Expr factor() {
         Expr expr = unary();
 
-        while (match2(TokenType.SLASH, TokenType.STAR)) {
+        while (match(new List<TokenType>{
+                TokenType.SLASH, TokenType.STAR, TokenType.EXPONENT
+        })) {
             Token operator = previous();
             Expr right = unary();
             expr = new Expr.Binary(expr, operator, right);
