@@ -2,7 +2,7 @@
 private class FormulaEvaluatorTest {
     @IsTest
     private static void supportsNumberLiterals() {
-        Assert.areEqual(1, FormulaEvaluator.evaluate('1'));
+        Assert.areEqual(100, FormulaEvaluator.evaluate('100'));
     }
 
     @IsTest
@@ -18,6 +18,11 @@ private class FormulaEvaluatorTest {
     @IsTest
     private static void supportsAddition_3Numbers() {
         Assert.areEqual(6, FormulaEvaluator.evaluate('1 + 2 + 3'));
+    }
+
+    @IsTest
+    private static void supportsDecimalNumbers() {
+        Assert.areEqual(1.5, FormulaEvaluator.evaluate('1.5'));
     }
 
     @IsTest
@@ -133,5 +138,15 @@ private class FormulaEvaluatorTest {
     @IsTest
     private static void supportsOr_rightFalse() {
         Assert.areEqual(true, FormulaEvaluator.evaluate('1 = 1 || (2 = 3)'));
+    }
+
+    @IsTest
+    private static void supportsNegatingExpression() {
+        Assert.areEqual(false, FormulaEvaluator.evaluate('!(1=1)'));
+    }
+
+    @IsTest
+    private static void supportsMinusBeforeNumber() {
+        Assert.areEqual(-1, FormulaEvaluator.evaluate('-1'));
     }
 }
