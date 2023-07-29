@@ -1,9 +1,12 @@
 public with sharing class FormulaEvaluator {
     public static Object evaluate(String formula) {
-        List<Token> tokens = new Scanner(formula).scanTokens();
-        for (Token token : tokens) {
-            System.debug(token);
-        }
+        Scanner scanner = new Scanner(formula);
+        List<Token> tokens = scanner.scanTokens();
+
+        Parser parser = new Parser(tokens);
+        Expr expression = parser.parse();
+
+        System.debug(expression);
         return null;
     }
 }
