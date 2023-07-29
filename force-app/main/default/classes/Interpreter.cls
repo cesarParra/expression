@@ -75,7 +75,7 @@ public with sharing class Interpreter implements Visitor {
                 checkNumberOperand(binary.operator, left, right);
                 return (Decimal) left <= (Decimal) right;
             }
-            when EQUAL_EQUAL {
+            when EQUAL, EQUAL_EQUAL {
                 return left == right;
             }
             when LESS_GREATER, BANG_EQUAL {

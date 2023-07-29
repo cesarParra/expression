@@ -13,7 +13,9 @@ public with sharing class Parser {
     private Expr equality() {
         Expr expr = comparison();
 
-        while (match2(TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL)) {
+        while (match(new List<TokenType>{
+                TokenType.BANG_EQUAL, TokenType.EQUAL, TokenType.EQUAL_EQUAL, TokenType.LESS_GREATER, TokenType.DOUBLE_PIPE, TokenType.DOUBLE_AMPERSAND
+        })) {
             Token operator = previous();
             Expr right = comparison();
             expr = new Expr.Binary(expr, operator, right);
