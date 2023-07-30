@@ -91,6 +91,19 @@ public with sharing class Parser {
             return new Expr.Literal(previous().literal);
         }
 
+        if (match(TokenType.AND_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            List<Expr> parameters = new List<Expr>();
+            if (!check(TokenType.RIGHT_PAREN)) {
+                do {
+                    parameters.add(expression());
+                } while (match(TokenType.COMMA));
+            }
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+            return new Expr.Function(fnName, parameters);
+        }
+
         if (match(TokenType.LEFT_PAREN)) {
             Expr expr = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after expression.');

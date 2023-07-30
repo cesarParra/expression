@@ -18,6 +18,10 @@ public enum TokenType {
     // Keywords
     TRUE_KEYWORD, FALSE_KEYWORD,
 
+    // Built-in functions
+    // Logical
+    AND_FN,
+
     // EOF
     EOF
 }

@@ -10,6 +10,7 @@ public with sharing class Scanner {
         keywords = new Map<String, TokenType>();
         keywords.put('true', TokenType.TRUE_KEYWORD);
         keywords.put('false', TokenType.FALSE_KEYWORD);
+        keywords.put('and', TokenType.AND_FN);
     }
 
     public Scanner(String source) {

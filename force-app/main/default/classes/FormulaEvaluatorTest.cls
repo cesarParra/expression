@@ -169,4 +169,19 @@ private class FormulaEvaluatorTest {
     private static void falseLiteralsAreCaseInsensitive() {
         Assert.areEqual(false, FormulaEvaluator.evaluate('FALSE'));
     }
+
+    @IsTest
+    private static void canEvaluateAndFunctionWith2Arguments() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('AND(true, true)'));
+    }
+
+    @IsTest
+    private static void canEvaluateAndFunctionWithMoreThan2Arguments() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('AND(true, true, true)'));
+    }
+
+    @IsTest
+    private static void andFunctionWithAnyFalseReturnsFalse() {
+        Assert.areEqual(false, FormulaEvaluator.evaluate('AND(true, false, true)'));
+    }
 }

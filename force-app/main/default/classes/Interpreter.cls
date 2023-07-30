@@ -165,6 +165,37 @@ public with sharing class Interpreter implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.Function function) {
+        switch on function.name.type {
+            when AND_FN {
+                if (function.parameters.size() < 2) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: expected at least 2 arguments, but found ' + function.parameters.size()
+                    );
+                }
+
+                // Loop through all parameters and return false if any of them is false
+                for (Expr parameter : function.parameters) {
+                    Object evaluated = evaluate(parameter);
+                    if (!isBoolean(evaluated)) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: all arguments must evaluate to a boolean value.'
+                        );
+                    }
+
+                    if (!(Boolean) evaluated) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        // Unreachable
+        return null;
+    }
+
     private Boolean checkIsDecimal(Object single) {
         return single instanceof Decimal;
     }

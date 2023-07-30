@@ -33,6 +33,13 @@ public with sharing class AstPrinter implements Visitor {
         );
     }
 
+    public Object visit(Expr.Function function) {
+        return parenthesize(
+                function.name.lexeme,
+                function.parameters
+        );
+    }
+
     private String parenthesize(String str, List<Expr> exprs) {
         StringBuilder builder = new StringBuilder();
         builder.add('(').add(str);
