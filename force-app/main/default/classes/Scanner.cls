@@ -4,6 +4,14 @@ public with sharing class Scanner {
     private Integer start = 0;
     private Integer current = 0;
 
+    private static final Map<String, TokenType> keywords;
+
+    static {
+        keywords = new Map<String, TokenType>();
+        keywords.put('true', TokenType.TRUE_KEYWORD);
+        keywords.put('false', TokenType.FALSE_KEYWORD);
+    }
+
     public Scanner(String source) {
         this.source = source;
     }
@@ -92,9 +100,12 @@ public with sharing class Scanner {
             }
 
             when else {
-                if (isDigit(character)) {
+                if (character.isNumeric()) {
                     numberLiteral();
-                } else {
+                } else if (character.isAlpha()) {
+                    identifierLiteral();
+                }
+                else {
                     throw new ScannerException('Unexpected character: ' + character);
                 }
             }
@@ -150,27 +161,37 @@ public with sharing class Scanner {
         addToken(TokenType.STRING_LITERAL, value);
     }
 
-    private Boolean isDigit(String character) {
-        return character >= '0' && character <= '9';
-    }
-
     private void numberLiteral() {
-        while (isDigit(peek())) {
+        while (peek().isNumeric()) {
             advance();
         }
 
         // Look for a fractional part
-        if (peek() == '.' && isDigit(peekNext())) {
+        if (peek() == '.' && peekNext().isNumeric()) {
             // Consume the "."
             advance();
 
-            while (isDigit(peek())) {
+            while (peek().isNumeric()) {
                 advance();
             }
         }
 
         addToken(TokenType.NUMBER_LITERAL, Decimal.valueOf(source.substring(start, current)));
+    }
 
+    private void identifierLiteral() {
+        while(peek().isAlphanumeric()) {
+            advance();
+        }
+
+        // See if the identifier is a reserved word
+        // Formulas are case insensitive, so we need to lowercase the identifier
+        String text = source.substring(start, current).toLowerCase();
+        TokenType type = keywords.get(text);
+        if (type == null) {
+            throw new ScannerException('Unexpected identifier: ' + text);
+        }
+        addToken(type);
     }
 
     private Boolean isAtEnd() {

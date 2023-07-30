@@ -149,4 +149,24 @@ private class FormulaEvaluatorTest {
     private static void supportsMinusBeforeNumber() {
         Assert.areEqual(-1, FormulaEvaluator.evaluate('-1'));
     }
+
+    @IsTest
+    private static void supportsTrueLiterals() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('true'));
+    }
+
+    @IsTest
+    private static void trueLiteralsAreCaseInsensitive() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('TRUE'));
+    }
+
+    @IsTest
+    private static void supportsFalseLiterals() {
+        Assert.areEqual(false, FormulaEvaluator.evaluate('false'));
+    }
+
+    @IsTest
+    private static void falseLiteralsAreCaseInsensitive() {
+        Assert.areEqual(false, FormulaEvaluator.evaluate('FALSE'));
+    }
 }

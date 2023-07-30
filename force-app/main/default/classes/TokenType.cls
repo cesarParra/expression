@@ -15,6 +15,9 @@ public enum TokenType {
     // Literals
     IDENTIFIER, STRING_LITERAL, NUMBER_LITERAL,
 
+    // Keywords
+    TRUE_KEYWORD, FALSE_KEYWORD,
+
     // EOF
     EOF
 }

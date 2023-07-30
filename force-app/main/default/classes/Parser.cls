@@ -79,6 +79,14 @@ public with sharing class Parser {
     }
 
     private Expr primary() {
+        if (match(TokenType.FALSE_KEYWORD)) {
+            return new Expr.Literal(false);
+        }
+
+        if (match(TokenType.TRUE_KEYWORD)) {
+            return new Expr.Literal(true);
+        }
+
         if (match2(TokenType.NUMBER_LITERAL, TokenType.STRING_LITERAL)) {
             return new Expr.Literal(previous().literal);
         }
