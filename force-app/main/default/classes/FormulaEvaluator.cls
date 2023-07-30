@@ -6,6 +6,9 @@ public with sharing class FormulaEvaluator {
         Parser parser = new Parser(tokens);
         Expr expression = parser.parse();
 
+        AstPrinter printer = new AstPrinter();
+        printer.printAst(expression);
+
         Interpreter interpreter = new Interpreter();
         return interpreter.interpret(expression);
     }
