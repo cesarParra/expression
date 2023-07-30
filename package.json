@@ -1,0 +1,20 @@
+{
+  "name": "formula-evaluator",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cesarParra/formula-evaluator.git"
+  },
+  "author": "Cesar Parra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cesarParra/formula-evaluator/issues"
+  },
+  "homepage": "https://github.com/cesarParra/formula-evaluator#readme",
+  "devDependencies": {
+    "@cparra/apexdocs": "^2.16.0"
+  }
+}
