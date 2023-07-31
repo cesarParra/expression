@@ -9,7 +9,7 @@
     "url": "git+https://github.com/cesarParra/formula-evaluator.git"
   },
   "author": "Cesar Parra",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/cesarParra/formula-evaluator/issues"
   },
