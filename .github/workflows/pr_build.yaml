@@ -18,14 +18,13 @@ jobs:
         uses: sfdx-actions/setup-sfdx@v1
         with:
           sfdx-auth-url: ${{ secrets.DEV_HUB_AUTH_URL }}
-      - run: echo ${{ secrets.DEV_HUB_AUTH_URL}}
       - name: Populate auth file with SFDX_URL secret
         shell: bash
         run: echo ${{ secrets.DEV_HUB_AUTH_URL}} > ./SFDX_URL_STORE.txt
       - name: Authenticate against dev hub
         run: sfdx force:auth:sfdxurl:store --sfdxurlfile=./SFDX_URL_STORE.txt --setalias=devhub --setdefaultdevhubusername
       - name: Create scratch org
-        run: sfdx force:org:create --definitionfile=orgs/dev.json --setalias=scratch-org --setdefaultusername
+        run: sfdx force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername
       - name: Push source
         run: sfdx force:source:push
       - name: Run tests
