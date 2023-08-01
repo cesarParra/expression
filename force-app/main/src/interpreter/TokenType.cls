@@ -22,6 +22,9 @@ public enum TokenType {
     // Logical
     AND_FN, IF_FN, NOT_FN, OR_FN,
 
+    // String
+    BEGINS_FN,
+
     // EOF
     EOF
 }

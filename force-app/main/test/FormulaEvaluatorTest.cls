@@ -219,4 +219,14 @@ private class FormulaEvaluatorTest {
     private static void orFunctionReturnsFalseIfAllArgumentsAreFalse() {
         Assert.areEqual(false, FormulaEvaluator.evaluate('OR(false, false, false)'));
     }
+
+    @IsTest
+    private static void beginsFunctionReturnsTrueIfFirstArgumentBeginsWithSecondArgument() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('BEGINS("Hello World", "Hello")'));
+    }
+
+    @IsTest
+    private static void beginsFunctionReturnsFalseIfFirstArgumentDoesNotBeginWithSecondArgument() {
+        Assert.areEqual(false, FormulaEvaluator.evaluate('BEGINS("Hello World", "World")'));
+    }
 }
