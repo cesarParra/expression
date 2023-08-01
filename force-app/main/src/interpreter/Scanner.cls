@@ -16,6 +16,7 @@ public with sharing class Scanner {
         keywords.put('or', TokenType.OR_FN);
         keywords.put('begins', TokenType.BEGINS_FN);
         keywords.put('contains', TokenType.CONTAINS_FN);
+        keywords.put('lower', TokenType.LOWER_FN);
     }
 
     public Scanner(String source) {

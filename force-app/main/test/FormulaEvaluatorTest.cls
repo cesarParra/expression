@@ -239,4 +239,9 @@ private class FormulaEvaluatorTest {
     private static void containsFunctionReturnsFalseIfFirstArgumentDoesNotContainSecondArgument() {
         Assert.areEqual(false, FormulaEvaluator.evaluate('CONTAINS("Hello World", "Goodbye")'));
     }
+
+    @IsTest
+    private static void lowerFunctionReturnsLowercaseString() {
+        Assert.areEqual('hello world', FormulaEvaluator.evaluate('LOWER("Hello World")'));
+    }
 }

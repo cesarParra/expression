@@ -23,7 +23,7 @@ public enum TokenType {
     AND_FN, IF_FN, NOT_FN, OR_FN,
 
     // String
-    BEGINS_FN, CONTAINS_FN,
+    BEGINS_FN, CONTAINS_FN, LOWER_FN,
 
     // EOF
     EOF
