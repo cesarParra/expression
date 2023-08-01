@@ -128,6 +128,18 @@ public with sharing class Parser {
             });
         }
 
+        if (match(TokenType.BEGINS_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr text = expression();
+            consume(TokenType.COMMA, 'Expect \',\' after string.');
+            Expr compareText = expression();
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+            return new Expr.Function(fnName, new List<Expr>{
+                    text, compareText
+            });
+        }
+
         if (match(TokenType.LEFT_PAREN)) {
             Expr expr = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after expression.');

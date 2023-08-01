@@ -187,6 +187,18 @@ FormulaEvaluator.evaluate('OR(true, false)'); // true
 FormulaEvaluator.evaluate('OR(false, false)'); // false
 ```
 
+#### String Functions
+
+- `BEGINS`
+
+Returns TRUE if the first character(s) in a text field match a given string.
+
+Accepts 2 arguments: the text field and the string to match.
+
+```apex
+FormulaEvaluator.evaluate('BEGINS("Hello World", "Hello")'); // true
+```
+
 ---
 
 ## Contributing
