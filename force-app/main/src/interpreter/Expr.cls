@@ -33,9 +33,9 @@ public abstract class Expr {
         public final Token name;
         public final List<Expr> arguments;
 
-        public Function(Token name, List<Expr> parameters) {
+        public Function(Token name, List<Expr> arguments) {
             this.name = name;
-            this.arguments = parameters;
+            this.arguments = arguments;
         }
 
         public override Object accept(Visitor v) {
