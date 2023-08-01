@@ -176,6 +176,17 @@ Reverses the logical value of its argument.
 FormulaEvaluator.evaluate('NOT(true)'); // false
 ```
 
+- `OR`
+
+Returns a TRUE response if any value is true; returns a FALSE response if all values are false.
+
+Accepts any number of arguments.
+
+```apex
+FormulaEvaluator.evaluate('OR(true, false)'); // true
+FormulaEvaluator.evaluate('OR(false, false)'); // false
+```
+
 ---
 
 ## Contributing

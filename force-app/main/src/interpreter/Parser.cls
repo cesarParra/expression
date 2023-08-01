@@ -91,7 +91,7 @@ public with sharing class Parser {
             return new Expr.Literal(previous().literal);
         }
 
-        if (match(TokenType.AND_FN)) {
+        if (match2(TokenType.AND_FN, TokenType.OR_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             List<Expr> parameters = new List<Expr>();
