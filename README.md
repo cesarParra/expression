@@ -190,7 +190,25 @@ You can enable it by setting the `FormulaEvaluator.printAst` static variable to 
 
 ```apex
 FormulaEvaluator.printAst = true;
-FormulaEvaluator.evaluate('1 + 1');
+Object value = FormulaEvaluator.evaluate('AND(true, false, 1=1)');
+// Outputs to the logs:
+// (AND true false (= 1 1))
+```
+
+#### Debugging
+
+While debugging, you might find it helpful to see the generated AST for
+a given expression.
+
+The source code includes a `Visitor` implementation
+whose sole purpose is to do this, `AstPrinter`. When enabled, it will
+print the AST to the logs.
+
+You can enable it by setting the `FormulaEvaluator.printAst` static variable to `true`.
+
+```apex
+FormulaEvaluator.printAst = true;
+Object value = FormulaEvaluator.evaluate('AND(true, false, 1=1)');
 // Outputs to the logs:
 // (AND true false (= 1 1))
 ```
