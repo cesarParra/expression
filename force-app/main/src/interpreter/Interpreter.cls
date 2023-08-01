@@ -253,6 +253,23 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((String) text).startsWith((String) prefix);
             }
+            when CONTAINS_FN {
+                Object text = evaluate(function.arguments.get(0));
+                if (!(text instanceof String)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                    );
+                }
+
+                Object substring = evaluate(function.arguments.get(1));
+                if (!(substring instanceof String)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                    );
+                }
+
+                return ((String) text).contains((String) substring);
+            }
         }
 
         // Unreachable
