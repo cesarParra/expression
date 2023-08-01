@@ -168,6 +168,14 @@ FormulaEvaluator.evaluate('IF(true, "Hello", "World")'); // "Hello"
 FormulaEvaluator.evaluate('IF(false, "Hello", "World")'); // "World"
 ```
 
+- `NOT`
+
+Reverses the logical value of its argument.
+
+```apex
+FormulaEvaluator.evaluate('NOT(true)'); // false
+```
+
 ---
 
 ## Contributing
