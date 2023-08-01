@@ -229,4 +229,14 @@ private class FormulaEvaluatorTest {
     private static void beginsFunctionReturnsFalseIfFirstArgumentDoesNotBeginWithSecondArgument() {
         Assert.areEqual(false, FormulaEvaluator.evaluate('BEGINS("Hello World", "World")'));
     }
+
+    @IsTest
+    private static void containsFunctionReturnsTrueIfFirstArgumentContainsSecondArgument() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('CONTAINS("Hello World", "llo Wo")'));
+    }
+
+    @IsTest
+    private static void containsFunctionReturnsFalseIfFirstArgumentDoesNotContainSecondArgument() {
+        Assert.areEqual(false, FormulaEvaluator.evaluate('CONTAINS("Hello World", "Goodbye")'));
+    }
 }

@@ -199,6 +199,16 @@ Accepts 2 arguments: the text field and the string to match.
 FormulaEvaluator.evaluate('BEGINS("Hello World", "Hello")'); // true
 ```
 
+- `CONTAINS`
+
+Returns TRUE if a text field contains a given string.
+
+Accepts 2 arguments: the text field and the string to match.
+
+```apex
+FormulaEvaluator.evaluate('CONTAINS("Hello World", "llo Wo")'); // true
+```
+
 ---
 
 ## Contributing
