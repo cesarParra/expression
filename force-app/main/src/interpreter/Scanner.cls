@@ -11,6 +11,7 @@ public with sharing class Scanner {
         keywords.put('true', TokenType.TRUE_KEYWORD);
         keywords.put('false', TokenType.FALSE_KEYWORD);
         keywords.put('and', TokenType.AND_FN);
+        keywords.put('if', TokenType.IF_FN);
     }
 
     public Scanner(String source) {

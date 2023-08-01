@@ -31,11 +31,11 @@ public abstract class Expr {
 
     public class Function extends Expr {
         public final Token name;
-        public final List<Expr> parameters;
+        public final List<Expr> arguments;
 
         public Function(Token name, List<Expr> parameters) {
             this.name = name;
-            this.parameters = parameters;
+            this.arguments = parameters;
         }
 
         public override Object accept(Visitor v) {

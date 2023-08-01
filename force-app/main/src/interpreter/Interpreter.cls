@@ -168,15 +168,15 @@ public with sharing class Interpreter implements Visitor {
     public Object visit(Expr.Function function) {
         switch on function.name.type {
             when AND_FN {
-                if (function.parameters.size() < 2) {
+                if (function.arguments.size() < 2) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: expected at least 2 arguments, but found ' + function.parameters.size()
+                            'Error executing ' + function.name.lexeme + ' function: expected at least 2 arguments, but found ' + function.arguments.size()
                     );
                 }
 
-                // Loop through all parameters and return false if any of them is false
-                for (Expr parameter : function.parameters) {
-                    Object evaluated = evaluate(parameter);
+                // Loop through all arguments and return false if any of them is false
+                for (Expr argument : function.arguments) {
+                    Object evaluated = evaluate(argument);
                     if (!isBoolean(evaluated)) {
                         throw new InterpreterException(
                                 'Error executing ' + function.name.lexeme + ' function: all arguments must evaluate to a boolean value.'
@@ -189,6 +189,22 @@ public with sharing class Interpreter implements Visitor {
                 }
 
                 return true;
+            }
+            when IF_FN {
+                // Evaluate the condition
+                Object condition = evaluate(function.arguments.get(0));
+                if (!isBoolean(condition)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a boolean value.'
+                    );
+                }
+
+                // Evaluate the true branch
+                if ((Boolean) condition) {
+                    return evaluate(function.arguments.get(1));
+                } else {
+                    return evaluate(function.arguments.get(2));
+                }
             }
         }
 
