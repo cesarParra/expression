@@ -209,6 +209,16 @@ Accepts 2 arguments: the text field and the string to match.
 FormulaEvaluator.evaluate('CONTAINS("Hello World", "llo Wo")'); // true
 ```
 
+- `LOWER`
+
+Converts all letters in the specified text to lowercase.
+
+Accepts 1 argument: the text to convert.
+
+```apex
+FormulaEvaluator.evaluate('LOWER("Hello World")'); // "hello world"
+```
+
 ---
 
 ## Contributing
