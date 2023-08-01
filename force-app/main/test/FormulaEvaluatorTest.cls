@@ -204,4 +204,19 @@ private class FormulaEvaluatorTest {
     private static void notFunctionNegatesAFalseExpression() {
         Assert.areEqual(true, FormulaEvaluator.evaluate('NOT(1=2)'));
     }
+
+    @IsTest
+    private static void orFunctionReturnsTrueIfAllArgumentsAreTrue() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('OR(true, true, true)'));
+    }
+
+    @IsTest
+    private static void orFunctionReturnsTrueIfAnyArgumentIsTrue() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('OR(true, false, false)'));
+    }
+
+    @IsTest
+    private static void orFunctionReturnsFalseIfAllArgumentsAreFalse() {
+        Assert.areEqual(false, FormulaEvaluator.evaluate('OR(false, false, false)'));
+    }
 }
