@@ -20,7 +20,7 @@ public enum TokenType {
 
     // Built-in functions
     // Logical
-    AND_FN,
+    AND_FN, IF_FN,
 
     // EOF
     EOF

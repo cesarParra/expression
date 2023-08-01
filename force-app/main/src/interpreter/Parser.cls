@@ -104,6 +104,20 @@ public with sharing class Parser {
             return new Expr.Function(fnName, parameters);
         }
 
+        if (match(TokenType.IF_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr condition = expression();
+            consume(TokenType.COMMA, 'Expect \',\' after condition.');
+            Expr thenBranch = expression();
+            consume(TokenType.COMMA, 'Expect \',\' after then branch.');
+            Expr elseBranch = expression();
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+            return new Expr.Function(fnName, new List<Expr>{
+                    condition, thenBranch, elseBranch
+            });
+        }
+
         if (match(TokenType.LEFT_PAREN)) {
             Expr expr = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after expression.');

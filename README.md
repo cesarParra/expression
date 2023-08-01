@@ -157,6 +157,17 @@ FormulaEvaluator.evaluate('AND(true, true)'); // true
 FormulaEvaluator.evaluate('AND(true, false, true)'); // false
 ```
 
+- `IF`
+
+Returns one value if a condition is true and another value if it's false.
+
+Accepts 3 arguments: the condition, the value if true, and the value if false.
+
+```apex
+FormulaEvaluator.evaluate('IF(true, "Hello", "World")'); // "Hello"
+FormulaEvaluator.evaluate('IF(false, "Hello", "World")'); // "World"
+```
+
 ---
 
 ## Contributing

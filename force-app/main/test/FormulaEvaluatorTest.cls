@@ -184,4 +184,14 @@ private class FormulaEvaluatorTest {
     private static void andFunctionWithAnyFalseReturnsFalse() {
         Assert.areEqual(false, FormulaEvaluator.evaluate('AND(true, false, true)'));
     }
+
+    @IsTest
+    private static void ifFunctionEvaluatesFirstArgumentWhenTrue() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('IF(true, 1, 2)'));
+    }
+
+    @IsTest
+    private static void ifFunctionEvaluatesSecondArgumentWhenFalse() {
+        Assert.areEqual(2, FormulaEvaluator.evaluate('IF(false, 1, 2)'));
+    }
 }
