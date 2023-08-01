@@ -207,6 +207,18 @@ public with sharing class Interpreter implements Visitor {
                     return evaluate(function.arguments.get(2));
                 }
             }
+            when NOT_FN {
+                // Evaluate the expressions
+                Object expression = evaluate(function.arguments.get(0));
+                if (!isBoolean(expression)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a boolean value.'
+                    );
+                }
+
+                // Return the negated expression
+                return !(Boolean) expression;
+            }
         }
 
         // Unreachable

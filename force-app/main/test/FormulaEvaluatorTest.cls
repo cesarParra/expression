@@ -194,4 +194,14 @@ private class FormulaEvaluatorTest {
     private static void ifFunctionEvaluatesSecondArgumentWhenFalse() {
         Assert.areEqual(2, FormulaEvaluator.evaluate('IF(false, 1, 2)'));
     }
+
+    @IsTest
+    private static void notFunctionNegatesATrueExpression() {
+        Assert.areEqual(false, FormulaEvaluator.evaluate('NOT(1=1)'));
+    }
+
+    @IsTest
+    private static void notFunctionNegatesAFalseExpression() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('NOT(1=2)'));
+    }
 }
