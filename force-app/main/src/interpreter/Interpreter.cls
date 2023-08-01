@@ -199,10 +199,11 @@ public with sharing class Interpreter implements Visitor {
                     );
                 }
 
-                // Evaluate the true branch
                 if ((Boolean) condition) {
+                    // Left
                     return evaluate(function.arguments.get(1));
                 } else {
+                    // Right
                     return evaluate(function.arguments.get(2));
                 }
             }
