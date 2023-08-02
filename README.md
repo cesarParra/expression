@@ -219,6 +219,17 @@ Accepts 1 argument: the text to convert.
 FormulaEvaluator.evaluate('LOWER("Hello World")'); // "hello world"
 ```
 
+- `FIND`
+
+Returns the starting position of one text string within another text string. If the text string is not found, FIND returns a value -1.
+
+Accepts either 2 or 3 arguments: the text to find, the text to search, and optionally the starting position.
+
+```apex
+FormulaEvaluator.evaluate('FIND("World", "Hello World")'); // 6
+FormulaEvaluator.evaluate('FIND("World", "Hello World", 7)'); // -1
+```
+
 #### Date and Time Functions
 
 - `DATE`

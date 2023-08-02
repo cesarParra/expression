@@ -176,6 +176,28 @@ public with sharing class Parser {
             });
         }
 
+        if (match(TokenType.FIND_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr text = expression();
+            consume(TokenType.COMMA, 'Expect \',\' after text.');
+            Expr findText = expression();
+
+            // Optional start number to star looking from
+            if (match(TokenType.COMMA)) {
+                Expr startNumber = expression();
+                return new Expr.Function(fnName, new List<Expr>{
+                        text, findText, startNumber
+                });
+            }
+
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+
+            return new Expr.Function(fnName, new List<Expr>{
+                    text, findText
+            });
+        }
+
         if (match(TokenType.LEFT_PAREN)) {
             Expr expr = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after expression.');
