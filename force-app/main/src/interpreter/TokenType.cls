@@ -28,6 +28,9 @@ public enum TokenType {
     // Date
     DATE_FN,
 
+    // Math
+    ABS_FN,
+
     // EOF
     EOF
 }

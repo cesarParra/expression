@@ -231,6 +231,18 @@ Accepts 3 arguments: the year, month, and day.
 FormulaEvaluator.evaluate('DATE(2020, 1, 1)'); // 2020-01-01 00:00:00
 ```
 
+#### Math Functions
+
+- `ABS`
+
+Returns the absolute value of a number.
+
+Accepts 1 argument: the number to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('ABS(-1)'); // 1
+```
+
 ---
 
 ## Contributing

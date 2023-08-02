@@ -18,6 +18,7 @@ public with sharing class Scanner {
         keywords.put('contains', TokenType.CONTAINS_FN);
         keywords.put('lower', TokenType.LOWER_FN);
         keywords.put('date', TokenType.DATE_FN);
+        keywords.put('abs', TokenType.ABS_FN);
     }
 
     public Scanner(String source) {

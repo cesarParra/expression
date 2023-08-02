@@ -249,4 +249,9 @@ private class FormulaEvaluatorTest {
     private static void dateEvaluatesToADate() {
         Assert.areEqual(Date.newInstance(2015, 1, 1), FormulaEvaluator.evaluate('DATE(2015, 1, 1)'));
     }
+
+    @IsTest
+    private static void absFunctionReturnsAbsoluteValue() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('ABS(-1)'));
+    }
 }
