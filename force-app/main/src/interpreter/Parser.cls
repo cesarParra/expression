@@ -150,6 +150,21 @@ public with sharing class Parser {
             });
         }
 
+        if (match(TokenType.DATE_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr year = expression();
+            consume(TokenType.COMMA, 'Expect \',\' after year.');
+            Expr month = expression();
+            consume(TokenType.COMMA, 'Expect \',\' after month.');
+            Expr day = expression();
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+
+            return new Expr.Function(fnName, new List<Expr>{
+                    year, month, day
+            });
+        }
+
         if (match(TokenType.LEFT_PAREN)) {
             Expr expr = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after expression.');
