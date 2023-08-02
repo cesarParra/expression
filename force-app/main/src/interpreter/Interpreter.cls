@@ -280,6 +280,28 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((String) text).toLowerCase();
             }
+            when DATE_FN {
+                Object year = evaluate(function.arguments.get(0));
+                if (!(year instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                    );
+                }
+                Object month = evaluate(function.arguments.get(1));
+                if (!(month instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                    );
+                }
+                Object day = evaluate(function.arguments.get(2));
+                if (!(day instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                    );
+                }
+
+                return Date.newInstance(Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(day));
+            }
         }
 
         // Unreachable

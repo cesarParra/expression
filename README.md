@@ -219,6 +219,18 @@ Accepts 1 argument: the text to convert.
 FormulaEvaluator.evaluate('LOWER("Hello World")'); // "hello world"
 ```
 
+#### Date and Time Functions
+
+- `DATE`
+
+Returns a date value from the provided year, month, and day values.
+
+Accepts 3 arguments: the year, month, and day.
+
+```apex
+FormulaEvaluator.evaluate('DATE(2020, 1, 1)'); // 2020-01-01 00:00:00
+```
+
 ---
 
 ## Contributing

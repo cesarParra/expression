@@ -244,4 +244,9 @@ private class FormulaEvaluatorTest {
     private static void lowerFunctionReturnsLowercaseString() {
         Assert.areEqual('hello world', FormulaEvaluator.evaluate('LOWER("Hello World")'));
     }
+
+    @IsTest
+    private static void dateEvaluatesToADate() {
+        Assert.areEqual(Date.newInstance(2015, 1, 1), FormulaEvaluator.evaluate('DATE(2015, 1, 1)'));
+    }
 }

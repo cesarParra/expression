@@ -25,6 +25,9 @@ public enum TokenType {
     // String
     BEGINS_FN, CONTAINS_FN, LOWER_FN,
 
+    // Date
+    DATE_FN,
+
     // EOF
     EOF
 }
