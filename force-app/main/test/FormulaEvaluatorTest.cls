@@ -254,4 +254,19 @@ private class FormulaEvaluatorTest {
     private static void absFunctionReturnsAbsoluteValue() {
         Assert.areEqual(1, FormulaEvaluator.evaluate('ABS(-1)'));
     }
+
+    @IsTest
+    private static void findFunctionReturnsIndexOfSubstring() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('FIND("ello", "Hello")'));
+    }
+
+    @IsTest
+    private static void findFunctionReturnsTheCorrectIndexWhenAStartingPositionIsSpecified() {
+        Assert.areEqual(4, FormulaEvaluator.evaluate('FIND("ab", "abcdabcd", 1)'));
+    }
+
+    @IsTest
+    private static void findFunctionReturnsMinusOneWhenSubstringIsNotFound() {
+        Assert.areEqual(-1, FormulaEvaluator.evaluate('FIND("ab", "abcdabcd", 5)'));
+    }
 }

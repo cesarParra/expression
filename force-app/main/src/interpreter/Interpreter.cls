@@ -312,6 +312,35 @@ public with sharing class Interpreter implements Visitor {
 
                 return Math.abs((Decimal) numberValue);
             }
+            when FIND_FN {
+                Object searchText = evaluate(function.arguments.get(0));
+                if (!(searchText instanceof String)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                    );
+                }
+
+                Object text = evaluate(function.arguments.get(1));
+                if (!(text instanceof String)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                    );
+                }
+
+                // There might be an optional third argument for the starting index, if there isn't one, it defaults to 0.
+                Integer startIndex = 0;
+                if (function.arguments.size() > 2) {
+                    Object startIndexValue = evaluate(function.arguments.get(2));
+                    if (!(startIndexValue instanceof Decimal)) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        );
+                    }
+                    startIndex = ((Decimal) startIndexValue).intValue();
+                }
+
+                return ((String) text).indexOf((String) searchText, startIndex);
+            }
         }
 
         // Unreachable
