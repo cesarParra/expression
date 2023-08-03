@@ -238,6 +238,16 @@ Returns a date value from the provided year, month, and day values.
 
 Accepts 3 arguments: the year, month, and day.
 
+- `ADDMONTHS`
+
+Returns a date that is a specified number of months before or after a given date.
+
+Accepts 2 arguments: the date and the number of months to add.
+
+```apex
+FormulaEvaluator.evaluate('ADDMONTHS(DATE(2020, 1, 1), 1)'); // 2020-02-01 00:00:00
+```
+
 ```apex
 FormulaEvaluator.evaluate('DATE(2020, 1, 1)'); // 2020-01-01 00:00:00
 ```

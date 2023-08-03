@@ -20,6 +20,7 @@ public with sharing class Scanner {
         keywords.put('date', TokenType.DATE_FN);
         keywords.put('abs', TokenType.ABS_FN);
         keywords.put('find', TokenType.FIND_FN);
+        keywords.put('addmonths', TokenType.ADDMONTHS_FN);
     }
 
     public Scanner(String source) {

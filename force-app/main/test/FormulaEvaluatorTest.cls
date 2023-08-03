@@ -269,4 +269,9 @@ private class FormulaEvaluatorTest {
     private static void findFunctionReturnsMinusOneWhenSubstringIsNotFound() {
         Assert.areEqual(-1, FormulaEvaluator.evaluate('FIND("ab", "abcdabcd", 5)'));
     }
+
+    @IsTest
+    private static void addMonthsFunctionAddsMonths() {
+        Assert.areEqual(Date.newInstance(2015, 2, 1), FormulaEvaluator.evaluate('ADDMONTHS(DATE(2015, 1, 1), 1)'));
+    }
 }

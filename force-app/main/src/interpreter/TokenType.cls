@@ -26,7 +26,7 @@ public enum TokenType {
     BEGINS_FN, CONTAINS_FN, LOWER_FN, FIND_FN,
 
     // Date
-    DATE_FN,
+    ADDMONTHS_FN, DATE_FN,
 
     // Math
     ABS_FN,

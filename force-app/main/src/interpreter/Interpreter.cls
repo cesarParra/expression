@@ -341,6 +341,23 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((String) text).indexOf((String) searchText, startIndex);
             }
+            when ADDMONTHS_FN {
+                Object startMonth = evaluate(function.arguments.get(0));
+                if (!(startMonth instanceof Date)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
+                    );
+                }
+
+                Object monthsToAdd = evaluate(function.arguments.get(1));
+                if (!(monthsToAdd instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                    );
+                }
+
+                return ((Date) startMonth).addMonths(((Decimal) monthsToAdd).intValue());
+            }
         }
 
         // Unreachable
