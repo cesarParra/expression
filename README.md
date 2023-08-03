@@ -187,6 +187,18 @@ FormulaEvaluator.evaluate('OR(true, false)'); // true
 FormulaEvaluator.evaluate('OR(false, false)'); // false
 ```
 
+- `BLANKVALUE`
+
+Returns a specified value if the expression is blank (null value or empty string); otherwise, returns the result of the
+expression.
+
+Accepts 2 arguments: the expression and the value to return if the expression is blank.
+
+```apex
+FormulaEvaluator.evaluate('BLANKVALUE(null, "Hello")'); // "Hello"
+FormulaEvaluator.evaluate('BLANKVALUE("World", "Hello")'); // "World"
+```
+
 #### String Functions
 
 - `BEGINS`
@@ -221,7 +233,8 @@ FormulaEvaluator.evaluate('LOWER("Hello World")'); // "hello world"
 
 - `FIND`
 
-Returns the starting position of one text string within another text string. If the text string is not found, FIND returns a value -1.
+Returns the starting position of one text string within another text string. If the text string is not found, FIND
+returns a value -1.
 
 Accepts either 2 or 3 arguments: the text to find, the text to search, and optionally the starting position.
 
@@ -238,6 +251,10 @@ Returns a date value from the provided year, month, and day values.
 
 Accepts 3 arguments: the year, month, and day.
 
+```apex
+FormulaEvaluator.evaluate('DATE(2020, 1, 1)'); // 2020-01-01 00:00:00
+```
+
 - `ADDMONTHS`
 
 Returns a date that is a specified number of months before or after a given date.
@@ -246,10 +263,6 @@ Accepts 2 arguments: the date and the number of months to add.
 
 ```apex
 FormulaEvaluator.evaluate('ADDMONTHS(DATE(2020, 1, 1), 1)'); // 2020-02-01 00:00:00
-```
-
-```apex
-FormulaEvaluator.evaluate('DATE(2020, 1, 1)'); // 2020-01-01 00:00:00
 ```
 
 #### Math Functions
