@@ -304,4 +304,9 @@ private class FormulaEvaluatorTest {
     private static void leftFunctionReturnsLeftSubstring() {
         Assert.areEqual('Hello', FormulaEvaluator.evaluate('LEFT("Hello World", 5)'));
     }
+
+    @IsTest
+    private static void dayFunctionReturnsDay() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('DAY(DATE(2015, 1, 1))'));
+    }
 }
