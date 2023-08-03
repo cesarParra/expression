@@ -23,6 +23,7 @@ public with sharing class Scanner {
         keywords.put('find', TokenType.FIND_FN);
         keywords.put('addmonths', TokenType.ADDMONTHS_FN);
         keywords.put('blankvalue', TokenType.BLANKVALUE_FN);
+        keywords.put('ceiling', TokenType.CEILING_FN);
     }
 
     public Scanner(String source) {

@@ -294,4 +294,9 @@ private class FormulaEvaluatorTest {
     private static void blankValueReturnsFallbackIfStringIsBlank() {
         Assert.areEqual('fallback', FormulaEvaluator.evaluate('BLANKVALUE("", "fallback")'));
     }
+
+    @IsTest
+    private static void ceilingFunctionReturnsCeiling() {
+        Assert.areEqual(2, FormulaEvaluator.evaluate('CEILING(1.5)'));
+    }
 }
