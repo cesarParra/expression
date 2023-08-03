@@ -169,7 +169,7 @@ public with sharing class Parser {
             });
         }
 
-        if (match(TokenType.ABS_FN)) {
+        if (match2(TokenType.ABS_FN, TokenType.CEILING_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             Expr numberValue = expression();

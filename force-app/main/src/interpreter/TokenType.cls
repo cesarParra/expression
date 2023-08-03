@@ -29,7 +29,7 @@ public enum TokenType {
     ADDMONTHS_FN, DATE_FN,
 
     // Math
-    ABS_FN,
+    ABS_FN, CEILING_FN,
 
     // EOF
     EOF

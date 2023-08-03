@@ -277,6 +277,16 @@ Accepts 1 argument: the number to evaluate.
 FormulaEvaluator.evaluate('ABS(-1)'); // 1
 ```
 
+- `CEILING`
+
+Returns the smallest integer greater than or equal to the specified number.
+
+Accepts 1 argument: the number to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('CEILING(1.5)'); // 2
+```
+
 ---
 
 ## Contributing
