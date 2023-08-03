@@ -324,4 +324,9 @@ private class FormulaEvaluatorTest {
     private static void floorFunctionReturnsFloor() {
         Assert.areEqual(1, FormulaEvaluator.evaluate('FLOOR(1.5)'));
     }
+
+    @IsTest
+    private static void lenFunctionReturnsLength() {
+        Assert.areEqual(5, FormulaEvaluator.evaluate('LEN("Hello")'));
+    }
 }

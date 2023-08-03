@@ -28,6 +28,7 @@ public with sharing class Scanner {
         keywords.put('day', TokenType.DAY_FN);
         keywords.put('isblank', TokenType.ISBLANK_FN);
         keywords.put('floor', TokenType.FLOOR_FN);
+        keywords.put('len', TokenType.LEN_FN);
     }
 
     public Scanner(String source) {

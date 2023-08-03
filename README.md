@@ -265,6 +265,16 @@ Accepts 2 arguments: the text to evaluate and the number of characters to return
 FormulaEvaluator.evaluate('LEFT("Hello World", 5)'); // "Hello"
 ```
 
+- `LEN`
+
+Returns the number of characters in a text string.
+
+Accepts 1 argument: the text to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('LEN("Hello World")'); // 11
+```
+
 #### Date and Time Functions
 
 - `DATE`
