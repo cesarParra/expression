@@ -87,6 +87,10 @@ public with sharing class Parser {
             return new Expr.Literal(true);
         }
 
+        if (match(TokenType.NULL_KEYWORD)) {
+            return new Expr.Literal(null);
+        }
+
         if (match2(TokenType.NUMBER_LITERAL, TokenType.STRING_LITERAL)) {
             return new Expr.Literal(previous().literal);
         }
@@ -208,6 +212,19 @@ public with sharing class Parser {
 
             return new Expr.Function(fnName, new List<Expr>{
                     startDate, months
+            });
+        }
+
+        if (match(TokenType.BLANKVALUE_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr value = expression();
+            consume(TokenType.COMMA, 'Expect \',\' after value.');
+            Expr valueIfBlank = expression();
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+
+            return new Expr.Function(fnName, new List<Expr>{
+                    value, valueIfBlank
             });
         }
 

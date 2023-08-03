@@ -16,11 +16,11 @@ public enum TokenType {
     IDENTIFIER, STRING_LITERAL, NUMBER_LITERAL,
 
     // Keywords
-    TRUE_KEYWORD, FALSE_KEYWORD,
+    TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD,
 
     // Built-in functions
     // Logical
-    AND_FN, IF_FN, NOT_FN, OR_FN,
+    AND_FN, IF_FN, NOT_FN, OR_FN, BLANKVALUE_FN,
 
     // String
     BEGINS_FN, CONTAINS_FN, LOWER_FN, FIND_FN,

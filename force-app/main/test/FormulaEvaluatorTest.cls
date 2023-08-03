@@ -171,6 +171,11 @@ private class FormulaEvaluatorTest {
     }
 
     @IsTest
+    private static void supportsNullLiterals() {
+        Assert.areEqual(null, FormulaEvaluator.evaluate('null'));
+    }
+
+    @IsTest
     private static void canEvaluateAndFunctionWith2Arguments() {
         Assert.areEqual(true, FormulaEvaluator.evaluate('AND(true, true)'));
     }
@@ -273,5 +278,20 @@ private class FormulaEvaluatorTest {
     @IsTest
     private static void addMonthsFunctionAddsMonths() {
         Assert.areEqual(Date.newInstance(2015, 2, 1), FormulaEvaluator.evaluate('ADDMONTHS(DATE(2015, 1, 1), 1)'));
+    }
+
+    @IsTest
+    private static void blankValueReturnsFallbackIfValueIsNull() {
+        Assert.areEqual('fallback', FormulaEvaluator.evaluate('BLANKVALUE(null, "fallback")'));
+    }
+
+    @IsTest
+    private static void blankValueReturnsValueIfValueIsNotNull() {
+        Assert.areEqual('value', FormulaEvaluator.evaluate('BLANKVALUE("value", "fallback")'));
+    }
+
+    @IsTest
+    private static void blankValueReturnsFallbackIfStringIsBlank() {
+        Assert.areEqual('fallback', FormulaEvaluator.evaluate('BLANKVALUE("", "fallback")'));
     }
 }

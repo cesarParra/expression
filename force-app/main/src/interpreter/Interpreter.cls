@@ -358,6 +358,22 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((Date) startMonth).addMonths(((Decimal) monthsToAdd).intValue());
             }
+            when BLANKVALUE_FN {
+                Object value = evaluate(function.arguments.get(0));
+                if (value == null) {
+                    return evaluate(function.arguments.get(1));
+                }
+
+                // Check if the value is a string
+                if (value instanceof String) {
+                    // Check if the string is empty
+                    if (String.isBlank((String) value)) {
+                        return evaluate(function.arguments.get(1));
+                    } else {
+                        return value;
+                    }
+                }
+            }
         }
 
         // Unreachable
