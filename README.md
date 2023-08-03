@@ -275,6 +275,16 @@ Accepts 2 arguments: the date and the number of months to add.
 FormulaEvaluator.evaluate('ADDMONTHS(DATE(2020, 1, 1), 1)'); // 2020-02-01 00:00:00
 ```
 
+- `DAY`
+
+Returns the day of the month, a number from 1 to 31.
+
+Accepts 1 argument: the date to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('DAY(DATE(2020, 1, 1))'); // 1
+```
+
 #### Math Functions
 
 - `ABS`

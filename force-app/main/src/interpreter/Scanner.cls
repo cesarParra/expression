@@ -25,6 +25,7 @@ public with sharing class Scanner {
         keywords.put('blankvalue', TokenType.BLANKVALUE_FN);
         keywords.put('ceiling', TokenType.CEILING_FN);
         keywords.put('left', TokenType.LEFT_FN);
+        keywords.put('day', TokenType.DAY_FN);
     }
 
     public Scanner(String source) {

@@ -228,6 +228,17 @@ public with sharing class Parser {
             });
         }
 
+        if (match(TokenType.DAY_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr dateValue = expression();
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+
+            return new Expr.Function(fnName, new List<Expr>{
+                    dateValue
+            });
+        }
+
         if (match(TokenType.LEFT_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
