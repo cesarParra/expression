@@ -309,4 +309,14 @@ private class FormulaEvaluatorTest {
     private static void dayFunctionReturnsDay() {
         Assert.areEqual(1, FormulaEvaluator.evaluate('DAY(DATE(2015, 1, 1))'));
     }
+
+    @IsTest
+    private static void isBlankReturnsTrueForAnEmptyString() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('ISBLANK("")'));
+    }
+
+    @IsTest
+    private static void isBlankReturnsTrueForNull() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('ISBLANK(null)'));
+    }
 }

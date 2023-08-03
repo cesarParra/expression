@@ -199,6 +199,18 @@ FormulaEvaluator.evaluate('BLANKVALUE(null, "Hello")'); // "Hello"
 FormulaEvaluator.evaluate('BLANKVALUE("World", "Hello")'); // "World"
 ```
 
+- `ISBLANK`
+
+Returns TRUE if the expression is blank (null value or empty string); otherwise, returns FALSE.
+
+Accepts 1 argument: the expression to check.
+
+```apex
+FormulaEvaluator.evaluate('ISBLANK(null)'); // true
+FormulaEvaluator.evaluate('ISBLANK("")'); // true
+FormulaEvaluator.evaluate('ISBLANK("Hello")'); // false
+```
+
 #### String Functions
 
 - `BEGINS`
