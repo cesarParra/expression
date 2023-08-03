@@ -319,6 +319,16 @@ Accepts 1 argument: the number to evaluate.
 FormulaEvaluator.evaluate('CEILING(1.5)'); // 2
 ```
 
+- `FLOOR`
+
+Returns the largest integer less than or equal to the specified number.
+
+Accepts 1 argument: the number to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('FLOOR(1.5)'); // 1
+```
+
 ---
 
 ## Contributing

@@ -319,4 +319,9 @@ private class FormulaEvaluatorTest {
     private static void isBlankReturnsTrueForNull() {
         Assert.areEqual(true, FormulaEvaluator.evaluate('ISBLANK(null)'));
     }
+
+    @IsTest
+    private static void floorFunctionReturnsFloor() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('FLOOR(1.5)'));
+    }
 }
