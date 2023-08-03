@@ -299,4 +299,9 @@ private class FormulaEvaluatorTest {
     private static void ceilingFunctionReturnsCeiling() {
         Assert.areEqual(2, FormulaEvaluator.evaluate('CEILING(1.5)'));
     }
+
+    @IsTest
+    private static void leftFunctionReturnsLeftSubstring() {
+        Assert.areEqual('Hello', FormulaEvaluator.evaluate('LEFT("Hello World", 5)'));
+    }
 }

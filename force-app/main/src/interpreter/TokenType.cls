@@ -23,7 +23,7 @@ public enum TokenType {
     AND_FN, IF_FN, NOT_FN, OR_FN, BLANKVALUE_FN,
 
     // String
-    BEGINS_FN, CONTAINS_FN, LOWER_FN, FIND_FN,
+    BEGINS_FN, CONTAINS_FN, LOWER_FN, FIND_FN, LEFT_FN,
 
     // Date
     ADDMONTHS_FN, DATE_FN,

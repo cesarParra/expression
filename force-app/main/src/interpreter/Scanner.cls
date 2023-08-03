@@ -24,6 +24,7 @@ public with sharing class Scanner {
         keywords.put('addmonths', TokenType.ADDMONTHS_FN);
         keywords.put('blankvalue', TokenType.BLANKVALUE_FN);
         keywords.put('ceiling', TokenType.CEILING_FN);
+        keywords.put('left', TokenType.LEFT_FN);
     }
 
     public Scanner(String source) {

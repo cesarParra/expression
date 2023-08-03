@@ -243,6 +243,16 @@ FormulaEvaluator.evaluate('FIND("World", "Hello World")'); // 6
 FormulaEvaluator.evaluate('FIND("World", "Hello World", 7)'); // -1
 ```
 
+- `LEFT`
+
+Returns the specified number of characters from the beginning of a text string.
+
+Accepts 2 arguments: the text to evaluate and the number of characters to return.
+
+```apex
+FormulaEvaluator.evaluate('LEFT("Hello World", 5)'); // "Hello"
+```
+
 #### Date and Time Functions
 
 - `DATE`
