@@ -461,7 +461,7 @@ public with sharing class Interpreter implements Visitor {
                 Datetime gmtDatetime = Datetime.newInstance(timeStamp);
                 return gmtDatetime;
             }
-            when LPAD_FN {
+            when LPAD_FN, RPAD_FN {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
@@ -486,7 +486,11 @@ public with sharing class Interpreter implements Visitor {
                     }
                 }
 
-                return ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length()) + (String) text;
+                if (function.name.type == TokenType.LPAD_FN) {
+                    return ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length()) + (String) text;
+                } else {
+                    return (String) text + ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length());
+                }
             }
         }
 
