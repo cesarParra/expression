@@ -335,4 +335,9 @@ private class FormulaEvaluatorTest {
         Assert.areEqual(1, FormulaEvaluator.evaluate('DAYOFYEAR(DATE(2015, 1, 1))'));
         Assert.areEqual(365, FormulaEvaluator.evaluate('DAYOFYEAR(DATE(2015, 12, 31))'));
     }
+
+    @IsTest
+    private static void fromUnixTimeFunctionReturnsADatetimeFromUnixTime() {
+        Assert.areEqual(Datetime.newInstanceGmt(2015, 1, 1, 0, 0, 0), FormulaEvaluator.evaluate('FROMUNIXTIME(1420070400)'));
+    }
 }

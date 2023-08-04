@@ -349,6 +349,16 @@ Accepts 1 argument: the number to evaluate.
 FormulaEvaluator.evaluate('FLOOR(1.5)'); // 1
 ```
 
+- `FROMUNIXTIME`
+
+Returns the GMT Datetime from a Unix timestamp.
+
+Accepts 1 argument: the Unix timestamp to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('FROMUNIXTIME(1577836800)'); // 2020-01-01 00:00:00
+```
+
 ---
 
 ## Contributing
