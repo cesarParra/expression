@@ -355,4 +355,19 @@ private class FormulaEvaluatorTest {
     private static void lpadFunctionPadsWithABlankStringWhenNo3rdArgumentIsSpecified() {
         Assert.areEqual('   1', FormulaEvaluator.evaluate('LPAD("1", 4)'));
     }
+
+    @IsTest
+    private static void rpadFunctionReturnsRightPaddedStringWhenTheDesiredLengthIsGreaterThanTheStringLength() {
+        Assert.areEqual('1000', FormulaEvaluator.evaluate('RPAD("1", 4, "0")'));
+    }
+
+    @IsTest
+    private static void rpadFunctionReturnsTheStringWhenTheDesiredLengthIsLessThanTheStringLength() {
+        Assert.areEqual('1234', FormulaEvaluator.evaluate('RPAD("1234", 2, "0")'));
+    }
+
+    @IsTest
+    private static void rpadFunctionPadsWithABlankStringWhenNo3rdArgumentIsSpecified() {
+        Assert.areEqual('1   ', FormulaEvaluator.evaluate('RPAD("1", 4)'));
+    }
 }
