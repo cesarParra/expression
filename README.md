@@ -307,6 +307,16 @@ Accepts 1 argument: the date to evaluate.
 FormulaEvaluator.evaluate('DAY(DATE(2020, 1, 1))'); // 1
 ```
 
+- `DAYOFYEAR`
+
+Returns the day of the year, a number from 1 to 366.
+
+Accepts 1 argument: the date to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('DAYOFYEAR(DATE(2020, 1, 1))'); // 1
+```
+
 #### Math Functions
 
 - `ABS`

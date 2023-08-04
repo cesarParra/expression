@@ -329,4 +329,10 @@ private class FormulaEvaluatorTest {
     private static void lenFunctionReturnsLength() {
         Assert.areEqual(5, FormulaEvaluator.evaluate('LEN("Hello")'));
     }
+
+    @IsTest
+    private static void dayOfYearFunctionReturnsDayOfYear() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('DAYOFYEAR(DATE(2015, 1, 1))'));
+        Assert.areEqual(365, FormulaEvaluator.evaluate('DAYOFYEAR(DATE(2015, 12, 31))'));
+    }
 }
