@@ -1,6 +1,6 @@
 # Formula Evaluator
 
-Allows you to evaluate formulas through Apex code.
+Allows you to evaluate formula-like syntax through Apex code.
 
 ## Installation
 
