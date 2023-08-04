@@ -449,6 +449,18 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((Date) dateValue).dayOfYear();
             }
+            when FROMUNIXTIME_FN {
+                Object unixTime = evaluate(function.arguments.get(0));
+                if (!(unixTime instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                    );
+                }
+
+                Long timeStamp = ((Decimal) unixTime).longValue() * 1000;
+                Datetime gmtDatetime = Datetime.newInstance(timeStamp);
+                return gmtDatetime;
+            }
         }
 
         // Unreachable
