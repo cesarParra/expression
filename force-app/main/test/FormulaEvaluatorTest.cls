@@ -340,4 +340,19 @@ private class FormulaEvaluatorTest {
     private static void fromUnixTimeFunctionReturnsADatetimeFromUnixTime() {
         Assert.areEqual(Datetime.newInstanceGmt(2015, 1, 1, 0, 0, 0), FormulaEvaluator.evaluate('FROMUNIXTIME(1420070400)'));
     }
+
+    @IsTest
+    private static void lpadFunctionReturnsLeftPaddedStringWhenTheDesiredLengthIsGreaterThanTheStringLength() {
+        Assert.areEqual('0001', FormulaEvaluator.evaluate('LPAD("1", 4, "0")'));
+    }
+
+    @IsTest
+    private static void lpadFunctionReturnsTheStringWhenTheDesiredLengthIsLessThanTheStringLength() {
+        Assert.areEqual('1234', FormulaEvaluator.evaluate('LPAD("1234", 2, "0")'));
+    }
+
+    @IsTest
+    private static void lpadFunctionPadsWithABlankStringWhenNo3rdArgumentIsSpecified() {
+        Assert.areEqual('   1', FormulaEvaluator.evaluate('LPAD("1", 4)'));
+    }
 }

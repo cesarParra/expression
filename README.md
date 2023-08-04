@@ -275,6 +275,18 @@ Accepts 1 argument: the text to evaluate.
 FormulaEvaluator.evaluate('LEN("Hello World")'); // 11
 ```
 
+- `LPAD`
+
+Returns a text value padded to the specified length with the specified set of characters.
+
+Accepts 2 or 3 arguments: the text to pad, the length to pad to, and optionally the padding character.
+If the padding character is not specified, it defaults to a space.
+
+```apex
+FormulaEvaluator.evaluate('LPAD("Hello", 10)'); // "     Hello"
+FormulaEvaluator.evaluate('LPAD("Hello", 10, "*")'); // "*****Hello"
+```
+
 #### Date and Time Functions
 
 - `DATE`
