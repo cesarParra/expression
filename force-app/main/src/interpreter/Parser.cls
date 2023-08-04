@@ -230,7 +230,7 @@ public with sharing class Parser {
             });
         }
 
-        if (match(TokenType.DAY_FN)) {
+        if (match2(TokenType.DAY_FN, TokenType.DAYOFYEAR_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             Expr dateValue = expression();
