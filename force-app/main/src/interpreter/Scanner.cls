@@ -34,6 +34,8 @@ public with sharing class Scanner {
         keywords.put('lpad', TokenType.LPAD_FN);
         keywords.put('rpad', TokenType.RPAD_FN);
         keywords.put('now', TokenType.NOW_FN);
+        keywords.put('datevalue', TokenType.DATEVALUE_FN);
+        keywords.put('datetimevalue', TokenType.DATETIMEVALUE_FN);
     }
 
     public Scanner(String source) {

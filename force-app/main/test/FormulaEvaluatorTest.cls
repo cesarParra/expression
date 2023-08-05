@@ -376,4 +376,19 @@ private class FormulaEvaluatorTest {
         // Not asserting against a specific value because the value will change.
         Assert.isNotNull(FormulaEvaluator.evaluate('NOW()'));
     }
+
+    @IsTest
+    private static void dateValueFunctionConvertsAStringToDate() {
+        Assert.areEqual(Date.newInstance(2015, 1, 1), FormulaEvaluator.evaluate('DATEVALUE("2015-01-01")'));
+    }
+
+    @IsTest
+    private static void dateValueFunctionConvertsADatetimeToDate() {
+        Assert.areEqual(Date.newInstance(2015, 1, 1), FormulaEvaluator.evaluate('DATEVALUE(DATETIMEVALUE("2015-01-01 00:00:00"))'));
+    }
+
+    @IsTest
+    private static void datetimeValueFunctionConvertsAStringToADatetime() {
+        Assert.areEqual(Datetime.newInstance(2015, 1, 1, 0, 0, 0), FormulaEvaluator.evaluate('DATETIMEVALUE("2015-01-01 00:00:00")'));
+    }
 }

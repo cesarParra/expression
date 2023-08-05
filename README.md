@@ -341,6 +341,38 @@ Accepts 1 argument: the date to evaluate.
 FormulaEvaluator.evaluate('DAYOFYEAR(DATE(2020, 1, 1))'); // 1
 ```
 
+- `NOW`
+
+Returns the current Datetime in the GMT time zone.
+
+Accepts no arguments.
+
+```apex
+FormulaEvaluator.evaluate('NOW()'); // 2020-01-01 00:00:00
+```
+
+- `DATEVALUE`
+
+Returns a date value from a string representation of a date or 
+a datetime.
+
+Accepts 1 argument: the date as a string or datetime.
+
+```apex
+FormulaEvaluator.evaluate('DATEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
+FormulaEvaluator.evaluate('DATEVALUE(NOW())'); // 2020-01-01 00:00:00
+```
+
+- `DATETIMEVALUE`
+
+Returns a datetime value from a string representation of a date.
+
+Accepts 1 argument: the date as a string.
+
+```apex
+FormulaEvaluator.evaluate('DATETIMEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
+```
+
 #### Math Functions
 
 - `ABS`
