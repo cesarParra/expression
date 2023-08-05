@@ -20,6 +20,15 @@ Object result = FormulaEvaluator.evaluate(formula);
 Assert.areEqual(2, result);
 ```
 
+You can also evaluate formulas providing an SObject as context. This allows you to
+make reference to fields of the provided SObject in the formula.
+
+```apex
+Account account = new Account(Name = 'ACME');
+Object result = FormulaEvaluator.evaluate('Name', account);
+Assert.areEqual('ACME', result);
+```
+
 ## Supported Operators and Functions
 
 ### Operators
