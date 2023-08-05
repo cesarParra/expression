@@ -230,7 +230,9 @@ public with sharing class Parser {
             });
         }
 
-        if (match2(TokenType.DAY_FN, TokenType.DAYOFYEAR_FN)) {
+        if (match(new List<TokenType>{
+                TokenType.DAY_FN, TokenType.DAYOFYEAR_FN, TokenType.DATEVALUE_FN, TokenType.DATETIMEVALUE_FN
+        })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             Expr dateValue = expression();
@@ -295,6 +297,13 @@ public with sharing class Parser {
             return new Expr.Function(fnName, new List<Expr>{
                     text, numberOfCharacters
             });
+        }
+
+        if (match(TokenType.NOW_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+            return new Expr.Function(fnName, new List<Expr>());
         }
 
         if (match(TokenType.LEFT_PAREN)) {

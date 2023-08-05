@@ -492,6 +492,34 @@ public with sharing class Interpreter implements Visitor {
                     return (String) text + ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length());
                 }
             }
+            when NOW_FN {
+                return Datetime.now();
+            }
+            when DATEVALUE_FN {
+                // Expect the expression to either be a text or a datetime
+                Object expression = evaluate(function.arguments.get(0));
+                if (!(expression instanceof String) && !(expression instanceof Datetime)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string or datetime value.'
+                    );
+                }
+
+                if (expression instanceof String) {
+                    return Date.valueOf((String) expression);
+                } else {
+                    return ((Datetime) expression).date();
+                }
+            }
+            when DATETIMEVALUE_FN {
+                Object expression = evaluate(function.arguments.get(0));
+                if (!(expression instanceof String)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                    );
+                }
+
+                return Datetime.valueOf((String) expression);
+            }
         }
 
         // Unreachable
