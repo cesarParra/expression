@@ -150,8 +150,17 @@ public with sharing class Interpreter implements Visitor {
             );
         }
 
-        // TODO: Error handling. We can check if the field exists in the SObject,
-        // but even then things can fail if the field was not queried.
+        Set<String> fields = context.getSObjectType().getDescribe().fields.getMap().keySet();
+        if (!fields.contains(mergeField.name.lexeme.toLowerCase())) {
+            throw new InterpreterException(
+                    'Error executing merge field: ' +
+                            mergeField.name.lexeme +
+                            ' The SObject type ' +
+                            context.getSObjectType().getDescribe().getName() +
+                            ' does not contain a field with that name.'
+            );
+        }
+
         return context.get(mergeField.name.lexeme);
     }
 
