@@ -55,6 +55,18 @@ public abstract class Expr {
         }
     }
 
+    public class MergeField extends Expr {
+        public final Token name;
+
+        public MergeField(Token name) {
+            this.name = name;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
+
     public class Unary extends Expr {
         public final Token operator;
         public final Expr right;

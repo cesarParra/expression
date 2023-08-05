@@ -1,4 +1,10 @@
 public with sharing class Interpreter implements Visitor {
+    private final SObject context;
+
+    public Interpreter(SObject context) {
+        this.context = context;
+    }
+
     public Object interpret(Expr expression) {
         return evaluate(expression);
     }
@@ -135,6 +141,18 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Literal literal) {
         return literal.value;
+    }
+
+    public Object visit(Expr.MergeField mergeField) {
+        if (context == null) {
+            throw new InterpreterException(
+                    'Error executing merge field' + mergeField.name.lexeme + ': no context was provided.'
+            );
+        }
+
+        // TODO: Error handling. We can check if the field exists in the SObject,
+        // but even then things can fail if the field was not queried.
+        return context.get(mergeField.name.lexeme);
     }
 
     public Object visit(Expr.Unary unary) {

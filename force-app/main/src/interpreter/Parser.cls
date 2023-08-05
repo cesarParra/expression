@@ -95,6 +95,10 @@ public with sharing class Parser {
             return new Expr.Literal(previous().literal);
         }
 
+        if (match(TokenType.IDENTIFIER)) {
+            return new Expr.MergeField(previous());
+        }
+
         if (match2(TokenType.AND_FN, TokenType.OR_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
@@ -311,6 +315,8 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after expression.');
             return new Expr.Grouping(expr);
         }
+
+
 
         throw error(peek(), 'Expect expression.');
     }
