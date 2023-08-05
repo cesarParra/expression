@@ -33,6 +33,7 @@ public with sharing class Scanner {
         keywords.put('fromunixtime', TokenType.FROMUNIXTIME_FN);
         keywords.put('lpad', TokenType.LPAD_FN);
         keywords.put('rpad', TokenType.RPAD_FN);
+        keywords.put('now', TokenType.NOW_FN);
     }
 
     public Scanner(String source) {
@@ -127,8 +128,7 @@ public with sharing class Scanner {
                     numberLiteral();
                 } else if (character.isAlpha()) {
                     identifierLiteral();
-                }
-                else {
+                } else {
                     throw new ScannerException('Unexpected character: ' + character);
                 }
             }
@@ -203,7 +203,7 @@ public with sharing class Scanner {
     }
 
     private void identifierLiteral() {
-        while(peek().isAlphanumeric()) {
+        while (peek().isAlphanumeric()) {
             advance();
         }
 
@@ -221,5 +221,6 @@ public with sharing class Scanner {
         return current >= source.length();
     }
 
-    public class ScannerException extends Exception {}
+    public class ScannerException extends Exception {
+    }
 }

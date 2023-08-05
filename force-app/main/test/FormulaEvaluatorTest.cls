@@ -370,4 +370,10 @@ private class FormulaEvaluatorTest {
     private static void rpadFunctionPadsWithABlankStringWhenNo3rdArgumentIsSpecified() {
         Assert.areEqual('1   ', FormulaEvaluator.evaluate('RPAD("1", 4)'));
     }
+
+    @IsTest
+    private static void nowFunctionReturnsAValue() {
+        // Not asserting against a specific value because the value will change.
+        Assert.isNotNull(FormulaEvaluator.evaluate('NOW()'));
+    }
 }

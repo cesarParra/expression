@@ -492,6 +492,9 @@ public with sharing class Interpreter implements Visitor {
                     return (String) text + ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length());
                 }
             }
+            when NOW_FN {
+                return Datetime.now();
+            }
         }
 
         // Unreachable
