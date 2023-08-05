@@ -316,8 +316,6 @@ public with sharing class Parser {
             return new Expr.Grouping(expr);
         }
 
-
-
         throw error(peek(), 'Expect expression.');
     }
 
