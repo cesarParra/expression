@@ -1,4 +1,10 @@
 public with sharing class Interpreter implements Visitor {
+    private final SObject context;
+
+    public Interpreter(SObject context) {
+        this.context = context;
+    }
+
     public Object interpret(Expr expression) {
         return evaluate(expression);
     }
@@ -135,6 +141,27 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Literal literal) {
         return literal.value;
+    }
+
+    public Object visit(Expr.MergeField mergeField) {
+        if (context == null) {
+            throw new InterpreterException(
+                    'Error executing merge field' + mergeField.name.lexeme + ': no context was provided.'
+            );
+        }
+
+        Set<String> fields = context.getSObjectType().getDescribe().fields.getMap().keySet();
+        if (!fields.contains(mergeField.name.lexeme.toLowerCase())) {
+            throw new InterpreterException(
+                    'Error executing merge field: ' +
+                            mergeField.name.lexeme +
+                            ' The SObject type ' +
+                            context.getSObjectType().getDescribe().getName() +
+                            ' does not contain a field with that name.'
+            );
+        }
+
+        return context.get(mergeField.name.lexeme);
     }
 
     public Object visit(Expr.Unary unary) {

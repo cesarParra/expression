@@ -391,4 +391,10 @@ private class FormulaEvaluatorTest {
     private static void datetimeValueFunctionConvertsAStringToADatetime() {
         Assert.areEqual(Datetime.newInstance(2015, 1, 1, 0, 0, 0), FormulaEvaluator.evaluate('DATETIMEVALUE("2015-01-01 00:00:00")'));
     }
+
+    @IsTest
+    private static void canReferenceAMergeField() {
+        Account account = new Account(Name = 'Test');
+        Assert.areEqual('Test', FormulaEvaluator.evaluate('Name', account));
+    }
 }

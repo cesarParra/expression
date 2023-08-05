@@ -214,7 +214,7 @@ public with sharing class Scanner {
         String text = source.substring(start, current).toLowerCase();
         TokenType type = keywords.get(text);
         if (type == null) {
-            throw new ScannerException('Unexpected identifier: ' + text);
+            type = TokenType.IDENTIFIER;
         }
         addToken(type);
     }
