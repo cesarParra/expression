@@ -550,6 +550,10 @@ public with sharing class Interpreter implements Visitor {
             when TODAY_FN {
                 return Date.today();
             }
+            when ISNUMBER_FN {
+                Object value = evaluate(function.arguments.get(0));
+                return value instanceof Decimal;
+            }
         }
 
         // Unreachable

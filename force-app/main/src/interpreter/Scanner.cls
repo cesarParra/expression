@@ -37,6 +37,7 @@ public with sharing class Scanner {
         keywords.put('datevalue', TokenType.DATEVALUE_FN);
         keywords.put('datetimevalue', TokenType.DATETIMEVALUE_FN);
         keywords.put('today', TokenType.TODAY_FN);
+        keywords.put('isnumber', TokenType.ISNUMBER_FN);
     }
 
     public Scanner(String source) {

@@ -21,6 +21,7 @@ public enum TokenType {
     // Built-in functions
     // Logical
     AND_FN, IF_FN, NOT_FN, OR_FN, BLANKVALUE_FN, ISBLANK_FN,
+    ISNUMBER_FN,
 
     // String
     BEGINS_FN, CONTAINS_FN, LOWER_FN, FIND_FN, LEFT_FN, LEN_FN,
