@@ -303,7 +303,7 @@ public with sharing class Parser {
             });
         }
 
-        if (match(TokenType.NOW_FN)) {
+        if (match2(TokenType.NOW_FN, TokenType.TODAY_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');

@@ -382,6 +382,16 @@ Accepts 1 argument: the date as a string.
 FormulaEvaluator.evaluate('DATETIMEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
 ```
 
+- `TODAY`
+
+Returns the current date.
+
+Accepts no arguments.
+
+```apex
+FormulaEvaluator.evaluate('TODAY()'); // 2020-01-01
+```
+
 #### Math Functions
 
 - `ABS`
