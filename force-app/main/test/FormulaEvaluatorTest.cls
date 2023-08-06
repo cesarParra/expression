@@ -397,4 +397,10 @@ private class FormulaEvaluatorTest {
         Account account = new Account(Name = 'Test');
         Assert.areEqual('Test', FormulaEvaluator.evaluate('Name', account));
     }
+
+    @IsTest
+    private static void todayFunctionReturnsToday() {
+        // Not asserting against a specific value because the value will change.
+        Assert.isNotNull(FormulaEvaluator.evaluate('TODAY()'));
+    }
 }

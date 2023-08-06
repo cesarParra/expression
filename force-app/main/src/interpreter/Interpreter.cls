@@ -547,6 +547,9 @@ public with sharing class Interpreter implements Visitor {
 
                 return Datetime.valueOf((String) expression);
             }
+            when TODAY_FN {
+                return Date.today();
+            }
         }
 
         // Unreachable
