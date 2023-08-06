@@ -419,4 +419,14 @@ private class FormulaEvaluatorTest {
         Account account = new Account(NumberOfEmployees = 1);
         Assert.areEqual(true, FormulaEvaluator.evaluate('ISNUMBER(NumberOfEmployees)', account));
     }
+
+    @IsTest
+    private static void maxFunctionEvaluateReturnsTheMaximumValue() {
+        Assert.areEqual(2, FormulaEvaluator.evaluate('MAX(1, 2)'));
+    }
+
+    @IsTest
+    private static void maxFunctionAcceptsMoreThanTwoArguments() {
+        Assert.areEqual(3, FormulaEvaluator.evaluate('MAX(1, 2, 3)'));
+    }
 }

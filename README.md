@@ -434,6 +434,16 @@ Accepts 1 argument: the Unix timestamp to evaluate.
 FormulaEvaluator.evaluate('FROMUNIXTIME(1577836800)'); // 2020-01-01 00:00:00
 ```
 
+- `MAX`
+
+Returns the largest of one or more numbers.
+
+At least one argument is required.
+
+```apex
+FormulaEvaluator.evaluate('MAX(1, 2, 3)'); // 3
+```
+
 ---
 
 ## Contributing

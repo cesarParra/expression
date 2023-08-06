@@ -554,6 +554,28 @@ public with sharing class Interpreter implements Visitor {
                 Object value = evaluate(function.arguments.get(0));
                 return value instanceof Decimal;
             }
+            when MAX_FN {
+                if (function.arguments.isEmpty()) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the function must have at least one argument.'
+                    );
+                }
+
+                Decimal max;
+                for (Expr argument : function.arguments) {
+                    Object value = evaluate(argument);
+                    if (!(value instanceof Decimal)) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        );
+                    }
+
+                    if (max == null || (Decimal) value > max) {
+                        max = (Decimal) value;
+                    }
+                }
+                return max;
+            }
         }
 
         // Unreachable
