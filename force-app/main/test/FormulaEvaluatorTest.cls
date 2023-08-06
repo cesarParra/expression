@@ -403,4 +403,20 @@ private class FormulaEvaluatorTest {
         // Not asserting against a specific value because the value will change.
         Assert.isNotNull(FormulaEvaluator.evaluate('TODAY()'));
     }
+
+    @IsTest
+    private static void isNumberReturnsTrueForANumber() {
+        Assert.areEqual(true, FormulaEvaluator.evaluate('ISNUMBER(1)'));
+    }
+
+    @IsTest
+    private static void isNumberReturnsFalseForANonNumber() {
+        Assert.areEqual(false, FormulaEvaluator.evaluate('ISNUMBER("1")'));
+    }
+
+    @IsTest
+    private static void isNumberReturnsTrueForNumberMergeField() {
+        Account account = new Account(NumberOfEmployees = 1);
+        Assert.areEqual(true, FormulaEvaluator.evaluate('ISNUMBER(NumberOfEmployees)', account));
+    }
 }
