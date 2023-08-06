@@ -32,7 +32,7 @@ public enum TokenType {
     DATETIMEVALUE_FN, TODAY_FN,
 
     // Math
-    ABS_FN, CEILING_FN, FLOOR_FN, FROMUNIXTIME_FN,
+    ABS_FN, CEILING_FN, FLOOR_FN, FROMUNIXTIME_FN, MAX_FN,
 
     // EOF
     EOF

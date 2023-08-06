@@ -99,7 +99,9 @@ public with sharing class Parser {
             return new Expr.MergeField(previous());
         }
 
-        if (match2(TokenType.AND_FN, TokenType.OR_FN)) {
+        if (match(new List<TokenType>{
+                TokenType.AND_FN, TokenType.OR_FN, TokenType.MAX_FN
+        })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             List<Expr> parameters = new List<Expr>();
