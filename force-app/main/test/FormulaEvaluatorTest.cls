@@ -464,4 +464,14 @@ private class FormulaEvaluatorTest {
     private static void roundFunctionAcceptsAnOptionalSecondArgument() {
         Assert.areEqual(1.5, FormulaEvaluator.evaluate('ROUND(1.45, 1)'));
     }
+
+    @IsTest
+    private static void timeValueFunctionReturnsTheTimeValueOfADateTime() {
+        Assert.areEqual(Time.newInstance(2, 0, 0, 0), FormulaEvaluator.evaluate('TIMEVALUE(DATETIMEVALUE("2015-01-01 02:00:00"))'));
+    }
+
+    @IsTest
+    private static void timeValueFunctionReturnsTheTimeValueOfADateTimeString() {
+        Assert.areEqual(Time.newInstance(2, 0, 0, 0), FormulaEvaluator.evaluate('TIMEVALUE("2015-01-01 02:00:00")'));
+    }
 }

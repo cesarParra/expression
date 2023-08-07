@@ -412,6 +412,17 @@ Accepts 1 argument: the datetime to evaluate.
 FormulaEvaluator.evaluate('HOUR(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 12
 ```
 
+- `TIMEVALUE`
+
+Returns a time value from a datetime or from a string representation of a datetime.
+
+Accepts 1 argument: the datetime or string in datetime format to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('TIMEVALUE(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 12:00:00
+FormulaEvaluator.evaluate('TIMEVALUE("2020-01-01 12:00:00")'); // 12:00:00
+```
+
 #### Math Functions
 
 - `ABS`

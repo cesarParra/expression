@@ -623,6 +623,22 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.HALF_UP);
             }
+            when TIMEVALUE_FN {
+                Object dateTimeOrText = evaluate(function.arguments.get(0));
+                if (!(dateTimeOrText instanceof String) && !(dateTimeOrText instanceof Datetime)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string or datetime value.'
+                    );
+                }
+
+                if (dateTimeOrText instanceof String) {
+                    // Try and create a datetime out of the string
+                    Datetime dateTimeFromString = Datetime.valueOf((String) dateTimeOrText);
+                    return dateTimeFromString.time();
+                } else {
+                    return ((Datetime) dateTimeOrText).time();
+                }
+            }
         }
 
         // Unreachable
