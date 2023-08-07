@@ -100,7 +100,7 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-                TokenType.AND_FN, TokenType.OR_FN, TokenType.MAX_FN
+                TokenType.AND_FN, TokenType.OR_FN, TokenType.MAX_FN, TokenType.MIN_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
