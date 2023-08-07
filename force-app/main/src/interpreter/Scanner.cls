@@ -43,6 +43,10 @@ public with sharing class Scanner {
         keywords.put('reverse', TokenType.REVERSE_FN);
         keywords.put('hour', TokenType.HOUR_FN);
         keywords.put('round', TokenType.ROUND_FN);
+        keywords.put('timevalue', TokenType.TIMEVALUE_FN);
+        keywords.put('trunc', TokenType.TRUNC_FN);
+        keywords.put('mid', TokenType.MID_FN);
+        keywords.put('substring', TokenType.SUBSTRING_FN);
     }
 
     public Scanner(String source) {

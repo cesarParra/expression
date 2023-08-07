@@ -318,6 +318,33 @@ Accepts 1 argument: the text to reverse.
 FormulaEvaluator.evaluate('REVERSE("Hello World")'); // "dlroW olleH"
 ```
 
+- `MID`
+
+Returns a specified number of characters from a text string starting at the position you specify up
+to the number of characters you specify.
+
+Note that the position is 1-based, not 0-based.
+
+Accepts 3 arguments: the text to evaluate, the starting position, and the number of characters to return.
+
+```apex
+FormulaEvaluator.evaluate('MID("Hello World", 7, 5)'); // "World"
+```
+
+- `SUBSTRING`
+
+Returns a specified number of characters from a text string starting at the position you specify.
+Optionally, you can specify the number of characters to return.
+
+Note that the position is 1-based, not 0-based.
+
+Accepts 2 or 3 arguments: the text to evaluate and the starting position. Optionally, the number of characters to
+
+```apex
+FormulaEvaluator.evaluate('SUBSTRING("Hello World", 7)'); // "World"
+FormulaEvaluator.evaluate('SUBSTRING("Hello World", 7, 5)'); // "World"
+```
+
 #### Date and Time Functions
 
 - `DATE`
@@ -412,6 +439,17 @@ Accepts 1 argument: the datetime to evaluate.
 FormulaEvaluator.evaluate('HOUR(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 12
 ```
 
+- `TIMEVALUE`
+
+Returns a time value from a datetime or from a string representation of a datetime.
+
+Accepts 1 argument: the datetime or string in datetime format to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('TIMEVALUE(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 12:00:00
+FormulaEvaluator.evaluate('TIMEVALUE("2020-01-01 12:00:00")'); // 12:00:00
+```
+
 #### Math Functions
 
 - `ABS`
@@ -483,6 +521,17 @@ Accepts 1 or 2 arguments: the number to round and optionally the number of decim
 ```apex
 FormulaEvaluator.evaluate('ROUND(1.5)'); // 2
 FormulaEvaluator.evaluate('ROUND(1.5, 1)'); // 1.5
+```
+
+- `TRUNC`
+
+Returns a truncated number. Optionally specify the number of decimal places to truncate to.
+
+Accepts 1 or 2 arguments: the number to truncate and optionally the number of decimal places to truncate to.
+
+```apex
+FormulaEvaluator.evaluate('TRUNC(1.5)'); // 1
+FormulaEvaluator.evaluate('TRUNC(1.5, 1)'); // 1.5
 ```
 
 ---

@@ -464,4 +464,54 @@ private class FormulaEvaluatorTest {
     private static void roundFunctionAcceptsAnOptionalSecondArgument() {
         Assert.areEqual(1.5, FormulaEvaluator.evaluate('ROUND(1.45, 1)'));
     }
+
+    @IsTest
+    private static void timeValueFunctionReturnsTheTimeValueOfADateTime() {
+        Assert.areEqual(Time.newInstance(2, 0, 0, 0), FormulaEvaluator.evaluate('TIMEVALUE(DATETIMEVALUE("2015-01-01 02:00:00"))'));
+    }
+
+    @IsTest
+    private static void timeValueFunctionReturnsTheTimeValueOfADateTimeString() {
+        Assert.areEqual(Time.newInstance(2, 0, 0, 0), FormulaEvaluator.evaluate('TIMEVALUE("2015-01-01 02:00:00")'));
+    }
+
+    @IsTest
+    private static void truncFunctionTruncatesToTheSpecifiedNumberOfDigits() {
+        Assert.areEqual(1.234, FormulaEvaluator.evaluate('TRUNC(1.2345, 3)'));
+    }
+
+    @IsTest
+    private static void truncFunctionTruncatesToZeroDigits() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('TRUNC(1.2345, 0)'));
+    }
+
+    @IsTest
+    private static void truncReturnsTheIntegerPartOfANumberWhenNo2ndArgumentIsSpecified() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('TRUNC(1.2345)'));
+    }
+
+    @IsTest
+    private static void midFunctionCanReturnsFromTheBeginningOfTheStringWhenTheFirstArgumentIs1() {
+        Assert.areEqual('abc', FormulaEvaluator.evaluate('MID("abc", 1, 3)'));
+    }
+
+    @IsTest
+    private static void midFunctionReturnsASubstringBeginningAtTheSpecifiedPosition() {
+        Assert.areEqual('b', FormulaEvaluator.evaluate('MID("abc", 2, 1)'));
+    }
+
+    @IsTest
+    private static void substringFunctionReturnsASubstringBeginningAtTheSpecifiedPosition() {
+        Assert.areEqual('bc', FormulaEvaluator.evaluate('SUBSTRING("abc", 2, 2)'));
+    }
+
+    @IsTest
+    private static void substringFunctionReturnsASubstringBeginningAtTheSpecifiedPositionWhenTheFirstArgumentIs1() {
+        Assert.areEqual('abc', FormulaEvaluator.evaluate('SUBSTRING("abc", 1, 3)'));
+    }
+
+    @IsTest
+    private static void substringFunctionReturnsTheEntireStringBeginningAtTheSpecifiedPositionWhenTheThirdArgumentIsOmitted() {
+        Assert.areEqual('bc', FormulaEvaluator.evaluate('SUBSTRING("abc", 2)'));
+    }
 }

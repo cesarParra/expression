@@ -602,7 +602,7 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((Datetime) dateTimeValue).hour();
             }
-            when ROUND_FN {
+            when ROUND_FN, TRUNC_FN {
                 Object numberValue = evaluate(function.arguments.get(0));
                 if (!(numberValue instanceof Decimal)) {
                     throw new InterpreterException(
@@ -621,7 +621,83 @@ public with sharing class Interpreter implements Visitor {
                     precision = (Decimal) precisionValue;
                 }
 
-                return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.HALF_UP);
+                if (function.name.type == TokenType.ROUND_FN) {
+                    return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.HALF_UP);
+                } else {
+                    return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.DOWN);
+                }
+            }
+            when TIMEVALUE_FN {
+                Object dateTimeOrText = evaluate(function.arguments.get(0));
+                if (!(dateTimeOrText instanceof String) && !(dateTimeOrText instanceof Datetime)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string or datetime value.'
+                    );
+                }
+
+                if (dateTimeOrText instanceof String) {
+                    // Try and create a datetime out of the string
+                    Datetime dateTimeFromString = Datetime.valueOf((String) dateTimeOrText);
+                    return dateTimeFromString.time();
+                } else {
+                    return ((Datetime) dateTimeOrText).time();
+                }
+            }
+            when MID_FN {
+                Object text = evaluate(function.arguments.get(0));
+                if (!(text instanceof String)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
+                    );
+                }
+
+                Object start = evaluate(function.arguments.get(1));
+                if (!(start instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
+                    );
+                }
+
+                Object length = evaluate(function.arguments.get(2));
+                if (!(length instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the third argument must evaluate to a number value.'
+                    );
+                }
+
+                return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
+            }
+            when SUBSTRING_FN {
+                Object text = evaluate(function.arguments.get(0));
+                if (!(text instanceof String)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
+                    );
+                }
+
+                Object start = evaluate(function.arguments.get(1));
+                if (!(start instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
+                    );
+                }
+
+                // Third argument is optional
+                Object length = null;
+                if (function.arguments.size() > 2) {
+                    length = evaluate(function.arguments.get(2));
+                    if (!(length instanceof Decimal)) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: the third argument must evaluate to a number value.'
+                        );
+                    }
+                }
+
+                if (length == null) {
+                    return ((String) text).substring(((Decimal) start).intValue() - 1);
+                } else {
+                    return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
+                }
             }
         }
 

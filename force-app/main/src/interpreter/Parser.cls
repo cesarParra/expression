@@ -263,6 +263,17 @@ public with sharing class Parser {
             });
         }
 
+        if (match(TokenType.TIMEVALUE_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr dateTimeValueOrText = expression();
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+
+            return new Expr.Function(fnName, new List<Expr>{
+                    dateTimeValueOrText
+            });
+        }
+
         if (match(TokenType.LEFT_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
@@ -332,6 +343,63 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
             return new Expr.Function(fnName, new List<Expr>{
                     numberValue
+            });
+        }
+
+        if (match(TokenType.TRUNC_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr value = expression();
+
+            // Optional number of digits to truncate to
+            if (match(TokenType.COMMA)) {
+                Expr numberOfDigits = expression();
+                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+                return new Expr.Function(fnName, new List<Expr>{
+                        value, numberOfDigits
+                });
+            }
+
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+            return new Expr.Function(fnName, new List<Expr>{
+                    value
+            });
+        }
+
+        if (match(TokenType.MID_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr text = expression();
+            consume(TokenType.COMMA, 'Expect \',\' after text.');
+            Expr start = expression();
+            consume(TokenType.COMMA, 'Expect \',\' after start.');
+            Expr numberOfCharacters = expression();
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+
+            return new Expr.Function(fnName, new List<Expr>{
+                    text, start, numberOfCharacters
+            });
+        }
+
+        if (match(TokenType.SUBSTRING_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr text = expression();
+            consume(TokenType.COMMA, 'Expect \',\' after text.');
+            Expr start = expression();
+
+            // Optional number of characters to extract
+            if (match(TokenType.COMMA)) {
+                Expr numberOfCharacters = expression();
+                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+                return new Expr.Function(fnName, new List<Expr>{
+                        text, start, numberOfCharacters
+                });
+            }
+
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+            return new Expr.Function(fnName, new List<Expr>{
+                    text, start
             });
         }
 
