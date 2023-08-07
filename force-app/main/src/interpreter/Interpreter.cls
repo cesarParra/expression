@@ -602,7 +602,7 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((Datetime) dateTimeValue).hour();
             }
-            when ROUND_FN {
+            when ROUND_FN, TRUNC_FN {
                 Object numberValue = evaluate(function.arguments.get(0));
                 if (!(numberValue instanceof Decimal)) {
                     throw new InterpreterException(
@@ -621,7 +621,11 @@ public with sharing class Interpreter implements Visitor {
                     precision = (Decimal) precisionValue;
                 }
 
-                return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.HALF_UP);
+                if (function.name.type == TokenType.ROUND_FN) {
+                    return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.HALF_UP);
+                } else {
+                    return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.DOWN);
+                }
             }
             when TIMEVALUE_FN {
                 Object dateTimeOrText = evaluate(function.arguments.get(0));

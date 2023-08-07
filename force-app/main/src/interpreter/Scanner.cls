@@ -44,6 +44,7 @@ public with sharing class Scanner {
         keywords.put('hour', TokenType.HOUR_FN);
         keywords.put('round', TokenType.ROUND_FN);
         keywords.put('timevalue', TokenType.TIMEVALUE_FN);
+        keywords.put('trunc', TokenType.TRUNC_FN);
     }
 
     public Scanner(String source) {

@@ -474,4 +474,19 @@ private class FormulaEvaluatorTest {
     private static void timeValueFunctionReturnsTheTimeValueOfADateTimeString() {
         Assert.areEqual(Time.newInstance(2, 0, 0, 0), FormulaEvaluator.evaluate('TIMEVALUE("2015-01-01 02:00:00")'));
     }
+
+    @IsTest
+    private static void truncFunctionTruncatesToTheSpecifiedNumberOfDigits() {
+        Assert.areEqual(1.234, FormulaEvaluator.evaluate('TRUNC(1.2345, 3)'));
+    }
+
+    @IsTest
+    private static void truncFunctionTruncatesToZeroDigits() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('TRUNC(1.2345, 0)'));
+    }
+
+    @IsTest
+    private static void truncReturnsTheIntegerPartOfANumberWhenNo2ndArgumentIsSpecified() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('TRUNC(1.2345)'));
+    }
 }

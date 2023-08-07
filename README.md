@@ -496,6 +496,17 @@ FormulaEvaluator.evaluate('ROUND(1.5)'); // 2
 FormulaEvaluator.evaluate('ROUND(1.5, 1)'); // 1.5
 ```
 
+- `TRUNC`
+
+Returns a truncated number. Optionally specify the number of decimal places to truncate to.
+
+Accepts 1 or 2 arguments: the number to truncate and optionally the number of decimal places to truncate to.
+
+```apex
+FormulaEvaluator.evaluate('TRUNC(1.5)'); // 1
+FormulaEvaluator.evaluate('TRUNC(1.5, 1)'); // 1.5
+```
+
 ---
 
 ## Contributing

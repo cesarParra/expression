@@ -346,6 +346,26 @@ public with sharing class Parser {
             });
         }
 
+        if (match(TokenType.TRUNC_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr value = expression();
+
+            // Optional number of digits to truncate to
+            if (match(TokenType.COMMA)) {
+                Expr numberOfDigits = expression();
+                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+                return new Expr.Function(fnName, new List<Expr>{
+                        value, numberOfDigits
+                });
+            }
+
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+            return new Expr.Function(fnName, new List<Expr>{
+                    value
+            });
+        }
+
         if (match(TokenType.LEFT_PAREN)) {
             Expr expr = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after expression.');
