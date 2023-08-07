@@ -239,7 +239,8 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-                TokenType.DAY_FN, TokenType.DAYOFYEAR_FN, TokenType.DATEVALUE_FN, TokenType.DATETIMEVALUE_FN
+                TokenType.DAY_FN, TokenType.DAYOFYEAR_FN, TokenType.DATEVALUE_FN,
+                TokenType.DATETIMEVALUE_FN, TokenType.HOUR_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');

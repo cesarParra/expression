@@ -402,6 +402,16 @@ Accepts no arguments.
 FormulaEvaluator.evaluate('TODAY()'); // 2020-01-01
 ```
 
+- `HOUR`
+
+Returns the hour value of a provided datetime.
+
+Accepts 1 argument: the datetime to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('HOUR(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 12
+```
+
 #### Math Functions
 
 - `ABS`

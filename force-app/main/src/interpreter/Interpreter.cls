@@ -592,6 +592,16 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((String) text).reverse();
             }
+            when HOUR_FN {
+                Object dateTimeValue = evaluate(function.arguments.get(0));
+                if (!(dateTimeValue instanceof Datetime)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a datetime value.'
+                    );
+                }
+
+                return ((Datetime) dateTimeValue).hour();
+            }
         }
 
         // Unreachable

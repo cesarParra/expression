@@ -444,4 +444,9 @@ private class FormulaEvaluatorTest {
     private static void reverseFunctionReversesAString() {
         Assert.areEqual('cba', FormulaEvaluator.evaluate('REVERSE("abc")'));
     }
+
+    @IsTest
+    private static void hourFunctionReturnsTheHourValueOfADateTime() {
+        Assert.areEqual(2, FormulaEvaluator.evaluate('HOUR(DATETIMEVALUE("2015-01-01 02:00:00"))'));
+    }
 }
