@@ -439,4 +439,9 @@ private class FormulaEvaluatorTest {
     private static void minFunctionAcceptsMoreThanTwoArguments() {
         Assert.areEqual(1, FormulaEvaluator.evaluate('MIN(1, 2, 3)'));
     }
+
+    @IsTest
+    private static void reverseFunctionReversesAString() {
+        Assert.areEqual('cba', FormulaEvaluator.evaluate('REVERSE("abc")'));
+    }
 }

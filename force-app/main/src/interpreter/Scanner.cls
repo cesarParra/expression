@@ -40,6 +40,7 @@ public with sharing class Scanner {
         keywords.put('isnumber', TokenType.ISNUMBER_FN);
         keywords.put('max', TokenType.MAX_FN);
         keywords.put('min', TokenType.MIN_FN);
+        keywords.put('reverse', TokenType.REVERSE_FN);
     }
 
     public Scanner(String source) {
