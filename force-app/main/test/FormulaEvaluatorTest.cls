@@ -497,6 +497,21 @@ private class FormulaEvaluatorTest {
 
     @IsTest
     private static void midFunctionReturnsASubstringBeginningAtTheSpecifiedPosition() {
-        Assert.areEqual('bc', FormulaEvaluator.evaluate('MID("abc", 2, 2)'));
+        Assert.areEqual('b', FormulaEvaluator.evaluate('MID("abc", 2, 1)'));
+    }
+
+    @IsTest
+    private static void substringFunctionReturnsASubstringBeginningAtTheSpecifiedPosition() {
+        Assert.areEqual('bc', FormulaEvaluator.evaluate('SUBSTRING("abc", 2, 2)'));
+    }
+
+    @IsTest
+    private static void substringFunctionReturnsASubstringBeginningAtTheSpecifiedPositionWhenTheFirstArgumentIs1() {
+        Assert.areEqual('abc', FormulaEvaluator.evaluate('SUBSTRING("abc", 1, 3)'));
+    }
+
+    @IsTest
+    private static void substringFunctionReturnsTheEntireStringBeginningAtTheSpecifiedPositionWhenTheThirdArgumentIsOmitted() {
+        Assert.areEqual('bc', FormulaEvaluator.evaluate('SUBSTRING("abc", 2)'));
     }
 }

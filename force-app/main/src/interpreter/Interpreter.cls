@@ -667,6 +667,38 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
             }
+            when SUBSTRING_FN {
+                Object text = evaluate(function.arguments.get(0));
+                if (!(text instanceof String)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
+                    );
+                }
+
+                Object start = evaluate(function.arguments.get(1));
+                if (!(start instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
+                    );
+                }
+
+                // Third argument is optional
+                Object length = null;
+                if (function.arguments.size() > 2) {
+                    length = evaluate(function.arguments.get(2));
+                    if (!(length instanceof Decimal)) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: the third argument must evaluate to a number value.'
+                        );
+                    }
+                }
+
+                if (length == null) {
+                    return ((String) text).substring(((Decimal) start).intValue() - 1);
+                } else {
+                    return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
+                }
+            }
         }
 
         // Unreachable

@@ -320,7 +320,8 @@ FormulaEvaluator.evaluate('REVERSE("Hello World")'); // "dlroW olleH"
 
 - `MID`
 
-Returns a specified number of characters from a text string starting at the position you specify.
+Returns a specified number of characters from a text string starting at the position you specify up
+to the number of characters you specify.
 
 Note that the position is 1-based, not 0-based.
 
@@ -328,6 +329,20 @@ Accepts 3 arguments: the text to evaluate, the starting position, and the number
 
 ```apex
 FormulaEvaluator.evaluate('MID("Hello World", 7, 5)'); // "World"
+```
+
+- `SUBSTRING`
+
+Returns a specified number of characters from a text string starting at the position you specify.
+Optionally, you can specify the number of characters to return.
+
+Note that the position is 1-based, not 0-based.
+
+Accepts 2 or 3 arguments: the text to evaluate and the starting position. Optionally, the number of characters to
+
+```apex
+FormulaEvaluator.evaluate('SUBSTRING("Hello World", 7)'); // "World"
+FormulaEvaluator.evaluate('SUBSTRING("Hello World", 7, 5)'); // "World"
 ```
 
 #### Date and Time Functions
