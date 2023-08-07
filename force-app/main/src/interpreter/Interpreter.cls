@@ -554,14 +554,14 @@ public with sharing class Interpreter implements Visitor {
                 Object value = evaluate(function.arguments.get(0));
                 return value instanceof Decimal;
             }
-            when MAX_FN {
+            when MAX_FN, MIN_FN {
                 if (function.arguments.isEmpty()) {
                     throw new InterpreterException(
                             'Error executing ' + function.name.lexeme + ' function: the function must have at least one argument.'
                     );
                 }
 
-                Decimal max;
+                Decimal result = null;
                 for (Expr argument : function.arguments) {
                     Object value = evaluate(argument);
                     if (!(value instanceof Decimal)) {
@@ -570,11 +570,17 @@ public with sharing class Interpreter implements Visitor {
                         );
                     }
 
-                    if (max == null || (Decimal) value > max) {
-                        max = (Decimal) value;
+                    if (result == null) {
+                        result = (Decimal) value;
+                    } else {
+                        if (function.name.type == TokenType.MAX_FN) {
+                            result = Math.max(result, (Decimal) value);
+                        } else {
+                            result = Math.min(result, (Decimal) value);
+                        }
                     }
                 }
-                return max;
+                return result;
             }
         }
 

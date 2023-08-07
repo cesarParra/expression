@@ -421,12 +421,22 @@ private class FormulaEvaluatorTest {
     }
 
     @IsTest
-    private static void maxFunctionEvaluateReturnsTheMaximumValue() {
+    private static void maxFunctionReturnsTheMaximumValue() {
         Assert.areEqual(2, FormulaEvaluator.evaluate('MAX(1, 2)'));
     }
 
     @IsTest
     private static void maxFunctionAcceptsMoreThanTwoArguments() {
         Assert.areEqual(3, FormulaEvaluator.evaluate('MAX(1, 2, 3)'));
+    }
+
+    @IsTest
+    private static void minFunctionReturnsTheMinimumValue() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('MIN(1, 2)'));
+    }
+
+    @IsTest
+    private static void minFunctionAcceptsMoreThanTwoArguments() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('MIN(1, 2, 3)'));
     }
 }

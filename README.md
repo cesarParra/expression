@@ -444,6 +444,16 @@ At least one argument is required.
 FormulaEvaluator.evaluate('MAX(1, 2, 3)'); // 3
 ```
 
+- `MIN`
+
+Returns the smallest of one or more numbers.
+
+At least one argument is required.
+
+```apex
+FormulaEvaluator.evaluate('MIN(1, 2, 3)'); // 1
+```
+
 ---
 
 ## Contributing
