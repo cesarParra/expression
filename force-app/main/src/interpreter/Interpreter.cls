@@ -582,6 +582,16 @@ public with sharing class Interpreter implements Visitor {
                 }
                 return result;
             }
+            when REVERSE_FN {
+                Object text = evaluate(function.arguments.get(0));
+                if (!(text instanceof String)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                    );
+                }
+
+                return ((String) text).reverse();
+            }
         }
 
         // Unreachable

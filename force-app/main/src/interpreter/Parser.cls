@@ -150,7 +150,9 @@ public with sharing class Parser {
             });
         }
 
-        if (match2(TokenType.LOWER_FN, TokenType.LEN_FN)) {
+        if (match(new List<TokenType>{
+                TokenType.LOWER_FN, TokenType.LEN_FN, TokenType.REVERSE_FN
+        })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             Expr text = expression();

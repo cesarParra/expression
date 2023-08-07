@@ -308,6 +308,16 @@ FormulaEvaluator.evaluate('RPAD("Hello", 10)'); // "Hello     "
 FormulaEvaluator.evaluate('RPAD("Hello", 10, "*")'); // "Hello*****"
 ```
 
+- `REVERSE`
+
+Returns a text value with the order of the characters reversed.
+
+Accepts 1 argument: the text to reverse.
+
+```apex
+FormulaEvaluator.evaluate('REVERSE("Hello World")'); // "dlroW olleH"
+```
+
 #### Date and Time Functions
 
 - `DATE`
