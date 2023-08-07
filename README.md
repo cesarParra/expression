@@ -318,6 +318,18 @@ Accepts 1 argument: the text to reverse.
 FormulaEvaluator.evaluate('REVERSE("Hello World")'); // "dlroW olleH"
 ```
 
+- `MID`
+
+Returns a specified number of characters from a text string starting at the position you specify.
+
+Note that the position is 1-based, not 0-based.
+
+Accepts 3 arguments: the text to evaluate, the starting position, and the number of characters to return.
+
+```apex
+FormulaEvaluator.evaluate('MID("Hello World", 7, 5)'); // "World"
+```
+
 #### Date and Time Functions
 
 - `DATE`

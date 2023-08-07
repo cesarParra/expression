@@ -489,4 +489,14 @@ private class FormulaEvaluatorTest {
     private static void truncReturnsTheIntegerPartOfANumberWhenNo2ndArgumentIsSpecified() {
         Assert.areEqual(1, FormulaEvaluator.evaluate('TRUNC(1.2345)'));
     }
+
+    @IsTest
+    private static void midFunctionCanReturnsFromTheBeginningOfTheStringWhenTheFirstArgumentIs1() {
+        Assert.areEqual('abc', FormulaEvaluator.evaluate('MID("abc", 1, 3)'));
+    }
+
+    @IsTest
+    private static void midFunctionReturnsASubstringBeginningAtTheSpecifiedPosition() {
+        Assert.areEqual('bc', FormulaEvaluator.evaluate('MID("abc", 2, 2)'));
+    }
 }

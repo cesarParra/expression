@@ -643,6 +643,30 @@ public with sharing class Interpreter implements Visitor {
                     return ((Datetime) dateTimeOrText).time();
                 }
             }
+            when MID_FN {
+                Object text = evaluate(function.arguments.get(0));
+                if (!(text instanceof String)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
+                    );
+                }
+
+                Object start = evaluate(function.arguments.get(1));
+                if (!(start instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
+                    );
+                }
+
+                Object length = evaluate(function.arguments.get(2));
+                if (!(length instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the third argument must evaluate to a number value.'
+                    );
+                }
+
+                return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
+            }
         }
 
         // Unreachable
