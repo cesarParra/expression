@@ -42,6 +42,7 @@ public with sharing class Scanner {
         keywords.put('min', TokenType.MIN_FN);
         keywords.put('reverse', TokenType.REVERSE_FN);
         keywords.put('hour', TokenType.HOUR_FN);
+        keywords.put('round', TokenType.ROUND_FN);
     }
 
     public Scanner(String source) {

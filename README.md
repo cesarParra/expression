@@ -474,6 +474,17 @@ At least one argument is required.
 FormulaEvaluator.evaluate('MIN(1, 2, 3)'); // 1
 ```
 
+- `ROUND`
+
+Returns a rounded number. Optionally specify the number of decimal places to round to.
+
+Accepts 1 or 2 arguments: the number to round and optionally the number of decimal places to round to.
+
+```apex
+FormulaEvaluator.evaluate('ROUND(1.5)'); // 2
+FormulaEvaluator.evaluate('ROUND(1.5, 1)'); // 1.5
+```
+
 ---
 
 ## Contributing

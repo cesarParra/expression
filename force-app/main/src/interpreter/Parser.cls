@@ -315,6 +315,26 @@ public with sharing class Parser {
             return new Expr.Function(fnName, new List<Expr>());
         }
 
+        if (match(TokenType.ROUND_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr numberValue = expression();
+
+            // Optional number of digits to round to
+            if (match(TokenType.COMMA)) {
+                Expr numberOfDigits = expression();
+                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+                return new Expr.Function(fnName, new List<Expr>{
+                        numberValue, numberOfDigits
+                });
+            }
+
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+            return new Expr.Function(fnName, new List<Expr>{
+                    numberValue
+            });
+        }
+
         if (match(TokenType.LEFT_PAREN)) {
             Expr expr = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after expression.');

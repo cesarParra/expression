@@ -449,4 +449,19 @@ private class FormulaEvaluatorTest {
     private static void hourFunctionReturnsTheHourValueOfADateTime() {
         Assert.areEqual(2, FormulaEvaluator.evaluate('HOUR(DATETIMEVALUE("2015-01-01 02:00:00"))'));
     }
+
+    @IsTest
+    private static void roundFunctionRoundsUp() {
+        Assert.areEqual(2, FormulaEvaluator.evaluate('ROUND(1.5)'));
+    }
+
+    @IsTest
+    private static void roundFunctionRoundsDown() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('ROUND(1.4)'));
+    }
+
+    @IsTest
+    private static void roundFunctionAcceptsAnOptionalSecondArgument() {
+        Assert.areEqual(1.5, FormulaEvaluator.evaluate('ROUND(1.45, 1)'));
+    }
 }

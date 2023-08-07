@@ -602,6 +602,27 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((Datetime) dateTimeValue).hour();
             }
+            when ROUND_FN {
+                Object numberValue = evaluate(function.arguments.get(0));
+                if (!(numberValue instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                    );
+                }
+
+                Decimal precision = 0;
+                if (function.arguments.size() > 1) {
+                    Object precisionValue = evaluate(function.arguments.get(1));
+                    if (!(precisionValue instanceof Decimal)) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
+                        );
+                    }
+                    precision = (Decimal) precisionValue;
+                }
+
+                return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.HALF_UP);
+            }
         }
 
         // Unreachable
