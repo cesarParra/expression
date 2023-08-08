@@ -514,4 +514,10 @@ private class FormulaEvaluatorTest {
     private static void substringFunctionReturnsTheEntireStringBeginningAtTheSpecifiedPositionWhenTheThirdArgumentIsOmitted() {
         Assert.areEqual('bc', FormulaEvaluator.evaluate('SUBSTRING("abc", 2)'));
     }
+
+    @IsTest
+    private static void timenowFunctionReturnsTheCurrentTime() {
+        // Not asserting against a specific value because the value will change.
+        Assert.isNotNull(FormulaEvaluator.evaluate('TIMENOW()'));
+    }
 }

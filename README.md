@@ -450,6 +450,16 @@ FormulaEvaluator.evaluate('TIMEVALUE(DATETIMEVALUE("2020-01-01 12:00:00"))'); //
 FormulaEvaluator.evaluate('TIMEVALUE("2020-01-01 12:00:00")'); // 12:00:00
 ```
 
+- `TIMENOW`
+
+Returns the current time.
+
+Accepts no arguments.
+
+```apex
+FormulaEvaluator.evaluate('TIMENOW()'); // 12:00:00
+```
+
 #### Math Functions
 
 - `ABS`
