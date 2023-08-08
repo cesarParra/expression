@@ -47,6 +47,7 @@ public with sharing class Scanner {
         keywords.put('trunc', TokenType.TRUNC_FN);
         keywords.put('mid', TokenType.MID_FN);
         keywords.put('substring', TokenType.SUBSTRING_FN);
+        keywords.put('timenow', TokenType.TIMENOW_FN);
     }
 
     public Scanner(String source) {

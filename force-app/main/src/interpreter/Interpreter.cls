@@ -699,6 +699,9 @@ public with sharing class Interpreter implements Visitor {
                     return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
                 }
             }
+            when TIMENOW_FN {
+                return Datetime.now().time();
+            }
         }
 
         // Unreachable
