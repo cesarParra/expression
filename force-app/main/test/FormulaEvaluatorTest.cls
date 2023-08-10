@@ -526,4 +526,19 @@ private class FormulaEvaluatorTest {
         Assert.areEqual(1, FormulaEvaluator.evaluate('ISOWEEK(DATE(2015, 1, 1))'));
         Assert.areEqual(52, FormulaEvaluator.evaluate('ISOWEEK(DATE(2015, 12, 27))'));
     }
+
+    @IsTest
+    private static void rightFunctionReturnsRightSubstring() {
+        Assert.areEqual('World', FormulaEvaluator.evaluate('RIGHT("Hello World", 5)'));
+    }
+
+    @IsTest
+    private static void rightFunctionWith0LengthReturnsAnEmptyString() {
+        Assert.areEqual('', FormulaEvaluator.evaluate('RIGHT("Hello World", 0)'));
+    }
+
+    @IsTest
+    private static void rightFunctionWithLessThanZeroLengthReturnsAnEmptyString() {
+        Assert.areEqual('', FormulaEvaluator.evaluate('RIGHT("Hello World", -1)'));
+    }
 }

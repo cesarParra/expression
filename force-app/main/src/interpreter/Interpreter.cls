@@ -712,6 +712,29 @@ public with sharing class Interpreter implements Visitor {
 
                 return Integer.valueOf(Datetime.newInstanceGmt((Date) dateValue, Time.newInstance(0, 0, 0, 0)).format('w'));
             }
+            when RIGHT_FN {
+                Object text = evaluate(function.arguments.get(0));
+                if (!(text instanceof String)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
+                    );
+                }
+
+                Object length = evaluate(function.arguments.get(1));
+                if (!(length instanceof Decimal)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
+                    );
+                }
+
+                // If the number is less than 0, force it to 0
+                Integer lengthAsInteger = ((Decimal) length).intValue();
+                if (lengthAsInteger < 0) {
+                    lengthAsInteger = 0;
+                }
+
+                return ((String) text).right(lengthAsInteger);
+            }
         }
 
         // Unreachable
