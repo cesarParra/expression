@@ -460,6 +460,16 @@ Accepts no arguments.
 FormulaEvaluator.evaluate('TIMENOW()'); // 12:00:00
 ```
 
+- `ISOWEEK`
+
+Returns the ISO week number of the year for a given date.
+
+Accepts 1 argument: the date to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('ISOWEEK(DATE(2020, 1, 1))'); // 1
+```
+
 #### Math Functions
 
 - `ABS`

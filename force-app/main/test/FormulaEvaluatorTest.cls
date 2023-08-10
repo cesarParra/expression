@@ -520,4 +520,10 @@ private class FormulaEvaluatorTest {
         // Not asserting against a specific value because the value will change.
         Assert.isNotNull(FormulaEvaluator.evaluate('TIMENOW()'));
     }
+
+    @IsTest
+    private static void isoweekFunctionReturnsTheIsoWeek() {
+        Assert.areEqual(1, FormulaEvaluator.evaluate('ISOWEEK(DATE(2015, 1, 1))'));
+        Assert.areEqual(52, FormulaEvaluator.evaluate('ISOWEEK(DATE(2015, 12, 27))'));
+    }
 }
