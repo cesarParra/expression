@@ -345,6 +345,19 @@ FormulaEvaluator.evaluate('SUBSTRING("Hello World", 7)'); // "World"
 FormulaEvaluator.evaluate('SUBSTRING("Hello World", 7, 5)'); // "World"
 ```
 
+- `RIGHT`
+
+Returns the specified number of characters from the end of a text string.
+
+Accepts 2 arguments: the text to evaluate and the number of characters to return.
+
+If the second argument is a negative number, it gets treated as a 0
+
+```apex
+FormulaEvaluator.evaluate('RIGHT("Hello World", 5)'); // "World"
+FormulaEvaluator.evaluate('RIGHT("Hello World", -5)'); // ""
+```
+
 #### Date and Time Functions
 
 - `DATE`
