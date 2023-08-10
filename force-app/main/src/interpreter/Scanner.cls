@@ -48,6 +48,7 @@ public with sharing class Scanner {
         keywords.put('mid', TokenType.MID_FN);
         keywords.put('substring', TokenType.SUBSTRING_FN);
         keywords.put('timenow', TokenType.TIMENOW_FN);
+        keywords.put('isoweek', TokenType.ISOWEEK_FN);
     }
 
     public Scanner(String source) {
