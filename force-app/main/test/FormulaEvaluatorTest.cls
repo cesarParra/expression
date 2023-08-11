@@ -546,4 +546,9 @@ private class FormulaEvaluatorTest {
     private static void isoyearFunctionReturnsTheIsoYear() {
         Assert.areEqual(2015, FormulaEvaluator.evaluate('ISOYEAR(DATE(2015, 1, 1))'));
     }
+
+    @IsTest
+    private static void yearFunctionReturnsTheYear() {
+        Assert.areEqual(2015, FormulaEvaluator.evaluate('YEAR(DATE(2015, 1, 1))'));
+    }
 }

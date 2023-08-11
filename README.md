@@ -493,6 +493,16 @@ Accepts 1 argument: the date to evaluate.
 FormulaEvaluator.evaluate('ISOYEAR(DATE(2020, 1, 1))'); // 2020
 ```
 
+- `YEAR`
+
+Returns the year value of a provided date.
+
+Accepts 1 argument: the date to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('YEAR(DATE(2020, 1, 1))'); // 2020
+```
+
 #### Math Functions
 
 - `ABS`

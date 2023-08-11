@@ -51,6 +51,7 @@ public with sharing class Scanner {
         keywords.put('isoweek', TokenType.ISOWEEK_FN);
         keywords.put('right', TokenType.RIGHT_FN);
         keywords.put('isoyear', TokenType.ISOYEAR_FN);
+        keywords.put('year', TokenType.YEAR_FN);
     }
 
     public Scanner(String source) {
