@@ -735,6 +735,16 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((String) text).right(lengthAsInteger);
             }
+            when ISOYEAR_FN {
+                Object dateValue = evaluate(function.arguments.get(0));
+                if (!(dateValue instanceof Date)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
+                    );
+                }
+
+                return Integer.valueOf(Datetime.newInstanceGmt((Date) dateValue, Time.newInstance(0, 0, 0, 0)).format('Y'));
+            }
         }
 
         // Unreachable

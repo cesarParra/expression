@@ -541,4 +541,9 @@ private class FormulaEvaluatorTest {
     private static void rightFunctionWithLessThanZeroLengthReturnsAnEmptyString() {
         Assert.areEqual('', FormulaEvaluator.evaluate('RIGHT("Hello World", -1)'));
     }
+
+    @IsTest
+    private static void isoyearFunctionReturnsTheIsoYear() {
+        Assert.areEqual(2015, FormulaEvaluator.evaluate('ISOYEAR(DATE(2015, 1, 1))'));
+    }
 }

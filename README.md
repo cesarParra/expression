@@ -483,6 +483,16 @@ Accepts 1 argument: the date to evaluate.
 FormulaEvaluator.evaluate('ISOWEEK(DATE(2020, 1, 1))'); // 1
 ```
 
+- `ISOYEAR`
+
+Returns the ISO year number for a given date.
+
+Accepts 1 argument: the date to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('ISOYEAR(DATE(2020, 1, 1))'); // 2020
+```
+
 #### Math Functions
 
 - `ABS`
