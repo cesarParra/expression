@@ -636,9 +636,28 @@ public with sharing class Interpreter implements Visitor {
                 }
 
                 if (dateTimeOrText instanceof String) {
-                    // Try and create a datetime out of the string
-                    Datetime dateTimeFromString = Datetime.valueOf((String) dateTimeOrText);
-                    return dateTimeFromString.time();
+                    // A received string should be in the format of HH:mm:ss.SSS
+                    String[] parts = ((String) dateTimeOrText).split(':');
+                    if (parts.size() != 3) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string in the format of HH:mm:ss.SSS.'
+                        );
+                    }
+
+                    Integer hours = Integer.valueOf(parts[0]);
+                    Integer minutes = Integer.valueOf(parts[1]);
+
+                    String secondsMilli = parts[2];
+
+                    if (secondsMilli.contains('.')) {
+                        String[] secondsMilliParts = secondsMilli.split('\\.');
+                        Integer seconds = Integer.valueOf(secondsMilliParts[0]);
+                        Integer milliseconds = Integer.valueOf(secondsMilliParts[1]);
+                        return Time.newInstance(hours, minutes, seconds, milliseconds);
+                    } else {
+                        Integer seconds = Integer.valueOf(secondsMilli);
+                        return Time.newInstance(hours, minutes, seconds, 0);
+                    }
                 } else {
                     return ((Datetime) dateTimeOrText).time();
                 }
@@ -754,6 +773,16 @@ public with sharing class Interpreter implements Visitor {
                 }
 
                 return ((Date) dateValue).year();
+            }
+            when MILLISECOND_FN {
+                Object timeValue = evaluate(function.arguments.get(0));
+                if (!(timeValue instanceof Time)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a time value.'
+                    );
+                }
+
+                return ((Time) timeValue).millisecond();
             }
         }
 

@@ -460,7 +460,7 @@ Accepts 1 argument: the datetime or string in datetime format to evaluate.
 
 ```apex
 FormulaEvaluator.evaluate('TIMEVALUE(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 12:00:00
-FormulaEvaluator.evaluate('TIMEVALUE("2020-01-01 12:00:00")'); // 12:00:00
+FormulaEvaluator.evaluate('TIMEVALUE("17:30:45.125")'); // 17:30:45.125
 ```
 
 - `TIMENOW`
@@ -501,6 +501,16 @@ Accepts 1 argument: the date to evaluate.
 
 ```apex
 FormulaEvaluator.evaluate('YEAR(DATE(2020, 1, 1))'); // 2020
+```
+
+- `MILLISECOND`
+
+Returns the millisecond value of a provided time.
+
+Accepts 1 argument: the time to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('MILLISECOND(TIMEVALUE("12:00:00.123"))'); // 123
 ```
 
 #### Math Functions

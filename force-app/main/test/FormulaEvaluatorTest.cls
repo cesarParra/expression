@@ -472,7 +472,7 @@ private class FormulaEvaluatorTest {
 
     @IsTest
     private static void timeValueFunctionReturnsTheTimeValueOfADateTimeString() {
-        Assert.areEqual(Time.newInstance(2, 0, 0, 0), FormulaEvaluator.evaluate('TIMEVALUE("2015-01-01 02:00:00")'));
+        Assert.areEqual(Time.newInstance(17, 30, 45, 125), FormulaEvaluator.evaluate('TIMEVALUE("17:30:45.125")'));
     }
 
     @IsTest
@@ -550,5 +550,10 @@ private class FormulaEvaluatorTest {
     @IsTest
     private static void yearFunctionReturnsTheYear() {
         Assert.areEqual(2015, FormulaEvaluator.evaluate('YEAR(DATE(2015, 1, 1))'));
+    }
+
+    @IsTest
+    private static void millisecondFunctionReturnsTheMillisecond() {
+        Assert.areEqual(123, FormulaEvaluator.evaluate('MILLISECOND(TIMEVALUE("12:00:00.123"))'));
     }
 }
