@@ -2,6 +2,9 @@
 
 Allows you to evaluate formula-like syntax through Apex code.
 
+Supports most of the operators and functions available in Salesforce formulas, but
+also has additional support for collections/lists.
+
 ## Installation
 
 ### Deploy to Salesforce
@@ -27,6 +30,14 @@ make reference to fields of the provided SObject in the formula.
 Account account = new Account(Name = 'ACME');
 Object result = FormulaEvaluator.evaluate('Name', account);
 Assert.areEqual('ACME', result);
+```
+
+## Collections/List Support
+
+To work with collections/lists, you can use the `LIST` function
+
+```apex
+Object result = FormulaEvaluator.evaluate('LIST(1, 2, 3)'); // (1, 2, 3)
 ```
 
 ## Supported Operators and Functions

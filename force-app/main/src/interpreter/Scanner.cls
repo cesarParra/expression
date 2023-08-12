@@ -55,6 +55,7 @@ public with sharing class Scanner {
         keywords.put('millisecond', TokenType.MILLISECOND_FN);
         keywords.put('minute', TokenType.MINUTE_FN);
         keywords.put('second', TokenType.SECOND_FN);
+        keywords.put('list', TokenType.LIST_FN);
     }
 
     public Scanner(String source) {
