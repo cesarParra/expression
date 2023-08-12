@@ -513,6 +513,16 @@ Accepts 1 argument: the time to evaluate.
 FormulaEvaluator.evaluate('MILLISECOND(TIMEVALUE("12:00:00.123"))'); // 123
 ```
 
+- `MINUTE`
+
+Returns the minute value of a provided time.
+
+Accepts 1 argument: the time to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('MINUTE(TIMEVALUE("12:00:00"))'); // 0
+```
+
 #### Math Functions
 
 - `ABS`

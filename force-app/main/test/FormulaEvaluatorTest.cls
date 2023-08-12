@@ -556,4 +556,9 @@ private class FormulaEvaluatorTest {
     private static void millisecondFunctionReturnsTheMillisecond() {
         Assert.areEqual(123, FormulaEvaluator.evaluate('MILLISECOND(TIMEVALUE("12:00:00.123"))'));
     }
+
+    @IsTest
+    private static void minuteFunctionReturnsTheMinute() {
+        Assert.areEqual(30, FormulaEvaluator.evaluate('MINUTE(TIMEVALUE("12:30:00"))'));
+    }
 }
