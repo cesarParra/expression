@@ -520,7 +520,17 @@ Returns the minute value of a provided time.
 Accepts 1 argument: the time to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('MINUTE(TIMEVALUE("12:00:00"))'); // 0
+FormulaEvaluator.evaluate('MINUTE(TIMEVALUE("12:10:00"))'); // 10
+```
+
+- `SECOND`
+
+REturns the second value of a provided time.
+
+Accepts 1 argument: the time to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('SECOND(TIMEVALUE("12:00:45"))'); //45
 ```
 
 #### Math Functions

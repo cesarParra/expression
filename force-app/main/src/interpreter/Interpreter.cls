@@ -774,7 +774,7 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((Date) dateValue).year();
             }
-            when MILLISECOND_FN, MINUTE_FN {
+            when MILLISECOND_FN, MINUTE_FN, SECOND_FN {
                 Object timeValue = evaluate(function.arguments.get(0));
                 if (!(timeValue instanceof Time)) {
                     throw new InterpreterException(
@@ -784,8 +784,10 @@ public with sharing class Interpreter implements Visitor {
 
                 if (function.name.type == TokenType.MILLISECOND_FN) {
                     return ((Time) timeValue).millisecond();
-                } else {
+                } else if (function.name.type == TokenType.MINUTE_FN) {
                     return ((Time) timeValue).minute();
+                } else {
+                    return ((Time) timeValue).second();
                 }
             }
         }
