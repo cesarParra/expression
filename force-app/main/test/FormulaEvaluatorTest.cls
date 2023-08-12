@@ -446,11 +446,6 @@ private class FormulaEvaluatorTest {
     }
 
     @IsTest
-    private static void hourFunctionReturnsTheHourValueOfADateTime() {
-        Assert.areEqual(2, FormulaEvaluator.evaluate('HOUR(DATETIMEVALUE("2015-01-01 02:00:00"))'));
-    }
-
-    @IsTest
     private static void roundFunctionRoundsUp() {
         Assert.areEqual(2, FormulaEvaluator.evaluate('ROUND(1.5)'));
     }
@@ -472,7 +467,7 @@ private class FormulaEvaluatorTest {
 
     @IsTest
     private static void timeValueFunctionReturnsTheTimeValueOfADateTimeString() {
-        Assert.areEqual(Time.newInstance(2, 0, 0, 0), FormulaEvaluator.evaluate('TIMEVALUE("2015-01-01 02:00:00")'));
+        Assert.areEqual(Time.newInstance(17, 30, 45, 125), FormulaEvaluator.evaluate('TIMEVALUE("17:30:45.125")'));
     }
 
     @IsTest
@@ -540,5 +535,35 @@ private class FormulaEvaluatorTest {
     @IsTest
     private static void rightFunctionWithLessThanZeroLengthReturnsAnEmptyString() {
         Assert.areEqual('', FormulaEvaluator.evaluate('RIGHT("Hello World", -1)'));
+    }
+
+    @IsTest
+    private static void isoyearFunctionReturnsTheIsoYear() {
+        Assert.areEqual(2015, FormulaEvaluator.evaluate('ISOYEAR(DATE(2015, 1, 1))'));
+    }
+
+    @IsTest
+    private static void yearFunctionReturnsTheYear() {
+        Assert.areEqual(2015, FormulaEvaluator.evaluate('YEAR(DATE(2015, 1, 1))'));
+    }
+
+    @IsTest
+    private static void millisecondFunctionReturnsTheMillisecond() {
+        Assert.areEqual(123, FormulaEvaluator.evaluate('MILLISECOND(TIMEVALUE("12:00:00.123"))'));
+    }
+
+    @IsTest
+    private static void minuteFunctionReturnsTheMinute() {
+        Assert.areEqual(30, FormulaEvaluator.evaluate('MINUTE(TIMEVALUE("12:30:00"))'));
+    }
+
+    @IsTest
+    private static void secondFunctionReturnsTheSecond() {
+        Assert.areEqual(45, FormulaEvaluator.evaluate('SECOND(TIMEVALUE("12:00:45"))'));
+    }
+
+    @IsTest
+    private static void hourFunctionReturnsTheHour() {
+        Assert.areEqual(12, FormulaEvaluator.evaluate('HOUR(TIMEVALUE("12:00:00"))'));
     }
 }

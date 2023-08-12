@@ -14,7 +14,7 @@ public with sharing class Parser {
         Expr expr = comparison();
 
         while (match(new List<TokenType>{
-                TokenType.BANG_EQUAL, TokenType.EQUAL, TokenType.EQUAL_EQUAL, TokenType.LESS_GREATER, TokenType.DOUBLE_PIPE, TokenType.DOUBLE_AMPERSAND
+            TokenType.BANG_EQUAL, TokenType.EQUAL, TokenType.EQUAL_EQUAL, TokenType.LESS_GREATER, TokenType.DOUBLE_PIPE, TokenType.DOUBLE_AMPERSAND
         })) {
             Token operator = previous();
             Expr right = comparison();
@@ -28,9 +28,9 @@ public with sharing class Parser {
         Expr expr = term();
 
         while (match(
-                new List<TokenType>{
-                        TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL
-                }
+            new List<TokenType>{
+                TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL
+            }
         )) {
             Token operator = previous();
             Expr right = term();
@@ -44,7 +44,7 @@ public with sharing class Parser {
         Expr expr = factor();
 
         while (match(new List<TokenType>{
-                TokenType.MINUS, TokenType.PLUS, TokenType.AMPERSAND
+            TokenType.MINUS, TokenType.PLUS, TokenType.AMPERSAND
         })) {
             Token operator = previous();
             Expr right = factor();
@@ -58,7 +58,7 @@ public with sharing class Parser {
         Expr expr = unary();
 
         while (match(new List<TokenType>{
-                TokenType.SLASH, TokenType.STAR, TokenType.EXPONENT
+            TokenType.SLASH, TokenType.STAR, TokenType.EXPONENT
         })) {
             Token operator = previous();
             Expr right = unary();
@@ -100,7 +100,7 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-                TokenType.AND_FN, TokenType.OR_FN, TokenType.MAX_FN, TokenType.MIN_FN
+            TokenType.AND_FN, TokenType.OR_FN, TokenType.MAX_FN, TokenType.MIN_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
@@ -124,7 +124,7 @@ public with sharing class Parser {
             Expr elseBranch = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
             return new Expr.Function(fnName, new List<Expr>{
-                    condition, thenBranch, elseBranch
+                condition, thenBranch, elseBranch
             });
         }
 
@@ -134,7 +134,7 @@ public with sharing class Parser {
             Expr condition = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
             return new Expr.Function(fnName, new List<Expr>{
-                    condition
+                condition
             });
         }
 
@@ -146,19 +146,19 @@ public with sharing class Parser {
             Expr compareText = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
             return new Expr.Function(fnName, new List<Expr>{
-                    text, compareText
+                text, compareText
             });
         }
 
         if (match(new List<TokenType>{
-                TokenType.LOWER_FN, TokenType.LEN_FN, TokenType.REVERSE_FN
+            TokenType.LOWER_FN, TokenType.LEN_FN, TokenType.REVERSE_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             Expr text = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
             return new Expr.Function(fnName, new List<Expr>{
-                    text
+                text
             });
         }
 
@@ -173,12 +173,12 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
 
             return new Expr.Function(fnName, new List<Expr>{
-                    year, month, day
+                year, month, day
             });
         }
 
         if (match(new List<TokenType>{
-                TokenType.ABS_FN, TokenType.CEILING_FN, TokenType.FLOOR_FN
+            TokenType.ABS_FN, TokenType.CEILING_FN, TokenType.FLOOR_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
@@ -186,7 +186,7 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
 
             return new Expr.Function(fnName, new List<Expr>{
-                    numberValue
+                numberValue
             });
         }
 
@@ -201,14 +201,14 @@ public with sharing class Parser {
             if (match(TokenType.COMMA)) {
                 Expr startNumber = expression();
                 return new Expr.Function(fnName, new List<Expr>{
-                        text, findText, startNumber
+                    text, findText, startNumber
                 });
             }
 
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
 
             return new Expr.Function(fnName, new List<Expr>{
-                    text, findText
+                text, findText
             });
         }
 
@@ -221,7 +221,7 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
 
             return new Expr.Function(fnName, new List<Expr>{
-                    startDate, months
+                startDate, months
             });
         }
 
@@ -234,13 +234,15 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
 
             return new Expr.Function(fnName, new List<Expr>{
-                    value, valueIfBlank
+                value, valueIfBlank
             });
         }
 
         if (match(new List<TokenType>{
-                TokenType.DAY_FN, TokenType.DAYOFYEAR_FN, TokenType.DATEVALUE_FN,
-                TokenType.DATETIMEVALUE_FN, TokenType.HOUR_FN, TokenType.ISOWEEK_FN
+            TokenType.DAY_FN, TokenType.DAYOFYEAR_FN, TokenType.DATEVALUE_FN,
+            TokenType.DATETIMEVALUE_FN, TokenType.HOUR_FN, TokenType.ISOWEEK_FN,
+            TokenType.ISOYEAR_FN, TokenType.YEAR_FN, TokenType.MILLISECOND_FN,
+            TokenType.MINUTE_FN, TokenType.SECOND_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
@@ -248,7 +250,7 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
 
             return new Expr.Function(fnName, new List<Expr>{
-                    dateValue
+                dateValue
             });
         }
 
@@ -259,7 +261,7 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
 
             return new Expr.Function(fnName, new List<Expr>{
-                    value
+                value
             });
         }
 
@@ -270,7 +272,7 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
 
             return new Expr.Function(fnName, new List<Expr>{
-                    dateTimeValueOrText
+                dateTimeValueOrText
             });
         }
 
@@ -283,7 +285,7 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
 
             return new Expr.Function(fnName, new List<Expr>{
-                    text, numberOfCharacters
+                text, numberOfCharacters
             });
         }
 
@@ -293,7 +295,7 @@ public with sharing class Parser {
             Expr unixTime = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
             return new Expr.Function(fnName, new List<Expr>{
-                    unixTime
+                unixTime
             });
         }
 
@@ -310,17 +312,17 @@ public with sharing class Parser {
                 consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
 
                 return new Expr.Function(fnName, new List<Expr>{
-                        text, numberOfCharacters, padString
+                    text, numberOfCharacters, padString
                 });
             }
 
             return new Expr.Function(fnName, new List<Expr>{
-                    text, numberOfCharacters
+                text, numberOfCharacters
             });
         }
 
         if (match(new List<TokenType>{
-                TokenType.NOW_FN, TokenType.TODAY_FN, TokenType.TIMENOW_FN
+            TokenType.NOW_FN, TokenType.TODAY_FN, TokenType.TIMENOW_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
@@ -338,13 +340,13 @@ public with sharing class Parser {
                 Expr numberOfDigits = expression();
                 consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
                 return new Expr.Function(fnName, new List<Expr>{
-                        numberValue, numberOfDigits
+                    numberValue, numberOfDigits
                 });
             }
 
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
             return new Expr.Function(fnName, new List<Expr>{
-                    numberValue
+                numberValue
             });
         }
 
@@ -358,13 +360,13 @@ public with sharing class Parser {
                 Expr numberOfDigits = expression();
                 consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
                 return new Expr.Function(fnName, new List<Expr>{
-                        value, numberOfDigits
+                    value, numberOfDigits
                 });
             }
 
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
             return new Expr.Function(fnName, new List<Expr>{
-                    value
+                value
             });
         }
 
@@ -379,7 +381,7 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
 
             return new Expr.Function(fnName, new List<Expr>{
-                    text, start, numberOfCharacters
+                text, start, numberOfCharacters
             });
         }
 
@@ -395,13 +397,13 @@ public with sharing class Parser {
                 Expr numberOfCharacters = expression();
                 consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
                 return new Expr.Function(fnName, new List<Expr>{
-                        text, start, numberOfCharacters
+                    text, start, numberOfCharacters
                 });
             }
 
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
             return new Expr.Function(fnName, new List<Expr>{
-                    text, start
+                text, start
             });
         }
 
@@ -420,13 +422,13 @@ public with sharing class Parser {
 
     private Boolean match(TokenType type) {
         return match(new List<TokenType>{
-                type
+            type
         });
     }
 
     private Boolean match2(TokenType type1, TokenType type2) {
         return match(new List<TokenType>{
-                type1, type2
+            type1, type2
         });
     }
 
@@ -479,7 +481,7 @@ public with sharing class Parser {
 
     private ParseException error(Token token, String message) {
         throw new ParseException(
-                'Error at token ' + token.toString() + ': ' + message
+            'Error at token ' + token.toString() + ': ' + message
         );
     }
 

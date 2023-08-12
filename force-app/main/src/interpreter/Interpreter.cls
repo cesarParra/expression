@@ -592,16 +592,6 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((String) text).reverse();
             }
-            when HOUR_FN {
-                Object dateTimeValue = evaluate(function.arguments.get(0));
-                if (!(dateTimeValue instanceof Datetime)) {
-                    throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a datetime value.'
-                    );
-                }
-
-                return ((Datetime) dateTimeValue).hour();
-            }
             when ROUND_FN, TRUNC_FN {
                 Object numberValue = evaluate(function.arguments.get(0));
                 if (!(numberValue instanceof Decimal)) {
@@ -636,9 +626,28 @@ public with sharing class Interpreter implements Visitor {
                 }
 
                 if (dateTimeOrText instanceof String) {
-                    // Try and create a datetime out of the string
-                    Datetime dateTimeFromString = Datetime.valueOf((String) dateTimeOrText);
-                    return dateTimeFromString.time();
+                    // A received string should be in the format of HH:mm:ss.SSS
+                    String[] parts = ((String) dateTimeOrText).split(':');
+                    if (parts.size() != 3) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string in the format of HH:mm:ss.SSS.'
+                        );
+                    }
+
+                    Integer hours = Integer.valueOf(parts[0]);
+                    Integer minutes = Integer.valueOf(parts[1]);
+
+                    String secondsMilli = parts[2];
+
+                    if (secondsMilli.contains('.')) {
+                        String[] secondsMilliParts = secondsMilli.split('\\.');
+                        Integer seconds = Integer.valueOf(secondsMilliParts[0]);
+                        Integer milliseconds = Integer.valueOf(secondsMilliParts[1]);
+                        return Time.newInstance(hours, minutes, seconds, milliseconds);
+                    } else {
+                        Integer seconds = Integer.valueOf(secondsMilli);
+                        return Time.newInstance(hours, minutes, seconds, 0);
+                    }
                 } else {
                     return ((Datetime) dateTimeOrText).time();
                 }
@@ -734,6 +743,44 @@ public with sharing class Interpreter implements Visitor {
                 }
 
                 return ((String) text).right(lengthAsInteger);
+            }
+            when ISOYEAR_FN {
+                Object dateValue = evaluate(function.arguments.get(0));
+                if (!(dateValue instanceof Date)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
+                    );
+                }
+
+                return Integer.valueOf(Datetime.newInstanceGmt((Date) dateValue, Time.newInstance(0, 0, 0, 0)).format('Y'));
+            }
+            when YEAR_FN {
+                Object dateValue = evaluate(function.arguments.get(0));
+                if (!(dateValue instanceof Date)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
+                    );
+                }
+
+                return ((Date) dateValue).year();
+            }
+            when MILLISECOND_FN, MINUTE_FN, SECOND_FN, HOUR_FN {
+                Object timeValue = evaluate(function.arguments.get(0));
+                if (!(timeValue instanceof Time)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a time value.'
+                    );
+                }
+
+                if (function.name.type == TokenType.MILLISECOND_FN) {
+                    return ((Time) timeValue).millisecond();
+                } else if (function.name.type == TokenType.MINUTE_FN) {
+                    return ((Time) timeValue).minute();
+                } else if (function.name.type == TokenType.SECOND_FN) {
+                    return ((Time) timeValue).second();
+                } else {
+                    return ((Time) timeValue).hour();
+                }
             }
         }
 

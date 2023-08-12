@@ -442,16 +442,6 @@ Accepts no arguments.
 FormulaEvaluator.evaluate('TODAY()'); // 2020-01-01
 ```
 
-- `HOUR`
-
-Returns the hour value of a provided datetime.
-
-Accepts 1 argument: the datetime to evaluate.
-
-```apex
-FormulaEvaluator.evaluate('HOUR(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 12
-```
-
 - `TIMEVALUE`
 
 Returns a time value from a datetime or from a string representation of a datetime.
@@ -460,7 +450,7 @@ Accepts 1 argument: the datetime or string in datetime format to evaluate.
 
 ```apex
 FormulaEvaluator.evaluate('TIMEVALUE(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 12:00:00
-FormulaEvaluator.evaluate('TIMEVALUE("2020-01-01 12:00:00")'); // 12:00:00
+FormulaEvaluator.evaluate('TIMEVALUE("17:30:45.125")'); // 17:30:45.125
 ```
 
 - `TIMENOW`
@@ -481,6 +471,66 @@ Accepts 1 argument: the date to evaluate.
 
 ```apex
 FormulaEvaluator.evaluate('ISOWEEK(DATE(2020, 1, 1))'); // 1
+```
+
+- `ISOYEAR`
+
+Returns the ISO year number for a given date.
+
+Accepts 1 argument: the date to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('ISOYEAR(DATE(2020, 1, 1))'); // 2020
+```
+
+- `YEAR`
+
+Returns the year value of a provided date.
+
+Accepts 1 argument: the date to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('YEAR(DATE(2020, 1, 1))'); // 2020
+```
+
+- `MILLISECOND`
+
+Returns the millisecond value of a provided time.
+
+Accepts 1 argument: the time to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('MILLISECOND(TIMEVALUE("12:00:00.123"))'); // 123
+```
+
+- `MINUTE`
+
+Returns the minute value of a provided time.
+
+Accepts 1 argument: the time to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('MINUTE(TIMEVALUE("12:10:00"))'); // 10
+```
+
+- `SECOND`
+
+REturns the second value of a provided time.
+
+Accepts 1 argument: the time to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('SECOND(TIMEVALUE("12:00:45"))'); //45
+```
+
+- `HOUR`
+
+Returns the hour value of a provided time.
+
+Accepts 1 argument: time to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('HOUR(TIMEVALUE("12:00:00"))'); // 12
 ```
 
 #### Math Functions

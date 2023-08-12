@@ -50,6 +50,11 @@ public with sharing class Scanner {
         keywords.put('timenow', TokenType.TIMENOW_FN);
         keywords.put('isoweek', TokenType.ISOWEEK_FN);
         keywords.put('right', TokenType.RIGHT_FN);
+        keywords.put('isoyear', TokenType.ISOYEAR_FN);
+        keywords.put('year', TokenType.YEAR_FN);
+        keywords.put('millisecond', TokenType.MILLISECOND_FN);
+        keywords.put('minute', TokenType.MINUTE_FN);
+        keywords.put('second', TokenType.SECOND_FN);
     }
 
     public Scanner(String source) {
