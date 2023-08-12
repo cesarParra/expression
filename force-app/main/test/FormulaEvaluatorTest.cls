@@ -446,11 +446,6 @@ private class FormulaEvaluatorTest {
     }
 
     @IsTest
-    private static void hourFunctionReturnsTheHourValueOfADateTime() {
-        Assert.areEqual(2, FormulaEvaluator.evaluate('HOUR(DATETIMEVALUE("2015-01-01 02:00:00"))'));
-    }
-
-    @IsTest
     private static void roundFunctionRoundsUp() {
         Assert.areEqual(2, FormulaEvaluator.evaluate('ROUND(1.5)'));
     }
@@ -565,5 +560,10 @@ private class FormulaEvaluatorTest {
     @IsTest
     private static void secondFunctionReturnsTheSecond() {
         Assert.areEqual(45, FormulaEvaluator.evaluate('SECOND(TIMEVALUE("12:00:45"))'));
+    }
+
+    @IsTest
+    private static void hourFunctionReturnsTheHour() {
+        Assert.areEqual(12, FormulaEvaluator.evaluate('HOUR(TIMEVALUE("12:00:00"))'));
     }
 }

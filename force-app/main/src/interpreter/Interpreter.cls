@@ -592,16 +592,6 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((String) text).reverse();
             }
-            when HOUR_FN {
-                Object dateTimeValue = evaluate(function.arguments.get(0));
-                if (!(dateTimeValue instanceof Datetime)) {
-                    throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a datetime value.'
-                    );
-                }
-
-                return ((Datetime) dateTimeValue).hour();
-            }
             when ROUND_FN, TRUNC_FN {
                 Object numberValue = evaluate(function.arguments.get(0));
                 if (!(numberValue instanceof Decimal)) {
@@ -774,7 +764,7 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((Date) dateValue).year();
             }
-            when MILLISECOND_FN, MINUTE_FN, SECOND_FN {
+            when MILLISECOND_FN, MINUTE_FN, SECOND_FN, HOUR_FN {
                 Object timeValue = evaluate(function.arguments.get(0));
                 if (!(timeValue instanceof Time)) {
                     throw new InterpreterException(
@@ -786,8 +776,10 @@ public with sharing class Interpreter implements Visitor {
                     return ((Time) timeValue).millisecond();
                 } else if (function.name.type == TokenType.MINUTE_FN) {
                     return ((Time) timeValue).minute();
-                } else {
+                } else if (function.name.type == TokenType.SECOND_FN) {
                     return ((Time) timeValue).second();
+                } else {
+                    return ((Time) timeValue).hour();
                 }
             }
         }
