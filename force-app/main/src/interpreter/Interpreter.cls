@@ -797,6 +797,33 @@ public with sharing class Interpreter implements Visitor {
 
                 return result;
             }
+            when AVERAGE_FN {
+                Object listOfNumbers = evaluate(function.arguments.get(0));
+
+                // Verify that all elements in the list are numbers
+                if (!(listOfNumbers instanceof List<Object>)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a list of numbers.'
+                    );
+                }
+
+                List<Object> listOfNumbersAsList = (List<Object>) listOfNumbers;
+                for (Object maybeNumber : listOfNumbersAsList) {
+                    if (!(maybeNumber instanceof Decimal)) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a list of numbers.'
+                        );
+                    }
+                }
+
+                // Calculate the average
+                Decimal sum = 0;
+                for (Object numberValue : listOfNumbersAsList) {
+                    sum += (Decimal) numberValue;
+                }
+
+                return sum / listOfNumbersAsList.size();
+            }
         }
 
         // Unreachable

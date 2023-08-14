@@ -56,6 +56,7 @@ public with sharing class Scanner {
         keywords.put('minute', TokenType.MINUTE_FN);
         keywords.put('second', TokenType.SECOND_FN);
         keywords.put('list', TokenType.LIST_FN);
+        keywords.put('average', TokenType.AVERAGE_FN);
     }
 
     public Scanner(String source) {

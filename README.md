@@ -544,6 +544,18 @@ Accepts 1 argument: time to evaluate.
 FormulaEvaluator.evaluate('HOUR(TIMEVALUE("12:00:00"))'); // 12
 ```
 
+#### List Functions
+
+- `AVERAGE`
+
+Returns the average of a list of numbers.
+
+Accepts 1 argument: the list of numbers to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('AVERAGE(LIST(1, 2, 3))'); // 2
+```
+
 #### Math Functions
 
 - `ABS`

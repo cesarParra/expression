@@ -575,4 +575,9 @@ private class FormulaEvaluatorTest {
         Assert.areEqual(2, ((List<Object>)result)[1]);
         Assert.areEqual(3, ((List<Object>)result)[2]);
     }
+
+    @IsTest
+    private static void averageFunctionReturnsTheAverage() {
+        Assert.areEqual(2, FormulaEvaluator.evaluate('AVERAGE(LIST(1, 2, 3))'));
+    }
 }
