@@ -561,12 +561,31 @@ public with sharing class Interpreter implements Visitor {
                     );
                 }
 
+                List<Object> values = new List<Object>();
+
+                // If the first argument is a list then only one argument is expected
+                Object firstArgument = evaluate(function.arguments.get(0));
+                if (firstArgument instanceof List<Object>) {
+                    if (function.arguments.size() > 1) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: the function must have at most one argument when the first argument is a list.'
+                        );
+                    }
+
+                    values = (List<Object>) firstArgument;
+                } else {
+                    values.add(firstArgument);
+
+                    for (Integer i = 1; i < function.arguments.size(); i++) {
+                        values.add(evaluate(function.arguments.get(i)));
+                    }
+                }
+
                 Decimal result = null;
-                for (Expr argument : function.arguments) {
-                    Object value = evaluate(argument);
+                for (Object value : values) {
                     if (!(value instanceof Decimal)) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                                'Error executing ' + function.name.lexeme + ' function: the value ' + value + ' is not a number.'
                         );
                     }
 

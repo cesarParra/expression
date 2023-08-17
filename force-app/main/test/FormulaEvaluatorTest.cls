@@ -431,6 +431,11 @@ private class FormulaEvaluatorTest {
     }
 
     @IsTest
+    private static void maxFunctionAcceptsAListAsAsArgument() {
+        Assert.areEqual(3, FormulaEvaluator.evaluate('MAX(LIST(1, 2, 3))'));
+    }
+
+    @IsTest
     private static void minFunctionReturnsTheMinimumValue() {
         Assert.areEqual(1, FormulaEvaluator.evaluate('MIN(1, 2)'));
     }

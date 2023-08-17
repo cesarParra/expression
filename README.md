@@ -602,9 +602,10 @@ FormulaEvaluator.evaluate('FROMUNIXTIME(1577836800)'); // 2020-01-01 00:00:00
 
 Returns the largest of one or more numbers.
 
-At least one argument is required.
+Accepts either a list of numbers as a single argument, or multiple numerical arguments.
 
 ```apex
+FormulaEvaluator.evaluate('MAX(LIST(1, 2, 3))'); // 3
 FormulaEvaluator.evaluate('MAX(1, 2, 3)'); // 3
 ```
 
