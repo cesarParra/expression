@@ -431,6 +431,11 @@ private class FormulaEvaluatorTest {
     }
 
     @IsTest
+    private static void maxFunctionAcceptsAListAsAsArgument() {
+        Assert.areEqual(3, FormulaEvaluator.evaluate('MAX(LIST(1, 2, 3))'));
+    }
+
+    @IsTest
     private static void minFunctionReturnsTheMinimumValue() {
         Assert.areEqual(1, FormulaEvaluator.evaluate('MIN(1, 2)'));
     }
@@ -565,5 +570,19 @@ private class FormulaEvaluatorTest {
     @IsTest
     private static void hourFunctionReturnsTheHour() {
         Assert.areEqual(12, FormulaEvaluator.evaluate('HOUR(TIMEVALUE("12:00:00"))'));
+    }
+
+    @IsTest
+    private static void listFunctionReturnsAListContainingAllArguments() {
+        Object result = FormulaEvaluator.evaluate('LIST(1, 2, 3)');
+        Assert.isTrue(result instanceof List<Object>);
+        Assert.areEqual(1, ((List<Object>)result)[0]);
+        Assert.areEqual(2, ((List<Object>)result)[1]);
+        Assert.areEqual(3, ((List<Object>)result)[2]);
+    }
+
+    @IsTest
+    private static void averageFunctionReturnsTheAverage() {
+        Assert.areEqual(2, FormulaEvaluator.evaluate('AVERAGE(LIST(1, 2, 3))'));
     }
 }

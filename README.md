@@ -2,6 +2,9 @@
 
 Allows you to evaluate formula-like syntax through Apex code.
 
+Supports most of the operators and functions available in Salesforce formulas, but
+also has additional support for collections/lists.
+
 ## Installation
 
 ### Deploy to Salesforce
@@ -27,6 +30,14 @@ make reference to fields of the provided SObject in the formula.
 Account account = new Account(Name = 'ACME');
 Object result = FormulaEvaluator.evaluate('Name', account);
 Assert.areEqual('ACME', result);
+```
+
+## Collections/List Support
+
+To work with collections/lists, you can use the `LIST` function
+
+```apex
+Object result = FormulaEvaluator.evaluate('LIST(1, 2, 3)'); // (1, 2, 3)
 ```
 
 ## Supported Operators and Functions
@@ -533,6 +544,18 @@ Accepts 1 argument: time to evaluate.
 FormulaEvaluator.evaluate('HOUR(TIMEVALUE("12:00:00"))'); // 12
 ```
 
+#### List Functions
+
+- `AVERAGE`
+
+Returns the average of a list of numbers.
+
+Accepts 1 argument: the list of numbers to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('AVERAGE(LIST(1, 2, 3))'); // 2
+```
+
 #### Math Functions
 
 - `ABS`
@@ -579,9 +602,10 @@ FormulaEvaluator.evaluate('FROMUNIXTIME(1577836800)'); // 2020-01-01 00:00:00
 
 Returns the largest of one or more numbers.
 
-At least one argument is required.
+Accepts either a list of numbers as a single argument, or multiple numerical arguments.
 
 ```apex
+FormulaEvaluator.evaluate('MAX(LIST(1, 2, 3))'); // 3
 FormulaEvaluator.evaluate('MAX(1, 2, 3)'); // 3
 ```
 

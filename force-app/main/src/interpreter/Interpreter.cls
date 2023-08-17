@@ -561,12 +561,31 @@ public with sharing class Interpreter implements Visitor {
                     );
                 }
 
+                List<Object> values = new List<Object>();
+
+                // If the first argument is a list then only one argument is expected
+                Object firstArgument = evaluate(function.arguments.get(0));
+                if (firstArgument instanceof List<Object>) {
+                    if (function.arguments.size() > 1) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: the function must have at most one argument when the first argument is a list.'
+                        );
+                    }
+
+                    values = (List<Object>) firstArgument;
+                } else {
+                    values.add(firstArgument);
+
+                    for (Integer i = 1; i < function.arguments.size(); i++) {
+                        values.add(evaluate(function.arguments.get(i)));
+                    }
+                }
+
                 Decimal result = null;
-                for (Expr argument : function.arguments) {
-                    Object value = evaluate(argument);
+                for (Object value : values) {
                     if (!(value instanceof Decimal)) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                                'Error executing ' + function.name.lexeme + ' function: the value ' + value + ' is not a number.'
                         );
                     }
 
@@ -781,6 +800,48 @@ public with sharing class Interpreter implements Visitor {
                 } else {
                     return ((Time) timeValue).hour();
                 }
+            }
+            when LIST_FN {
+                // Check that there is at least one argument
+                if (function.arguments.isEmpty()) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the function must have at least one argument.'
+                    );
+                }
+
+                List<Object> result = new List<Object>();
+                for (Expr argument : function.arguments) {
+                    result.add(evaluate(argument));
+                }
+
+                return result;
+            }
+            when AVERAGE_FN {
+                Object listOfNumbers = evaluate(function.arguments.get(0));
+
+                // Verify that all elements in the list are numbers
+                if (!(listOfNumbers instanceof List<Object>)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a list of numbers.'
+                    );
+                }
+
+                List<Object> listOfNumbersAsList = (List<Object>) listOfNumbers;
+                for (Object maybeNumber : listOfNumbersAsList) {
+                    if (!(maybeNumber instanceof Decimal)) {
+                        throw new InterpreterException(
+                                'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a list of numbers.'
+                        );
+                    }
+                }
+
+                // Calculate the average
+                Decimal sum = 0;
+                for (Object numberValue : listOfNumbersAsList) {
+                    sum += (Decimal) numberValue;
+                }
+
+                return sum / listOfNumbersAsList.size();
             }
         }
 
