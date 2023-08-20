@@ -152,6 +152,13 @@ public with sharing class Interpreter implements Visitor {
 
         Set<String> fields = context.getSObjectType().getDescribe().fields.getMap().keySet();
         if (!fields.contains(mergeField.name.lexeme.toLowerCase())) {
+            // The name could also be a relationship name, so add those as well
+            for (ChildRelationship relationship : context.getSObjectType().getDescribe().getChildRelationships()) {
+                String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
+                if (childRelationshipName != null && childRelationshipName == mergeField.name.lexeme.toLowerCase()) {
+                    return context.getSObjects(relationship.getRelationshipName());
+                }
+            }
             throw new InterpreterException(
                     'Error executing merge field: ' +
                             mergeField.name.lexeme +
@@ -814,6 +821,46 @@ public with sharing class Interpreter implements Visitor {
                     result.add(evaluate(argument));
                 }
 
+                return result;
+            }
+            when TOLIST_FN {
+                // Expect 2 arguments, the first will be the name of the child relationship field,
+                // the second the name of the fields for which we want the data
+                if (function.arguments.size() != 2) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the function must have exactly 2 arguments.'
+                    );
+                }
+
+                Object children = evaluate(function.arguments.get(0));
+                if (children == null) {
+                    return new List<Object>();
+                }
+                if (!(children instanceof List<SObject>)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a list of SObject.'
+                    );
+                }
+
+                // If the list of children is empty, return early
+                List<SObject> childrenAsList = (List<SObject>) children;
+                if (childrenAsList.isEmpty()) {
+                    return new List<Object>();
+                }
+
+                // For all children we want to get the value of the field
+                // Each one of the children will now act as a standalone context for a new expression
+                if (!(function.arguments.get(1) instanceof Expr.MergeField)) {
+                    throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the second argument must be a merge field.'
+                    );
+            }
+
+                String secondArgument = ((Expr.MergeField) function.arguments.get(1)).name.lexeme;
+                List<Object> result = new List<Object>();
+                for (SObject child : childrenAsList) {
+                    result.add(FormulaEvaluator.evaluate(secondArgument, child));
+                }
                 return result;
             }
             when AVERAGE_FN {

@@ -408,6 +408,18 @@ public with sharing class Parser {
             });
         }
 
+        if (match(TokenType.TOLIST_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            Expr relationshipName = expression();
+            consume(TokenType.COMMA, 'Expect \',\' after relationship name.');
+            Expr fieldName = expression();
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+            return new Expr.Function(fnName, new List<Expr>{
+                relationshipName, fieldName
+            });
+        }
+
         if (match(TokenType.AVERAGE_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
