@@ -546,6 +546,27 @@ FormulaEvaluator.evaluate('HOUR(TIMEVALUE("12:00:00"))'); // 12
 
 #### List Functions
 
+- `TOLIST`
+
+Extracts a list out of a particular field of a list of child SObjects related to the context.
+
+Accepts 2 arguments: The child relationship merge field and the name of the field of the child to extract,
+also as a merge field (not a string, so no quotes).
+
+```apex
+Account account = [SELECT (SELECT Id, Name FROM Contacts) FROM Account LIMIT 1];
+Object result = FormulaEvaluator.evaluate('TOLIST(Contacts, Name)', account);
+// ["John Doe", "Jane Doe"]
+```
+
+This can be combined with list operations to extract aggregate information out
+of child records.
+
+```apex
+Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
+Object result = FormulaEvaluator.evaluate('AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
+```
+
 - `AVERAGE`
 
 Returns the average of a list of numbers.

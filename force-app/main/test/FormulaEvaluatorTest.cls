@@ -585,4 +585,36 @@ private class FormulaEvaluatorTest {
     private static void averageFunctionReturnsTheAverage() {
         Assert.areEqual(2, FormulaEvaluator.evaluate('AVERAGE(LIST(1, 2, 3))'));
     }
+
+    @IsTest
+    private static void toListFunctionReturnsGivenAChildRelationshipAndAFieldName() {
+        Account account = new Account(Name = 'Test');
+        insert account;
+        Contact contact1 = new Contact(LastName = 'Test1', AccountId = account.Id);
+        Contact contact2 = new Contact(LastName = 'Test2', AccountId = account.Id);
+        insert new List<SObject> { contact1, contact2 };
+        Account accountWithContacts = [SELECT Id, Name, (SELECT Id, LastName FROM Contacts) FROM Account WHERE Id = :account.Id];
+
+        List<Object> result = (List<Object>)FormulaEvaluator.evaluate('TOLIST(Contacts, LastName)', accountWithContacts);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual('Test1', result[0]);
+        Assert.areEqual('Test2', result[1]);
+    }
+
+    @IsTest
+    private static void canCombineListFunctionsWithToList() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        insert new List<SObject> { childAccount1, childAccount2 };
+
+        Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
+
+        Decimal result = (Decimal)FormulaEvaluator.evaluate('AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren);
+
+        Assert.areEqual(15, result);
+    }
 }
