@@ -1,10 +1,4 @@
 public with sharing class AstPrinter implements Visitor {
-    private final SObjectType contextType;
-
-    public AstPrinter(SObjectType contextType) {
-        this.contextType = contextType;
-    }
-
     public void printAst(Expr expr) {
         Object toPrint = expr.accept(this);
         System.debug(toPrint);
@@ -31,8 +25,7 @@ public with sharing class AstPrinter implements Visitor {
     }
 
     public Object visit(Expr.MergeField mergeField) {
-        String mergeFieldContext = contextType == null ? '' : contextType.getDescribe().getName() + '.';
-        return mergeFieldContext + mergeField.name.lexeme;
+        return 'MergeField(' + mergeField.name.lexeme + ')';
     }
 
     public Object visit(Expr.Unary unary) {
@@ -46,7 +39,7 @@ public with sharing class AstPrinter implements Visitor {
 
     public Object visit(Expr.Function function) {
         return parenthesize(
-                function.name.lexeme,
+                'FN:' +function.name.lexeme,
                 function.arguments
         );
     }

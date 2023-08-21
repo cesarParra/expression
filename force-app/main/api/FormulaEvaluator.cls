@@ -10,7 +10,7 @@ public with sharing class FormulaEvaluator {
      * @return The result of the formula.
      */
     public static Object evaluate(String formula) {
-        return evaluate(formula, null);
+        return evaluate(formula, (SObject)null);
     }
 
     /**
@@ -28,13 +28,32 @@ public with sharing class FormulaEvaluator {
         Expr expression = parser.parse();
 
         if (printAst) {
-            AstPrinter printer = new AstPrinter(
-                    context == null ? null : context.getSObjectType()
-            );
+            AstPrinter printer = new AstPrinter();
             printer.printAst(expression);
         }
 
         Interpreter interpreter = new Interpreter(context);
         return interpreter.interpret(expression);
     }
+
+    public static Object evaluate(String formula, Id recordId) {
+        Scanner scanner = new Scanner(formula);
+        List<Token> tokens = scanner.scanTokens();
+
+        Parser parser = new Parser(tokens);
+        Expr expression = parser.parse();
+
+        if (printAst) {
+            AstPrinter printer = new AstPrinter();
+            printer.printAst(expression);
+        }
+
+        ContextResolver ctxInterpreter = new ContextResolver(recordId);
+        SObject record = ctxInterpreter.build(expression);
+
+        Interpreter interpreter = new Interpreter(record);
+        return interpreter.interpret(expression);
+    }
+
+    public class NotImplementedException extends Exception {}
 }
