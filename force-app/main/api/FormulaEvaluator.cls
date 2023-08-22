@@ -36,6 +36,14 @@ public with sharing class FormulaEvaluator {
         return interpreter.interpret(expression);
     }
 
+    /**
+     * @description Evaluates a formula and returns the result using a record Id as the context.
+     *              When using this endpoint field references will automatically be resolved
+     *              and queried.
+     * @param formula The formula to evaluate.
+     * @param recordId The Id of the record to use as the context for the formula.
+     * @return The result of the formula.
+     */
     public static Object evaluate(String formula, Id recordId) {
         Scanner scanner = new Scanner(formula);
         List<Token> tokens = scanner.scanTokens();
