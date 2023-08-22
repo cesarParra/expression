@@ -617,4 +617,57 @@ private class FormulaEvaluatorTest {
 
         Assert.areEqual(15, result);
     }
+
+    @IsTest
+    private static void canUseARecordIdAsContext() {
+        Account accountRecord = new Account(Name = 'Test');
+        insert accountRecord;
+
+        Object result = FormulaEvaluator.evaluate('Name', accountRecord.Id);
+
+        Assert.areEqual('Test', result);
+    }
+
+    @IsTest
+    private static void usingARecordIdAsTheContextConsumesAQuery() {
+        Account accountRecord = new Account(Name = 'Test');
+        insert accountRecord;
+
+        Integer queriesConsumedBefore = Limits.getQueries();
+        FormulaEvaluator.evaluate('Name', accountRecord.Id);
+        Integer queriesConsumedAfter = Limits.getQueries();
+
+        Assert.areEqual(1, queriesConsumedAfter - queriesConsumedBefore);
+    }
+
+    @IsTest
+    private static void canUseARecordIdAsContextToGetAggregateInformationFromChildren() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject> { childAccount1, childAccount2 };
+
+        Object revenueByEmployee = FormulaEvaluator.evaluate('AVERAGE(TOLIST(ChildAccounts, AnnualRevenue)) / AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))',
+            parentAccount.Id);
+
+        Assert.areEqual(10, revenueByEmployee);
+    }
+
+    @IsTest
+    private static void canUseARecordIdAsContextToGetAggregateInformationFromChildren_withNullValues() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = null);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject> { childAccount1, childAccount2 };
+
+        Decimal revenueByEmployee = (Decimal)FormulaEvaluator.evaluate('AVERAGE(TOLIST(ChildAccounts, AnnualRevenue)) / AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))',
+            parentAccount.Id);
+        revenueByEmployee = revenueByEmployee.setScale(2);
+
+        Assert.areEqual(13.33, revenueByEmployee);
+    }
 }

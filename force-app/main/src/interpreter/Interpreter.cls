@@ -28,7 +28,7 @@ public with sharing class Interpreter implements Visitor {
                     return (String) left + (String) right;
                 }
                 throw new InterpreterException(
-                        'Error executing ' + binary.operator.lexeme + ' operator: operands must be numbers or strings.'
+                    'Error executing ' + binary.operator.lexeme + ' operator: operands must be numbers or strings.'
                 );
             }
             when AMPERSAND {
@@ -38,7 +38,7 @@ public with sharing class Interpreter implements Visitor {
                     return (String) left + (String) right;
                 }
                 throw new InterpreterException(
-                        'Error executing ' + binary.operator.lexeme + ' operator: operands must be strings.'
+                    'Error executing ' + binary.operator.lexeme + ' operator: operands must be strings.'
                 );
             }
             when MINUS {
@@ -56,8 +56,8 @@ public with sharing class Interpreter implements Visitor {
             when EXPONENT {
                 if (!checkIsDecimal(left) || !checkIsDecimal(right)) {
                     throw new InterpreterException(
-                            'Error executing ' + binary.operator.lexeme + ' operator: the left operand must be a number and' +
-                                    ' the right operand must be an integer, but found: left' + left + ' and right ' + right
+                        'Error executing ' + binary.operator.lexeme + ' operator: the left operand must be a number and' +
+                            ' the right operand must be an integer, but found: left' + left + ' and right ' + right
                     );
                 }
 
@@ -90,7 +90,7 @@ public with sharing class Interpreter implements Visitor {
             when DOUBLE_AMPERSAND {
                 if (!isBoolean(left)) {
                     throw new InterpreterException(
-                            'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
+                        'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
                     );
                 }
 
@@ -99,7 +99,7 @@ public with sharing class Interpreter implements Visitor {
                 if (leftAsBoolean) {
                     if (!isBoolean(right)) {
                         throw new InterpreterException(
-                                'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
+                            'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
                         );
                     }
 
@@ -111,7 +111,7 @@ public with sharing class Interpreter implements Visitor {
             when DOUBLE_PIPE {
                 if (!isBoolean(left)) {
                     throw new InterpreterException(
-                            'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
+                        'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
                     );
                 }
 
@@ -120,7 +120,7 @@ public with sharing class Interpreter implements Visitor {
                 if (!leftAsBoolean) {
                     if (!isBoolean(right)) {
                         throw new InterpreterException(
-                                'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
+                            'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
                         );
                     }
 
@@ -146,7 +146,7 @@ public with sharing class Interpreter implements Visitor {
     public Object visit(Expr.MergeField mergeField) {
         if (context == null) {
             throw new InterpreterException(
-                    'Error executing merge field' + mergeField.name.lexeme + ': no context was provided.'
+                'Error executing merge field' + mergeField.name.lexeme + ': no context was provided.'
             );
         }
 
@@ -160,11 +160,11 @@ public with sharing class Interpreter implements Visitor {
                 }
             }
             throw new InterpreterException(
-                    'Error executing merge field: ' +
-                            mergeField.name.lexeme +
-                            ' The SObject type ' +
-                            context.getSObjectType().getDescribe().getName() +
-                            ' does not contain a field with that name.'
+                'Error executing merge field: ' +
+                    mergeField.name.lexeme +
+                    ' The SObject type ' +
+                    context.getSObjectType().getDescribe().getName() +
+                    ' does not contain a field with that name.'
             );
         }
 
@@ -178,7 +178,7 @@ public with sharing class Interpreter implements Visitor {
             when BANG {
                 if (!isBoolean(right)) {
                     throw new InterpreterException(
-                            'Error executing ' + unary.operator.lexeme + ' operator: the operand must evaluate to a boolean value.'
+                        'Error executing ' + unary.operator.lexeme + ' operator: the operand must evaluate to a boolean value.'
                     );
                 }
 
@@ -187,7 +187,7 @@ public with sharing class Interpreter implements Visitor {
             when MINUS {
                 if (!checkIsDecimal(right)) {
                     throw new InterpreterException(
-                            'Error executing ' + unary.operator.lexeme + ' operator: the operand must be a number.'
+                        'Error executing ' + unary.operator.lexeme + ' operator: the operand must be a number.'
                     );
                 }
 
@@ -204,7 +204,7 @@ public with sharing class Interpreter implements Visitor {
             when AND_FN {
                 if (function.arguments.size() < 2) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: expected at least 2 arguments, but found ' + function.arguments.size()
+                        'Error executing ' + function.name.lexeme + ' function: expected at least 2 arguments, but found ' + function.arguments.size()
                     );
                 }
 
@@ -213,7 +213,7 @@ public with sharing class Interpreter implements Visitor {
                     Object evaluated = evaluate(argument);
                     if (!isBoolean(evaluated)) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: all arguments must evaluate to a boolean value.'
+                            'Error executing ' + function.name.lexeme + ' function: all arguments must evaluate to a boolean value.'
                         );
                     }
 
@@ -229,7 +229,7 @@ public with sharing class Interpreter implements Visitor {
                 Object condition = evaluate(function.arguments.get(0));
                 if (!isBoolean(condition)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a boolean value.'
+                        'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a boolean value.'
                     );
                 }
 
@@ -246,7 +246,7 @@ public with sharing class Interpreter implements Visitor {
                 Object expression = evaluate(function.arguments.get(0));
                 if (!isBoolean(expression)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a boolean value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a boolean value.'
                     );
                 }
 
@@ -259,7 +259,7 @@ public with sharing class Interpreter implements Visitor {
                     Object evaluated = evaluate(argument);
                     if (!isBoolean(evaluated)) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: all arguments must evaluate to a boolean value.'
+                            'Error executing ' + function.name.lexeme + ' function: all arguments must evaluate to a boolean value.'
                         );
                     }
 
@@ -274,14 +274,14 @@ public with sharing class Interpreter implements Visitor {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
                     );
                 }
 
                 Object prefix = evaluate(function.arguments.get(1));
                 if (!(prefix instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
                     );
                 }
 
@@ -291,14 +291,14 @@ public with sharing class Interpreter implements Visitor {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
                     );
                 }
 
                 Object substring = evaluate(function.arguments.get(1));
                 if (!(substring instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
                     );
                 }
 
@@ -308,7 +308,7 @@ public with sharing class Interpreter implements Visitor {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
                     );
                 }
 
@@ -318,19 +318,19 @@ public with sharing class Interpreter implements Visitor {
                 Object year = evaluate(function.arguments.get(0));
                 if (!(year instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
                     );
                 }
                 Object month = evaluate(function.arguments.get(1));
                 if (!(month instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
                     );
                 }
                 Object day = evaluate(function.arguments.get(2));
                 if (!(day instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
                     );
                 }
 
@@ -340,7 +340,7 @@ public with sharing class Interpreter implements Visitor {
                 Object numberValue = evaluate(function.arguments.get(0));
                 if (!(numberValue instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
                     );
                 }
 
@@ -350,14 +350,14 @@ public with sharing class Interpreter implements Visitor {
                 Object searchText = evaluate(function.arguments.get(0));
                 if (!(searchText instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
                     );
                 }
 
                 Object text = evaluate(function.arguments.get(1));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
                     );
                 }
 
@@ -367,7 +367,7 @@ public with sharing class Interpreter implements Visitor {
                     Object startIndexValue = evaluate(function.arguments.get(2));
                     if (!(startIndexValue instanceof Decimal)) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
                         );
                     }
                     startIndex = ((Decimal) startIndexValue).intValue();
@@ -379,14 +379,14 @@ public with sharing class Interpreter implements Visitor {
                 Object startMonth = evaluate(function.arguments.get(0));
                 if (!(startMonth instanceof Date)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
                     );
                 }
 
                 Object monthsToAdd = evaluate(function.arguments.get(1));
                 if (!(monthsToAdd instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
                     );
                 }
 
@@ -412,7 +412,7 @@ public with sharing class Interpreter implements Visitor {
                 Object numberValue = evaluate(function.arguments.get(0));
                 if (!(numberValue instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
                     );
                 }
 
@@ -422,14 +422,14 @@ public with sharing class Interpreter implements Visitor {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
                     );
                 }
 
                 Object length = evaluate(function.arguments.get(1));
                 if (!(length instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
                     );
                 }
 
@@ -439,7 +439,7 @@ public with sharing class Interpreter implements Visitor {
                 Object dateValue = evaluate(function.arguments.get(0));
                 if (!(dateValue instanceof Date)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
                     );
                 }
 
@@ -457,7 +457,7 @@ public with sharing class Interpreter implements Visitor {
                 Object numberValue = evaluate(function.arguments.get(0));
                 if (!(numberValue instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
                     );
                 }
 
@@ -467,7 +467,7 @@ public with sharing class Interpreter implements Visitor {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
                     );
                 }
 
@@ -477,7 +477,7 @@ public with sharing class Interpreter implements Visitor {
                 Object dateValue = evaluate(function.arguments.get(0));
                 if (!(dateValue instanceof Date)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
                     );
                 }
 
@@ -487,7 +487,7 @@ public with sharing class Interpreter implements Visitor {
                 Object unixTime = evaluate(function.arguments.get(0));
                 if (!(unixTime instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
                     );
                 }
 
@@ -499,14 +499,14 @@ public with sharing class Interpreter implements Visitor {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
                     );
                 }
 
                 Object length = evaluate(function.arguments.get(1));
                 if (!(length instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
                     );
                 }
 
@@ -515,7 +515,7 @@ public with sharing class Interpreter implements Visitor {
                     padString = evaluate(function.arguments.get(2));
                     if (!(padString instanceof String)) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: the third argument must evaluate to a string value.'
+                            'Error executing ' + function.name.lexeme + ' function: the third argument must evaluate to a string value.'
                         );
                     }
                 }
@@ -534,7 +534,7 @@ public with sharing class Interpreter implements Visitor {
                 Object expression = evaluate(function.arguments.get(0));
                 if (!(expression instanceof String) && !(expression instanceof Datetime)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string or datetime value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string or datetime value.'
                     );
                 }
 
@@ -548,7 +548,7 @@ public with sharing class Interpreter implements Visitor {
                 Object expression = evaluate(function.arguments.get(0));
                 if (!(expression instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
                     );
                 }
 
@@ -564,7 +564,7 @@ public with sharing class Interpreter implements Visitor {
             when MAX_FN, MIN_FN {
                 if (function.arguments.isEmpty()) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the function must have at least one argument.'
+                        'Error executing ' + function.name.lexeme + ' function: the function must have at least one argument.'
                     );
                 }
 
@@ -575,7 +575,7 @@ public with sharing class Interpreter implements Visitor {
                 if (firstArgument instanceof List<Object>) {
                     if (function.arguments.size() > 1) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: the function must have at most one argument when the first argument is a list.'
+                            'Error executing ' + function.name.lexeme + ' function: the function must have at most one argument when the first argument is a list.'
                         );
                     }
 
@@ -592,7 +592,7 @@ public with sharing class Interpreter implements Visitor {
                 for (Object value : values) {
                     if (!(value instanceof Decimal)) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: the value ' + value + ' is not a number.'
+                            'Error executing ' + function.name.lexeme + ' function: the value ' + value + ' is not a number.'
                         );
                     }
 
@@ -612,7 +612,7 @@ public with sharing class Interpreter implements Visitor {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
                     );
                 }
 
@@ -622,7 +622,7 @@ public with sharing class Interpreter implements Visitor {
                 Object numberValue = evaluate(function.arguments.get(0));
                 if (!(numberValue instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
                     );
                 }
 
@@ -631,7 +631,7 @@ public with sharing class Interpreter implements Visitor {
                     Object precisionValue = evaluate(function.arguments.get(1));
                     if (!(precisionValue instanceof Decimal)) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
+                            'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
                         );
                     }
                     precision = (Decimal) precisionValue;
@@ -647,7 +647,7 @@ public with sharing class Interpreter implements Visitor {
                 Object dateTimeOrText = evaluate(function.arguments.get(0));
                 if (!(dateTimeOrText instanceof String) && !(dateTimeOrText instanceof Datetime)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string or datetime value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string or datetime value.'
                     );
                 }
 
@@ -656,7 +656,7 @@ public with sharing class Interpreter implements Visitor {
                     String[] parts = ((String) dateTimeOrText).split(':');
                     if (parts.size() != 3) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string in the format of HH:mm:ss.SSS.'
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string in the format of HH:mm:ss.SSS.'
                         );
                     }
 
@@ -682,21 +682,21 @@ public with sharing class Interpreter implements Visitor {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
                     );
                 }
 
                 Object start = evaluate(function.arguments.get(1));
                 if (!(start instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
                     );
                 }
 
                 Object length = evaluate(function.arguments.get(2));
                 if (!(length instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the third argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the third argument must evaluate to a number value.'
                     );
                 }
 
@@ -706,14 +706,14 @@ public with sharing class Interpreter implements Visitor {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
                     );
                 }
 
                 Object start = evaluate(function.arguments.get(1));
                 if (!(start instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
                     );
                 }
 
@@ -723,7 +723,7 @@ public with sharing class Interpreter implements Visitor {
                     length = evaluate(function.arguments.get(2));
                     if (!(length instanceof Decimal)) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: the third argument must evaluate to a number value.'
+                            'Error executing ' + function.name.lexeme + ' function: the third argument must evaluate to a number value.'
                         );
                     }
                 }
@@ -741,7 +741,7 @@ public with sharing class Interpreter implements Visitor {
                 Object dateValue = evaluate(function.arguments.get(0));
                 if (!(dateValue instanceof Date)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
                     );
                 }
 
@@ -751,14 +751,14 @@ public with sharing class Interpreter implements Visitor {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
+                        'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
                     );
                 }
 
                 Object length = evaluate(function.arguments.get(1));
                 if (!(length instanceof Decimal)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
+                        'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
                     );
                 }
 
@@ -774,7 +774,7 @@ public with sharing class Interpreter implements Visitor {
                 Object dateValue = evaluate(function.arguments.get(0));
                 if (!(dateValue instanceof Date)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
                     );
                 }
 
@@ -784,7 +784,7 @@ public with sharing class Interpreter implements Visitor {
                 Object dateValue = evaluate(function.arguments.get(0));
                 if (!(dateValue instanceof Date)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
                     );
                 }
 
@@ -794,7 +794,7 @@ public with sharing class Interpreter implements Visitor {
                 Object timeValue = evaluate(function.arguments.get(0));
                 if (!(timeValue instanceof Time)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a time value.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a time value.'
                     );
                 }
 
@@ -812,7 +812,7 @@ public with sharing class Interpreter implements Visitor {
                 // Check that there is at least one argument
                 if (function.arguments.isEmpty()) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the function must have at least one argument.'
+                        'Error executing ' + function.name.lexeme + ' function: the function must have at least one argument.'
                     );
                 }
 
@@ -828,7 +828,7 @@ public with sharing class Interpreter implements Visitor {
                 // the second the name of the fields for which we want the data
                 if (function.arguments.size() != 2) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the function must have exactly 2 arguments.'
+                        'Error executing ' + function.name.lexeme + ' function: the function must have exactly 2 arguments.'
                     );
                 }
 
@@ -838,7 +838,7 @@ public with sharing class Interpreter implements Visitor {
                 }
                 if (!(children instanceof List<SObject>)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a list of SObject.'
+                        'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a list of SObject.'
                     );
                 }
 
@@ -852,9 +852,9 @@ public with sharing class Interpreter implements Visitor {
                 // Each one of the children will now act as a standalone context for a new expression
                 if (!(function.arguments.get(1) instanceof Expr.MergeField)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the second argument must be a merge field.'
+                        'Error executing ' + function.name.lexeme + ' function: the second argument must be a merge field.'
                     );
-            }
+                }
 
                 String secondArgument = ((Expr.MergeField) function.arguments.get(1)).name.lexeme;
                 List<Object> result = new List<Object>();
@@ -869,26 +869,33 @@ public with sharing class Interpreter implements Visitor {
                 // Verify that all elements in the list are numbers
                 if (!(listOfNumbers instanceof List<Object>)) {
                     throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a list of numbers.'
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a list of numbers.'
                     );
                 }
 
                 List<Object> listOfNumbersAsList = (List<Object>) listOfNumbers;
-                for (Object maybeNumber : listOfNumbersAsList) {
+                // Sanitize nulls
+                List<Object> sanitizedList = new List<Object>();
+                for (Object maybeNull : listOfNumbersAsList) {
+                    if (maybeNull != null) {
+                        sanitizedList.add(maybeNull);
+                    }
+                }
+                for (Object maybeNumber : sanitizedList) {
                     if (!(maybeNumber instanceof Decimal)) {
                         throw new InterpreterException(
-                                'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a list of numbers.'
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a list of numbers.'
                         );
                     }
                 }
 
                 // Calculate the average
                 Decimal sum = 0;
-                for (Object numberValue : listOfNumbersAsList) {
+                for (Object numberValue : sanitizedList) {
                     sum += (Decimal) numberValue;
                 }
 
-                return sum / listOfNumbersAsList.size();
+                return sum / sanitizedList.size();
             }
         }
 
@@ -907,7 +914,7 @@ public with sharing class Interpreter implements Visitor {
     private void checkNumberOperand(Token operator, Object left, Object right) {
         if (left instanceof Decimal && right instanceof Decimal) return;
         throw new InterpreterException(
-                'Error executing ' + operator.lexeme + ' operator: operands must be numbers.'
+            'Error executing ' + operator.lexeme + ' operator: operands must be numbers.'
         );
     }
 

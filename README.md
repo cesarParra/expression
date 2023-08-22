@@ -26,11 +26,44 @@ Assert.areEqual(2, result);
 You can also evaluate formulas providing an SObject as context. This allows you to
 make reference to fields of the provided SObject in the formula.
 
+When using this endpoint, the user is in charge of providing the correct context
+with the correct fields being referenced in the formula correctly queried.
+
 ```apex
 Account account = new Account(Name = 'ACME');
 Object result = FormulaEvaluator.evaluate('Name', account);
 Assert.areEqual('ACME', result);
 ```
+
+If you want the framework to take care of querying the correct fields, you can
+use the `evaluate` method that takes a record Id as context.
+
+```apex
+Account account = new Account(Name = 'ACME');
+insert account;
+
+Object result = FormulaEvaluator.evaluate('Name', account.Id);
+Assert.areEqual('ACME', result);
+```
+
+References to child records are also supported. You can reference fields on child
+records by first extracting a list out of the child records using the `TOLIST`
+and then using any of the list functions to compute information from that list.
+
+When referencing child data in this way, the framework will take care of any necessary
+subqueries, so only one SOQL query is consumed.
+
+### Considerations and Limitations
+
+There are a few limitations around merge fields at the moment
+
+- There is currently no support for parent (__r) relationships
+- When using the endpoint that takes a record Id as the context, the query
+is performed `with sharing`, so any records that the user does not have access to
+will not be returned or taken into account in the operation.
+- When extracting data out of child records through the TOLIST function, any null
+value is skipped. Take this into account when computing information using list
+functions.
 
 ## Collections/List Support
 
