@@ -103,6 +103,9 @@ public with sharing class Scanner {
             when ',' {
                 addToken(TokenType.COMMA);
             }
+            when '.' {
+                addToken(TokenType.DOT);
+            }
 
             // One or more character tokens
             when '=' {

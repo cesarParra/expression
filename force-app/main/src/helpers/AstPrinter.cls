@@ -37,6 +37,15 @@ public with sharing class AstPrinter implements Visitor {
         );
     }
 
+    public Object visit(Expr.GetExpr getExpr) {
+        return parenthesize(
+                'GET:' + getExpr.name.lexeme,
+                new List<Expr>{
+                        getExpr.objectExpr
+                }
+        );
+    }
+
     public Object visit(Expr.Function function) {
         return parenthesize(
                 'FN:' +function.name.lexeme,

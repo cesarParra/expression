@@ -75,7 +75,22 @@ public with sharing class Parser {
             return new Expr.Unary(operator, right);
         }
 
-        return primary();
+        return getExpr();
+    }
+
+    private Expr getExpr() {
+        Expr expr = primary();
+
+        while (true) {
+            if (match(TokenType.DOT)) {
+                Token name = consume(TokenType.IDENTIFIER, 'Expect property name after \'.\'.');
+                expr = new Expr.GetExpr(expr, name);
+            } else {
+                break;
+            }
+        }
+
+        return expr;
     }
 
     private Expr primary() {

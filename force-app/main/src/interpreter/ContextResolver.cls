@@ -56,6 +56,11 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.GetExpr getExpr) {
+        // TODO:
+        throw new ResolverException('GetExpr not implemented');
+    }
+
     public Object visit(Expr.Function function) {
         switch on function.name.type {
             // The TOLIST function is a special case, since here we know we are dealing with a
