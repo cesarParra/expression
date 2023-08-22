@@ -53,7 +53,7 @@ and then using any of the list functions to compute information from that list.
 When referencing child data in this way, the framework will take care of any necessary
 subqueries, so only one SOQL query is consumed.
 
-### Limitations
+### Considerations and Limitations
 
 There are a few limitations around merge fields at the moment
 
@@ -61,6 +61,9 @@ There are a few limitations around merge fields at the moment
 - When using the endpoint that takes a record Id as the context, the query
 is performed `with sharing`, so any records that the user does not have access to
 will not be returned or taken into account in the operation.
+- When extracting data out of child records through the TOLIST function, any null
+value is skipped. Take this into account when computing information using list
+functions.
 
 ## Collections/List Support
 

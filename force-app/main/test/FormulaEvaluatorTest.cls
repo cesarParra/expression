@@ -654,4 +654,20 @@ private class FormulaEvaluatorTest {
 
         Assert.areEqual(10, revenueByEmployee);
     }
+
+    @IsTest
+    private static void canUseARecordIdAsContextToGetAggregateInformationFromChildren_withNullValues() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = null);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject> { childAccount1, childAccount2 };
+
+        Decimal revenueByEmployee = (Decimal)FormulaEvaluator.evaluate('AVERAGE(TOLIST(ChildAccounts, AnnualRevenue)) / AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))',
+            parentAccount.Id);
+        revenueByEmployee = revenueByEmployee.setScale(2);
+
+        Assert.areEqual(13.33, revenueByEmployee);
+    }
 }

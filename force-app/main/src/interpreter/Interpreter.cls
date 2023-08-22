@@ -874,7 +874,14 @@ public with sharing class Interpreter implements Visitor {
                 }
 
                 List<Object> listOfNumbersAsList = (List<Object>) listOfNumbers;
-                for (Object maybeNumber : listOfNumbersAsList) {
+                // Sanitize nulls
+                List<Object> sanitizedList = new List<Object>();
+                for (Object maybeNull : listOfNumbersAsList) {
+                    if (maybeNull != null) {
+                        sanitizedList.add(maybeNull);
+                    }
+                }
+                for (Object maybeNumber : sanitizedList) {
                     if (!(maybeNumber instanceof Decimal)) {
                         throw new InterpreterException(
                             'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a list of numbers.'
@@ -884,11 +891,11 @@ public with sharing class Interpreter implements Visitor {
 
                 // Calculate the average
                 Decimal sum = 0;
-                for (Object numberValue : listOfNumbersAsList) {
+                for (Object numberValue : sanitizedList) {
                     sum += (Decimal) numberValue;
                 }
 
-                return sum / listOfNumbersAsList.size();
+                return sum / sanitizedList.size();
             }
         }
 
