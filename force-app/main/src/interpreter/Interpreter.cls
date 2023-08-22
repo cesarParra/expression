@@ -32,7 +32,6 @@ public with sharing class Interpreter implements Visitor {
                 );
             }
             when AMPERSAND {
-                System.debug('found a solitary amp');
                 if (left instanceof String && right instanceof String) {
                     // Concatenate strings
                     return (String) left + (String) right;
