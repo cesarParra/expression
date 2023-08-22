@@ -704,4 +704,23 @@ private class FormulaEvaluatorTest {
 
         Assert.areEqual('GreatGrandParent', result);
     }
+
+    @IsTest
+    private static void dotNotationThroughMultipleLevelsUsingId() {
+        Account greatGrandParent = new Account(Name = 'GreatGrandParent');
+        insert greatGrandParent;
+
+        Account grandParentAccount = new Account(Name = 'GrandParent', ParentId = greatGrandParent.Id);
+        insert grandParentAccount;
+
+        Account parentAccount = new Account(Name = 'Parent', ParentId = grandParentAccount.Id);
+        insert parentAccount;
+
+        Contact childContact = new Contact(LastName = 'Child', AccountId = parentAccount.Id);
+        insert childContact;
+
+        Object result = FormulaEvaluator.evaluate('Account.Parent.Parent.Name', childContact.Id);
+
+        Assert.areEqual('GreatGrandParent', result);
+    }
 }
