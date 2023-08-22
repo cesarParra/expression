@@ -1,8 +1,8 @@
 public with sharing class Interpreter implements Visitor {
-    private final SObject context;
+    private Environment env;
 
-    public Interpreter(SObject context) {
-        this.context = context;
+    public Interpreter(Environment env) {
+        this.env = env;
     }
 
     public Object interpret(Expr expression) {
@@ -32,7 +32,6 @@ public with sharing class Interpreter implements Visitor {
                 );
             }
             when AMPERSAND {
-                System.debug('found a solitary amp');
                 if (left instanceof String && right instanceof String) {
                     // Concatenate strings
                     return (String) left + (String) right;
@@ -143,32 +142,57 @@ public with sharing class Interpreter implements Visitor {
         return literal.value;
     }
 
+    public Object visit(Expr.GetExpr getExpr) {
+        if (env == null) {
+            throw new InterpreterException(
+                'Error executing get expression: no context was provided.'
+            );
+        }
+
+        Object result = evaluate(getExpr.objectExpr);
+        if (result instanceof SObject) {
+            Environment tempEnvironmentForGet = new Environment((SObject) result);
+
+            // We might be dealing with either a field reference or with a reference to another parent
+            if (tempEnvironmentForGet.containsField(getExpr.name.lexeme)) {
+                return tempEnvironmentForGet.get(getExpr.name.lexeme);
+            } else if (tempEnvironmentForGet.containsAsParent(getExpr.name.lexeme)) {
+                return tempEnvironmentForGet.getParentSObject(getExpr.name.lexeme);
+            }
+
+            throw new InterpreterException(
+                'Error executing get expression: the SObject type ' +
+                    tempEnvironmentForGet.getSObjectTypeName() +
+                    ' does not contain a field with the name' + getExpr.name.lexeme
+            );
+        }
+        throw new InterpreterException(
+            'Error executing get expression: the object expression must evaluate to an SObject.'
+        );
+    }
+
     public Object visit(Expr.MergeField mergeField) {
-        if (context == null) {
+        if (env == null) {
             throw new InterpreterException(
                 'Error executing merge field' + mergeField.name.lexeme + ': no context was provided.'
             );
         }
 
-        Set<String> fields = context.getSObjectType().getDescribe().fields.getMap().keySet();
-        if (!fields.contains(mergeField.name.lexeme.toLowerCase())) {
-            // The name could also be a relationship name, so add those as well
-            for (ChildRelationship relationship : context.getSObjectType().getDescribe().getChildRelationships()) {
-                String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
-                if (childRelationshipName != null && childRelationshipName == mergeField.name.lexeme.toLowerCase()) {
-                    return context.getSObjects(relationship.getRelationshipName());
-                }
+        if (!env.containsField(mergeField.name.lexeme)) {
+            if (env.containsAsParent(mergeField.name.lexeme)) {
+                return env.getParentSObject(mergeField.name.lexeme);
             }
+
             throw new InterpreterException(
                 'Error executing merge field: ' +
                     mergeField.name.lexeme +
                     ' The SObject type ' +
-                    context.getSObjectType().getDescribe().getName() +
+                    env.getSObjectTypeName() +
                     ' does not contain a field with that name.'
             );
         }
 
-        return context.get(mergeField.name.lexeme);
+        return env.get(mergeField.name.lexeme);
     }
 
     public Object visit(Expr.Unary unary) {

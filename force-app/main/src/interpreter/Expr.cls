@@ -67,6 +67,20 @@ public abstract class Expr {
         }
     }
 
+    public class GetExpr extends Expr {
+        public final Expr objectExpr;
+        public final Token name;
+
+        public GetExpr(Expr objectExpr, Token name) {
+            this.objectExpr = objectExpr;
+            this.name = name;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
+
     public class Unary extends Expr {
         public final Token operator;
         public final Expr right;

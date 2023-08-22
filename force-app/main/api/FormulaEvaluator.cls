@@ -32,7 +32,8 @@ public with sharing class FormulaEvaluator {
             printer.printAst(expression);
         }
 
-        Interpreter interpreter = new Interpreter(context);
+        Environment env = new Environment(context);
+        Interpreter interpreter = new Interpreter(env);
         return interpreter.interpret(expression);
     }
 
@@ -59,7 +60,8 @@ public with sharing class FormulaEvaluator {
         ContextResolver ctxInterpreter = new ContextResolver(recordId);
         SObject record = ctxInterpreter.build(expression);
 
-        Interpreter interpreter = new Interpreter(record);
+        Environment env = new Environment(record);
+        Interpreter interpreter = new Interpreter(env);
         return interpreter.interpret(expression);
     }
 

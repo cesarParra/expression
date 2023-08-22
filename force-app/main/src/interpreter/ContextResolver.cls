@@ -56,6 +56,27 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.GetExpr getExpr) {
+        String referenceName = this.resolveExtractReferenceOutOfGetExpression(getExpr);
+        this.fields.add(referenceName);
+        return null;
+    }
+
+    public String resolveExtractReferenceOutOfGetExpression(Expr.GetExpr getExpr) {
+        // Get the relationship field to query out of the get/merge field contained.
+        String relationshipToQuery = '';
+        if ((getExpr.objectExpr instanceof Expr.MergeField)) {
+            relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme;
+        } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
+            relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr);
+        } else {
+            throw new ResolverException('Did not understand the relationship to field ' +
+                getExpr.objectExpr + ' for SObjectType ' + this.recordId.getSobjectType());
+        }
+
+        return relationshipToQuery + '.' + getExpr.name.lexeme;
+    }
+
     public Object visit(Expr.Function function) {
         switch on function.name.type {
             // The TOLIST function is a special case, since here we know we are dealing with a

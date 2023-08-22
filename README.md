@@ -53,11 +53,24 @@ and then using any of the list functions to compute information from that list.
 When referencing child data in this way, the framework will take care of any necessary
 subqueries, so only one SOQL query is consumed.
 
+Referencing parent relationships through dot notation is also supported by both
+endpoints (the one that takes an SObject as context and the one that takes a record Id).
+
+```apex
+Account parentAccount = new Account(Name = 'ACME');
+insert parentAccount;
+
+Account childAccount = new Account(Name = 'ACME Child', ParentId = parentAccount.Id);
+insert childAccount;
+
+Object result = FormulaEvaluator.evaluate('Parent.Name', childAccount.Id);
+Assert.areEqual('ACME', result);
+```
+
 ### Considerations and Limitations
 
 There are a few limitations around merge fields at the moment
 
-- There is currently no support for parent (__r) relationships
 - When using the endpoint that takes a record Id as the context, the query
 is performed `with sharing`, so any records that the user does not have access to
 will not be returned or taken into account in the operation.
