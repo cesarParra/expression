@@ -742,4 +742,22 @@ private class FormulaEvaluatorTest {
     private static void brFunAdds1LineBreakWhen1ArgumentIsPassed() {
         Assert.areEqual('a\n\nb', FormulaEvaluator.evaluate('"a" + BR(2) + "b"'));
     }
+
+    @IsTest
+    private static void caseFunctionReturnsTheCorrectValueWhenThereIsAMatch() {
+        Account testAccount = new Account(Rating = 'Hot');
+
+        Object result = FormulaEvaluator.evaluate('CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")', testAccount);
+
+        Assert.areEqual('🔥', result);
+    }
+
+    @IsTest
+    private static void caseFunctionReturnsElseValueWhenThereIsNoMatch() {
+        Account testAccount = new Account(Rating = 'Warm');
+
+        Object result = FormulaEvaluator.evaluate('CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")', testAccount);
+
+        Assert.areEqual('🤷', result);
+    }
 }

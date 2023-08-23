@@ -277,6 +277,22 @@ FormulaEvaluator.evaluate('ISBLANK("")'); // true
 FormulaEvaluator.evaluate('ISBLANK("Hello")'); // false
 ```
 
+- `CASE`
+
+Compares a given expression to a set of values. If the expression matches a value, the corresponding value is returned,
+otherwise the default value is returned.
+
+Accepts any number of arguments where the first is the expression to evaluate, the last is the "else" case
+and in between each pair of arguments is a value to compare against and the value to return if the expression matches.
+Format: `CASE(expression,value1, result1, value2, result2,..., else_result)`
+
+```apex
+Account testAccount = new Account(Rating = 'Hot');
+Object result = FormulaEvaluator.evaluate(
+    'CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")', 
+    testAccount); // "🔥"
+```
+
 #### String Functions
 
 - `BEGINS`

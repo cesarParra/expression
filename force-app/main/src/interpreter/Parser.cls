@@ -107,7 +107,6 @@ public with sharing class Parser {
         }
 
         if (match2(TokenType.NUMBER_LITERAL, TokenType.STRING_LITERAL)) {
-            System.debug('matched number or string literal ' + previous().literal);
             return new Expr.Literal(previous().literal);
         }
 
@@ -115,10 +114,9 @@ public with sharing class Parser {
             return new Expr.MergeField(previous());
         }
 
-        System.debug('trying to match fn ' + peek().type);
         if (match(new List<TokenType>{
             TokenType.AND_FN, TokenType.OR_FN, TokenType.MAX_FN, TokenType.MIN_FN,
-            TokenType.LIST_FN
+            TokenType.LIST_FN, TokenType.CASE_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
