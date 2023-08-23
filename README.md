@@ -740,6 +740,27 @@ FormulaEvaluator.evaluate('TRUNC(1.5, 1)'); // 1.5
 
 ---
 
+## LWC Components
+
+Included in this repository is an LWC component that can be placed in record pages, and allows
+you to evaluate formulas in the context of the current record.
+
+Feel free to deploy and use this as you see fit, use it as an example to build your own, or
+just ignore it (there are no dependencies to it so you can safely delete it or not deploy the `ui` folder).
+
+### Sample Usage
+
+Placing the component in an Account page and using the following formula:
+
+```bash
+"Account Name: " + Name + BR(2) + "Rating: " + CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")
+```
+
+Results in the following. Note that the component reacts to changes in the record and updates
+itself based on the new values.
+
+![Sample Usage](assets/sample-lwc-usage.gif)
+
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or submit a pull request.
