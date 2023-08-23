@@ -277,6 +277,22 @@ FormulaEvaluator.evaluate('ISBLANK("")'); // true
 FormulaEvaluator.evaluate('ISBLANK("Hello")'); // false
 ```
 
+- `CASE`
+
+Compares a given expression to a set of values. If the expression matches a value, the corresponding value is returned,
+otherwise the default value is returned.
+
+Accepts any number of arguments where the first is the expression to evaluate, the last is the "else" case
+and in between each pair of arguments is a value to compare against and the value to return if the expression matches.
+Format: `CASE(expression,value1, result1, value2, result2,..., else_result)`
+
+```apex
+Account testAccount = new Account(Rating = 'Hot');
+Object result = FormulaEvaluator.evaluate(
+    'CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")', 
+    testAccount); // "🔥"
+```
+
 #### String Functions
 
 - `BEGINS`
@@ -413,6 +429,20 @@ If the second argument is a negative number, it gets treated as a 0
 ```apex
 FormulaEvaluator.evaluate('RIGHT("Hello World", 5)'); // "World"
 FormulaEvaluator.evaluate('RIGHT("Hello World", -5)'); // ""
+```
+
+- `BR`
+
+Inserts a line break in a string of text.
+
+When no arguments are provided, it inserts a line break. When a number is provided, it inserts that number of line
+
+⚠️ Note that the inserted line break depends on the call context based on the [Request Quiddity](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_enum_System_Quiddity.htm). When called from
+    an Aura/LWC or Visualforce context it will insert a `<br>` tag, otherwise it will insert a newline character.
+
+```apex
+FormulaEvaluator.evaluate('BR()'); // "\n" or "<br>"
+FormulaEvaluator.evaluate('BR(2)'); // "\n\n" or "<br><br>"
 ```
 
 #### Date and Time Functions
@@ -709,6 +739,27 @@ FormulaEvaluator.evaluate('TRUNC(1.5, 1)'); // 1.5
 ```
 
 ---
+
+## LWC Components
+
+Included in this repository is an LWC component that can be placed in record pages, and allows
+you to evaluate formulas in the context of the current record.
+
+Feel free to deploy and use this as you see fit, use it as an example to build your own, or
+just ignore it (there are no dependencies to it so you can safely delete it or not deploy the `ui` folder).
+
+### Sample Usage
+
+Placing the component in an Account page and using the following formula:
+
+```bash
+"Account Name: " + Name + BR(2) + "Rating: " + CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")
+```
+
+Results in the following. Note that the component reacts to changes in the record and updates
+itself based on the new values.
+
+![Sample Usage](assets/sample-lwc-usage.gif)
 
 ## Contributing
 

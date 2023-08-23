@@ -641,6 +641,15 @@ private class FormulaEvaluatorTest {
     }
 
     @IsTest
+    private static void doesNotConsumeAQueryWhenThereAreNoMergeFieldsInTheFormula() {
+        Integer queriesConsumedBefore = Limits.getQueries();
+        FormulaEvaluator.evaluate('1 + 1', IdGenerator.generate(Account.SObjectType));
+        Integer queriesConsumedAfter = Limits.getQueries();
+
+        Assert.areEqual(0, queriesConsumedAfter - queriesConsumedBefore);
+    }
+
+    @IsTest
     private static void canUseARecordIdAsContextToGetAggregateInformationFromChildren() {
         Account parentAccount = new Account(Name = 'Parent');
         insert parentAccount;
@@ -722,5 +731,33 @@ private class FormulaEvaluatorTest {
         Object result = FormulaEvaluator.evaluate('Account.Parent.Parent.Name', childContact.Id);
 
         Assert.areEqual('GreatGrandParent', result);
+    }
+
+    @IsTest
+    private static void brFunAdds1LineBreakWhenNoArgumentsArePassed() {
+        Assert.areEqual('a\nb', FormulaEvaluator.evaluate('"a" + BR() + "b"'));
+    }
+
+    @IsTest
+    private static void brFunAdds1LineBreakWhen1ArgumentIsPassed() {
+        Assert.areEqual('a\n\nb', FormulaEvaluator.evaluate('"a" + BR(2) + "b"'));
+    }
+
+    @IsTest
+    private static void caseFunctionReturnsTheCorrectValueWhenThereIsAMatch() {
+        Account testAccount = new Account(Rating = 'Hot');
+
+        Object result = FormulaEvaluator.evaluate('CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")', testAccount);
+
+        Assert.areEqual('🔥', result);
+    }
+
+    @IsTest
+    private static void caseFunctionReturnsElseValueWhenThereIsNoMatch() {
+        Account testAccount = new Account(Rating = 'Warm');
+
+        Object result = FormulaEvaluator.evaluate('CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")', testAccount);
+
+        Assert.areEqual('🤷', result);
     }
 }
