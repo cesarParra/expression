@@ -21,11 +21,12 @@ public enum TokenType {
     // Built-in functions
     // Logical
     AND_FN, IF_FN, NOT_FN, OR_FN, BLANKVALUE_FN, ISBLANK_FN,
-    ISNUMBER_FN,
+    ISNUMBER_FN, CASE_FN,
 
     // String
     BEGINS_FN, CONTAINS_FN, LOWER_FN, FIND_FN, LEFT_FN, LEN_FN,
     LPAD_FN, RPAD_FN, REVERSE_FN, MID_FN, SUBSTRING_FN, RIGHT_FN,
+    BR_FN,
 
     // Date and time
     ADDMONTHS_FN, DATE_FN, DAY_FN, DAYOFYEAR_FN, NOW_FN, DATEVALUE_FN,
