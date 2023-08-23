@@ -760,4 +760,9 @@ private class FormulaEvaluatorTest {
 
         Assert.areEqual('🤷', result);
     }
+
+    @IsTest
+    private static void sizeFunctionReturnsAListSize() {
+        Assert.areEqual(3, FormulaEvaluator.evaluate('SIZE(LIST(1, 2, 3))'));
+    }
 }

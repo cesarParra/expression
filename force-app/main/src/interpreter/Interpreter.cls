@@ -962,6 +962,16 @@ public with sharing class Interpreter implements Visitor {
                 // If no match was found, return the else expression (the last argument)
                 return evaluate(function.arguments.get(function.arguments.size() - 1));
             }
+            when SIZE_FN {
+                Object listOfValues = evaluate(function.arguments.get(0));
+                if (!(listOfValues instanceof List<Object>)) {
+                    throw new InterpreterException(
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a list.'
+                    );
+                }
+
+                return ((List<Object>) listOfValues).size();
+            }
         }
 
         // Unreachable

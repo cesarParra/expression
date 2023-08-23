@@ -645,12 +645,22 @@ Object result = FormulaEvaluator.evaluate('AVERAGE(TOLIST(ChildAccounts, NumberO
 
 - `AVERAGE`
 
-Returns the average of a list of numbers.
+Returns the average given a list of numbers.
 
 Accepts 1 argument: the list of numbers to evaluate.
 
 ```apex
 FormulaEvaluator.evaluate('AVERAGE(LIST(1, 2, 3))'); // 2
+```
+
+- `SIZE`
+
+Returns the number of elements in a list.
+
+Accepts 1 argument: the list to evaluate.
+
+```apex
+FormulaEvaluator.evaluate('SIZE(LIST(1, 2, 3))'); // 3
 ```
 
 #### Math Functions
