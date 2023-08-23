@@ -421,9 +421,12 @@ Inserts a line break in a string of text.
 
 When no arguments are provided, it inserts a line break. When a number is provided, it inserts that number of line
 
+⚠️ Note that the inserted line break depends on the call context based on the [Request Quiddity](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_enum_System_Quiddity.htm). When called from
+    an Aura/LWC or Visualforce context it will insert a `<br>` tag, otherwise it will insert a newline character.
+
 ```apex
-FormulaEvaluator.evaluate('BR()'); // "\n"
-FormulaEvaluator.evaluate('BR(2)'); // "\n\n"
+FormulaEvaluator.evaluate('BR()'); // "\n" or "<br>"
+FormulaEvaluator.evaluate('BR(2)'); // "\n\n" or "<br><br>"
 ```
 
 #### Date and Time Functions

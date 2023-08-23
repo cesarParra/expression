@@ -934,6 +934,9 @@ public with sharing class Interpreter implements Visitor {
                     linesToAdd = ((Decimal) linesToAddValue).intValue();
                 }
 
+                if (Request.getCurrent().getQuiddity() == Quiddity.AURA || Request.getCurrent().getQuiddity() == Quiddity.VF) {
+                    return '<br/>'.repeat(linesToAdd);
+                }
                 return '\n'.repeat(linesToAdd);
             }
         }

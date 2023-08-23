@@ -10,6 +10,7 @@ export default class Formula extends LightningElement {
     @wire(evaluate, {recordId: '$recordId', formula: '$expr'})
     evaluate({error, data}) {
         if (data) {
+            console.log(data);
             this.computed = data;
         } else if (error) {
             console.error(this.error);
