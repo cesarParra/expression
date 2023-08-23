@@ -723,4 +723,9 @@ private class FormulaEvaluatorTest {
 
         Assert.areEqual('GreatGrandParent', result);
     }
+
+    @IsTest
+    private static void sizeFunctionReturnsAListSize() {
+        Assert.areEqual(3, FormulaEvaluator.evaluate('SIZE(LIST(1, 2, 3))'));
+    }
 }

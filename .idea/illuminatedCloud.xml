@@ -4,10 +4,10 @@
     <option name="connections">
       <list>
         <IlluminatedCloudConnection>
-          <option name="connectionName" value="FormulaEvaluator" />
+          <option name="connectionName" value="formula-evaluator" />
           <option name="connectionType" value="SFDX" />
           <option name="defaultModuleName" value="formula-evaluator" />
-          <option name="offlineSymbolTablePath" value="$PROJECT_DIR$/IlluminatedCloud/FormulaEvaluator/OfflineSymbolTable.zip" />
+          <option name="offlineSymbolTablePath" value="$PROJECT_DIR$/IlluminatedCloud/formula_evaluator/OfflineSymbolTable.zip" />
         </IlluminatedCloudConnection>
       </list>
     </option>

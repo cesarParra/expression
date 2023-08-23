@@ -921,6 +921,16 @@ public with sharing class Interpreter implements Visitor {
 
                 return sum / sanitizedList.size();
             }
+            when SIZE_FN {
+                Object listOfValues = evaluate(function.arguments.get(0));
+                if (!(listOfValues instanceof List<Object>)) {
+                    throw new InterpreterException(
+                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a list.'
+                    );
+                }
+
+                return ((List<Object>) listOfValues).size();
+            }
         }
 
         // Unreachable
