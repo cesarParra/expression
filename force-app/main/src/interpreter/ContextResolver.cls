@@ -129,6 +129,12 @@ public with sharing class ContextResolver implements Visitor {
     public SObject build(Expr expression) {
         this.resolve(expression);
 
+        if (fields.isEmpty() && childRelationshipsFieldsByRelationshipName.isEmpty()) {
+            // There is no need to consume a database query if there are no merge
+            // fields in the formula
+            return null;
+        }
+
         this.queryBuilder.selectFields(this.fields).add(Q.condition('Id').equalsTo(this.recordId));
         for (String relationshipName : this.childRelationshipsFieldsByRelationshipName.keySet()) {
             Q childQ = new Q(relationshipName);

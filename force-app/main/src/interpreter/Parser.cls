@@ -107,6 +107,7 @@ public with sharing class Parser {
         }
 
         if (match2(TokenType.NUMBER_LITERAL, TokenType.STRING_LITERAL)) {
+            System.debug('matched number or string literal ' + previous().literal);
             return new Expr.Literal(previous().literal);
         }
 
@@ -114,6 +115,7 @@ public with sharing class Parser {
             return new Expr.MergeField(previous());
         }
 
+        System.debug('trying to match fn ' + peek().type);
         if (match(new List<TokenType>{
             TokenType.AND_FN, TokenType.OR_FN, TokenType.MAX_FN, TokenType.MIN_FN,
             TokenType.LIST_FN
@@ -443,6 +445,22 @@ public with sharing class Parser {
             return new Expr.Function(fnName, new List<Expr>{
                 numberListValue
             });
+        }
+
+        if (match(TokenType.BR_FN)) {
+            Token fnName = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            // Optionally accepts one argument: a number of lines to add
+            if (!check(TokenType.RIGHT_PAREN)) {
+                Expr numberOfLines = expression();
+                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+                return new Expr.Function(fnName, new List<Expr>{
+                    numberOfLines
+                });
+            }
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+
+            return new Expr.Function(fnName, new List<Expr>());
         }
 
         if (match(TokenType.LEFT_PAREN)) {

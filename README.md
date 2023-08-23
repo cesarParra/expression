@@ -415,6 +415,17 @@ FormulaEvaluator.evaluate('RIGHT("Hello World", 5)'); // "World"
 FormulaEvaluator.evaluate('RIGHT("Hello World", -5)'); // ""
 ```
 
+- `BR`
+
+Inserts a line break in a string of text.
+
+When no arguments are provided, it inserts a line break. When a number is provided, it inserts that number of line
+
+```apex
+FormulaEvaluator.evaluate('BR()'); // "\n"
+FormulaEvaluator.evaluate('BR(2)'); // "\n\n"
+```
+
 #### Date and Time Functions
 
 - `DATE`

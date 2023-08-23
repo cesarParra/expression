@@ -921,6 +921,21 @@ public with sharing class Interpreter implements Visitor {
 
                 return sum / sanitizedList.size();
             }
+            when BR_FN {
+                Integer linesToAdd = 1;
+                // If an argument was passed, then it must be a number
+                if (function.arguments.size() > 0) {
+                    Object linesToAddValue = evaluate(function.arguments.get(0));
+                    if (!(linesToAddValue instanceof Decimal)) {
+                        throw new InterpreterException(
+                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
+                        );
+                    }
+                    linesToAdd = ((Decimal) linesToAddValue).intValue();
+                }
+
+                return '\n'.repeat(linesToAdd);
+            }
         }
 
         // Unreachable

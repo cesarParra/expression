@@ -58,6 +58,7 @@ public with sharing class Scanner {
         keywords.put('list', TokenType.LIST_FN);
         keywords.put('tolist', TokenType.TOLIST_FN);
         keywords.put('average', TokenType.AVERAGE_FN);
+        keywords.put('br', TokenType.BR_FN);
     }
 
     public Scanner(String source) {
