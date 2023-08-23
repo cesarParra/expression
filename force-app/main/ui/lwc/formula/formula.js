@@ -1,20 +1,38 @@
 import {api, LightningElement, wire} from 'lwc';
 import evaluate from '@salesforce/apex/FormulaEvaluatorUiController.evaluate';
+import {
+    REFRESH_COMPLETE, registerRefreshContainer,
+} from "lightning/refresh";
+import {refreshApex} from "@salesforce/apex";
 
 export default class Formula extends LightningElement {
     @api recordId;
     @api title;
     @api expr;
-    computed;
+    computedWire;
+
+    connectedCallback() {
+        registerRefreshContainer(this, this.refreshContainer);
+    }
 
     @wire(evaluate, {recordId: '$recordId', formula: '$expr'})
-    evaluate({error, data}) {
-        if (data) {
-            console.log(data);
-            this.computed = data;
-        } else if (error) {
+    evaluate(result) {
+        this.computedWire = result;
+        const {error} = result;
+        if (error) {
             console.error(this.error);
-            this.computed = undefined;
         }
+    }
+
+    get computed() {
+        return this.computedWire && this.computedWire.data;
+    }
+
+    refreshContainer(refreshPromise) {
+        return refreshPromise.then((status) => {
+            if (status === REFRESH_COMPLETE) {
+                refreshApex(this.computedWire);
+            }
+        });
     }
 }
