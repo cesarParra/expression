@@ -131,7 +131,6 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-            TokenType.MAX_FN, TokenType.MIN_FN,
             TokenType.LIST_FN
         })) {
             Token fnName = previous();

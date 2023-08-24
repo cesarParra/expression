@@ -225,53 +225,6 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Function function) {
         switch on function.name.type {
-            when MAX_FN, MIN_FN {
-                if (function.arguments.isEmpty()) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the function must have at least one argument.'
-                    );
-                }
-
-                List<Object> values = new List<Object>();
-
-                // If the first argument is a list then only one argument is expected
-                Object firstArgument = evaluate(function.arguments.get(0));
-                if (firstArgument instanceof List<Object>) {
-                    if (function.arguments.size() > 1) {
-                        throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the function must have at most one argument when the first argument is a list.'
-                        );
-                    }
-
-                    values = (List<Object>) firstArgument;
-                } else {
-                    values.add(firstArgument);
-
-                    for (Integer i = 1; i < function.arguments.size(); i++) {
-                        values.add(evaluate(function.arguments.get(i)));
-                    }
-                }
-
-                Decimal result = null;
-                for (Object value : values) {
-                    if (!(value instanceof Decimal)) {
-                        throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the value ' + value + ' is not a number.'
-                        );
-                    }
-
-                    if (result == null) {
-                        result = (Decimal) value;
-                    } else {
-                        if (function.name.type == TokenType.MAX_FN) {
-                            result = Math.max(result, (Decimal) value);
-                        } else {
-                            result = Math.min(result, (Decimal) value);
-                        }
-                    }
-                }
-                return result;
-            }
             when ROUND_FN, TRUNC_FN {
                 Object numberValue = evaluate(function.arguments.get(0));
                 if (!(numberValue instanceof Decimal)) {

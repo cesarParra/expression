@@ -20,8 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // Math
-    MAX_FN,
-    MIN_FN,
     ROUND_FN,
     TRUNC_FN,
 

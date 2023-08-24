@@ -13,8 +13,6 @@ public with sharing class Scanner {
         keywords.put('null', TokenType.NULL_KEYWORD);
 
         // TODO: Functions start here
-        keywords.put('max', TokenType.MAX_FN);
-        keywords.put('min', TokenType.MIN_FN);
         keywords.put('round', TokenType.ROUND_FN);
         keywords.put('trunc', TokenType.TRUNC_FN);
         keywords.put('list', TokenType.LIST_FN);

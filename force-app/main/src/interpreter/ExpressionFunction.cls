@@ -41,7 +41,9 @@ public with sharing abstract class ExpressionFunction {
         'ABS' => new AbsFn(),
         'CEILING' => new CeilingFn(),
         'FLOOR' => new FloorFn(),
-        'FROMUNIXTIME' => new FromUnixTimeFn()
+        'FROMUNIXTIME' => new FromUnixTimeFn(),
+        'MAX' => new MaxMixFns('MAX'),
+        'MIN' => new MaxMixFns('MIN')
     };
 
     private enum TimeType {
@@ -769,6 +771,62 @@ public with sharing abstract class ExpressionFunction {
             Long timeStamp = ((Decimal) unixTime).longValue() * 1000;
             Datetime gmtDatetime = Datetime.newInstance(timeStamp);
             return gmtDatetime;
+        }
+    }
+
+    private class MaxMixFns extends ExpressionFunction {
+        private final String name;
+
+        public MaxMixFns(String name) {
+            this.name = name;
+        }
+
+        public override Object call(List<Expr> arguments) {
+            if (arguments.isEmpty()) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing ' + name + ' function: the function must have at least one argument.'
+                );
+            }
+
+            List<Object> values = new List<Object>();
+
+            // If the first argument is a list then only one argument is expected
+            Object firstArgument = evaluate(arguments.get(0));
+            if (firstArgument instanceof List<Object>) {
+                if (arguments.size() > 1) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing ' + name + ' function: the function must have at most one argument when the first argument is a list.'
+                    );
+                }
+
+                values = (List<Object>) firstArgument;
+            } else {
+                values.add(firstArgument);
+
+                for (Integer i = 1; i < arguments.size(); i++) {
+                    values.add(evaluate(arguments.get(i)));
+                }
+            }
+
+            Decimal result = null;
+            for (Object value : values) {
+                if (!(value instanceof Decimal)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing ' + name + ' function: the value ' + value + ' is not a number.'
+                    );
+                }
+
+                if (result == null) {
+                    result = (Decimal) value;
+                } else {
+                    if (name == 'MAX') {
+                        result = Math.max(result, (Decimal) value);
+                    } else {
+                        result = Math.min(result, (Decimal) value);
+                    }
+                }
+            }
+            return result;
         }
     }
 }
