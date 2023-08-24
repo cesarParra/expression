@@ -47,7 +47,8 @@ public with sharing abstract class ExpressionFunction {
         'ROUND' => new RoundAndTruncFns('ROUND'),
         'TRUNC' => new RoundAndTruncFns('TRUNC'),
         'LIST' => new ListFn(),
-        'TOLIST' => new ToListFn()
+        'TOLIST' => new ToListFn(),
+        'AVERAGE' => new AverageFn()
     };
 
     private enum TimeType {
@@ -926,6 +927,43 @@ public with sharing abstract class ExpressionFunction {
                 result.add(Evaluator.run(secondArgument, child));
             }
             return result;
+        }
+    }
+
+    private class AverageFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object listOfNumbers = evaluate(arguments.get(0));
+
+            // Verify that all elements in the list are numbers
+            if (!(listOfNumbers instanceof List<Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "AVERAGE" function: the argument must evaluate to a list of numbers.'
+                );
+            }
+
+            List<Object> listOfNumbersAsList = (List<Object>) listOfNumbers;
+            // Sanitize nulls
+            List<Object> sanitizedList = new List<Object>();
+            for (Object maybeNull : listOfNumbersAsList) {
+                if (maybeNull != null) {
+                    sanitizedList.add(maybeNull);
+                }
+            }
+            for (Object maybeNumber : sanitizedList) {
+                if (!(maybeNumber instanceof Decimal)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "AVERAGE" function: the argument must evaluate to a list of numbers.'
+                    );
+                }
+            }
+
+            // Calculate the average
+            Decimal sum = 0;
+            for (Object numberValue : sanitizedList) {
+                sum += (Decimal) numberValue;
+            }
+
+            return sum / sanitizedList.size();
         }
     }
 }

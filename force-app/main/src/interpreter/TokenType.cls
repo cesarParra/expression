@@ -20,7 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // Lists
-    AVERAGE_FN,
     SIZE_FN,
 
     // EOF
