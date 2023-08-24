@@ -19,9 +19,6 @@ public enum TokenType {
     TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD,
 
     // Built-in functions
-    // String
-    BR_FN,
-
     // Date and time
     ADDMONTHS_FN,
     DATE_FN,

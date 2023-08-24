@@ -19,7 +19,8 @@ public with sharing abstract class ExpressionFunction {
         'REVERSE' => new ReverseFn(),
         'MID' => new MidFn(),
         'SUBSTRING' => new SubstringFn(),
-        'RIGHT' => new RightFn()
+        'RIGHT' => new RightFn(),
+        'BR' => new BrFn()
     };
 
     private Interpreter interpreter;
@@ -442,6 +443,27 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((String) text).right(lengthAsInteger);
+        }
+    }
+
+    private class BrFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Integer linesToAdd = 1;
+            // If an argument was passed, then it must be a number
+            if (arguments.size() > 0) {
+                Object linesToAddValue = evaluate(arguments.get(0));
+                if (!(linesToAddValue instanceof Decimal)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "BR" function: the argument must evaluate to a number value.'
+                    );
+                }
+                linesToAdd = ((Decimal) linesToAddValue).intValue();
+            }
+
+            if (Request.getCurrent().getQuiddity() == Quiddity.AURA || Request.getCurrent().getQuiddity() == Quiddity.VF) {
+                return '<br/>'.repeat(linesToAdd);
+            }
+            return '\n'.repeat(linesToAdd);
         }
     }
 }

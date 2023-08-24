@@ -295,22 +295,6 @@ public with sharing class Parser {
             });
         }
 
-        if (match(TokenType.BR_FN)) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            // Optionally accepts one argument: a number of lines to add
-            if (!check(TokenType.RIGHT_PAREN)) {
-                Expr numberOfLines = expression();
-                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-                return new Expr.Function(fnName, new List<Expr>{
-                    numberOfLines
-                });
-            }
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-
-            return new Expr.Function(fnName, new List<Expr>());
-        }
-
         if (match(TokenType.SIZE_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
