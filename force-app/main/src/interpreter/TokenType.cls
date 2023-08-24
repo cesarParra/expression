@@ -20,7 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // Date and time
-    ADDMONTHS_FN,
     DATE_FN,
     DAY_FN,
     DAYOFYEAR_FN,

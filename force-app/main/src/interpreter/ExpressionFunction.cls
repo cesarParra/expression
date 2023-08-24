@@ -20,7 +20,8 @@ public with sharing abstract class ExpressionFunction {
         'MID' => new MidFn(),
         'SUBSTRING' => new SubstringFn(),
         'RIGHT' => new RightFn(),
-        'BR' => new BrFn()
+        'BR' => new BrFn(),
+        'ADDMONTHS' => new AddMonthsFn()
     };
 
     private Interpreter interpreter;
@@ -464,6 +465,26 @@ public with sharing abstract class ExpressionFunction {
                 return '<br/>'.repeat(linesToAdd);
             }
             return '\n'.repeat(linesToAdd);
+        }
+    }
+
+    private class AddMonthsFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object startMonth = evaluate(arguments.get(0));
+            if (!(startMonth instanceof Date)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "ADDMONTHS" function: the argument must evaluate to a date value.'
+                );
+            }
+
+            Object monthsToAdd = evaluate(arguments.get(1));
+            if (!(monthsToAdd instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "ADDMONTHS" function: the argument must evaluate to a number value.'
+                );
+            }
+
+            return ((Date) startMonth).addMonths(((Decimal) monthsToAdd).intValue());
         }
     }
 }
