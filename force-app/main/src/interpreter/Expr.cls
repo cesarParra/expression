@@ -30,11 +30,11 @@ public abstract class Expr {
     }
 
     public class Function extends Expr {
-        public final Token name;
+        public final String functionName;
         public final List<Expr> arguments;
 
-        public Function(Token name, List<Expr> arguments) {
-            this.name = name;
+        public Function(String functionName, List<Expr> arguments) {
+            this.functionName = functionName;
             this.arguments = arguments;
         }
 

@@ -78,48 +78,45 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.Function function) {
-        switch on function.name.type {
+        if (function.functionName == 'TOLIST') {
             // The TOLIST function is a special case, since here we know we are dealing with a
             // child relationship whose fields need to be queried correctly as a subquery.
-            when TOLIST_FN {
-                // Expect 2 arguments, the first will be the name of the child relationship field,
-                // the second the name of the fields for which we want the data
-                if (function.arguments.size() != 2) {
-                    throw new ResolverException(
-                        'Error executing ' + function.name.lexeme + ' function: the function must have exactly 2 arguments.'
-                    );
-                }
-
-                // Evaluate the first argument as normal.
-                // This will eventually resolve as a Merge field and initialize
-                // the childRelationshipsFieldsByRelationshipName map.
-                this.resolve(function.arguments[0]);
-
-                // The first argument is the name of a child relationship, which will be the key to our map
-                if (!(function.arguments.get(0) instanceof Expr.MergeField)) {
-                    throw new ResolverException(
-                        'Error executing ' + function.name.lexeme + ' function: the first argument must be a merge field.'
-                    );
-                }
-
-                String mapKey = ((Expr.MergeField) function.arguments.get(0)).name.lexeme.toLowerCase();
-
-                // The second argument is the name of a child field, so we want to add it to the pre-initialized
-                // map so that it gets queried
-                if (!(function.arguments.get(1) instanceof Expr.MergeField)) {
-                    throw new ResolverException(
-                        'Error executing ' + function.name.lexeme + ' function: the second argument must be a merge field.'
-                    );
-                }
-                String secondArgument = ((Expr.MergeField) function.arguments.get(1)).name.lexeme;
-                Set<String> fields = this.childRelationshipsFieldsByRelationshipName.get(mapKey);
-                fields.add(secondArgument);
-
-                return null;
+            // Expect 2 arguments, the first will be the name of the child relationship field,
+            // the second the name of the fields for which we want the data
+            if (function.arguments.size() != 2) {
+                throw new ResolverException(
+                    'Error executing "TOLIST" function: the function must have exactly 2 arguments.'
+                );
             }
+
+            // Evaluate the first argument as normal.
+            // This will eventually resolve as a Merge field and initialize
+            // the childRelationshipsFieldsByRelationshipName map.
+            this.resolve(function.arguments[0]);
+
+            // The first argument is the name of a child relationship, which will be the key to our map
+            if (!(function.arguments.get(0) instanceof Expr.MergeField)) {
+                throw new ResolverException(
+                    'Error executing "TOLIST" function: the first argument must be a merge field.'
+                );
+            }
+
+            String mapKey = ((Expr.MergeField) function.arguments.get(0)).name.lexeme.toLowerCase();
+
+            // The second argument is the name of a child field, so we want to add it to the pre-initialized
+            // map so that it gets queried
+            if (!(function.arguments.get(1) instanceof Expr.MergeField)) {
+                throw new ResolverException(
+                    'Error executing "TOLIST" function: the second argument must be a merge field.'
+                );
+            }
+            String secondArgument = ((Expr.MergeField) function.arguments.get(1)).name.lexeme;
+            Set<String> fields = this.childRelationshipsFieldsByRelationshipName.get(mapKey);
+            fields.add(secondArgument);
+
+            return null;
         }
 
-        // For anything else, we resolve as normal
         for (Expr argument : function.arguments) {
             this.resolve(argument);
         }

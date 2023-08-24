@@ -6,17 +6,17 @@ public with sharing class AstPrinter implements Visitor {
 
     public Object visit(Expr.Binary binary) {
         return parenthesize(
-                binary.operator.lexeme,
-                new List<Expr>{
-                        binary.left,
-                        binary.right
-                }
+            binary.operator.lexeme,
+            new List<Expr>{
+                binary.left,
+                binary.right
+            }
         );
     }
 
     public Object visit(Expr.Grouping grouping) {
         return parenthesize('group', new List<Expr>{
-                grouping.expression
+            grouping.expression
         });
     }
 
@@ -30,26 +30,26 @@ public with sharing class AstPrinter implements Visitor {
 
     public Object visit(Expr.Unary unary) {
         return parenthesize(
-                unary.operator.lexeme,
-                new List<Expr>{
-                        unary.right
-                }
+            unary.operator.lexeme,
+            new List<Expr>{
+                unary.right
+            }
         );
     }
 
     public Object visit(Expr.GetExpr getExpr) {
         return parenthesize(
-                'GET:' + getExpr.name.lexeme,
-                new List<Expr>{
-                        getExpr.objectExpr
-                }
+            'GET:' + getExpr.name.lexeme,
+            new List<Expr>{
+                getExpr.objectExpr
+            }
         );
     }
 
     public Object visit(Expr.Function function) {
         return parenthesize(
-                'FN:' +function.name.lexeme,
-                function.arguments
+            'FN:' + function.functionName,
+            function.arguments
         );
     }
 
@@ -64,7 +64,7 @@ public with sharing class AstPrinter implements Visitor {
         return builder.toString();
     }
 
-    private String objToString(Object obj) {
+    private static String objToString(Object obj) {
         if (obj == null) {
             return 'null';
         }
@@ -73,7 +73,7 @@ public with sharing class AstPrinter implements Visitor {
             // There seems to be an Apex bug that throws a Javalang exception
             // when trying to cast a generic Decimal object to a string, so if we encounter
             // a Decimal, we cast it first to a Decimal, then to a string.
-            return String.valueOf((Decimal)obj);
+            return String.valueOf((Decimal) obj);
         }
 
         return String.valueOf(obj.toString());
