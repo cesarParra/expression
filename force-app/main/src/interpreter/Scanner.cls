@@ -59,6 +59,12 @@ public with sharing class Scanner {
             when '.' {
                 addToken(TokenType.DOT);
             }
+            when '[' {
+                addToken(TokenType.LEFT_BRACE);
+            }
+            when ']' {
+                addToken(TokenType.RIGHT_BRACE);
+            }
 
             // One or more character tokens
             when '=' {

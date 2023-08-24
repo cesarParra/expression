@@ -253,4 +253,12 @@ public with sharing class Interpreter implements Visitor {
         fn.setInterpreter(this);
         return fn.call(function.arguments);
     }
+
+    public Object visit(Expr.ListLiteral listLiteral) {
+        List<Object> resultList = new List<Object>();
+        for (Expr expr : listLiteral.elements) {
+            resultList.add(evaluate(expr));
+        }
+        return resultList;
+    }
 }

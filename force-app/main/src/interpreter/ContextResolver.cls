@@ -123,6 +123,13 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.ListLiteral listLiteral) {
+        for (Expr element : listLiteral.elements) {
+            this.resolve(element);
+        }
+        return null;
+    }
+
     public SObject build(Expr expression) {
         this.resolve(expression);
 

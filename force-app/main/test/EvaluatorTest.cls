@@ -765,4 +765,9 @@ private class EvaluatorTest {
     private static void sizeFunctionReturnsAListSize() {
         Assert.areEqual(3, Evaluator.run('SIZE(LIST(1, 2, 3))'));
     }
+
+    @IsTest
+    private static void canBuildListLiterals() {
+        Assert.areEqual(3, Evaluator.run('SIZE([1, 2, 3])'));
+    }
 }
