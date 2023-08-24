@@ -249,28 +249,6 @@ public with sharing class Parser {
             });
         }
 
-        if (match2(TokenType.LPAD_FN, TokenType.RPAD_FN)) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr text = expression();
-            consume(TokenType.COMMA, 'Expect \',\' after text.');
-            Expr numberOfCharacters = expression();
-
-            // The 3rd argument (pad string) is optional
-            if (match(TokenType.COMMA)) {
-                Expr padString = expression();
-                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-
-                return new Expr.Function(fnName, new List<Expr>{
-                    text, numberOfCharacters, padString
-                });
-            }
-
-            return new Expr.Function(fnName, new List<Expr>{
-                text, numberOfCharacters
-            });
-        }
-
         if (match(new List<TokenType>{
             TokenType.NOW_FN, TokenType.TODAY_FN, TokenType.TIMENOW_FN
         })) {

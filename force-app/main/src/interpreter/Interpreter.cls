@@ -326,37 +326,6 @@ public with sharing class Interpreter implements Visitor {
                 Datetime gmtDatetime = Datetime.newInstance(timeStamp);
                 return gmtDatetime;
             }
-            when LPAD_FN, RPAD_FN {
-                Object text = evaluate(function.arguments.get(0));
-                if (!(text instanceof String)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the first argument must evaluate to a string value.'
-                    );
-                }
-
-                Object length = evaluate(function.arguments.get(1));
-                if (!(length instanceof Decimal)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
-                    );
-                }
-
-                Object padString = ' ';
-                if (function.arguments.size() > 2) {
-                    padString = evaluate(function.arguments.get(2));
-                    if (!(padString instanceof String)) {
-                        throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the third argument must evaluate to a string value.'
-                        );
-                    }
-                }
-
-                if (function.name.type == TokenType.LPAD_FN) {
-                    return ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length()) + (String) text;
-                } else {
-                    return (String) text + ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length());
-                }
-            }
             when NOW_FN {
                 return Datetime.now();
             }

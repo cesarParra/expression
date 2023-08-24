@@ -13,7 +13,9 @@ public with sharing abstract class ExpressionFunction {
         'CASE' => new CaseFn(),
         'FIND' => new FindFn(),
         'LEFT' => new LeftFn(),
-        'LEN' => new LenFn()
+        'LEN' => new LenFn(),
+        'LPAD' => new LRPad('LPAD'),
+        'RPAD' => new LRPad('RPAD')
     };
 
     private Interpreter interpreter;
@@ -295,6 +297,46 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((String) text).length();
+        }
+    }
+
+    private class LRPad extends ExpressionFunction {
+        private final String name;
+
+        public LRPad(String name) {
+            this.name = name;
+        }
+
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing ' + name + ' function: the first argument must evaluate to a string value.'
+                );
+            }
+
+            Object length = evaluate(arguments.get(1));
+            if (!(length instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing ' + name + ' function: the second argument must evaluate to a number value.'
+                );
+            }
+
+            Object padString = ' ';
+            if (arguments.size() > 2) {
+                padString = evaluate(arguments.get(2));
+                if (!(padString instanceof String)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing ' + name + ' function: the third argument must evaluate to a string value.'
+                    );
+                }
+            }
+
+            if (name == 'LPAD') {
+                return ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length()) + (String) text;
+            } else {
+                return (String) text + ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length());
+            }
         }
     }
 }
