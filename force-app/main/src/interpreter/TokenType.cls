@@ -1,7 +1,7 @@
 public enum TokenType {
     // Single-character
     PLUS, MINUS, STAR, SLASH, EXPONENT, LEFT_PAREN, RIGHT_PAREN, COMMA, DOT,
-    LEFT_BRACE, RIGHT_BRACE,
+    LEFT_BRACKET, RIGHT_BRACKET,
 
     // One or two character
     LESS, LESS_GREATER, LESS_EQUAL,

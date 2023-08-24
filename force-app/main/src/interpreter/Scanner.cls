@@ -60,10 +60,10 @@ public with sharing class Scanner {
                 addToken(TokenType.DOT);
             }
             when '[' {
-                addToken(TokenType.LEFT_BRACE);
+                addToken(TokenType.LEFT_BRACKET);
             }
             when ']' {
-                addToken(TokenType.RIGHT_BRACE);
+                addToken(TokenType.RIGHT_BRACKET);
             }
 
             // One or more character tokens
