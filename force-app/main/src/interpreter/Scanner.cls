@@ -11,8 +11,8 @@ public with sharing class Scanner {
         keywords.put('true', TokenType.TRUE_KEYWORD);
         keywords.put('false', TokenType.FALSE_KEYWORD);
         keywords.put('null', TokenType.NULL_KEYWORD);
-        keywords.put('and', TokenType.AND_FN);
-        keywords.put('if', TokenType.IF_FN);
+
+        // TODO: Functions start here
         keywords.put('not', TokenType.NOT_FN);
         keywords.put('or', TokenType.OR_FN);
         keywords.put('begins', TokenType.BEGINS_FN);

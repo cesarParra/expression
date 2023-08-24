@@ -111,11 +111,27 @@ public with sharing class Parser {
         }
 
         if (match(TokenType.IDENTIFIER)) {
+            // First check if the identifier is a potential function name
+            // by seeing if the next token is a left parenthesis
+            if (peek().type == TokenType.LEFT_PAREN) {
+                Token fnName = previous();
+                consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+                List<Expr> parameters = new List<Expr>();
+                if (!check(TokenType.RIGHT_PAREN)) {
+                    do {
+                        parameters.add(expression());
+                    } while (match(TokenType.COMMA));
+                }
+                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+                return new Expr.CallableFunction(fnName.lexeme.toUpperCase(), parameters);
+            }
+
+            // Otherwise we assume it's a field reference
             return new Expr.MergeField(previous());
         }
 
         if (match(new List<TokenType>{
-            TokenType.AND_FN, TokenType.OR_FN, TokenType.MAX_FN, TokenType.MIN_FN,
+            TokenType.OR_FN, TokenType.MAX_FN, TokenType.MIN_FN,
             TokenType.LIST_FN, TokenType.CASE_FN
         })) {
             Token fnName = previous();
@@ -128,20 +144,6 @@ public with sharing class Parser {
             }
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
             return new Expr.Function(fnName, parameters);
-        }
-
-        if (match(TokenType.IF_FN)) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr condition = expression();
-            consume(TokenType.COMMA, 'Expect \',\' after condition.');
-            Expr thenBranch = expression();
-            consume(TokenType.COMMA, 'Expect \',\' after then branch.');
-            Expr elseBranch = expression();
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-            return new Expr.Function(fnName, new List<Expr>{
-                condition, thenBranch, elseBranch
-            });
         }
 
         if (match(TokenType.NOT_FN)) {

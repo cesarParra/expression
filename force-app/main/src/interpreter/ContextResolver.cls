@@ -77,6 +77,13 @@ public with sharing class ContextResolver implements Visitor {
         return relationshipToQuery + '.' + getExpr.name.lexeme;
     }
 
+    public Object visit(Expr.CallableFunction function) {
+        for (Expr argument : function.arguments) {
+            this.resolve(argument);
+        }
+        return null;
+    }
+
     public Object visit(Expr.Function function) {
         switch on function.name.type {
             // The TOLIST function is a special case, since here we know we are dealing with a

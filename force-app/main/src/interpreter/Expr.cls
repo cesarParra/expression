@@ -29,6 +29,20 @@ public abstract class Expr {
         }
     }
 
+    public class CallableFunction extends Expr {
+        public final String functionName;
+        public final List<Expr> arguments;
+
+        public CallableFunction(String functionName, List<Expr> arguments) {
+            this.functionName = functionName;
+            this.arguments = arguments;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
+
     public class Function extends Expr {
         public final Token name;
         public final List<Expr> arguments;
