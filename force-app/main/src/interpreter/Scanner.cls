@@ -13,7 +13,6 @@ public with sharing class Scanner {
         keywords.put('null', TokenType.NULL_KEYWORD);
 
         // TODO: Functions start here
-        keywords.put('date', TokenType.DATE_FN);
         keywords.put('abs', TokenType.ABS_FN);
         keywords.put('ceiling', TokenType.CEILING_FN);
         keywords.put('day', TokenType.DAY_FN);

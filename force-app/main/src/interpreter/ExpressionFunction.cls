@@ -21,7 +21,8 @@ public with sharing abstract class ExpressionFunction {
         'SUBSTRING' => new SubstringFn(),
         'RIGHT' => new RightFn(),
         'BR' => new BrFn(),
-        'ADDMONTHS' => new AddMonthsFn()
+        'ADDMONTHS' => new AddMonthsFn(),
+        'DATE' => new DateFn()
     };
 
     private Interpreter interpreter;
@@ -485,6 +486,31 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((Date) startMonth).addMonths(((Decimal) monthsToAdd).intValue());
+        }
+    }
+
+    private class DateFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object year = evaluate(arguments.get(0));
+            if (!(year instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "DATE" function: the argument must evaluate to a number value.'
+                );
+            }
+            Object month = evaluate(arguments.get(1));
+            if (!(month instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "DATE"" function: the argument must evaluate to a number value.'
+                );
+            }
+            Object day = evaluate(arguments.get(2));
+            if (!(day instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "DATE" function: the argument must evaluate to a number value.'
+                );
+            }
+
+            return Date.newInstance(Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(day));
         }
     }
 }
