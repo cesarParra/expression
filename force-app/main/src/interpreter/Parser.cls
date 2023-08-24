@@ -146,18 +146,6 @@ public with sharing class Parser {
             return new Expr.Function(fnName, parameters);
         }
 
-        if (match(new List<TokenType>{
-            TokenType.REVERSE_FN
-        })) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr text = expression();
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-            return new Expr.Function(fnName, new List<Expr>{
-                text
-            });
-        }
-
         if (match(TokenType.DATE_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');

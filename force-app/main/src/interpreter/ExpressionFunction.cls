@@ -15,7 +15,8 @@ public with sharing abstract class ExpressionFunction {
         'LEFT' => new LeftFn(),
         'LEN' => new LenFn(),
         'LPAD' => new LRPad('LPAD'),
-        'RPAD' => new LRPad('RPAD')
+        'RPAD' => new LRPad('RPAD'),
+        'REVERSE' => new ReverseFn()
     };
 
     private Interpreter interpreter;
@@ -337,6 +338,19 @@ public with sharing abstract class ExpressionFunction {
             } else {
                 return (String) text + ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length());
             }
+        }
+    }
+
+    private class ReverseFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "REVERSE" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return ((String) text).reverse();
         }
     }
 }

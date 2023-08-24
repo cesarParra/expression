@@ -20,7 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // String
-    REVERSE_FN,
     MID_FN,
     SUBSTRING_FN,
     RIGHT_FN,
@@ -38,7 +37,8 @@ public enum TokenType {
     HOUR_FN,
     TIMEVALUE_FN,
     TIMENOW_FN, ISOWEEK_FN,
-    ISOYEAR_FN, YEAR_FN, MILLISECOND_FN, MINUTE_FN, SECOND_FN,
+    ISOYEAR_FN,
+    YEAR_FN, MILLISECOND_FN, MINUTE_FN, SECOND_FN,
 
     // Math
     ABS_FN, CEILING_FN, FLOOR_FN, FROMUNIXTIME_FN, MAX_FN, MIN_FN, ROUND_FN, TRUNC_FN,
