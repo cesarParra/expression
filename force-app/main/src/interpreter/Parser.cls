@@ -146,18 +146,6 @@ public with sharing class Parser {
             return new Expr.Function(fnName, parameters);
         }
 
-        if (match(TokenType.CONTAINS_FN)) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr text = expression();
-            consume(TokenType.COMMA, 'Expect \',\' after string.');
-            Expr compareText = expression();
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-            return new Expr.Function(fnName, new List<Expr>{
-                text, compareText
-            });
-        }
-
         if (match(new List<TokenType>{
             TokenType.LOWER_FN, TokenType.LEN_FN, TokenType.REVERSE_FN
         })) {

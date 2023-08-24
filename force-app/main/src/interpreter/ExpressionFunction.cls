@@ -4,7 +4,8 @@ public with sharing abstract class ExpressionFunction {
         'IF' => new IfFn(),
         'NOT' => new NotFn(),
         'OR' => new OrFn(),
-        'BEGINS' => new Begins()
+        'BEGINS' => new Begins(),
+        'CONTAINS' => new Contains()
     };
 
     private Interpreter interpreter;
@@ -121,6 +122,26 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((String) text).startsWith((String) prefix);
+        }
+    }
+
+    private class Contains extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "CONTAINS" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            Object substring = evaluate(arguments.get(1));
+            if (!(substring instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "CONTAINS function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return ((String) text).contains((String) substring);
         }
     }
 }
