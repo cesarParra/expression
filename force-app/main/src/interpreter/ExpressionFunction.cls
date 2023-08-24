@@ -25,7 +25,9 @@ public with sharing abstract class ExpressionFunction {
         'DATE' => new DateFn(),
         'DAY' => new DayFn(),
         'DAYOFYEAR' => new DayOfYearFn(),
-        'NOW' => new NowFn()
+        'NOW' => new NowFn(),
+        'DATEVALUE' => new DateValueFn(),
+        'DATETIMEVALUE' => new DateTimeValueFn()
     };
 
     private Interpreter interpreter;
@@ -546,6 +548,37 @@ public with sharing abstract class ExpressionFunction {
     private class NowFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             return Datetime.now();
+        }
+    }
+
+    private class DateValueFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect the expression to either be a text or a datetime
+            Object expression = evaluate(arguments.get(0));
+            if (!(expression instanceof String) && !(expression instanceof Datetime)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "DATEVALUE" function: the argument must evaluate to a string or datetime value.'
+                );
+            }
+
+            if (expression instanceof String) {
+                return Date.valueOf((String) expression);
+            } else {
+                return ((Datetime) expression).date();
+            }
+        }
+    }
+
+    private class DateTimeValueFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object expression = evaluate(arguments.get(0));
+            if (!(expression instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "DATETIMEVALUE" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return Datetime.valueOf((String) expression);
         }
     }
 }

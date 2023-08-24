@@ -20,8 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // Date and time
-    DATEVALUE_FN,
-    DATETIMEVALUE_FN,
     TODAY_FN,
     HOUR_FN,
     TIMEVALUE_FN,
