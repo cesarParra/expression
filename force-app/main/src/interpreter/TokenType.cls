@@ -20,7 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // Math
-    ABS_FN,
     CEILING_FN,
     FLOOR_FN,
     FROMUNIXTIME_FN,

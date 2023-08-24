@@ -37,7 +37,8 @@ public with sharing abstract class ExpressionFunction {
         'TIMENOW' => new TimeNowFn(),
         'ISOWEEK' => new IsoWeek(),
         'ISOYEAR' => new IsoYear(),
-        'YEAR' => new YearFn()
+        'YEAR' => new YearFn(),
+        'ABS' => new AbsFn()
     };
 
     private enum TimeType {
@@ -711,6 +712,19 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((Date) dateValue).year();
+        }
+    }
+
+    private class AbsFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object numberValue = evaluate(arguments.get(0));
+            if (!(numberValue instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "ABS" function: the argument must evaluate to a number value.'
+                );
+            }
+
+            return Math.abs((Decimal) numberValue);
         }
     }
 }

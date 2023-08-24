@@ -147,7 +147,8 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-            TokenType.ABS_FN, TokenType.CEILING_FN, TokenType.FLOOR_FN
+            TokenType.CEILING_FN,
+            TokenType.FLOOR_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
