@@ -237,17 +237,6 @@ public with sharing class Parser {
             });
         }
 
-        if (match(TokenType.ISNUMBER_FN)) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr value = expression();
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-
-            return new Expr.Function(fnName, new List<Expr>{
-                value
-            });
-        }
-
         if (match(TokenType.TIMEVALUE_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');

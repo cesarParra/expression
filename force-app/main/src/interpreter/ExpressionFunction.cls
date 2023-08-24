@@ -8,7 +8,8 @@ public with sharing abstract class ExpressionFunction {
         'CONTAINS' => new Contains(),
         'LOWER' => new Lower(),
         'BLANKVALUE' => new BlankValue(),
-        'ISBLANK' => new IsBlank()
+        'ISBLANK' => new IsBlank(),
+        'ISNUMBER' => new IsNumber()
     };
 
     private Interpreter interpreter;
@@ -192,6 +193,13 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return value == null;
+        }
+    }
+
+    private class IsNumber extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object value = evaluate(arguments.get(0));
+            return value instanceof Decimal;
         }
     }
 }

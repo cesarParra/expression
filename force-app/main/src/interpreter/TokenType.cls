@@ -20,7 +20,7 @@ public enum TokenType {
 
     // Built-in functions
     // Logical
-    ISNUMBER_FN, CASE_FN,
+    CASE_FN,
 
     // String
     FIND_FN, LEFT_FN, LEN_FN,

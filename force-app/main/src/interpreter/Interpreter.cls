@@ -444,10 +444,6 @@ public with sharing class Interpreter implements Visitor {
             when TODAY_FN {
                 return Date.today();
             }
-            when ISNUMBER_FN {
-                Object value = evaluate(function.arguments.get(0));
-                return value instanceof Decimal;
-            }
             when MAX_FN, MIN_FN {
                 if (function.arguments.isEmpty()) {
                     throw new InterpreterException(
