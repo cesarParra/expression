@@ -147,7 +147,6 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-            TokenType.CEILING_FN,
             TokenType.FLOOR_FN
         })) {
             Token fnName = previous();
