@@ -28,8 +28,16 @@ public with sharing abstract class ExpressionFunction {
         'NOW' => new NowFn(),
         'DATEVALUE' => new DateValueFn(),
         'DATETIMEVALUE' => new DateTimeValueFn(),
-        'TODAY' => new TodayFn()
+        'TODAY' => new TodayFn(),
+        'MILLISECOND' => new TimeFn('MILLISECOND', TimeType.MILLISECOND),
+        'MINUTE' => new TimeFn('MINUTE', TimeType.MINUTE),
+        'SECOND' => new TimeFn('SECOND', TimeType.SECOND),
+        'HOUR' => new TimeFn('HOUR', TimeType.HOUR_FN)
     };
+
+    private enum TimeType {
+        MILLISECOND, MINUTE, SECOND, HOUR_FN
+    }
 
     private Interpreter interpreter;
 
@@ -586,6 +594,35 @@ public with sharing abstract class ExpressionFunction {
     private class TodayFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             return Date.today();
+        }
+    }
+
+    private class TimeFn extends ExpressionFunction {
+        private final String fnName;
+        private final TimeType type;
+
+        public TimeFn(String fnName, TimeType type) {
+            this.fnName = fnName;
+            this.type = type;
+        }
+
+        public override Object call(List<Expr> arguments) {
+            Object timeValue = evaluate(arguments.get(0));
+            if (!(timeValue instanceof Time)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing ' + fnName + ' function: the argument must evaluate to a time value.'
+                );
+            }
+
+            if (type == TimeType.MILLISECOND) {
+                return ((Time) timeValue).millisecond();
+            } else if (type == TimeType.MINUTE) {
+                return ((Time) timeValue).minute();
+            } else if (type == TimeType.SECOND) {
+                return ((Time) timeValue).second();
+            } else {
+                return ((Time) timeValue).hour();
+            }
         }
     }
 }

@@ -19,7 +19,6 @@ public with sharing class Scanner {
         keywords.put('fromunixtime', TokenType.FROMUNIXTIME_FN);
         keywords.put('max', TokenType.MAX_FN);
         keywords.put('min', TokenType.MIN_FN);
-        keywords.put('hour', TokenType.HOUR_FN);
         keywords.put('round', TokenType.ROUND_FN);
         keywords.put('timevalue', TokenType.TIMEVALUE_FN);
         keywords.put('trunc', TokenType.TRUNC_FN);
@@ -27,9 +26,6 @@ public with sharing class Scanner {
         keywords.put('isoweek', TokenType.ISOWEEK_FN);
         keywords.put('isoyear', TokenType.ISOYEAR_FN);
         keywords.put('year', TokenType.YEAR_FN);
-        keywords.put('millisecond', TokenType.MILLISECOND_FN);
-        keywords.put('minute', TokenType.MINUTE_FN);
-        keywords.put('second', TokenType.SECOND_FN);
         keywords.put('list', TokenType.LIST_FN);
         keywords.put('tolist', TokenType.TOLIST_FN);
         keywords.put('average', TokenType.AVERAGE_FN);

@@ -407,24 +407,6 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((Date) dateValue).year();
             }
-            when MILLISECOND_FN, MINUTE_FN, SECOND_FN, HOUR_FN {
-                Object timeValue = evaluate(function.arguments.get(0));
-                if (!(timeValue instanceof Time)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a time value.'
-                    );
-                }
-
-                if (function.name.type == TokenType.MILLISECOND_FN) {
-                    return ((Time) timeValue).millisecond();
-                } else if (function.name.type == TokenType.MINUTE_FN) {
-                    return ((Time) timeValue).minute();
-                } else if (function.name.type == TokenType.SECOND_FN) {
-                    return ((Time) timeValue).second();
-                } else {
-                    return ((Time) timeValue).hour();
-                }
-            }
             when LIST_FN {
                 // Check that there is at least one argument
                 if (function.arguments.isEmpty()) {
