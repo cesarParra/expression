@@ -146,7 +146,7 @@ public with sharing class Parser {
             return new Expr.Function(fnName, parameters);
         }
 
-        if (match2(TokenType.BEGINS_FN, TokenType.CONTAINS_FN)) {
+        if (match(TokenType.CONTAINS_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             Expr text = expression();

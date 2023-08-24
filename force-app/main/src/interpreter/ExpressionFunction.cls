@@ -3,7 +3,8 @@ public with sharing abstract class ExpressionFunction {
         'AND' => new AndFn(),
         'IF' => new IfFn(),
         'NOT' => new NotFn(),
-        'OR' => new OrFn()
+        'OR' => new OrFn(),
+        'BEGINS' => new Begins()
     };
 
     private Interpreter interpreter;
@@ -100,6 +101,26 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return false;
+        }
+    }
+
+    private class Begins extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "BEGINS" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            Object prefix = evaluate(arguments.get(1));
+            if (!(prefix instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "BEGINS" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return ((String) text).startsWith((String) prefix);
         }
     }
 }
