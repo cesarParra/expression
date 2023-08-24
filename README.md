@@ -6,7 +6,7 @@
   <img alt="Expression Logo" src="assets/expression_logo_light.svg" width="400">
 </picture>
 
-Powerful formula-syntax evaluator for the Apex and LWC.
+Powerful formula-syntax evaluator for Apex and LWC.
 
 </div>
 
