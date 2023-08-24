@@ -33,7 +33,8 @@ public with sharing abstract class ExpressionFunction {
         'MINUTE' => new TimeFn('MINUTE', TimeType.MINUTE),
         'SECOND' => new TimeFn('SECOND', TimeType.SECOND),
         'HOUR' => new TimeFn('HOUR', TimeType.HOUR_FN),
-        'TIMEVALUE' => new TimeValueFn()
+        'TIMEVALUE' => new TimeValueFn(),
+        'TIMENOW' => new TimeNowFn()
     };
 
     private enum TimeType {
@@ -662,6 +663,12 @@ public with sharing abstract class ExpressionFunction {
             } else {
                 return ((Datetime) dateTimeOrText).time();
             }
+        }
+    }
+
+    private class TimeNowFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            return Datetime.now().time();
         }
     }
 }

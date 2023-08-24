@@ -20,14 +20,19 @@ public enum TokenType {
 
     // Built-in functions
     // Date and time
-    TIMENOW_FN,
     ISOWEEK_FN,
     ISOYEAR_FN,
     YEAR_FN,
 
     // Math
     ABS_FN,
-    CEILING_FN, FLOOR_FN, FROMUNIXTIME_FN, MAX_FN, MIN_FN, ROUND_FN, TRUNC_FN,
+    CEILING_FN,
+    FLOOR_FN,
+    FROMUNIXTIME_FN,
+    MAX_FN,
+    MIN_FN,
+    ROUND_FN,
+    TRUNC_FN,
 
     // Lists
     LIST_FN, TOLIST_FN, AVERAGE_FN, SIZE_FN,

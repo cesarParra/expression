@@ -339,9 +339,6 @@ public with sharing class Interpreter implements Visitor {
                     return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.DOWN);
                 }
             }
-            when TIMENOW_FN {
-                return Datetime.now().time();
-            }
             when ISOWEEK_FN {
                 Object dateValue = evaluate(function.arguments.get(0));
                 if (!(dateValue instanceof Date)) {
