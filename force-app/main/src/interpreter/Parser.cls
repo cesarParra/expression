@@ -130,21 +130,6 @@ public with sharing class Parser {
             return new Expr.MergeField(previous());
         }
 
-        if (match(new List<TokenType>{
-            TokenType.LIST_FN
-        })) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            List<Expr> parameters = new List<Expr>();
-            if (!check(TokenType.RIGHT_PAREN)) {
-                do {
-                    parameters.add(expression());
-                } while (match(TokenType.COMMA));
-            }
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-            return new Expr.Function(fnName, parameters);
-        }
-
         if (match(TokenType.TOLIST_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');

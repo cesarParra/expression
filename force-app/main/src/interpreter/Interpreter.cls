@@ -225,21 +225,6 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Function function) {
         switch on function.name.type {
-            when LIST_FN {
-                // Check that there is at least one argument
-                if (function.arguments.isEmpty()) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the function must have at least one argument.'
-                    );
-                }
-
-                List<Object> result = new List<Object>();
-                for (Expr argument : function.arguments) {
-                    result.add(evaluate(argument));
-                }
-
-                return result;
-            }
             when TOLIST_FN {
                 // Expect 2 arguments, the first will be the name of the child relationship field,
                 // the second the name of the fields for which we want the data

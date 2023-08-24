@@ -45,7 +45,8 @@ public with sharing abstract class ExpressionFunction {
         'MAX' => new MaxMixFns('MAX'),
         'MIN' => new MaxMixFns('MIN'),
         'ROUND' => new RoundAndTruncFns('ROUND'),
-        'TRUNC' => new RoundAndTruncFns('TRUNC')
+        'TRUNC' => new RoundAndTruncFns('TRUNC'),
+        'LIST' => new ListFn()
     };
 
     private enum TimeType {
@@ -863,6 +864,24 @@ public with sharing abstract class ExpressionFunction {
             } else {
                 return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.DOWN);
             }
+        }
+    }
+
+    private class ListFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Check that there is at least one argument
+            if (arguments.isEmpty()) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "LIST" function: the function must have at least one argument.'
+                );
+            }
+
+            List<Object> result = new List<Object>();
+            for (Expr argument : arguments) {
+                result.add(evaluate(argument));
+            }
+
+            return result;
         }
     }
 }
