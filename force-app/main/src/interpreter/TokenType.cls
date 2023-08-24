@@ -20,7 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // Date and time
-    ISOYEAR_FN,
     YEAR_FN,
 
     // Math

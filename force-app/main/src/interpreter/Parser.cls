@@ -160,7 +160,6 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-            TokenType.ISOYEAR_FN,
             TokenType.YEAR_FN
         })) {
             Token fnName = previous();
