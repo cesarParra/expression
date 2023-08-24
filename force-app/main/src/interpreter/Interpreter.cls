@@ -883,7 +883,7 @@ public with sharing class Interpreter implements Visitor {
                 String secondArgument = ((Expr.MergeField) function.arguments.get(1)).name.lexeme;
                 List<Object> result = new List<Object>();
                 for (SObject child : childrenAsList) {
-                    result.add(FormulaEvaluator.evaluate(secondArgument, child));
+                    result.add(Evaluator.run(secondArgument, child));
                 }
                 return result;
             }

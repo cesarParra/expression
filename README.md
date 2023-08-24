@@ -1,13 +1,43 @@
-# Formula Evaluator
+<div align="center">
 
-Allows you to evaluate formula-like syntax through Apex code.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/expression_logo_dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/expression_logo_light.svg">
+  <img alt="Expression Logo" src="assets/expression_logo_light.svg" width="400">
+</picture>
 
-Supports most of the operators and functions available in Salesforce formulas, but
-also has additional support for collections/lists.
+Powerful formula-syntax evaluator for the Apex and LWC.
+
+</div>
+
+
+## Features
+
+* Supports almost all the operators and functions available in Salesforce formulas
+* Support for lists and collections
+* Automatically understands relationships and can extract data from child records
+* Comes with pre-built LWC component to evaluate formulas in record pages
 
 ## Installation
 
-### Deploy to Salesforce
+### Unlocked Package (`expression` namespace)
+
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYakIAG)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYakIAG)
+
+Install with SF CLI:
+
+```shell
+sf package install --apex-compile package --wait 20 --package 04tDm000000HYakIAG
+```
+
+Install with SFDX CLI:
+
+```shell
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYakIAG
+```
+
+### Direct Deployment to Salesforce
 
 Clone the repo and deploy the source code, or click the button below to directly deploy to Salesforce.
 
@@ -15,11 +45,16 @@ Clone the repo and deploy the source code, or click the button below to directly
 
 ## Usage
 
-Use `FormulaEvaluator` class to evaluate formulas.
+> 📓Code samples use the `expression` namespace, which assumes you are using the 
+> unlocked package.
+> If you are not, you can remove the namespace prefix from the code samples.
+
+
+Use `expression.Evaluator` class to evaluate formulas.
 
 ```apex
 String formula = '1 + 1';
-Object result = FormulaEvaluator.evaluate(formula);
+Object result = expression.Evaluator.run(formula);
 Assert.areEqual(2, result);
 ```
 
@@ -31,7 +66,7 @@ with the correct fields being referenced in the formula correctly queried.
 
 ```apex
 Account account = new Account(Name = 'ACME');
-Object result = FormulaEvaluator.evaluate('Name', account);
+Object result = expression.Evaluator.run('Name', account);
 Assert.areEqual('ACME', result);
 ```
 
@@ -42,7 +77,7 @@ use the `evaluate` method that takes a record Id as context.
 Account account = new Account(Name = 'ACME');
 insert account;
 
-Object result = FormulaEvaluator.evaluate('Name', account.Id);
+Object result = expression.Evaluator.run('Name', account.Id);
 Assert.areEqual('ACME', result);
 ```
 
@@ -63,7 +98,7 @@ insert parentAccount;
 Account childAccount = new Account(Name = 'ACME Child', ParentId = parentAccount.Id);
 insert childAccount;
 
-Object result = FormulaEvaluator.evaluate('Parent.Name', childAccount.Id);
+Object result = expression.Evaluator.run('Parent.Name', childAccount.Id);
 Assert.areEqual('ACME', result);
 ```
 
@@ -83,7 +118,7 @@ functions.
 To work with collections/lists, you can use the `LIST` function
 
 ```apex
-Object result = FormulaEvaluator.evaluate('LIST(1, 2, 3)'); // (1, 2, 3)
+Object result = expression.Evaluator.run('LIST(1, 2, 3)'); // (1, 2, 3)
 ```
 
 ## Supported Operators and Functions
@@ -95,31 +130,31 @@ Object result = FormulaEvaluator.evaluate('LIST(1, 2, 3)'); // (1, 2, 3)
 - `+` Addition
 
 ```apex
-FormulaEvaluator.evaluate('1 + 1'); // 2
+expression.Evaluator.run('1 + 1'); // 2
 ```
 
 - `-` Subtraction
 
 ```apex
-FormulaEvaluator.evaluate('1 - 1'); // 0
+expression.Evaluator.run('1 - 1'); // 0
 ```
 
 - `*` Multiplication
 
 ```apex
-FormulaEvaluator.evaluate('2 * 2'); // 4
+expression.Evaluator.run('2 * 2'); // 4
 ```
 
 - `/` Division
 
 ```apex
-FormulaEvaluator.evaluate('4 / 2'); // 2
+expression.Evaluator.run('4 / 2'); // 2
 ```
 
 - `^` Exponentiation
 
 ```apex
-FormulaEvaluator.evaluate('2 ^ 2'); // 4
+expression.Evaluator.run('2 ^ 2'); // 4
 ```
 
 #### Misc
@@ -129,7 +164,7 @@ FormulaEvaluator.evaluate('2 ^ 2'); // 4
 Groups expressions together.
 
 ```apex
-FormulaEvaluator.evaluate('(1 + 1) * 2'); // 4
+expression.Evaluator.run('(1 + 1) * 2'); // 4
 ```
 
 #### Logical Operators
@@ -139,7 +174,7 @@ FormulaEvaluator.evaluate('(1 + 1) * 2'); // 4
 Evaluates if two values are equal. The `=` and `==` operators are equivalent.
 
 ```apex
-FormulaEvaluator.evaluate('1 = 1'); // true
+expression.Evaluator.run('1 = 1'); // true
 ```
 
 - `<>` and `!=` Not Equal
@@ -147,7 +182,7 @@ FormulaEvaluator.evaluate('1 = 1'); // true
 Evaluates if two values are not equal. The `<>` and `!=` operators are equivalent.
 
 ```apex
-FormulaEvaluator.evaluate('1 <> 2'); // true
+expression.Evaluator.run('1 <> 2'); // true
 ```
 
 - `<` Less Than
@@ -155,7 +190,7 @@ FormulaEvaluator.evaluate('1 <> 2'); // true
 Evaluates if the first value is less than the second value.
 
 ```apex
-FormulaEvaluator.evaluate('1 < 2'); // true
+expression.Evaluator.run('1 < 2'); // true
 ```
 
 - `>` Greater Than
@@ -163,7 +198,7 @@ FormulaEvaluator.evaluate('1 < 2'); // true
 Evaluates if the first value is greater than the second value.
 
 ```apex
-FormulaEvaluator.evaluate('2 > 1'); // true
+expression.Evaluator.run('2 > 1'); // true
 ```
 
 - `<=` Less Than or Equal
@@ -171,7 +206,7 @@ FormulaEvaluator.evaluate('2 > 1'); // true
 Evaluates if the first value is less than or equal to the second value.
 
 ```apex
-FormulaEvaluator.evaluate('1 <= 1'); // true
+expression.Evaluator.run('1 <= 1'); // true
 ```
 
 - `>=` Greater Than or Equal
@@ -179,7 +214,7 @@ FormulaEvaluator.evaluate('1 <= 1'); // true
 Evaluates if the first value is greater than or equal to the second value.
 
 ```apex
-FormulaEvaluator.evaluate('1 >= 1'); // true
+expression.Evaluator.run('1 >= 1'); // true
 ```
 
 - `&&` Logical AND
@@ -187,7 +222,7 @@ FormulaEvaluator.evaluate('1 >= 1'); // true
 Evaluates if both values are true.
 
 ```apex
-FormulaEvaluator.evaluate('true && true'); // true
+expression.Evaluator.run('true && true'); // true
 ```
 
 - `||` Logical OR
@@ -195,7 +230,7 @@ FormulaEvaluator.evaluate('true && true'); // true
 Evaluates if either value is true.
 
 ```apex
-FormulaEvaluator.evaluate('true || false'); // true
+expression.Evaluator.run('true || false'); // true
 ```
 
 #### String Operators
@@ -205,7 +240,7 @@ FormulaEvaluator.evaluate('true || false'); // true
 Concatenates two strings together. The `&` and `+` operators are equivalent.
 
 ```apex
-FormulaEvaluator.evaluate('"Hello" & " " & "World"'); // "Hello World"
+expression.Evaluator.run('"Hello" & " " & "World"'); // "Hello World"
 ```
 
 ### Functions
@@ -219,8 +254,8 @@ Returns a TRUE response if all values are true; returns a FALSE response if one 
 Accepts multiple arguments, but must have at least 2.
 
 ```apex
-FormulaEvaluator.evaluate('AND(true, true)'); // true
-FormulaEvaluator.evaluate('AND(true, false, true)'); // false
+expression.Evaluator.run('AND(true, true)'); // true
+expression.Evaluator.run('AND(true, false, true)'); // false
 ```
 
 - `IF`
@@ -230,8 +265,8 @@ Returns one value if a condition is true and another value if it's false.
 Accepts 3 arguments: the condition, the value if true, and the value if false.
 
 ```apex
-FormulaEvaluator.evaluate('IF(true, "Hello", "World")'); // "Hello"
-FormulaEvaluator.evaluate('IF(false, "Hello", "World")'); // "World"
+expression.Evaluator.run('IF(true, "Hello", "World")'); // "Hello"
+expression.Evaluator.run('IF(false, "Hello", "World")'); // "World"
 ```
 
 - `NOT`
@@ -239,7 +274,7 @@ FormulaEvaluator.evaluate('IF(false, "Hello", "World")'); // "World"
 Reverses the logical value of its argument.
 
 ```apex
-FormulaEvaluator.evaluate('NOT(true)'); // false
+expression.Evaluator.run('NOT(true)'); // false
 ```
 
 - `OR`
@@ -249,8 +284,8 @@ Returns a TRUE response if any value is true; returns a FALSE response if all va
 Accepts any number of arguments.
 
 ```apex
-FormulaEvaluator.evaluate('OR(true, false)'); // true
-FormulaEvaluator.evaluate('OR(false, false)'); // false
+expression.Evaluator.run('OR(true, false)'); // true
+expression.Evaluator.run('OR(false, false)'); // false
 ```
 
 - `BLANKVALUE`
@@ -261,8 +296,8 @@ expression.
 Accepts 2 arguments: the expression and the value to return if the expression is blank.
 
 ```apex
-FormulaEvaluator.evaluate('BLANKVALUE(null, "Hello")'); // "Hello"
-FormulaEvaluator.evaluate('BLANKVALUE("World", "Hello")'); // "World"
+expression.Evaluator.run('BLANKVALUE(null, "Hello")'); // "Hello"
+expression.Evaluator.run('BLANKVALUE("World", "Hello")'); // "World"
 ```
 
 - `ISBLANK`
@@ -272,9 +307,9 @@ Returns TRUE if the expression is blank (null value or empty string); otherwise,
 Accepts 1 argument: the expression to check.
 
 ```apex
-FormulaEvaluator.evaluate('ISBLANK(null)'); // true
-FormulaEvaluator.evaluate('ISBLANK("")'); // true
-FormulaEvaluator.evaluate('ISBLANK("Hello")'); // false
+expression.Evaluator.run('ISBLANK(null)'); // true
+expression.Evaluator.run('ISBLANK("")'); // true
+expression.Evaluator.run('ISBLANK("Hello")'); // false
 ```
 
 - `CASE`
@@ -288,7 +323,7 @@ Format: `CASE(expression,value1, result1, value2, result2,..., else_result)`
 
 ```apex
 Account testAccount = new Account(Rating = 'Hot');
-Object result = FormulaEvaluator.evaluate(
+Object result = expression.Evaluator.run(
     'CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")', 
     testAccount); // "🔥"
 ```
@@ -302,7 +337,7 @@ Returns TRUE if the first character(s) in a text field match a given string.
 Accepts 2 arguments: the text field and the string to match.
 
 ```apex
-FormulaEvaluator.evaluate('BEGINS("Hello World", "Hello")'); // true
+expression.Evaluator.run('BEGINS("Hello World", "Hello")'); // true
 ```
 
 - `CONTAINS`
@@ -312,7 +347,7 @@ Returns TRUE if a text field contains a given string.
 Accepts 2 arguments: the text field and the string to match.
 
 ```apex
-FormulaEvaluator.evaluate('CONTAINS("Hello World", "llo Wo")'); // true
+expression.Evaluator.run('CONTAINS("Hello World", "llo Wo")'); // true
 ```
 
 - `LOWER`
@@ -322,7 +357,7 @@ Converts all letters in the specified text to lowercase.
 Accepts 1 argument: the text to convert.
 
 ```apex
-FormulaEvaluator.evaluate('LOWER("Hello World")'); // "hello world"
+expression.Evaluator.run('LOWER("Hello World")'); // "hello world"
 ```
 
 - `FIND`
@@ -333,8 +368,8 @@ returns a value -1.
 Accepts either 2 or 3 arguments: the text to find, the text to search, and optionally the starting position.
 
 ```apex
-FormulaEvaluator.evaluate('FIND("World", "Hello World")'); // 6
-FormulaEvaluator.evaluate('FIND("World", "Hello World", 7)'); // -1
+expression.Evaluator.run('FIND("World", "Hello World")'); // 6
+expression.Evaluator.run('FIND("World", "Hello World", 7)'); // -1
 ```
 
 - `LEFT`
@@ -344,7 +379,7 @@ Returns the specified number of characters from the beginning of a text string.
 Accepts 2 arguments: the text to evaluate and the number of characters to return.
 
 ```apex
-FormulaEvaluator.evaluate('LEFT("Hello World", 5)'); // "Hello"
+expression.Evaluator.run('LEFT("Hello World", 5)'); // "Hello"
 ```
 
 - `LEN`
@@ -354,7 +389,7 @@ Returns the number of characters in a text string.
 Accepts 1 argument: the text to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('LEN("Hello World")'); // 11
+expression.Evaluator.run('LEN("Hello World")'); // 11
 ```
 
 - `LPAD`
@@ -365,8 +400,8 @@ Accepts 2 or 3 arguments: the text to pad, the length to pad to, and optionally 
 If the padding character is not specified, it defaults to a space.
 
 ```apex
-FormulaEvaluator.evaluate('LPAD("Hello", 10)'); // "     Hello"
-FormulaEvaluator.evaluate('LPAD("Hello", 10, "*")'); // "*****Hello"
+expression.Evaluator.run('LPAD("Hello", 10)'); // "     Hello"
+expression.Evaluator.run('LPAD("Hello", 10, "*")'); // "*****Hello"
 ```
 
 - `RPAD`
@@ -377,8 +412,8 @@ Accepts 2 or 3 arguments: the text to pad, the length to pad to, and optionally 
 If the padding character is not specified, it defaults to a space.
 
 ```apex
-FormulaEvaluator.evaluate('RPAD("Hello", 10)'); // "Hello     "
-FormulaEvaluator.evaluate('RPAD("Hello", 10, "*")'); // "Hello*****"
+expression.Evaluator.run('RPAD("Hello", 10)'); // "Hello     "
+expression.Evaluator.run('RPAD("Hello", 10, "*")'); // "Hello*****"
 ```
 
 - `REVERSE`
@@ -388,7 +423,7 @@ Returns a text value with the order of the characters reversed.
 Accepts 1 argument: the text to reverse.
 
 ```apex
-FormulaEvaluator.evaluate('REVERSE("Hello World")'); // "dlroW olleH"
+expression.Evaluator.run('REVERSE("Hello World")'); // "dlroW olleH"
 ```
 
 - `MID`
@@ -401,7 +436,7 @@ Note that the position is 1-based, not 0-based.
 Accepts 3 arguments: the text to evaluate, the starting position, and the number of characters to return.
 
 ```apex
-FormulaEvaluator.evaluate('MID("Hello World", 7, 5)'); // "World"
+expression.Evaluator.run('MID("Hello World", 7, 5)'); // "World"
 ```
 
 - `SUBSTRING`
@@ -414,8 +449,8 @@ Note that the position is 1-based, not 0-based.
 Accepts 2 or 3 arguments: the text to evaluate and the starting position. Optionally, the number of characters to
 
 ```apex
-FormulaEvaluator.evaluate('SUBSTRING("Hello World", 7)'); // "World"
-FormulaEvaluator.evaluate('SUBSTRING("Hello World", 7, 5)'); // "World"
+expression.Evaluator.run('SUBSTRING("Hello World", 7)'); // "World"
+expression.Evaluator.run('SUBSTRING("Hello World", 7, 5)'); // "World"
 ```
 
 - `RIGHT`
@@ -427,8 +462,8 @@ Accepts 2 arguments: the text to evaluate and the number of characters to return
 If the second argument is a negative number, it gets treated as a 0
 
 ```apex
-FormulaEvaluator.evaluate('RIGHT("Hello World", 5)'); // "World"
-FormulaEvaluator.evaluate('RIGHT("Hello World", -5)'); // ""
+expression.Evaluator.run('RIGHT("Hello World", 5)'); // "World"
+expression.Evaluator.run('RIGHT("Hello World", -5)'); // ""
 ```
 
 - `BR`
@@ -441,8 +476,8 @@ When no arguments are provided, it inserts a line break. When a number is provid
     an Aura/LWC or Visualforce context it will insert a `<br>` tag, otherwise it will insert a newline character.
 
 ```apex
-FormulaEvaluator.evaluate('BR()'); // "\n" or "<br>"
-FormulaEvaluator.evaluate('BR(2)'); // "\n\n" or "<br><br>"
+expression.Evaluator.run('BR()'); // "\n" or "<br>"
+expression.Evaluator.run('BR(2)'); // "\n\n" or "<br><br>"
 ```
 
 #### Date and Time Functions
@@ -454,7 +489,7 @@ Returns a date value from the provided year, month, and day values.
 Accepts 3 arguments: the year, month, and day.
 
 ```apex
-FormulaEvaluator.evaluate('DATE(2020, 1, 1)'); // 2020-01-01 00:00:00
+expression.Evaluator.run('DATE(2020, 1, 1)'); // 2020-01-01 00:00:00
 ```
 
 - `ADDMONTHS`
@@ -464,7 +499,7 @@ Returns a date that is a specified number of months before or after a given date
 Accepts 2 arguments: the date and the number of months to add.
 
 ```apex
-FormulaEvaluator.evaluate('ADDMONTHS(DATE(2020, 1, 1), 1)'); // 2020-02-01 00:00:00
+expression.Evaluator.run('ADDMONTHS(DATE(2020, 1, 1), 1)'); // 2020-02-01 00:00:00
 ```
 
 - `DAY`
@@ -474,7 +509,7 @@ Returns the day of the month, a number from 1 to 31.
 Accepts 1 argument: the date to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('DAY(DATE(2020, 1, 1))'); // 1
+expression.Evaluator.run('DAY(DATE(2020, 1, 1))'); // 1
 ```
 
 - `DAYOFYEAR`
@@ -484,7 +519,7 @@ Returns the day of the year, a number from 1 to 366.
 Accepts 1 argument: the date to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('DAYOFYEAR(DATE(2020, 1, 1))'); // 1
+expression.Evaluator.run('DAYOFYEAR(DATE(2020, 1, 1))'); // 1
 ```
 
 - `NOW`
@@ -494,7 +529,7 @@ Returns the current Datetime in the GMT time zone.
 Accepts no arguments.
 
 ```apex
-FormulaEvaluator.evaluate('NOW()'); // 2020-01-01 00:00:00
+expression.Evaluator.run('NOW()'); // 2020-01-01 00:00:00
 ```
 
 - `DATEVALUE`
@@ -505,8 +540,8 @@ a datetime.
 Accepts 1 argument: the date as a string or datetime.
 
 ```apex
-FormulaEvaluator.evaluate('DATEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
-FormulaEvaluator.evaluate('DATEVALUE(NOW())'); // 2020-01-01 00:00:00
+expression.Evaluator.run('DATEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
+expression.Evaluator.run('DATEVALUE(NOW())'); // 2020-01-01 00:00:00
 ```
 
 - `DATETIMEVALUE`
@@ -516,7 +551,7 @@ Returns a datetime value from a string representation of a date.
 Accepts 1 argument: the date as a string.
 
 ```apex
-FormulaEvaluator.evaluate('DATETIMEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
+expression.Evaluator.run('DATETIMEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
 ```
 
 - `TODAY`
@@ -526,7 +561,7 @@ Returns the current date.
 Accepts no arguments.
 
 ```apex
-FormulaEvaluator.evaluate('TODAY()'); // 2020-01-01
+expression.Evaluator.run('TODAY()'); // 2020-01-01
 ```
 
 - `TIMEVALUE`
@@ -536,8 +571,8 @@ Returns a time value from a datetime or from a string representation of a dateti
 Accepts 1 argument: the datetime or string in datetime format to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('TIMEVALUE(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 12:00:00
-FormulaEvaluator.evaluate('TIMEVALUE("17:30:45.125")'); // 17:30:45.125
+expression.Evaluator.run('TIMEVALUE(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 12:00:00
+expression.Evaluator.run('TIMEVALUE("17:30:45.125")'); // 17:30:45.125
 ```
 
 - `TIMENOW`
@@ -547,7 +582,7 @@ Returns the current time.
 Accepts no arguments.
 
 ```apex
-FormulaEvaluator.evaluate('TIMENOW()'); // 12:00:00
+expression.Evaluator.run('TIMENOW()'); // 12:00:00
 ```
 
 - `ISOWEEK`
@@ -557,7 +592,7 @@ Returns the ISO week number of the year for a given date.
 Accepts 1 argument: the date to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('ISOWEEK(DATE(2020, 1, 1))'); // 1
+expression.Evaluator.run('ISOWEEK(DATE(2020, 1, 1))'); // 1
 ```
 
 - `ISOYEAR`
@@ -567,7 +602,7 @@ Returns the ISO year number for a given date.
 Accepts 1 argument: the date to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('ISOYEAR(DATE(2020, 1, 1))'); // 2020
+expression.Evaluator.run('ISOYEAR(DATE(2020, 1, 1))'); // 2020
 ```
 
 - `YEAR`
@@ -577,7 +612,7 @@ Returns the year value of a provided date.
 Accepts 1 argument: the date to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('YEAR(DATE(2020, 1, 1))'); // 2020
+expression.Evaluator.run('YEAR(DATE(2020, 1, 1))'); // 2020
 ```
 
 - `MILLISECOND`
@@ -587,7 +622,7 @@ Returns the millisecond value of a provided time.
 Accepts 1 argument: the time to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('MILLISECOND(TIMEVALUE("12:00:00.123"))'); // 123
+expression.Evaluator.run('MILLISECOND(TIMEVALUE("12:00:00.123"))'); // 123
 ```
 
 - `MINUTE`
@@ -597,7 +632,7 @@ Returns the minute value of a provided time.
 Accepts 1 argument: the time to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('MINUTE(TIMEVALUE("12:10:00"))'); // 10
+expression.Evaluator.run('MINUTE(TIMEVALUE("12:10:00"))'); // 10
 ```
 
 - `SECOND`
@@ -607,7 +642,7 @@ REturns the second value of a provided time.
 Accepts 1 argument: the time to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('SECOND(TIMEVALUE("12:00:45"))'); //45
+expression.Evaluator.run('SECOND(TIMEVALUE("12:00:45"))'); //45
 ```
 
 - `HOUR`
@@ -617,7 +652,7 @@ Returns the hour value of a provided time.
 Accepts 1 argument: time to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('HOUR(TIMEVALUE("12:00:00"))'); // 12
+expression.Evaluator.run('HOUR(TIMEVALUE("12:00:00"))'); // 12
 ```
 
 #### List Functions
@@ -631,7 +666,7 @@ also as a merge field (not a string, so no quotes).
 
 ```apex
 Account account = [SELECT (SELECT Id, Name FROM Contacts) FROM Account LIMIT 1];
-Object result = FormulaEvaluator.evaluate('TOLIST(Contacts, Name)', account);
+Object result = expression.Evaluator.run('TOLIST(Contacts, Name)', account);
 // ["John Doe", "Jane Doe"]
 ```
 
@@ -640,7 +675,7 @@ of child records.
 
 ```apex
 Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
-Object result = FormulaEvaluator.evaluate('AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
+Object result = expression.Evaluator.run('AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
 ```
 
 - `AVERAGE`
@@ -650,7 +685,7 @@ Returns the average given a list of numbers.
 Accepts 1 argument: the list of numbers to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('AVERAGE(LIST(1, 2, 3))'); // 2
+expression.Evaluator.run('AVERAGE(LIST(1, 2, 3))'); // 2
 ```
 
 - `SIZE`
@@ -660,7 +695,7 @@ Returns the number of elements in a list.
 Accepts 1 argument: the list to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('SIZE(LIST(1, 2, 3))'); // 3
+expression.Evaluator.run('SIZE(LIST(1, 2, 3))'); // 3
 ```
 
 #### Math Functions
@@ -672,7 +707,7 @@ Returns the absolute value of a number.
 Accepts 1 argument: the number to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('ABS(-1)'); // 1
+expression.Evaluator.run('ABS(-1)'); // 1
 ```
 
 - `CEILING`
@@ -682,7 +717,7 @@ Returns the smallest integer greater than or equal to the specified number.
 Accepts 1 argument: the number to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('CEILING(1.5)'); // 2
+expression.Evaluator.run('CEILING(1.5)'); // 2
 ```
 
 - `FLOOR`
@@ -692,7 +727,7 @@ Returns the largest integer less than or equal to the specified number.
 Accepts 1 argument: the number to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('FLOOR(1.5)'); // 1
+expression.Evaluator.run('FLOOR(1.5)'); // 1
 ```
 
 - `FROMUNIXTIME`
@@ -702,7 +737,7 @@ Returns the GMT Datetime from a Unix timestamp.
 Accepts 1 argument: the Unix timestamp to evaluate.
 
 ```apex
-FormulaEvaluator.evaluate('FROMUNIXTIME(1577836800)'); // 2020-01-01 00:00:00
+expression.Evaluator.run('FROMUNIXTIME(1577836800)'); // 2020-01-01 00:00:00
 ```
 
 - `MAX`
@@ -712,8 +747,8 @@ Returns the largest of one or more numbers.
 Accepts either a list of numbers as a single argument, or multiple numerical arguments.
 
 ```apex
-FormulaEvaluator.evaluate('MAX(LIST(1, 2, 3))'); // 3
-FormulaEvaluator.evaluate('MAX(1, 2, 3)'); // 3
+expression.Evaluator.run('MAX(LIST(1, 2, 3))'); // 3
+expression.Evaluator.run('MAX(1, 2, 3)'); // 3
 ```
 
 - `MIN`
@@ -723,7 +758,7 @@ Returns the smallest of one or more numbers.
 At least one argument is required.
 
 ```apex
-FormulaEvaluator.evaluate('MIN(1, 2, 3)'); // 1
+expression.Evaluator.run('MIN(1, 2, 3)'); // 1
 ```
 
 - `ROUND`
@@ -733,8 +768,8 @@ Returns a rounded number. Optionally specify the number of decimal places to rou
 Accepts 1 or 2 arguments: the number to round and optionally the number of decimal places to round to.
 
 ```apex
-FormulaEvaluator.evaluate('ROUND(1.5)'); // 2
-FormulaEvaluator.evaluate('ROUND(1.5, 1)'); // 1.5
+expression.Evaluator.run('ROUND(1.5)'); // 2
+expression.Evaluator.run('ROUND(1.5, 1)'); // 1.5
 ```
 
 - `TRUNC`
@@ -744,8 +779,8 @@ Returns a truncated number. Optionally specify the number of decimal places to t
 Accepts 1 or 2 arguments: the number to truncate and optionally the number of decimal places to truncate to.
 
 ```apex
-FormulaEvaluator.evaluate('TRUNC(1.5)'); // 1
-FormulaEvaluator.evaluate('TRUNC(1.5, 1)'); // 1.5
+expression.Evaluator.run('TRUNC(1.5)'); // 1
+expression.Evaluator.run('TRUNC(1.5, 1)'); // 1.5
 ```
 
 ---
@@ -798,11 +833,11 @@ The source code includes a `Visitor` implementation
 whose sole purpose is to do this, `AstPrinter`. When enabled, it will
 print the AST to the logs.
 
-You can enable it by setting the `FormulaEvaluator.printAst` static variable to `true`.
+You can enable it by setting the `expression.Evaluator.printAst` static variable to `true`.
 
 ```apex
-FormulaEvaluator.printAst = true;
-Object value = FormulaEvaluator.evaluate('AND(true, false, 1=1)');
+expression.Evaluator.printAst = true;
+Object value = expression.Evaluator.run('AND(true, false, 1=1)');
 // Outputs to the logs:
 // (AND true false (= 1 1))
 ```
