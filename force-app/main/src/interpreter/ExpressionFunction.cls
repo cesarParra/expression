@@ -48,7 +48,8 @@ public with sharing abstract class ExpressionFunction {
         'TRUNC' => new RoundAndTruncFns('TRUNC'),
         'LIST' => new ListFn(),
         'TOLIST' => new ToListFn(),
-        'AVERAGE' => new AverageFn()
+        'AVERAGE' => new AverageFn(),
+        'SIZE' => new SizeFn()
     };
 
     private enum TimeType {
@@ -964,6 +965,19 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return sum / sanitizedList.size();
+        }
+    }
+
+    private class SizeFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object listOfValues = evaluate(arguments.get(0));
+            if (!(listOfValues instanceof List<Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SIZE" function: the argument must evaluate to a list.'
+                );
+            }
+
+            return ((List<Object>) listOfValues).size();
         }
     }
 }

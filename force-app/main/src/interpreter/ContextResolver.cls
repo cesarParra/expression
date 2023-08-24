@@ -123,14 +123,6 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
-    public Object visit(Expr.Function function) {
-        // For anything else, we resolve as normal
-        for (Expr argument : function.arguments) {
-            this.resolve(argument);
-        }
-        return null;
-    }
-
     public SObject build(Expr expression) {
         this.resolve(expression);
 

@@ -11,9 +11,6 @@ public with sharing class Scanner {
         keywords.put('true', TokenType.TRUE_KEYWORD);
         keywords.put('false', TokenType.FALSE_KEYWORD);
         keywords.put('null', TokenType.NULL_KEYWORD);
-
-        // TODO: Functions start here
-        keywords.put('size', TokenType.SIZE_FN);
     }
 
     public Scanner(String source) {

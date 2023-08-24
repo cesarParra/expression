@@ -43,20 +43,6 @@ public abstract class Expr {
         }
     }
 
-    public class Function extends Expr {
-        public final Token name;
-        public final List<Expr> arguments;
-
-        public Function(Token name, List<Expr> arguments) {
-            this.name = name;
-            this.arguments = arguments;
-        }
-
-        public override Object accept(Visitor v) {
-            return v.visit(this);
-        }
-    }
-
     public class Literal extends Expr {
         public final Object value;
 
