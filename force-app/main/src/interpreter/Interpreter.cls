@@ -225,23 +225,6 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Function function) {
         switch on function.name.type {
-            when OR_FN {
-                // Loop through all arguments and return true if any of them is true
-                for (Expr argument : function.arguments) {
-                    Object evaluated = evaluate(argument);
-                    if (!isBoolean(evaluated)) {
-                        throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: all arguments must evaluate to a boolean value.'
-                        );
-                    }
-
-                    if ((Boolean) evaluated) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
             when BEGINS_FN {
                 Object text = evaluate(function.arguments.get(0));
                 if (!(text instanceof String)) {

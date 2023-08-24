@@ -2,7 +2,8 @@ public with sharing abstract class ExpressionFunction {
     public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction> {
         'AND' => new AndFn(),
         'IF' => new IfFn(),
-        'NOT' => new NotFn()
+        'NOT' => new NotFn(),
+        'OR' => new OrFn()
     };
 
     private Interpreter interpreter;
@@ -79,6 +80,26 @@ public with sharing abstract class ExpressionFunction {
 
             // Return the negated expression
             return !(Boolean) expression;
+        }
+    }
+
+    private class OrFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Loop through all arguments and return true if any of them is true
+            for (Expr argument : arguments) {
+                Object evaluated = evaluate(argument);
+                if (!isBoolean(evaluated)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "OR" function: all arguments must evaluate to a boolean value.'
+                    );
+                }
+
+                if ((Boolean) evaluated) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

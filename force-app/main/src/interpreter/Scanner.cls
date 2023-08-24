@@ -13,7 +13,6 @@ public with sharing class Scanner {
         keywords.put('null', TokenType.NULL_KEYWORD);
 
         // TODO: Functions start here
-        keywords.put('or', TokenType.OR_FN);
         keywords.put('begins', TokenType.BEGINS_FN);
         keywords.put('contains', TokenType.CONTAINS_FN);
         keywords.put('lower', TokenType.LOWER_FN);

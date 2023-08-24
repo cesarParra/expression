@@ -20,7 +20,7 @@ public enum TokenType {
 
     // Built-in functions
     // Logical
-    OR_FN, BLANKVALUE_FN, ISBLANK_FN,
+    BLANKVALUE_FN, ISBLANK_FN,
     ISNUMBER_FN, CASE_FN,
 
     // String
