@@ -40,7 +40,8 @@ public with sharing abstract class ExpressionFunction {
         'YEAR' => new YearFn(),
         'ABS' => new AbsFn(),
         'CEILING' => new CeilingFn(),
-        'FLOOR' => new FloorFn()
+        'FLOOR' => new FloorFn(),
+        'FROMUNIXTIME' => new FromUnixTimeFn()
     };
 
     private enum TimeType {
@@ -753,6 +754,21 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return Math.floor((Decimal) numberValue);
+        }
+    }
+
+    private class FromUnixTimeFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object unixTime = evaluate(arguments.get(0));
+            if (!(unixTime instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "FROMUNIXTIME" function: the argument must evaluate to a number value.'
+                );
+            }
+
+            Long timeStamp = ((Decimal) unixTime).longValue() * 1000;
+            Datetime gmtDatetime = Datetime.newInstance(timeStamp);
+            return gmtDatetime;
         }
     }
 }

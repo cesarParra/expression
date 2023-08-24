@@ -20,7 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // Math
-    FROMUNIXTIME_FN,
     MAX_FN,
     MIN_FN,
     ROUND_FN,
@@ -29,7 +28,8 @@ public enum TokenType {
     // Lists
     LIST_FN,
     TOLIST_FN,
-    AVERAGE_FN, SIZE_FN,
+    AVERAGE_FN,
+    SIZE_FN,
 
     // EOF
     EOF

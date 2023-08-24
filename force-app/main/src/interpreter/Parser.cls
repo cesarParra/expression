@@ -146,16 +146,6 @@ public with sharing class Parser {
             return new Expr.Function(fnName, parameters);
         }
 
-        if (match(TokenType.FROMUNIXTIME_FN)) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr unixTime = expression();
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-            return new Expr.Function(fnName, new List<Expr>{
-                unixTime
-            });
-        }
-
         if (match(TokenType.ROUND_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');

@@ -225,18 +225,6 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Function function) {
         switch on function.name.type {
-            when FROMUNIXTIME_FN {
-                Object unixTime = evaluate(function.arguments.get(0));
-                if (!(unixTime instanceof Decimal)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
-                    );
-                }
-
-                Long timeStamp = ((Decimal) unixTime).longValue() * 1000;
-                Datetime gmtDatetime = Datetime.newInstance(timeStamp);
-                return gmtDatetime;
-            }
             when MAX_FN, MIN_FN {
                 if (function.arguments.isEmpty()) {
                     throw new InterpreterException(
