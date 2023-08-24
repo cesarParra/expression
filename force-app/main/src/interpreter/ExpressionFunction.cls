@@ -16,7 +16,8 @@ public with sharing abstract class ExpressionFunction {
         'LEN' => new LenFn(),
         'LPAD' => new LRPad('LPAD'),
         'RPAD' => new LRPad('RPAD'),
-        'REVERSE' => new ReverseFn()
+        'REVERSE' => new ReverseFn(),
+        'MID' => new MidFn()
     };
 
     private Interpreter interpreter;
@@ -351,6 +352,33 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((String) text).reverse();
+        }
+    }
+
+    private class MidFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "MID" function: the first argument must evaluate to a string value.'
+                );
+            }
+
+            Object start = evaluate(arguments.get(1));
+            if (!(start instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "MID" function: the second argument must evaluate to a number value.'
+                );
+            }
+
+            Object length = evaluate(arguments.get(2));
+            if (!(length instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "MID" function: the third argument must evaluate to a number value.'
+                );
+            }
+
+            return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
         }
     }
 }
