@@ -64,7 +64,7 @@ public with sharing class AstPrinter implements Visitor {
         return builder.toString();
     }
 
-    private String objToString(Object obj) {
+    private static String objToString(Object obj) {
         if (obj == null) {
             return 'null';
         }

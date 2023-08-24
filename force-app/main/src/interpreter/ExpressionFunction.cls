@@ -68,7 +68,7 @@ public with sharing abstract class ExpressionFunction {
         return interpreter.interpret(expression);
     }
 
-    private Boolean isBoolean(Object single) {
+    private static Boolean isBoolean(Object single) {
         return single instanceof Boolean;
     }
 

@@ -1,5 +1,5 @@
 public with sharing class Interpreter implements Visitor {
-    private Environment env;
+    private final Environment env;
 
     public Interpreter(Environment env) {
         this.env = env;
@@ -223,15 +223,15 @@ public with sharing class Interpreter implements Visitor {
         return null;
     }
 
-    private Boolean checkIsDecimal(Object single) {
+    private static Boolean checkIsDecimal(Object single) {
         return single instanceof Decimal;
     }
 
-    private Boolean isBoolean(Object single) {
+    private static Boolean isBoolean(Object single) {
         return single instanceof Boolean;
     }
 
-    private void checkNumberOperand(Token operator, Object left, Object right) {
+    private static void checkNumberOperand(Token operator, Object left, Object right) {
         if (left instanceof Decimal && right instanceof Decimal) return;
         throw new InterpreterException(
             'Error executing ' + operator.lexeme + ' operator: operands must be numbers.'

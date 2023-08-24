@@ -202,7 +202,7 @@ public with sharing class Parser {
         throw error(peek(), message);
     }
 
-    private ParseException error(Token token, String message) {
+    private static ParseException error(Token token, String message) {
         throw new ParseException(
             'Error at token ' + token.toString() + ': ' + message
         );
