@@ -51,7 +51,6 @@ public with sharing class Scanner {
         keywords.put('tolist', TokenType.TOLIST_FN);
         keywords.put('average', TokenType.AVERAGE_FN);
         keywords.put('br', TokenType.BR_FN);
-        keywords.put('case', TokenType.CASE_FN);
         keywords.put('size', TokenType.SIZE_FN);
     }
 

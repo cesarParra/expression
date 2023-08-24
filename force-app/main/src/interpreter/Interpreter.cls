@@ -798,29 +798,6 @@ public with sharing class Interpreter implements Visitor {
                 }
                 return '\n'.repeat(linesToAdd);
             }
-            when CASE_FN {
-                // At the very least 4 arguments must be and if more are received it must
-                // be an even number
-                if (function.arguments.size() < 4 || Math.mod(function.arguments.size(), 2) != 0) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: expected an even number of arguments, but found ' + function.arguments.size()
-                    );
-                }
-
-                // The first argument is the when expression
-                Object whenExpression = evaluate(function.arguments.get(0));
-
-                // Loop through argument pairs to get the match and the result pair
-                for (Integer i = 1; i < function.arguments.size(); i += 2) {
-                    Object match = evaluate(function.arguments.get(i));
-                    if (match == whenExpression) {
-                        return evaluate(function.arguments.get(i + 1));
-                    }
-                }
-
-                // If no match was found, return the else expression (the last argument)
-                return evaluate(function.arguments.get(function.arguments.size() - 1));
-            }
             when SIZE_FN {
                 Object listOfValues = evaluate(function.arguments.get(0));
                 if (!(listOfValues instanceof List<Object>)) {

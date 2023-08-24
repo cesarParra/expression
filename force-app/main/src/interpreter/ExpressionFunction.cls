@@ -9,7 +9,8 @@ public with sharing abstract class ExpressionFunction {
         'LOWER' => new Lower(),
         'BLANKVALUE' => new BlankValue(),
         'ISBLANK' => new IsBlank(),
-        'ISNUMBER' => new IsNumber()
+        'ISNUMBER' => new IsNumber(),
+        'CASE' => new CaseFn()
     };
 
     private Interpreter interpreter;
@@ -200,6 +201,32 @@ public with sharing abstract class ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
             return value instanceof Decimal;
+        }
+    }
+
+    private class CaseFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // At the very least 4 arguments must be and if more are received it must
+            // be an even number
+            if (arguments.size() < 4 || Math.mod(arguments.size(), 2) != 0) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "CASE" function: expected an even number of arguments, but found ' + arguments.size()
+                );
+            }
+
+            // The first argument is the when expression
+            Object whenExpression = evaluate(arguments.get(0));
+
+            // Loop through argument pairs to get the match and the result pair
+            for (Integer i = 1; i < arguments.size(); i += 2) {
+                Object match = evaluate(arguments.get(i));
+                if (match == whenExpression) {
+                    return evaluate(arguments.get(i + 1));
+                }
+            }
+
+            // If no match was found, return the else expression (the last argument)
+            return evaluate(arguments.get(arguments.size() - 1));
         }
     }
 }

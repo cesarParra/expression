@@ -19,9 +19,6 @@ public enum TokenType {
     TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD,
 
     // Built-in functions
-    // Logical
-    CASE_FN,
-
     // String
     FIND_FN, LEFT_FN, LEN_FN,
     LPAD_FN, RPAD_FN, REVERSE_FN, MID_FN, SUBSTRING_FN, RIGHT_FN,
