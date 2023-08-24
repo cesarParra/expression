@@ -32,7 +32,8 @@ public with sharing abstract class ExpressionFunction {
         'MILLISECOND' => new TimeFn('MILLISECOND', TimeType.MILLISECOND),
         'MINUTE' => new TimeFn('MINUTE', TimeType.MINUTE),
         'SECOND' => new TimeFn('SECOND', TimeType.SECOND),
-        'HOUR' => new TimeFn('HOUR', TimeType.HOUR_FN)
+        'HOUR' => new TimeFn('HOUR', TimeType.HOUR_FN),
+        'TIMEVALUE' => new TimeValueFn()
     };
 
     private enum TimeType {
@@ -622,6 +623,44 @@ public with sharing abstract class ExpressionFunction {
                 return ((Time) timeValue).second();
             } else {
                 return ((Time) timeValue).hour();
+            }
+        }
+    }
+
+    private class TimeValueFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object dateTimeOrText = evaluate(arguments.get(0));
+            if (!(dateTimeOrText instanceof String) && !(dateTimeOrText instanceof Datetime)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "TIMEVALUE" function: the argument must evaluate to a string or datetime value.'
+                );
+            }
+
+            if (dateTimeOrText instanceof String) {
+                // A received string should be in the format of HH:mm:ss.SSS
+                String[] parts = ((String) dateTimeOrText).split(':');
+                if (parts.size() != 3) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "TIMEVALUE" function: the argument must evaluate to a string in the format of HH:mm:ss.SSS.'
+                    );
+                }
+
+                Integer hours = Integer.valueOf(parts[0]);
+                Integer minutes = Integer.valueOf(parts[1]);
+
+                String secondsMilli = parts[2];
+
+                if (secondsMilli.contains('.')) {
+                    String[] secondsMilliParts = secondsMilli.split('\\.');
+                    Integer seconds = Integer.valueOf(secondsMilliParts[0]);
+                    Integer milliseconds = Integer.valueOf(secondsMilliParts[1]);
+                    return Time.newInstance(hours, minutes, seconds, milliseconds);
+                } else {
+                    Integer seconds = Integer.valueOf(secondsMilli);
+                    return Time.newInstance(hours, minutes, seconds, 0);
+                }
+            } else {
+                return ((Datetime) dateTimeOrText).time();
             }
         }
     }

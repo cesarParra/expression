@@ -20,7 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // Date and time
-    TIMEVALUE_FN,
     TIMENOW_FN,
     ISOWEEK_FN,
     ISOYEAR_FN,

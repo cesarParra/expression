@@ -20,7 +20,6 @@ public with sharing class Scanner {
         keywords.put('max', TokenType.MAX_FN);
         keywords.put('min', TokenType.MIN_FN);
         keywords.put('round', TokenType.ROUND_FN);
-        keywords.put('timevalue', TokenType.TIMEVALUE_FN);
         keywords.put('trunc', TokenType.TRUNC_FN);
         keywords.put('timenow', TokenType.TIMENOW_FN);
         keywords.put('isoweek', TokenType.ISOWEEK_FN);

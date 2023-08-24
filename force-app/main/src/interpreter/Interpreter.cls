@@ -339,41 +339,6 @@ public with sharing class Interpreter implements Visitor {
                     return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.DOWN);
                 }
             }
-            when TIMEVALUE_FN {
-                Object dateTimeOrText = evaluate(function.arguments.get(0));
-                if (!(dateTimeOrText instanceof String) && !(dateTimeOrText instanceof Datetime)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string or datetime value.'
-                    );
-                }
-
-                if (dateTimeOrText instanceof String) {
-                    // A received string should be in the format of HH:mm:ss.SSS
-                    String[] parts = ((String) dateTimeOrText).split(':');
-                    if (parts.size() != 3) {
-                        throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string in the format of HH:mm:ss.SSS.'
-                        );
-                    }
-
-                    Integer hours = Integer.valueOf(parts[0]);
-                    Integer minutes = Integer.valueOf(parts[1]);
-
-                    String secondsMilli = parts[2];
-
-                    if (secondsMilli.contains('.')) {
-                        String[] secondsMilliParts = secondsMilli.split('\\.');
-                        Integer seconds = Integer.valueOf(secondsMilliParts[0]);
-                        Integer milliseconds = Integer.valueOf(secondsMilliParts[1]);
-                        return Time.newInstance(hours, minutes, seconds, milliseconds);
-                    } else {
-                        Integer seconds = Integer.valueOf(secondsMilli);
-                        return Time.newInstance(hours, minutes, seconds, 0);
-                    }
-                } else {
-                    return ((Datetime) dateTimeOrText).time();
-                }
-            }
             when TIMENOW_FN {
                 return Datetime.now().time();
             }
