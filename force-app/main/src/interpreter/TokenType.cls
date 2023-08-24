@@ -19,10 +19,6 @@ public enum TokenType {
     TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD,
 
     // Built-in functions
-    // Math
-    ROUND_FN,
-    TRUNC_FN,
-
     // Lists
     LIST_FN,
     TOLIST_FN,

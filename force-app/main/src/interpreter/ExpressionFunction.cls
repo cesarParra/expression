@@ -43,7 +43,9 @@ public with sharing abstract class ExpressionFunction {
         'FLOOR' => new FloorFn(),
         'FROMUNIXTIME' => new FromUnixTimeFn(),
         'MAX' => new MaxMixFns('MAX'),
-        'MIN' => new MaxMixFns('MIN')
+        'MIN' => new MaxMixFns('MIN'),
+        'ROUND' => new RoundAndTruncFns('ROUND'),
+        'TRUNC' => new RoundAndTruncFns('TRUNC')
     };
 
     private enum TimeType {
@@ -827,6 +829,40 @@ public with sharing abstract class ExpressionFunction {
                 }
             }
             return result;
+        }
+    }
+
+    private class RoundAndTruncFns extends ExpressionFunction {
+        private final String name;
+
+        public RoundAndTruncFns(String name) {
+            this.name = name;
+        }
+
+        public override Object call(List<Expr> arguments) {
+            Object numberValue = evaluate(arguments.get(0));
+            if (!(numberValue instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing ' + name + ' function: the argument must evaluate to a number value.'
+                );
+            }
+
+            Decimal precision = 0;
+            if (arguments.size() > 1) {
+                Object precisionValue = evaluate(arguments.get(1));
+                if (!(precisionValue instanceof Decimal)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing ' + name + ' function: the second argument must evaluate to a number value.'
+                    );
+                }
+                precision = (Decimal) precisionValue;
+            }
+
+            if (name == 'ROUND') {
+                return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.HALF_UP);
+            } else {
+                return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.DOWN);
+            }
         }
     }
 }

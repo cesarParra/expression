@@ -145,46 +145,6 @@ public with sharing class Parser {
             return new Expr.Function(fnName, parameters);
         }
 
-        if (match(TokenType.ROUND_FN)) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr numberValue = expression();
-
-            // Optional number of digits to round to
-            if (match(TokenType.COMMA)) {
-                Expr numberOfDigits = expression();
-                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-                return new Expr.Function(fnName, new List<Expr>{
-                    numberValue, numberOfDigits
-                });
-            }
-
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-            return new Expr.Function(fnName, new List<Expr>{
-                numberValue
-            });
-        }
-
-        if (match(TokenType.TRUNC_FN)) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr value = expression();
-
-            // Optional number of digits to truncate to
-            if (match(TokenType.COMMA)) {
-                Expr numberOfDigits = expression();
-                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-                return new Expr.Function(fnName, new List<Expr>{
-                    value, numberOfDigits
-                });
-            }
-
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-            return new Expr.Function(fnName, new List<Expr>{
-                value
-            });
-        }
-
         if (match(TokenType.TOLIST_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');

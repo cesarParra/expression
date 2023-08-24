@@ -13,8 +13,6 @@ public with sharing class Scanner {
         keywords.put('null', TokenType.NULL_KEYWORD);
 
         // TODO: Functions start here
-        keywords.put('round', TokenType.ROUND_FN);
-        keywords.put('trunc', TokenType.TRUNC_FN);
         keywords.put('list', TokenType.LIST_FN);
         keywords.put('tolist', TokenType.TOLIST_FN);
         keywords.put('average', TokenType.AVERAGE_FN);

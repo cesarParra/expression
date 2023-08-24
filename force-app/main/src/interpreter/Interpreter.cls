@@ -225,31 +225,6 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Function function) {
         switch on function.name.type {
-            when ROUND_FN, TRUNC_FN {
-                Object numberValue = evaluate(function.arguments.get(0));
-                if (!(numberValue instanceof Decimal)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
-                    );
-                }
-
-                Decimal precision = 0;
-                if (function.arguments.size() > 1) {
-                    Object precisionValue = evaluate(function.arguments.get(1));
-                    if (!(precisionValue instanceof Decimal)) {
-                        throw new InterpreterException(
-                            'Error executing ' + function.name.lexeme + ' function: the second argument must evaluate to a number value.'
-                        );
-                    }
-                    precision = (Decimal) precisionValue;
-                }
-
-                if (function.name.type == TokenType.ROUND_FN) {
-                    return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.HALF_UP);
-                } else {
-                    return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.DOWN);
-                }
-            }
             when LIST_FN {
                 // Check that there is at least one argument
                 if (function.arguments.isEmpty()) {
