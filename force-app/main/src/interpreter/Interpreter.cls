@@ -241,7 +241,7 @@ public with sharing class Interpreter implements Visitor {
     public class InterpreterException extends Exception {
     }
 
-    public Object visit(Expr.CallableFunction function) {
+    public Object visit(Expr.Function function) {
         // Check if the function is in the list of supported functions
         if (!ExpressionFunction.FUNCTIONS.containsKey(function.functionName)) {
             throw new InterpreterException(

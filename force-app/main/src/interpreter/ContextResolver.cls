@@ -77,7 +77,7 @@ public with sharing class ContextResolver implements Visitor {
         return relationshipToQuery + '.' + getExpr.name.lexeme;
     }
 
-    public Object visit(Expr.CallableFunction function) {
+    public Object visit(Expr.Function function) {
         if (function.functionName == 'TOLIST') {
             // The TOLIST function is a special case, since here we know we are dealing with a
             // child relationship whose fields need to be queried correctly as a subquery.

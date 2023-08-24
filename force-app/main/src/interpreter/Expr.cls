@@ -29,11 +29,11 @@ public abstract class Expr {
         }
     }
 
-    public class CallableFunction extends Expr {
+    public class Function extends Expr {
         public final String functionName;
         public final List<Expr> arguments;
 
-        public CallableFunction(String functionName, List<Expr> arguments) {
+        public Function(String functionName, List<Expr> arguments) {
             this.functionName = functionName;
             this.arguments = arguments;
         }

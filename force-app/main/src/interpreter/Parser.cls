@@ -123,7 +123,7 @@ public with sharing class Parser {
                     } while (match(TokenType.COMMA));
                 }
                 consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-                return new Expr.CallableFunction(fnName.lexeme.toUpperCase(), parameters);
+                return new Expr.Function(fnName.lexeme.toUpperCase(), parameters);
             }
 
             // Otherwise we assume it's a field reference

@@ -46,7 +46,7 @@ public with sharing class AstPrinter implements Visitor {
         );
     }
 
-    public Object visit(Expr.CallableFunction function) {
+    public Object visit(Expr.Function function) {
         return parenthesize(
             'FN:' + function.functionName,
             function.arguments
