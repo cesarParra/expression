@@ -34,7 +34,8 @@ public with sharing abstract class ExpressionFunction {
         'SECOND' => new TimeFn('SECOND', TimeType.SECOND),
         'HOUR' => new TimeFn('HOUR', TimeType.HOUR_FN),
         'TIMEVALUE' => new TimeValueFn(),
-        'TIMENOW' => new TimeNowFn()
+        'TIMENOW' => new TimeNowFn(),
+        'ISOWEEK' => new IsoWeek()
     };
 
     private enum TimeType {
@@ -669,6 +670,19 @@ public with sharing abstract class ExpressionFunction {
     private class TimeNowFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             return Datetime.now().time();
+        }
+    }
+
+    private class IsoWeek extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object dateValue = evaluate(arguments.get(0));
+            if (!(dateValue instanceof Date)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "ISOWEEK" function: the argument must evaluate to a date value.'
+                );
+            }
+
+            return Integer.valueOf(Datetime.newInstanceGmt((Date) dateValue, Time.newInstance(0, 0, 0, 0)).format('w'));
         }
     }
 }

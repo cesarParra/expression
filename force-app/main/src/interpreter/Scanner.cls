@@ -21,7 +21,6 @@ public with sharing class Scanner {
         keywords.put('min', TokenType.MIN_FN);
         keywords.put('round', TokenType.ROUND_FN);
         keywords.put('trunc', TokenType.TRUNC_FN);
-        keywords.put('isoweek', TokenType.ISOWEEK_FN);
         keywords.put('isoyear', TokenType.ISOYEAR_FN);
         keywords.put('year', TokenType.YEAR_FN);
         keywords.put('list', TokenType.LIST_FN);
