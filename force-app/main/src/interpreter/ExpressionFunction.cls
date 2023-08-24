@@ -10,7 +10,8 @@ public with sharing abstract class ExpressionFunction {
         'BLANKVALUE' => new BlankValue(),
         'ISBLANK' => new IsBlank(),
         'ISNUMBER' => new IsNumber(),
-        'CASE' => new CaseFn()
+        'CASE' => new CaseFn(),
+        'FIND' => new FindFn()
     };
 
     private Interpreter interpreter;
@@ -227,6 +228,38 @@ public with sharing abstract class ExpressionFunction {
 
             // If no match was found, return the else expression (the last argument)
             return evaluate(arguments.get(arguments.size() - 1));
+        }
+    }
+
+    private class FindFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object searchText = evaluate(arguments.get(0));
+            if (!(searchText instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "FIND" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            Object text = evaluate(arguments.get(1));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "FIND" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            // There might be an optional third argument for the starting index, if there isn't one, it defaults to 0.
+            Integer startIndex = 0;
+            if (arguments.size() > 2) {
+                Object startIndexValue = evaluate(arguments.get(2));
+                if (!(startIndexValue instanceof Decimal)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "FIND" function: the argument must evaluate to a number value.'
+                    );
+                }
+                startIndex = ((Decimal) startIndexValue).intValue();
+            }
+
+            return ((String) text).indexOf((String) searchText, startIndex);
         }
     }
 }

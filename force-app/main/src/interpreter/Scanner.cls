@@ -15,7 +15,6 @@ public with sharing class Scanner {
         // TODO: Functions start here
         keywords.put('date', TokenType.DATE_FN);
         keywords.put('abs', TokenType.ABS_FN);
-        keywords.put('find', TokenType.FIND_FN);
         keywords.put('addmonths', TokenType.ADDMONTHS_FN);
         keywords.put('ceiling', TokenType.CEILING_FN);
         keywords.put('left', TokenType.LEFT_FN);
