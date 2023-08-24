@@ -255,16 +255,6 @@ public with sharing class Interpreter implements Visitor {
 
                 return Math.floor((Decimal) numberValue);
             }
-            when DAYOFYEAR_FN {
-                Object dateValue = evaluate(function.arguments.get(0));
-                if (!(dateValue instanceof Date)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
-                    );
-                }
-
-                return ((Date) dateValue).dayOfYear();
-            }
             when FROMUNIXTIME_FN {
                 Object unixTime = evaluate(function.arguments.get(0));
                 if (!(unixTime instanceof Decimal)) {

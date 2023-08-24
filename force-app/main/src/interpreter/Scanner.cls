@@ -16,7 +16,6 @@ public with sharing class Scanner {
         keywords.put('abs', TokenType.ABS_FN);
         keywords.put('ceiling', TokenType.CEILING_FN);
         keywords.put('floor', TokenType.FLOOR_FN);
-        keywords.put('dayofyear', TokenType.DAYOFYEAR_FN);
         keywords.put('fromunixtime', TokenType.FROMUNIXTIME_FN);
         keywords.put('now', TokenType.NOW_FN);
         keywords.put('datevalue', TokenType.DATEVALUE_FN);

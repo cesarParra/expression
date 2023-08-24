@@ -160,7 +160,6 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-            TokenType.DAYOFYEAR_FN,
             TokenType.DATEVALUE_FN,
             TokenType.DATETIMEVALUE_FN,
             TokenType.HOUR_FN,
