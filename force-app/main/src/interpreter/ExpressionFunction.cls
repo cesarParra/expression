@@ -1,7 +1,8 @@
 public with sharing abstract class ExpressionFunction {
     public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction> {
         'AND' => new AndFn(),
-        'IF' => new IfFn()
+        'IF' => new IfFn(),
+        'NOT' => new NotFn()
     };
 
     private Interpreter interpreter;
@@ -63,6 +64,21 @@ public with sharing abstract class ExpressionFunction {
                 // Right
                 return evaluate(arguments.get(2));
             }
+        }
+    }
+
+    private class NotFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Evaluate the expression
+            Object expression = evaluate(arguments.get(0));
+            if (!isBoolean(expression)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "NOT" function: the argument must evaluate to a boolean value.'
+                );
+            }
+
+            // Return the negated expression
+            return !(Boolean) expression;
         }
     }
 }
