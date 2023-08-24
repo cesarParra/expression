@@ -160,10 +160,16 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-            TokenType.DAY_FN, TokenType.DAYOFYEAR_FN, TokenType.DATEVALUE_FN,
-            TokenType.DATETIMEVALUE_FN, TokenType.HOUR_FN, TokenType.ISOWEEK_FN,
-            TokenType.ISOYEAR_FN, TokenType.YEAR_FN, TokenType.MILLISECOND_FN,
-            TokenType.MINUTE_FN, TokenType.SECOND_FN
+            TokenType.DAYOFYEAR_FN,
+            TokenType.DATEVALUE_FN,
+            TokenType.DATETIMEVALUE_FN,
+            TokenType.HOUR_FN,
+            TokenType.ISOWEEK_FN,
+            TokenType.ISOYEAR_FN,
+            TokenType.YEAR_FN,
+            TokenType.MILLISECOND_FN,
+            TokenType.MINUTE_FN,
+            TokenType.SECOND_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');

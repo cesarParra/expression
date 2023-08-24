@@ -22,7 +22,8 @@ public with sharing abstract class ExpressionFunction {
         'RIGHT' => new RightFn(),
         'BR' => new BrFn(),
         'ADDMONTHS' => new AddMonthsFn(),
-        'DATE' => new DateFn()
+        'DATE' => new DateFn(),
+        'DAY' => new DayFn()
     };
 
     private Interpreter interpreter;
@@ -511,6 +512,19 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return Date.newInstance(Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(day));
+        }
+    }
+
+    private class DayFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object dateValue = evaluate(arguments.get(0));
+            if (!(dateValue instanceof Date)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "DAY" function: the argument must evaluate to a date value.'
+                );
+            }
+
+            return ((Date) dateValue).day();
         }
     }
 }

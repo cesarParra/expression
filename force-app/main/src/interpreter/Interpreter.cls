@@ -245,16 +245,6 @@ public with sharing class Interpreter implements Visitor {
 
                 return Math.ceil((Decimal) numberValue);
             }
-            when DAY_FN {
-                Object dateValue = evaluate(function.arguments.get(0));
-                if (!(dateValue instanceof Date)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a date value.'
-                    );
-                }
-
-                return ((Date) dateValue).day();
-            }
             when FLOOR_FN {
                 Object numberValue = evaluate(function.arguments.get(0));
                 if (!(numberValue instanceof Decimal)) {
