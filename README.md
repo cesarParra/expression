@@ -3,7 +3,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/expression_logo_dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/expression_logo_light.svg">
-  <img alt="Expression Logo" src="assets/expression_logo_light.svg" width="200">
+  <img alt="Expression Logo" src="assets/expression_logo_light.svg" width="400">
 </picture>
 
 Powerful formula-syntax evaluator for the Apex and LWC.
@@ -24,6 +24,18 @@ Powerful formula-syntax evaluator for the Apex and LWC.
 
 [![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYaaIAG)
 [![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYaaIAG)
+
+Install with SF CLI:
+
+```shell
+sf package install --apex-compile package --wait 20 --package 04tDm000000HYaaIAG
+```
+
+Install with SFDX CLI:
+
+```shell
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYaaIAG
+```
 
 ### Direct Deployment to Salesforce
 
