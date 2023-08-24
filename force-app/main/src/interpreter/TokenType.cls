@@ -20,7 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // String
-    LEN_FN,
     LPAD_FN, RPAD_FN, REVERSE_FN, MID_FN, SUBSTRING_FN, RIGHT_FN,
     BR_FN,
 

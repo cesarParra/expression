@@ -12,7 +12,8 @@ public with sharing abstract class ExpressionFunction {
         'ISNUMBER' => new IsNumber(),
         'CASE' => new CaseFn(),
         'FIND' => new FindFn(),
-        'LEFT' => new LeftFn()
+        'LEFT' => new LeftFn(),
+        'LEN' => new LenFn()
     };
 
     private Interpreter interpreter;
@@ -281,6 +282,19 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((String) text).substring(0, ((Decimal) length).intValue());
+        }
+    }
+
+    private class LenFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "LEN" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return ((String) text).length();
         }
     }
 }
