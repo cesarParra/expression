@@ -24,7 +24,8 @@ public with sharing abstract class ExpressionFunction {
         'ADDMONTHS' => new AddMonthsFn(),
         'DATE' => new DateFn(),
         'DAY' => new DayFn(),
-        'DAYOFYEAR' => new DayOfYearFn()
+        'DAYOFYEAR' => new DayOfYearFn(),
+        'NOW' => new NowFn()
     };
 
     private Interpreter interpreter;
@@ -539,6 +540,12 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((Date) dateValue).dayOfYear();
+        }
+    }
+
+    private class NowFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            return Datetime.now();
         }
     }
 }

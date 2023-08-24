@@ -202,7 +202,8 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-            TokenType.NOW_FN, TokenType.TODAY_FN, TokenType.TIMENOW_FN
+            TokenType.TODAY_FN,
+            TokenType.TIMENOW_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');

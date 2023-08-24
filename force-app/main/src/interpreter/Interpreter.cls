@@ -267,9 +267,6 @@ public with sharing class Interpreter implements Visitor {
                 Datetime gmtDatetime = Datetime.newInstance(timeStamp);
                 return gmtDatetime;
             }
-            when NOW_FN {
-                return Datetime.now();
-            }
             when DATEVALUE_FN {
                 // Expect the expression to either be a text or a datetime
                 Object expression = evaluate(function.arguments.get(0));
