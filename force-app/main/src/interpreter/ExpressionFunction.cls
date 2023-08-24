@@ -11,7 +11,8 @@ public with sharing abstract class ExpressionFunction {
         'ISBLANK' => new IsBlank(),
         'ISNUMBER' => new IsNumber(),
         'CASE' => new CaseFn(),
-        'FIND' => new FindFn()
+        'FIND' => new FindFn(),
+        'LEFT' => new LeftFn()
     };
 
     private Interpreter interpreter;
@@ -260,6 +261,26 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((String) text).indexOf((String) searchText, startIndex);
+        }
+    }
+
+    private class LeftFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "LEFT" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            Object length = evaluate(arguments.get(1));
+            if (!(length instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "LEFT" function: the argument must evaluate to a number value.'
+                );
+            }
+
+            return ((String) text).substring(0, ((Decimal) length).intValue());
         }
     }
 }

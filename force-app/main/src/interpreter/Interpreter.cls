@@ -284,23 +284,6 @@ public with sharing class Interpreter implements Visitor {
 
                 return Math.ceil((Decimal) numberValue);
             }
-            when LEFT_FN {
-                Object text = evaluate(function.arguments.get(0));
-                if (!(text instanceof String)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
-                    );
-                }
-
-                Object length = evaluate(function.arguments.get(1));
-                if (!(length instanceof Decimal)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
-                    );
-                }
-
-                return ((String) text).substring(0, ((Decimal) length).intValue());
-            }
             when DAY_FN {
                 Object dateValue = evaluate(function.arguments.get(0));
                 if (!(dateValue instanceof Date)) {

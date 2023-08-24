@@ -226,7 +226,7 @@ public with sharing class Parser {
             });
         }
 
-        if (match2(TokenType.LEFT_FN, TokenType.RIGHT_FN)) {
+        if (match(TokenType.RIGHT_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             Expr text = expression();
