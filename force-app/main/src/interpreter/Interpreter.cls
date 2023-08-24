@@ -340,14 +340,6 @@ public with sharing class Interpreter implements Visitor {
 
                 return ((Date) dateValue).day();
             }
-            when ISBLANK_FN {
-                Object value = evaluate(function.arguments.get(0));
-                if ((value instanceof String)) {
-                    return String.isBlank((String) value);
-                }
-
-                return value == null;
-            }
             when FLOOR_FN {
                 Object numberValue = evaluate(function.arguments.get(0));
                 if (!(numberValue instanceof Decimal)) {

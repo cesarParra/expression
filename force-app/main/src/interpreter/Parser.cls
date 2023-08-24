@@ -237,7 +237,7 @@ public with sharing class Parser {
             });
         }
 
-        if (match2(TokenType.ISBLANK_FN, TokenType.ISNUMBER_FN)) {
+        if (match(TokenType.ISNUMBER_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             Expr value = expression();

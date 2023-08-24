@@ -1,5 +1,5 @@
 public with sharing abstract class ExpressionFunction {
-    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction> {
+    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'AND' => new AndFn(),
         'IF' => new IfFn(),
         'NOT' => new NotFn(),
@@ -7,7 +7,8 @@ public with sharing abstract class ExpressionFunction {
         'BEGINS' => new Begins(),
         'CONTAINS' => new Contains(),
         'LOWER' => new Lower(),
-        'BLANKVALUE' => new BlankValue()
+        'BLANKVALUE' => new BlankValue(),
+        'ISBLANK' => new IsBlank()
     };
 
     private Interpreter interpreter;
@@ -180,6 +181,17 @@ public with sharing abstract class ExpressionFunction {
             throw new Interpreter.InterpreterException(
                 'Error executing "BLANKVALUE" function: the first argument must evaluate to a string value.'
             );
+        }
+    }
+
+    private class IsBlank extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object value = evaluate(arguments.get(0));
+            if ((value instanceof String)) {
+                return String.isBlank((String) value);
+            }
+
+            return value == null;
         }
     }
 }
