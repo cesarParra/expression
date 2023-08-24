@@ -1,13 +1,31 @@
-# Formula Evaluator
+<div align="center">
 
-Allows you to evaluate formula-like syntax through Apex code.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/expression_logo_dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/expression_logo_light.svg">
+  <img alt="Expression Logo" src="assets/expression_logo_light.svg" width="200">
+</picture>
 
-Supports most of the operators and functions available in Salesforce formulas, but
-also has additional support for collections/lists.
+Powerful formula-syntax evaluator for the Apex and LWC.
+
+</div>
+
+
+## Features
+
+* Supports almost all the operators and functions available in Salesforce formulas
+* Support for lists and collections
+* Automatically understands relationships and can extract data from child records
+* Comes with pre-built LWC component to evaluate formulas in record pages
 
 ## Installation
 
-### Deploy to Salesforce
+### Unlocked Package (`expression` namespace)
+
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYaaIAG)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYaaIAG)
+
+### Direct Deployment to Salesforce
 
 Clone the repo and deploy the source code, or click the button below to directly deploy to Salesforce.
 
