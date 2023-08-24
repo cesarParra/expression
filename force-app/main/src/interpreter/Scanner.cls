@@ -13,7 +13,6 @@ public with sharing class Scanner {
         keywords.put('null', TokenType.NULL_KEYWORD);
 
         // TODO: Functions start here
-        keywords.put('floor', TokenType.FLOOR_FN);
         keywords.put('fromunixtime', TokenType.FROMUNIXTIME_FN);
         keywords.put('max', TokenType.MAX_FN);
         keywords.put('min', TokenType.MIN_FN);

@@ -39,7 +39,8 @@ public with sharing abstract class ExpressionFunction {
         'ISOYEAR' => new IsoYear(),
         'YEAR' => new YearFn(),
         'ABS' => new AbsFn(),
-        'CEILING' => new CeilingFn()
+        'CEILING' => new CeilingFn(),
+        'FLOOR' => new FloorFn()
     };
 
     private enum TimeType {
@@ -739,6 +740,19 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return Math.ceil((Decimal) numberValue);
+        }
+    }
+
+    private class FloorFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object numberValue = evaluate(arguments.get(0));
+            if (!(numberValue instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "FLOOR" function: the argument must evaluate to a number value.'
+                );
+            }
+
+            return Math.floor((Decimal) numberValue);
         }
     }
 }

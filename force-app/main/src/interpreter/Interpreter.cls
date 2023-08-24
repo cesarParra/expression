@@ -225,16 +225,6 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Function function) {
         switch on function.name.type {
-            when FLOOR_FN {
-                Object numberValue = evaluate(function.arguments.get(0));
-                if (!(numberValue instanceof Decimal)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a number value.'
-                    );
-                }
-
-                return Math.floor((Decimal) numberValue);
-            }
             when FROMUNIXTIME_FN {
                 Object unixTime = evaluate(function.arguments.get(0));
                 if (!(unixTime instanceof Decimal)) {

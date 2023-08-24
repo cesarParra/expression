@@ -20,7 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // Math
-    FLOOR_FN,
     FROMUNIXTIME_FN,
     MAX_FN,
     MIN_FN,
