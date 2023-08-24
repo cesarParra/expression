@@ -1,16 +1,16 @@
 /**
  * @description Evaluates a formula and returns the result.
  */
-public with sharing class FormulaEvaluator {
-    public static Boolean printAst = false;
+global with sharing class Evaluator {
+    global static Boolean printAst = false;
 
     /**
      * @description Evaluates a formula and returns the result.
      * @param formula The formula to evaluate.
      * @return The result of the formula.
      */
-    public static Object evaluate(String formula) {
-        return evaluate(formula, (SObject)null);
+    global static Object run(String formula) {
+        return run(formula, (SObject)null);
     }
 
     /**
@@ -20,7 +20,7 @@ public with sharing class FormulaEvaluator {
      *        the formula.
      * @return The result of the formula.
      */
-    public static Object evaluate(String formula, SObject context) {
+    global static Object run(String formula, SObject context) {
         Scanner scanner = new Scanner(formula);
         List<Token> tokens = scanner.scanTokens();
 
@@ -45,7 +45,7 @@ public with sharing class FormulaEvaluator {
      * @param recordId The Id of the record to use as the context for the formula.
      * @return The result of the formula.
      */
-    public static Object evaluate(String formula, Id recordId) {
+    global static Object run(String formula, Id recordId) {
         Scanner scanner = new Scanner(formula);
         List<Token> tokens = scanner.scanTokens();
 
@@ -64,6 +64,4 @@ public with sharing class FormulaEvaluator {
         Interpreter interpreter = new Interpreter(env);
         return interpreter.interpret(expression);
     }
-
-    public class NotImplementedException extends Exception {}
 }
