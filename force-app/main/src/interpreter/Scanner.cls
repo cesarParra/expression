@@ -17,7 +17,6 @@ public with sharing class Scanner {
         keywords.put('ceiling', TokenType.CEILING_FN);
         keywords.put('floor', TokenType.FLOOR_FN);
         keywords.put('fromunixtime', TokenType.FROMUNIXTIME_FN);
-        keywords.put('today', TokenType.TODAY_FN);
         keywords.put('max', TokenType.MAX_FN);
         keywords.put('min', TokenType.MIN_FN);
         keywords.put('hour', TokenType.HOUR_FN);

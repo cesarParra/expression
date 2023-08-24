@@ -200,7 +200,6 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-            TokenType.TODAY_FN,
             TokenType.TIMENOW_FN
         })) {
             Token fnName = previous();

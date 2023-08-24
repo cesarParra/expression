@@ -267,9 +267,6 @@ public with sharing class Interpreter implements Visitor {
                 Datetime gmtDatetime = Datetime.newInstance(timeStamp);
                 return gmtDatetime;
             }
-            when TODAY_FN {
-                return Date.today();
-            }
             when MAX_FN, MIN_FN {
                 if (function.arguments.isEmpty()) {
                     throw new InterpreterException(

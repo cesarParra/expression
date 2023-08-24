@@ -27,7 +27,8 @@ public with sharing abstract class ExpressionFunction {
         'DAYOFYEAR' => new DayOfYearFn(),
         'NOW' => new NowFn(),
         'DATEVALUE' => new DateValueFn(),
-        'DATETIMEVALUE' => new DateTimeValueFn()
+        'DATETIMEVALUE' => new DateTimeValueFn(),
+        'TODAY' => new TodayFn()
     };
 
     private Interpreter interpreter;
@@ -579,6 +580,12 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return Datetime.valueOf((String) expression);
+        }
+    }
+
+    private class TodayFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            return Date.today();
         }
     }
 }
