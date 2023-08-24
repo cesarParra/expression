@@ -225,16 +225,6 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Function function) {
         switch on function.name.type {
-            when LOWER_FN {
-                Object text = evaluate(function.arguments.get(0));
-                if (!(text instanceof String)) {
-                    throw new InterpreterException(
-                        'Error executing ' + function.name.lexeme + ' function: the argument must evaluate to a string value.'
-                    );
-                }
-
-                return ((String) text).toLowerCase();
-            }
             when DATE_FN {
                 Object year = evaluate(function.arguments.get(0));
                 if (!(year instanceof Decimal)) {
@@ -312,22 +302,6 @@ public with sharing class Interpreter implements Visitor {
                 }
 
                 return ((Date) startMonth).addMonths(((Decimal) monthsToAdd).intValue());
-            }
-            when BLANKVALUE_FN {
-                Object value = evaluate(function.arguments.get(0));
-                if (value == null) {
-                    return evaluate(function.arguments.get(1));
-                }
-
-                // Check if the value is a string
-                if (value instanceof String) {
-                    // Check if the string is empty
-                    if (String.isBlank((String) value)) {
-                        return evaluate(function.arguments.get(1));
-                    } else {
-                        return value;
-                    }
-                }
             }
             when CEILING_FN {
                 Object numberValue = evaluate(function.arguments.get(0));

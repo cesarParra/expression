@@ -147,7 +147,7 @@ public with sharing class Parser {
         }
 
         if (match(new List<TokenType>{
-            TokenType.LOWER_FN, TokenType.LEN_FN, TokenType.REVERSE_FN
+            TokenType.LEN_FN, TokenType.REVERSE_FN
         })) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
@@ -218,19 +218,6 @@ public with sharing class Parser {
 
             return new Expr.Function(fnName, new List<Expr>{
                 startDate, months
-            });
-        }
-
-        if (match(TokenType.BLANKVALUE_FN)) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr value = expression();
-            consume(TokenType.COMMA, 'Expect \',\' after value.');
-            Expr valueIfBlank = expression();
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-
-            return new Expr.Function(fnName, new List<Expr>{
-                value, valueIfBlank
             });
         }
 

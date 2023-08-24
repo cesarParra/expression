@@ -5,7 +5,9 @@ public with sharing abstract class ExpressionFunction {
         'NOT' => new NotFn(),
         'OR' => new OrFn(),
         'BEGINS' => new Begins(),
-        'CONTAINS' => new Contains()
+        'CONTAINS' => new Contains(),
+        'LOWER' => new Lower(),
+        'BLANKVALUE' => new BlankValue()
     };
 
     private Interpreter interpreter;
@@ -142,6 +144,42 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((String) text).contains((String) substring);
+        }
+    }
+
+    private class Lower extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "LOWER" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return ((String) text).toLowerCase();
+        }
+    }
+
+    private class BlankValue extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object value = evaluate(arguments.get(0));
+            if (value == null) {
+                return evaluate(arguments.get(1));
+            }
+
+            // Check if the value is a string
+            if (value instanceof String) {
+                // Check if the string is empty
+                if (String.isBlank((String) value)) {
+                    return evaluate(arguments.get(1));
+                } else {
+                    return value;
+                }
+            }
+
+            throw new Interpreter.InterpreterException(
+                'Error executing "BLANKVALUE" function: the first argument must evaluate to a string value.'
+            );
         }
     }
 }

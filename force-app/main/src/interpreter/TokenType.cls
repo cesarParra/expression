@@ -20,11 +20,11 @@ public enum TokenType {
 
     // Built-in functions
     // Logical
-    BLANKVALUE_FN, ISBLANK_FN,
+    ISBLANK_FN,
     ISNUMBER_FN, CASE_FN,
 
     // String
-    LOWER_FN, FIND_FN, LEFT_FN, LEN_FN,
+    FIND_FN, LEFT_FN, LEN_FN,
     LPAD_FN, RPAD_FN, REVERSE_FN, MID_FN, SUBSTRING_FN, RIGHT_FN,
     BR_FN,
 
