@@ -19,9 +19,6 @@ public enum TokenType {
     TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD,
 
     // Built-in functions
-    // Date and time
-    YEAR_FN,
-
     // Math
     ABS_FN,
     CEILING_FN,
@@ -33,7 +30,8 @@ public enum TokenType {
     TRUNC_FN,
 
     // Lists
-    LIST_FN, TOLIST_FN, AVERAGE_FN, SIZE_FN,
+    LIST_FN,
+    TOLIST_FN, AVERAGE_FN, SIZE_FN,
 
     // EOF
     EOF

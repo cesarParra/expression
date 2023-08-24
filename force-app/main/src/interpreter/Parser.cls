@@ -159,19 +159,6 @@ public with sharing class Parser {
             });
         }
 
-        if (match(new List<TokenType>{
-            TokenType.YEAR_FN
-        })) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr dateValue = expression();
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-
-            return new Expr.Function(fnName, new List<Expr>{
-                dateValue
-            });
-        }
-
         if (match(TokenType.FROMUNIXTIME_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
