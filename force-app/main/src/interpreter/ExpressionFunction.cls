@@ -17,7 +17,9 @@ public with sharing abstract class ExpressionFunction {
         'LPAD' => new LRPad('LPAD'),
         'RPAD' => new LRPad('RPAD'),
         'REVERSE' => new ReverseFn(),
-        'MID' => new MidFn()
+        'MID' => new MidFn(),
+        'SUBSTRING' => new SubstringFn(),
+        'RIGHT' => new RightFn()
     };
 
     private Interpreter interpreter;
@@ -379,6 +381,67 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
+        }
+    }
+
+    private class SubstringFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SUBSTRING" function: the first argument must evaluate to a string value.'
+                );
+            }
+
+            Object start = evaluate(arguments.get(1));
+            if (!(start instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SUBSTRING" function: the second argument must evaluate to a number value.'
+                );
+            }
+
+            // Third argument is optional
+            Object length = null;
+            if (arguments.size() > 2) {
+                length = evaluate(arguments.get(2));
+                if (!(length instanceof Decimal)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "SUBSTRING" function: the third argument must evaluate to a number value.'
+                    );
+                }
+            }
+
+            if (length == null) {
+                return ((String) text).substring(((Decimal) start).intValue() - 1);
+            } else {
+                return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
+            }
+        }
+    }
+
+    private class RightFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "RIGHT: function: the first argument must evaluate to a string value.'
+                );
+            }
+
+            Object length = evaluate(arguments.get(1));
+            if (!(length instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "RIGHT" function: the second argument must evaluate to a number value.'
+                );
+            }
+
+            // If the number is less than 0, force it to 0
+            Integer lengthAsInteger = ((Decimal) length).intValue();
+            if (lengthAsInteger < 0) {
+                lengthAsInteger = 0;
+            }
+
+            return ((String) text).right(lengthAsInteger);
         }
     }
 }

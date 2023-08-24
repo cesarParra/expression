@@ -20,8 +20,6 @@ public enum TokenType {
 
     // Built-in functions
     // String
-    SUBSTRING_FN,
-    RIGHT_FN,
     BR_FN,
 
     // Date and time

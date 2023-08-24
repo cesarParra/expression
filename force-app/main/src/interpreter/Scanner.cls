@@ -31,10 +31,8 @@ public with sharing class Scanner {
         keywords.put('round', TokenType.ROUND_FN);
         keywords.put('timevalue', TokenType.TIMEVALUE_FN);
         keywords.put('trunc', TokenType.TRUNC_FN);
-        keywords.put('substring', TokenType.SUBSTRING_FN);
         keywords.put('timenow', TokenType.TIMENOW_FN);
         keywords.put('isoweek', TokenType.ISOWEEK_FN);
-        keywords.put('right', TokenType.RIGHT_FN);
         keywords.put('isoyear', TokenType.ISOYEAR_FN);
         keywords.put('year', TokenType.YEAR_FN);
         keywords.put('millisecond', TokenType.MILLISECOND_FN);

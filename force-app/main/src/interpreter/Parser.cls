@@ -214,19 +214,6 @@ public with sharing class Parser {
             });
         }
 
-        if (match(TokenType.RIGHT_FN)) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr text = expression();
-            consume(TokenType.COMMA, 'Expect \',\' after text.');
-            Expr numberOfCharacters = expression();
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-
-            return new Expr.Function(fnName, new List<Expr>{
-                text, numberOfCharacters
-            });
-        }
-
         if (match(TokenType.FROMUNIXTIME_FN)) {
             Token fnName = previous();
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
@@ -283,28 +270,6 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
             return new Expr.Function(fnName, new List<Expr>{
                 value
-            });
-        }
-
-        if (match(TokenType.SUBSTRING_FN)) {
-            Token fnName = previous();
-            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-            Expr text = expression();
-            consume(TokenType.COMMA, 'Expect \',\' after text.');
-            Expr start = expression();
-
-            // Optional number of characters to extract
-            if (match(TokenType.COMMA)) {
-                Expr numberOfCharacters = expression();
-                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-                return new Expr.Function(fnName, new List<Expr>{
-                    text, start, numberOfCharacters
-                });
-            }
-
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-            return new Expr.Function(fnName, new List<Expr>{
-                text, start
             });
         }
 
