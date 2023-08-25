@@ -55,7 +55,8 @@ public with sharing abstract class ExpressionFunction {
         'HYPERLINK' => new HyperlinkFn(),
         'SUBSTITUTE' => new SubstituteFn(),
         'TEXT' => new TextFn(),
-        'TRIM' => new TrimFn()
+        'TRIM' => new TrimFn(),
+        'UPPER' => new UpperFn()
     };
 
     private enum TimeType {
@@ -1178,8 +1179,7 @@ public with sharing abstract class ExpressionFunction {
                     timeValue.second()
                 );
                 return dt.format('hh:mm:ss a').replace(dt.date().format(), '').trim();
-            }
-            else {
+            } else {
                 return String.valueOf(value);
             }
         }
@@ -1203,6 +1203,27 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((String) value).trim();
+        }
+    }
+
+    private class UpperFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect 1 argument
+            if (arguments.size() != 1) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "UPPER" function: the function must have exactly 1 argument.'
+                );
+            }
+
+            // The argument must be a string
+            Object value = evaluate(arguments.get(0));
+            if (!(value instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "UPPER" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return ((String) value).toUpperCase();
         }
     }
 }

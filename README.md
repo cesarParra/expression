@@ -535,12 +535,22 @@ expression.Evaluator.run('TEXT(1)'); // "1"
 
 - `TRIM`
 
-Removes all spaces from text except for single spaces between words.
+Removes the spaces and tabs from the beginning and end of a text string.
 
 Accepts 1 argument: the text to trim.
 
 ```apex
 expression.Evaluator.run('TRIM(" Hello World ")'); // "Hello World"
+```
+
+- `UPPER`
+
+Converts all letters in the specified text to uppercase.
+
+Accepts 1 argument: the text to convert.
+
+```apex
+expression.Evaluator.run('UPPER("Hello World")'); // "HELLO WORLD"
 ```
 
 #### Date and Time Functions

@@ -861,4 +861,9 @@ private class EvaluatorTest {
     private static void trimFunctionRemovesLeadingAndTrailingWhitespace() {
         Assert.areEqual('Hello World', Evaluator.run('TRIM("  Hello World  ")'));
     }
+
+    @IsTest
+    private static void upperFunctionConvertsToUppercase() {
+        Assert.areEqual('HELLO WORLD', Evaluator.run('UPPER("Hello World")'));
+    }
 }
