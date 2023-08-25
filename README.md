@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYapIAG)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYapIAG)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYauIAG)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYauIAG)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm000000HYapIAG
+sf package install --apex-compile package --wait 20 --package 04tDm000000HYauIAG
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYapIAG
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYauIAG
 ```
 
 ### Direct Deployment to Salesforce
@@ -796,6 +796,8 @@ Accepts 1 argument: the list to evaluate.
 expression.Evaluator.run('SIZE(LIST(1, 2, 3))'); // 3
 ```
 
+- `MAX` and `MIN`
+
 #### Math Functions
 
 - `ABS`
@@ -853,9 +855,10 @@ expression.Evaluator.run('MAX(1, 2, 3)'); // 3
 
 Returns the smallest of one or more numbers.
 
-At least one argument is required.
+Accepts either a list of numbers as a single argument, or multiple numerical arguments.
 
 ```apex
+expression.Evaluator.run('MIN(LIST(1, 2, 3))'); // 1
 expression.Evaluator.run('MIN(1, 2, 3)'); // 1
 ```
 
