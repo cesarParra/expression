@@ -674,6 +674,19 @@ Accepts 1 argument: time to evaluate.
 expression.Evaluator.run('HOUR(TIMEVALUE("12:00:00"))'); // 12
 ```
 
+- `UNIXTIMESTAMP`
+
+Returns the number of seconds since 1 Jan 1970 for the given date or datetime,
+or number of seconds in the day for a time.
+
+Accepts 1 argument: the date, datetime, or time to evaluate.
+
+```apex
+expression.Evaluator.run('UNIXTIMESTAMP(DATE(2020, 1, 1))'); // 1577836800
+expression.Evaluator.run('UNIXTIMESTAMP(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 1577880000
+expression.Evaluator.run('UNIXTIMESTAMP(TIMEVALUE("12:00:00"))'); // 43200
+```
+
 #### List Functions
 
 - `TOLIST`

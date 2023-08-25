@@ -49,7 +49,8 @@ public with sharing abstract class ExpressionFunction {
         'LIST' => new ListFn(),
         'TOLIST' => new ToListFn(),
         'AVERAGE' => new AverageFn(),
-        'SIZE' => new SizeFn()
+        'SIZE' => new SizeFn(),
+        'UNIXTIMESTAMP' => new UnixTimeStampFn()
     };
 
     private enum TimeType {
@@ -985,6 +986,33 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((List<Object>) listOfValues).size();
+        }
+    }
+
+    /**
+     * @description Returns the number of seconds since 1 Jan 1970 for the given date or datetime,
+     *              or number of seconds in the day for a time.
+     */
+    private class UnixTimeStampFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object dateOrDateTimeOrTime = evaluate(arguments.get(0));
+            if (!(dateOrDateTimeOrTime instanceof Date) && !(dateOrDateTimeOrTime instanceof Datetime) && !(dateOrDateTimeOrTime instanceof Time)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "UNIXTIMESTAMP" function: the argument must evaluate to a date, datetime or time value.'
+                );
+            }
+
+            if (dateOrDateTimeOrTime instanceof Date) {
+                // Convert to datetime first
+                Datetime gmtDatetime = Datetime.newInstanceGmt((Date) dateOrDateTimeOrTime, Time.newInstance(0, 0, 0, 0));
+                return gmtDatetime.getTime() / 1000;
+            } else if (dateOrDateTimeOrTime instanceof Datetime) {
+                Datetime gmtDateTime = Datetime.newInstanceGmt(((Datetime) dateOrDateTimeOrTime).date(), ((Datetime) dateOrDateTimeOrTime).time());
+                return gmtDateTime.getTime() / 1000;
+            } else {
+                // Calculate the number of seconds in the day for a given time
+                return ((Time) dateOrDateTimeOrTime).hour() * 3600 + ((Time) dateOrDateTimeOrTime).minute() * 60 + ((Time) dateOrDateTimeOrTime).second();
+            }
         }
     }
 }

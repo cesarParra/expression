@@ -576,9 +576,9 @@ private class EvaluatorTest {
     private static void listFunctionReturnsAListContainingAllArguments() {
         Object result = Evaluator.run('LIST(1, 2, 3)');
         Assert.isTrue(result instanceof List<Object>);
-        Assert.areEqual(1, ((List<Object>)result)[0]);
-        Assert.areEqual(2, ((List<Object>)result)[1]);
-        Assert.areEqual(3, ((List<Object>)result)[2]);
+        Assert.areEqual(1, ((List<Object>) result)[0]);
+        Assert.areEqual(2, ((List<Object>) result)[1]);
+        Assert.areEqual(3, ((List<Object>) result)[2]);
     }
 
     @IsTest
@@ -592,7 +592,9 @@ private class EvaluatorTest {
         insert account;
         Contact contact1 = new Contact(LastName = 'Test1', AccountId = account.Id);
         Contact contact2 = new Contact(LastName = 'Test2', AccountId = account.Id);
-        insert new List<SObject> { contact1, contact2 };
+        insert new List<SObject>{
+            contact1, contact2
+        };
         Account accountWithContacts = [SELECT Id, Name, (SELECT Id, LastName FROM Contacts) FROM Account WHERE Id = :account.Id];
 
         List<Object> result = (List<Object>) Evaluator.run('TOLIST(Contacts, LastName)', accountWithContacts);
@@ -609,7 +611,9 @@ private class EvaluatorTest {
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
-        insert new List<SObject> { childAccount1, childAccount2 };
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
 
         Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
 
@@ -656,7 +660,9 @@ private class EvaluatorTest {
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
-        insert new List<SObject> { childAccount1, childAccount2 };
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
 
         Object revenueByEmployee = Evaluator.run('AVERAGE(TOLIST(ChildAccounts, AnnualRevenue)) / AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))',
             parentAccount.Id);
@@ -671,7 +677,9 @@ private class EvaluatorTest {
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = null);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
-        insert new List<SObject> { childAccount1, childAccount2 };
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
 
         Decimal revenueByEmployee = (Decimal) Evaluator.run('AVERAGE(TOLIST(ChildAccounts, AnnualRevenue)) / AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))',
             parentAccount.Id);
@@ -780,5 +788,22 @@ private class EvaluatorTest {
     private static void spreadOperatorCanBeUsedInsideOfAListFunction() {
         Assert.areEqual(3, Evaluator.run('SIZE(LIST(...LIST(1, 2, 3)))'));
         Assert.areEqual(6, Evaluator.run('SIZE(LIST(1, 2, 3, ...[4, 5, 6]))'));
+    }
+
+    @IsTest
+    private static void unixTimeStampReturnsTheCorrectNumberOfSecondsForADate() {
+        // Uses GMT
+        Assert.areEqual(1420070400, Evaluator.run('UNIXTIMESTAMP(DATE(2015, 1, 1))'));
+    }
+
+    @IsTest
+    private static void unixTimeStampReturnsTheCorrectNumberForADateTime() {
+        // Uses GMT
+        Assert.areEqual(1420070400, Evaluator.run('UNIXTIMESTAMP(DATETIMEVALUE("2015-01-01 00:00:00"))'));
+    }
+
+    @IsTest
+    private static void unixTimeStampReturnsTheNumberOfSecondsTheDayWhenReceivingATime() {
+        Assert.areEqual(3600, Evaluator.run('UNIXTIMESTAMP(TIMEVALUE("01:00:00"))'), 'Expect the number of seconds for a given time');
     }
 }
