@@ -856,4 +856,9 @@ private class EvaluatorTest {
     private static void textConvertsTimeValues() {
         Assert.areEqual('12:00:00 AM', Evaluator.run('TEXT(TIMEVALUE("00:00:00"))'));
     }
+
+    @IsTest
+    private static void trimFunctionRemovesLeadingAndTrailingWhitespace() {
+        Assert.areEqual('Hello World', Evaluator.run('TRIM("  Hello World  ")'));
+    }
 }

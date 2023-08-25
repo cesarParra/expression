@@ -54,7 +54,8 @@ public with sharing abstract class ExpressionFunction {
         'WEEKDAY' => new WeekdayFn(),
         'HYPERLINK' => new HyperlinkFn(),
         'SUBSTITUTE' => new SubstituteFn(),
-        'TEXT' => new TextFn()
+        'TEXT' => new TextFn(),
+        'TRIM' => new TrimFn()
     };
 
     private enum TimeType {
@@ -1181,6 +1182,27 @@ public with sharing abstract class ExpressionFunction {
             else {
                 return String.valueOf(value);
             }
+        }
+    }
+
+    private class TrimFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect 1 argument
+            if (arguments.size() != 1) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "TRIM" function: the function must have exactly 1 argument.'
+                );
+            }
+
+            // The argument must be a string
+            Object value = evaluate(arguments.get(0));
+            if (!(value instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "TRIM" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return ((String) value).trim();
         }
     }
 }

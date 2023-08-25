@@ -533,6 +533,16 @@ Accepts 1 argument: the value to convert to a string.
 expression.Evaluator.run('TEXT(1)'); // "1"
 ```
 
+- `TRIM`
+
+Removes all spaces from text except for single spaces between words.
+
+Accepts 1 argument: the text to trim.
+
+```apex
+expression.Evaluator.run('TRIM(" Hello World ")'); // "Hello World"
+```
+
 #### Date and Time Functions
 
 - `DATE`
