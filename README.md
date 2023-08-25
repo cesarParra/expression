@@ -499,6 +499,20 @@ expression.Evaluator.run('BR()'); // "\n" or "<br>"
 expression.Evaluator.run('BR(2)'); // "\n\n" or "<br><br>"
 ```
 
+- `HYPERLINK`
+
+Returns a text string of an HTML anchor tag that displays a hyperlink.
+
+Accepts 2 or 3 arguments: the URL and the text to display. Optionally, the third argument is the target
+of the link.
+
+The target should be one of `_blank`, `_parent`, `_self`, or `_top`.
+
+```apex
+expression.Evaluator.run('HYPERLINK("https://www.google.com", "Google")'); // "<a href="https://www.google.com">Google</a>"
+expression.Evaluator.run('HYPERLINK("https://www.google.com", "Google", "_blank")'); // "<a href="https://www.google.com" target="_blank">Google</a>"
+```
+
 #### Date and Time Functions
 
 - `DATE`

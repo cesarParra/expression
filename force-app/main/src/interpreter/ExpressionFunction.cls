@@ -51,7 +51,8 @@ public with sharing abstract class ExpressionFunction {
         'AVERAGE' => new AverageFn(),
         'SIZE' => new SizeFn(),
         'UNIXTIMESTAMP' => new UnixTimeStampFn(),
-        'WEEKDAY' => new WeekdayFn()
+        'WEEKDAY' => new WeekdayFn(),
+        'HYPERLINK' => new HyperlinkFn()
     };
 
     private enum TimeType {
@@ -1040,6 +1041,61 @@ public with sharing abstract class ExpressionFunction {
                 0,
                 0
             ).format('u'));
+        }
+    }
+
+    /**
+     * @description Creates a link to a URL specified that is linkable from the text specified.
+     */
+    private class HyperLinkFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expected arguments:
+            // 1. Url
+            // 2. Friendly text
+            // 3. Option - target
+
+            // Check that there is at least 2 arguments
+            if (arguments.size() < 2) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "HYPERLINK" function: the function must have at least 2 arguments.'
+                );
+            }
+
+            // Check that the first argument is a string
+            Object url = evaluate(arguments.get(0));
+            if (!(url instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "HYPERLINK" function: the first argument must evaluate to a string value.'
+                );
+            }
+
+            // Check that the second argument is a string
+            Object friendlyText = evaluate(arguments.get(1));
+            if (!(friendlyText instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "HYPERLINK" function: the second argument must evaluate to a string value.'
+                );
+            }
+
+            // Check that the third argument is a string (if present)
+            Object target = null;
+            if (arguments.size() > 2) {
+                target = evaluate(arguments.get(2));
+                if (!(target instanceof String)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "HYPERLINK" function: the third argument must evaluate to a string value.'
+                    );
+                }
+            }
+
+            // Create the link
+            String link = '<a href="' + (String) url + '"';
+            if (target != null) {
+                link += ' target="' + (String) target + '"';
+            }
+            link += '>' + (String) friendlyText + '</a>';
+
+            return link;
         }
     }
 }

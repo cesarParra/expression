@@ -811,4 +811,14 @@ private class EvaluatorTest {
     private static void weekDayReturnsTheDayOfTheWeek() {
         Assert.isNotNull(Evaluator.run('WEEKDAY(DATE(2015, 1, 5))'));
     }
+
+    @IsTest
+    private static void hyperlinkBuildsAnAnchorTag() {
+        Assert.areEqual('<a href="https://www.google.com">Google</a>', Evaluator.run('HYPERLINK("https://www.google.com", "Google")'));
+    }
+
+    @IsTest
+    private static void hyperLinkCanReceiveTheTargetAsAThirdParameters() {
+        Assert.areEqual('<a href="https://www.google.com" target="_blank">Google</a>', Evaluator.run('HYPERLINK("https://www.google.com", "Google", "_blank")'));
+    }
 }
