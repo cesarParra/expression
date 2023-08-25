@@ -770,4 +770,15 @@ private class EvaluatorTest {
     private static void canBuildListLiterals() {
         Assert.areEqual(3, Evaluator.run('SIZE([1, 2, 3])'));
     }
+
+    @IsTest
+    private static void spreadOperatorExpandsAList() {
+        Assert.areEqual(3, Evaluator.run('SIZE([...LIST(1, 2, 3)])'));
+    }
+
+    @IsTest
+    private static void spreadOperatorCanBeUsedInsideOfAListFunction() {
+        Assert.areEqual(3, Evaluator.run('SIZE(LIST(...LIST(1, 2, 3)))'));
+        Assert.areEqual(6, Evaluator.run('SIZE(LIST(1, 2, 3, ...[4, 5, 6]))'));
+    }
 }

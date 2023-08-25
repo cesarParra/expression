@@ -13,8 +13,8 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ## Features
 
-* Supports almost all the operators and functions available in Salesforce formulas
-* Support for lists and collections
+* Supports all the most important operators and functions available in Salesforce formulas
+* Support for lists and collections, including spread operator (`...`) support.
 * Automatically understands relationships and can extract data from child records
 * Comes with pre-built LWC component to evaluate formulas in record pages
 
@@ -115,7 +115,15 @@ functions.
 
 ## Collections/List Support
 
-To work with collections/lists, you can use the `LIST` function
+To work with collections/lists, you have 2 options:
+
+Use square brackets to create a list:
+
+```apex
+Object result = expression.Evaluator.run('[1, 2, 3]'); // (1, 2, 3)
+```
+
+or use the `LIST` function and pass as many arguments as you want:
 
 ```apex
 Object result = expression.Evaluator.run('LIST(1, 2, 3)'); // (1, 2, 3)
@@ -241,6 +249,17 @@ Concatenates two strings together. The `&` and `+` operators are equivalent.
 
 ```apex
 expression.Evaluator.run('"Hello" & " " & "World"'); // "Hello World"
+```
+
+#### List Operators
+
+- `...` Spread Operator
+
+Expands a list into individual elements.
+
+```apex
+expression.Evaluator.run('LIST(1, 2, 3, ...LIST(4, 5, 6))'); // (1, 2, 3, 4, 5, 6)
+expression.Evaluator.run('[1, 2, 3, ...[4, 5, 6]]'); // (1, 2, 3, 4, 5, 6)
 ```
 
 ### Functions

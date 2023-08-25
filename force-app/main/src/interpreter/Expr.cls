@@ -106,4 +106,16 @@ public abstract class Expr {
             return v.visit(this);
         }
     }
+
+    public class Spread extends Expr {
+        public final Expr expression;
+
+        public Spread(Expr expression) {
+            this.expression = expression;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
 }

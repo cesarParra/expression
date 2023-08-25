@@ -75,6 +75,15 @@ public with sharing class Parser {
             return new Expr.Unary(operator, right);
         }
 
+        return spread();
+    }
+
+    private Expr spread() {
+        if (match(TokenType.DOT_DOT_DOT)) {
+            Expr right = unary();
+            return new Expr.Spread(right);
+        }
+
         return getExpr();
     }
 

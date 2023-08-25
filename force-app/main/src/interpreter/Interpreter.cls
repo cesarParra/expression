@@ -1,6 +1,12 @@
 public with sharing class Interpreter implements Visitor {
     private final Environment env;
 
+    private Boolean inListLiteral = false;
+
+    public void setIsInListLiteral(Boolean inListLiteral) {
+        this.inListLiteral = inListLiteral;
+    }
+
     public Interpreter(Environment env) {
         this.env = env;
     }
@@ -255,10 +261,42 @@ public with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
+        inListLiteral = true;
         List<Object> resultList = new List<Object>();
         for (Expr expr : listLiteral.elements) {
-            resultList.add(evaluate(expr));
+            Object result = evaluate(expr);
+            if (result instanceof SpreadContents) {
+                resultList.addAll(((SpreadContents) result).contents);
+            } else {
+                resultList.add(result);
+            }
         }
+        inListLiteral = false;
         return resultList;
+    }
+
+    public Object visit(Expr.Spread spread) {
+        if (!inListLiteral) {
+            throw new InterpreterException(
+                'Error executing spread operator: the spread operator can only be used in a list literal.'
+            );
+        }
+
+        Object result = evaluate(spread.expression);
+        if (!(result instanceof List<Object>)) {
+            throw new InterpreterException(
+                'Error executing spread operator: the expression must evaluate to a list.'
+            );
+        }
+
+        return new SpreadContents((List<Object>) result);
+    }
+
+    public class SpreadContents {
+        public List<Object> contents;
+
+        public SpreadContents(List<Object> contents) {
+            this.contents = contents;
+        }
     }
 }
