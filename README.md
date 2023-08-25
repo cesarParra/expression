@@ -513,6 +513,16 @@ expression.Evaluator.run('HYPERLINK("https://www.google.com", "Google")'); // "<
 expression.Evaluator.run('HYPERLINK("https://www.google.com", "Google", "_blank")'); // "<a href="https://www.google.com" target="_blank">Google</a>"
 ```
 
+- `SUBSTITUTE`
+
+Substitutes new text for old text in a text string.
+
+Accepts 3 arguments: the text to evaluate, the text to replace, and the text to replace it with.
+
+```apex
+expression.Evaluator.run('SUBSTITUTE("Hello World", "World", "Universe")'); // "Hello Universe"
+```
+
 #### Date and Time Functions
 
 - `DATE`

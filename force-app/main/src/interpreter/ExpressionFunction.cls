@@ -52,7 +52,8 @@ public with sharing abstract class ExpressionFunction {
         'SIZE' => new SizeFn(),
         'UNIXTIMESTAMP' => new UnixTimeStampFn(),
         'WEEKDAY' => new WeekdayFn(),
-        'HYPERLINK' => new HyperlinkFn()
+        'HYPERLINK' => new HyperlinkFn(),
+        'SUBSTITUTE' => new SubstituteFn()
     };
 
     private enum TimeType {
@@ -1096,6 +1097,49 @@ public with sharing abstract class ExpressionFunction {
             link += '>' + (String) friendlyText + '</a>';
 
             return link;
+        }
+    }
+
+    private class SubstituteFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expected arguments:
+            // 1. text
+            // 2. old text
+            // 3. new text
+
+            // Check that there is at least 3 arguments
+            if (arguments.size() < 3) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SUBSTITUTE" function: the function must have at least 3 arguments.'
+                );
+            }
+
+            // Check that the first argument is a string
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SUBSTITUTE" function: the first argument must evaluate to a string value.'
+                );
+            }
+
+            // Check that the second argument is a string
+            Object oldText = evaluate(arguments.get(1));
+            if (!(oldText instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SUBSTITUTE" function: the second argument must evaluate to a string value.'
+                );
+            }
+
+            // Check that the third argument is a string
+            Object newText = evaluate(arguments.get(2));
+            if (!(newText instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SUBSTITUTE" function: the third argument must evaluate to a string value.'
+                );
+            }
+
+            // Replace all occurrences of the old text with the new text
+            return ((String) text).replaceAll((String) oldText, (String) newText);
         }
     }
 }

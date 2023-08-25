@@ -821,4 +821,9 @@ private class EvaluatorTest {
     private static void hyperLinkCanReceiveTheTargetAsAThirdParameters() {
         Assert.areEqual('<a href="https://www.google.com" target="_blank">Google</a>', Evaluator.run('HYPERLINK("https://www.google.com", "Google", "_blank")'));
     }
+
+    @IsTest
+    private static void substituteReplacesAllOccurrencesOfTheFirstArgumentWithTheSecondArgument() {
+        Assert.areEqual('Heyo World', Evaluator.run('SUBSTITUTE("Hello World", "ll", "y")'));
+    }
 }
