@@ -826,4 +826,34 @@ private class EvaluatorTest {
     private static void substituteReplacesAllOccurrencesOfTheFirstArgumentWithTheSecondArgument() {
         Assert.areEqual('Heyo World', Evaluator.run('SUBSTITUTE("Hello World", "ll", "y")'));
     }
+
+    @IsTest
+    private static void textConvertsNumbersToString() {
+        Assert.areEqual('1', Evaluator.run('TEXT(1)'));
+    }
+
+    @IsTest
+    private static void textConvertsDateValues() {
+        Assert.areEqual('1/1/2015', Evaluator.run('TEXT(DATE(2015, 1, 1))'));
+    }
+
+    @IsTest
+    private static void textConvertsDateTimeValues() {
+        Assert.areEqual('1/1/2015, 12:00 AM', Evaluator.run('TEXT(DATETIMEVALUE("2015-01-01 00:00:00"))'));
+    }
+
+    @IsTest
+    private static void textConvertsFalseValues() {
+        Assert.areEqual('false', Evaluator.run('TEXT(false)'));
+    }
+
+    @IsTest
+    private static void textConvertsTrueValues() {
+        Assert.areEqual('true', Evaluator.run('TEXT(true)'));
+    }
+
+    @IsTest
+    private static void textConvertsTimeValues() {
+        Assert.areEqual('12:00:00 AM', Evaluator.run('TEXT(TIMEVALUE("00:00:00"))'));
+    }
 }

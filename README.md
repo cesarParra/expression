@@ -523,6 +523,16 @@ Accepts 3 arguments: the text to evaluate, the text to replace, and the text to 
 expression.Evaluator.run('SUBSTITUTE("Hello World", "World", "Universe")'); // "Hello Universe"
 ```
 
+- `TEXT`
+
+Converts the received argument to a string.
+
+Accepts 1 argument: the value to convert to a string.
+
+```apex
+expression.Evaluator.run('TEXT(1)'); // "1"
+```
+
 #### Date and Time Functions
 
 - `DATE`

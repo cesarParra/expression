@@ -53,7 +53,8 @@ public with sharing abstract class ExpressionFunction {
         'UNIXTIMESTAMP' => new UnixTimeStampFn(),
         'WEEKDAY' => new WeekdayFn(),
         'HYPERLINK' => new HyperlinkFn(),
-        'SUBSTITUTE' => new SubstituteFn()
+        'SUBSTITUTE' => new SubstituteFn(),
+        'TEXT' => new TextFn()
     };
 
     private enum TimeType {
@@ -1140,6 +1141,46 @@ public with sharing abstract class ExpressionFunction {
 
             // Replace all occurrences of the old text with the new text
             return ((String) text).replaceAll((String) oldText, (String) newText);
+        }
+    }
+
+    private class TextFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect 1 argument
+            if (arguments.size() != 1) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "TEXT" function: the function must have exactly 1 argument.'
+                );
+            }
+
+            Object value = evaluate(arguments.get(0));
+            if (value == null) {
+                return '';
+            }
+
+            if (value instanceof Decimal) {
+                return ((Decimal) value).format();
+            } else if (value instanceof Date) {
+                return ((Date) value).format();
+            } else if (value instanceof Datetime) {
+                return ((Datetime) value).format();
+            } else if (value instanceof Boolean) {
+                return ((Boolean) value) ? 'true' : 'false';
+            } else if (value instanceof Time) {
+                Time timeValue = (Time) value;
+                Datetime dt = Datetime.newInstance(
+                    1970,
+                    1,
+                    1,
+                    timeValue.hour(),
+                    timeValue.minute(),
+                    timeValue.second()
+                );
+                return dt.format('hh:mm:ss a').replace(dt.date().format(), '').trim();
+            }
+            else {
+                return String.valueOf(value);
+            }
         }
     }
 }
