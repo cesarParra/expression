@@ -49,7 +49,14 @@ public with sharing abstract class ExpressionFunction {
         'LIST' => new ListFn(),
         'TOLIST' => new ToListFn(),
         'AVERAGE' => new AverageFn(),
-        'SIZE' => new SizeFn()
+        'SIZE' => new SizeFn(),
+        'UNIXTIMESTAMP' => new UnixTimeStampFn(),
+        'WEEKDAY' => new WeekdayFn(),
+        'HYPERLINK' => new HyperlinkFn(),
+        'SUBSTITUTE' => new SubstituteFn(),
+        'TEXT' => new TextFn(),
+        'TRIM' => new TrimFn(),
+        'UPPER' => new UpperFn()
     };
 
     private enum TimeType {
@@ -985,6 +992,238 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((List<Object>) listOfValues).size();
+        }
+    }
+
+    /**
+     * @description Returns the number of seconds since 1 Jan 1970 for the given date or datetime,
+     *              or number of seconds in the day for a time.
+     */
+    private class UnixTimeStampFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object dateOrDateTimeOrTime = evaluate(arguments.get(0));
+            if (!(dateOrDateTimeOrTime instanceof Date) && !(dateOrDateTimeOrTime instanceof Datetime) && !(dateOrDateTimeOrTime instanceof Time)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "UNIXTIMESTAMP" function: the argument must evaluate to a date, datetime or time value.'
+                );
+            }
+
+            if (dateOrDateTimeOrTime instanceof Date) {
+                // Convert to datetime first
+                Datetime gmtDatetime = Datetime.newInstanceGmt((Date) dateOrDateTimeOrTime, Time.newInstance(0, 0, 0, 0));
+                return gmtDatetime.getTime() / 1000;
+            } else if (dateOrDateTimeOrTime instanceof Datetime) {
+                Datetime gmtDateTime = Datetime.newInstanceGmt(((Datetime) dateOrDateTimeOrTime).date(), ((Datetime) dateOrDateTimeOrTime).time());
+                return gmtDateTime.getTime() / 1000;
+            } else {
+                // Calculate the number of seconds in the day for a given time
+                return ((Time) dateOrDateTimeOrTime).hour() * 3600 + ((Time) dateOrDateTimeOrTime).minute() * 60 + ((Time) dateOrDateTimeOrTime).second();
+            }
+        }
+    }
+
+    /**
+     * @description Returns the day of the week for the given date,
+     *              using 1 for Sunday, 2 for Monday, through 7 for Saturday.
+     */
+    private class WeekdayFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object dateValue = evaluate(arguments.get(0));
+            if (!(dateValue instanceof Date)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "WEEKDAY" function: the argument must evaluate to a date value.'
+                );
+            }
+
+            Date dateObj = (Date) dateValue;
+
+            return Integer.valueOf(Datetime.newInstanceGmt(
+                dateObj.year(),
+                dateObj.month(),
+                dateObj.day(),
+                0,
+                0,
+                0
+            ).format('u'));
+        }
+    }
+
+    /**
+     * @description Creates a link to a URL specified that is linkable from the text specified.
+     */
+    private class HyperLinkFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expected arguments:
+            // 1. Url
+            // 2. Friendly text
+            // 3. Option - target
+
+            // Check that there is at least 2 arguments
+            if (arguments.size() < 2) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "HYPERLINK" function: the function must have at least 2 arguments.'
+                );
+            }
+
+            // Check that the first argument is a string
+            Object url = evaluate(arguments.get(0));
+            if (!(url instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "HYPERLINK" function: the first argument must evaluate to a string value.'
+                );
+            }
+
+            // Check that the second argument is a string
+            Object friendlyText = evaluate(arguments.get(1));
+            if (!(friendlyText instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "HYPERLINK" function: the second argument must evaluate to a string value.'
+                );
+            }
+
+            // Check that the third argument is a string (if present)
+            Object target = null;
+            if (arguments.size() > 2) {
+                target = evaluate(arguments.get(2));
+                if (!(target instanceof String)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "HYPERLINK" function: the third argument must evaluate to a string value.'
+                    );
+                }
+            }
+
+            // Create the link
+            String link = '<a href="' + (String) url + '"';
+            if (target != null) {
+                link += ' target="' + (String) target + '"';
+            }
+            link += '>' + (String) friendlyText + '</a>';
+
+            return link;
+        }
+    }
+
+    private class SubstituteFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expected arguments:
+            // 1. text
+            // 2. old text
+            // 3. new text
+
+            // Check that there is at least 3 arguments
+            if (arguments.size() < 3) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SUBSTITUTE" function: the function must have at least 3 arguments.'
+                );
+            }
+
+            // Check that the first argument is a string
+            Object text = evaluate(arguments.get(0));
+            if (!(text instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SUBSTITUTE" function: the first argument must evaluate to a string value.'
+                );
+            }
+
+            // Check that the second argument is a string
+            Object oldText = evaluate(arguments.get(1));
+            if (!(oldText instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SUBSTITUTE" function: the second argument must evaluate to a string value.'
+                );
+            }
+
+            // Check that the third argument is a string
+            Object newText = evaluate(arguments.get(2));
+            if (!(newText instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SUBSTITUTE" function: the third argument must evaluate to a string value.'
+                );
+            }
+
+            // Replace all occurrences of the old text with the new text
+            return ((String) text).replaceAll((String) oldText, (String) newText);
+        }
+    }
+
+    private class TextFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect 1 argument
+            if (arguments.size() != 1) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "TEXT" function: the function must have exactly 1 argument.'
+                );
+            }
+
+            Object value = evaluate(arguments.get(0));
+            if (value == null) {
+                return '';
+            }
+
+            if (value instanceof Decimal) {
+                return ((Decimal) value).format();
+            } else if (value instanceof Date) {
+                return ((Date) value).format();
+            } else if (value instanceof Datetime) {
+                return ((Datetime) value).format();
+            } else if (value instanceof Boolean) {
+                return ((Boolean) value) ? 'true' : 'false';
+            } else if (value instanceof Time) {
+                Time timeValue = (Time) value;
+                Datetime dt = Datetime.newInstance(
+                    1970,
+                    1,
+                    1,
+                    timeValue.hour(),
+                    timeValue.minute(),
+                    timeValue.second()
+                );
+                return dt.format('hh:mm:ss a').replace(dt.date().format(), '').trim();
+            } else {
+                return String.valueOf(value);
+            }
+        }
+    }
+
+    private class TrimFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect 1 argument
+            if (arguments.size() != 1) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "TRIM" function: the function must have exactly 1 argument.'
+                );
+            }
+
+            // The argument must be a string
+            Object value = evaluate(arguments.get(0));
+            if (!(value instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "TRIM" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return ((String) value).trim();
+        }
+    }
+
+    private class UpperFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect 1 argument
+            if (arguments.size() != 1) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "UPPER" function: the function must have exactly 1 argument.'
+                );
+            }
+
+            // The argument must be a string
+            Object value = evaluate(arguments.get(0));
+            if (!(value instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "UPPER" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return ((String) value).toUpperCase();
         }
     }
 }

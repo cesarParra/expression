@@ -3,10 +3,9 @@
     {
       "path": "force-app",
       "package": "Expression (Unlocked)",
-      "versionName": "Version 1.0",
-      "versionNumber": "1.0.0.NEXT",
-      "default": true,
-      "ancestorVersion": "HIGHEST"
+      "versionName": "Version 1.1",
+      "versionNumber": "1.1.0.NEXT",
+      "default": true
     }
   ],
   "name": "formula-evaluator",
@@ -16,6 +15,7 @@
   "packageAliases": {
     "Expression (Unlocked)": "0HoDm000000XZKSKA4",
     "Expression (Unlocked)@0.2.0-1": "04tDm000000HYakIAG",
-    "Expression (Unlocked)@1.0.0-1": "04tDm000000HYapIAG"
+    "Expression (Unlocked)@1.0.0-1": "04tDm000000HYapIAG",
+    "Expression (Unlocked)@1.1.0-1": "04tDm000000HYauIAG"
   }
 }

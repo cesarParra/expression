@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYapIAG)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYapIAG)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYauIAG)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYauIAG)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm000000HYapIAG
+sf package install --apex-compile package --wait 20 --package 04tDm000000HYauIAG
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYapIAG
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYauIAG
 ```
 
 ### Direct Deployment to Salesforce
@@ -499,6 +499,60 @@ expression.Evaluator.run('BR()'); // "\n" or "<br>"
 expression.Evaluator.run('BR(2)'); // "\n\n" or "<br><br>"
 ```
 
+- `HYPERLINK`
+
+Returns a text string of an HTML anchor tag that displays a hyperlink.
+
+Accepts 2 or 3 arguments: the URL and the text to display. Optionally, the third argument is the target
+of the link.
+
+The target should be one of `_blank`, `_parent`, `_self`, or `_top`.
+
+```apex
+expression.Evaluator.run('HYPERLINK("https://www.google.com", "Google")'); // "<a href="https://www.google.com">Google</a>"
+expression.Evaluator.run('HYPERLINK("https://www.google.com", "Google", "_blank")'); // "<a href="https://www.google.com" target="_blank">Google</a>"
+```
+
+- `SUBSTITUTE`
+
+Substitutes new text for old text in a text string.
+
+Accepts 3 arguments: the text to evaluate, the text to replace, and the text to replace it with.
+
+```apex
+expression.Evaluator.run('SUBSTITUTE("Hello World", "World", "Universe")'); // "Hello Universe"
+```
+
+- `TEXT`
+
+Converts the received argument to a string.
+
+Accepts 1 argument: the value to convert to a string.
+
+```apex
+expression.Evaluator.run('TEXT(1)'); // "1"
+```
+
+- `TRIM`
+
+Removes the spaces and tabs from the beginning and end of a text string.
+
+Accepts 1 argument: the text to trim.
+
+```apex
+expression.Evaluator.run('TRIM(" Hello World ")'); // "Hello World"
+```
+
+- `UPPER`
+
+Converts all letters in the specified text to uppercase.
+
+Accepts 1 argument: the text to convert.
+
+```apex
+expression.Evaluator.run('UPPER("Hello World")'); // "HELLO WORLD"
+```
+
 #### Date and Time Functions
 
 - `DATE`
@@ -674,6 +728,31 @@ Accepts 1 argument: time to evaluate.
 expression.Evaluator.run('HOUR(TIMEVALUE("12:00:00"))'); // 12
 ```
 
+- `UNIXTIMESTAMP`
+
+Returns the number of seconds since 1 Jan 1970 for the given date or datetime,
+or number of seconds in the day for a time.
+
+Values are returned in the GMT time zone.
+
+Accepts 1 argument: the date, datetime, or time to evaluate.
+
+```apex
+expression.Evaluator.run('UNIXTIMESTAMP(DATE(2020, 1, 1))'); // 1577836800
+expression.Evaluator.run('UNIXTIMESTAMP(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 1577880000
+expression.Evaluator.run('UNIXTIMESTAMP(TIMEVALUE("12:00:00"))'); // 43200
+```
+
+- `WEEKDAY`
+
+Returns the day of the week for a given date.
+
+Accepts 1 argument: the date to evaluate.
+
+```apex
+expression.Evaluator.run('WEEKDAY(DATE(2020, 1, 1))'); // 4
+```
+
 #### List Functions
 
 - `TOLIST`
@@ -716,6 +795,8 @@ Accepts 1 argument: the list to evaluate.
 ```apex
 expression.Evaluator.run('SIZE(LIST(1, 2, 3))'); // 3
 ```
+
+- `MAX` and `MIN`
 
 #### Math Functions
 
@@ -774,9 +855,10 @@ expression.Evaluator.run('MAX(1, 2, 3)'); // 3
 
 Returns the smallest of one or more numbers.
 
-At least one argument is required.
+Accepts either a list of numbers as a single argument, or multiple numerical arguments.
 
 ```apex
+expression.Evaluator.run('MIN(LIST(1, 2, 3))'); // 1
 expression.Evaluator.run('MIN(1, 2, 3)'); // 1
 ```
 
