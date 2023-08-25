@@ -6,4 +6,6 @@ public interface Visitor {
     Object visit(Expr.Function function);
     Object visit(Expr.GetExpr getExpr);
     Object visit(Expr.MergeField mergeField);
+    Object visit(Expr.ListLiteral listLiteral);
+    Object visit(Expr.Spread spread);
 }

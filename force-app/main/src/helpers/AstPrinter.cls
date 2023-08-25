@@ -53,6 +53,22 @@ public with sharing class AstPrinter implements Visitor {
         );
     }
 
+    public Object visit(Expr.ListLiteral listLiteral) {
+        return parenthesize(
+            'LIST',
+            listLiteral.elements
+        );
+    }
+
+    public Object visit(Expr.Spread spread) {
+        return parenthesize(
+            'SPREAD',
+            new List<Expr>{
+                spread.expression
+            }
+        );
+    }
+
     private String parenthesize(String str, List<Expr> exprs) {
         StringBuilder builder = new StringBuilder();
         builder.add('(').add(str);

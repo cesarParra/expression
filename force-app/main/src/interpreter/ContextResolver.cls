@@ -62,6 +62,11 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.Spread spread) {
+        this.resolve(spread.expression);
+        return null;
+    }
+
     public String resolveExtractReferenceOutOfGetExpression(Expr.GetExpr getExpr) {
         // Get the relationship field to query out of the get/merge field contained.
         String relationshipToQuery = '';
@@ -119,6 +124,13 @@ public with sharing class ContextResolver implements Visitor {
 
         for (Expr argument : function.arguments) {
             this.resolve(argument);
+        }
+        return null;
+    }
+
+    public Object visit(Expr.ListLiteral listLiteral) {
+        for (Expr element : listLiteral.elements) {
+            this.resolve(element);
         }
         return null;
     }

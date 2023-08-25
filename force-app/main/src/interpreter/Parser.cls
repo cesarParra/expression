@@ -75,6 +75,15 @@ public with sharing class Parser {
             return new Expr.Unary(operator, right);
         }
 
+        return spread();
+    }
+
+    private Expr spread() {
+        if (match(TokenType.DOT_DOT_DOT)) {
+            Expr right = unary();
+            return new Expr.Spread(right);
+        }
+
         return getExpr();
     }
 
@@ -134,6 +143,17 @@ public with sharing class Parser {
             Expr expr = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after expression.');
             return new Expr.Grouping(expr);
+        }
+
+        if (match(TokenType.LEFT_BRACKET)) {
+            List<Expr> elements = new List<Expr>();
+            if (!check(TokenType.RIGHT_BRACKET)) {
+                do {
+                    elements.add(expression());
+                } while (match(TokenType.COMMA));
+            }
+            consume(TokenType.RIGHT_BRACKET, 'Expect \']\' after elements.');
+            return new Expr.ListLiteral(elements);
         }
 
         throw error(peek(), 'Expect expression.');

@@ -56,14 +56,22 @@ public with sharing class Scanner {
             when ',' {
                 addToken(TokenType.COMMA);
             }
-            when '.' {
-                addToken(TokenType.DOT);
+            when '[' {
+                addToken(TokenType.LEFT_BRACKET);
+            }
+            when ']' {
+                addToken(TokenType.RIGHT_BRACKET);
             }
 
             // One or more character tokens
             when '=' {
                 addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
             }
+
+            when '.' {
+                addToken(match2('..') ? TokenType.DOT_DOT_DOT : TokenType.DOT);
+            }
+
             when '<' {
                 String next = peek();
                 if (next == '=') {
@@ -113,6 +121,14 @@ public with sharing class Scanner {
                 }
             }
         }
+    }
+
+    private Boolean match2(String str) {
+        if (isAtEnd()) return false;
+        if (!source.substring(current, current + 2).equals(str)) return false;
+
+        current += 2;
+        return true;
     }
 
     private String advance() {
