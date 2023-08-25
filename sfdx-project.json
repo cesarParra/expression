@@ -5,7 +5,8 @@
       "package": "Expression (Unlocked)",
       "versionName": "Version 1.0",
       "versionNumber": "1.0.0.NEXT",
-      "default": true
+      "default": true,
+      "ancestorVersion": "HIGHEST"
     }
   ],
   "name": "formula-evaluator",
