@@ -50,7 +50,8 @@ public with sharing abstract class ExpressionFunction {
         'TOLIST' => new ToListFn(),
         'AVERAGE' => new AverageFn(),
         'SIZE' => new SizeFn(),
-        'UNIXTIMESTAMP' => new UnixTimeStampFn()
+        'UNIXTIMESTAMP' => new UnixTimeStampFn(),
+        'WEEKDAY' => new WeekdayFn()
     };
 
     private enum TimeType {
@@ -1013,6 +1014,32 @@ public with sharing abstract class ExpressionFunction {
                 // Calculate the number of seconds in the day for a given time
                 return ((Time) dateOrDateTimeOrTime).hour() * 3600 + ((Time) dateOrDateTimeOrTime).minute() * 60 + ((Time) dateOrDateTimeOrTime).second();
             }
+        }
+    }
+
+    /**
+     * @description Returns the day of the week for the given date,
+     *              using 1 for Sunday, 2 for Monday, through 7 for Saturday.
+     */
+    private class WeekdayFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object dateValue = evaluate(arguments.get(0));
+            if (!(dateValue instanceof Date)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "WEEKDAY" function: the argument must evaluate to a date value.'
+                );
+            }
+
+            Date dateObj = (Date) dateValue;
+
+            return Integer.valueOf(Datetime.newInstanceGmt(
+                dateObj.year(),
+                dateObj.month(),
+                dateObj.day(),
+                0,
+                0,
+                0
+            ).format('u'));
         }
     }
 }

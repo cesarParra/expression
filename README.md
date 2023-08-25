@@ -679,12 +679,24 @@ expression.Evaluator.run('HOUR(TIMEVALUE("12:00:00"))'); // 12
 Returns the number of seconds since 1 Jan 1970 for the given date or datetime,
 or number of seconds in the day for a time.
 
+Values are returned in the GMT time zone.
+
 Accepts 1 argument: the date, datetime, or time to evaluate.
 
 ```apex
 expression.Evaluator.run('UNIXTIMESTAMP(DATE(2020, 1, 1))'); // 1577836800
 expression.Evaluator.run('UNIXTIMESTAMP(DATETIMEVALUE("2020-01-01 12:00:00"))'); // 1577880000
 expression.Evaluator.run('UNIXTIMESTAMP(TIMEVALUE("12:00:00"))'); // 43200
+```
+
+- `WEEKDAY`
+
+Returns the day of the week for a given date.
+
+Accepts 1 argument: the date to evaluate.
+
+```apex
+expression.Evaluator.run('WEEKDAY(DATE(2020, 1, 1))'); // 4
 ```
 
 #### List Functions

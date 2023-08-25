@@ -806,4 +806,9 @@ private class EvaluatorTest {
     private static void unixTimeStampReturnsTheNumberOfSecondsTheDayWhenReceivingATime() {
         Assert.areEqual(3600, Evaluator.run('UNIXTIMESTAMP(TIMEVALUE("01:00:00"))'), 'Expect the number of seconds for a given time');
     }
+
+    @IsTest
+    private static void weekDayReturnsTheDayOfTheWeek() {
+        Assert.isNotNull(Evaluator.run('WEEKDAY(DATE(2015, 1, 5))'));
+    }
 }
