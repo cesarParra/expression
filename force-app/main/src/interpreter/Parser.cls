@@ -156,6 +156,24 @@ public with sharing class Parser {
             return new Expr.ListLiteral(elements);
         }
 
+        if (match(TokenType.LEFT_BRACE)) {
+            List<Object> elements = new List<Object>();
+            if (!check(TokenType.RIGHT_BRACE)) {
+                do {
+                    Expr key = expression();
+                    if (key instanceof Expr.Spread) {
+                        elements.add(key);
+                        continue;
+                    }
+                    consume(TokenType.COLON, 'Expect \':\' after key.');
+                    Expr value = expression();
+                    elements.add(new Expr.KeyValue(key, value));
+                } while (match(TokenType.COMMA));
+            }
+            consume(TokenType.RIGHT_BRACE, 'Expect \'}\' after elements.');
+            return new Expr.MapLiteral(elements);
+        }
+
         throw error(peek(), 'Expect expression.');
     }
 

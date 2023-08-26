@@ -2,6 +2,7 @@ public with sharing class Interpreter implements Visitor {
     private final Environment env;
 
     private Boolean inListLiteral = false;
+    private Boolean isInMapLiteral = false;
 
     public void setIsInListLiteral(Boolean inListLiteral) {
         this.inListLiteral = inListLiteral;
@@ -265,8 +266,8 @@ public with sharing class Interpreter implements Visitor {
         List<Object> resultList = new List<Object>();
         for (Expr expr : listLiteral.elements) {
             Object result = evaluate(expr);
-            if (result instanceof SpreadContents) {
-                resultList.addAll(((SpreadContents) result).contents);
+            if (result instanceof ListSpreadContents) {
+                resultList.addAll(((ListSpreadContents) result).contents);
             } else {
                 resultList.add(result);
             }
@@ -276,27 +277,66 @@ public with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.Spread spread) {
-        if (!inListLiteral) {
+        if (!inListLiteral && !isInMapLiteral) {
             throw new InterpreterException(
-                'Error executing spread operator: the spread operator can only be used in a list literal.'
+                'Error executing spread operator: the spread operator can only be used in a list or map literal.'
             );
+        }
+
+        if (inListLiteral) {
+            Object result = evaluate(spread.expression);
+            if (!(result instanceof List<Object>)) {
+                throw new InterpreterException(
+                    'Error executing spread operator: the expression must evaluate to a list.'
+                );
+            }
+
+            return new ListSpreadContents((List<Object>) result);
         }
 
         Object result = evaluate(spread.expression);
-        if (!(result instanceof List<Object>)) {
+        if (!(result instanceof Map<Object, Object>)) {
             throw new InterpreterException(
-                'Error executing spread operator: the expression must evaluate to a list.'
+                'Error executing spread operator: the expression must evaluate to a map.'
             );
         }
 
-        return new SpreadContents((List<Object>) result);
+        return new MapSpreadContents((Map<Object, Object>) result);
     }
 
-    public class SpreadContents {
+    public class ListSpreadContents {
         public List<Object> contents;
 
-        public SpreadContents(List<Object> contents) {
+        public ListSpreadContents(List<Object> contents) {
             this.contents = contents;
         }
+    }
+
+    public class MapSpreadContents {
+        public Map<Object, Object> contents;
+
+        public MapSpreadContents(Map<Object, Object> contents) {
+            this.contents = contents;
+        }
+    }
+
+    public Object visit(Expr.MapLiteral mapLiteral) {
+        isInMapLiteral = true;
+        Map<Object, Object> resultMap = new Map<Object, Object>();
+        for (Object element : mapLiteral.elements) {
+            if (element instanceof Expr.KeyValue) {
+                Expr.KeyValue mapElement = (Expr.KeyValue) element;
+                Object key = evaluate(mapElement.key);
+                Object value = evaluate(mapElement.value);
+                resultMap.put(key, value);
+            } else if (element instanceof Expr.Spread) {
+                Object result = evaluate((Expr.Spread) element);
+                if (result instanceof MapSpreadContents) {
+                    resultMap.putAll(((MapSpreadContents) result).contents);
+                }
+            }
+        }
+        isInMapLiteral = false;
+        return resultMap;
     }
 }

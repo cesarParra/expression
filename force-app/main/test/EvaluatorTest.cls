@@ -866,4 +866,25 @@ private class EvaluatorTest {
     private static void upperFunctionConvertsToUppercase() {
         Assert.areEqual('HELLO WORLD', Evaluator.run('UPPER("Hello World")'));
     }
+
+    @IsTest
+    private static void mapLiteralCreatesAMap() {
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run('{"a": 1, "b": 2}');
+        Assert.areEqual(1, result.get('a'));
+        Assert.areEqual(2, result.get('b'));
+    }
+
+    @IsTest
+    private static void mapsSupportTheSpreadOperator() {
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run('{...{"a": 1, "b": 2}}');
+        Assert.areEqual(1, result.get('a'));
+        Assert.areEqual(2, result.get('b'));
+    }
+
+    @IsTest
+    private static void spreadOperatorInMapRespectTheRightmostValue() {
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run('{...{"a": 1, "b": 2}, "b": 3}');
+        Assert.areEqual(1, result.get('a'));
+        Assert.areEqual(3, result.get('b'));
+    }
 }

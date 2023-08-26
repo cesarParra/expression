@@ -54,10 +54,33 @@ public with sharing class AstPrinter implements Visitor {
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
-        return parenthesize(
-            'LIST',
-            listLiteral.elements
-        );
+        StringBuilder builder = new StringBuilder();
+        builder.add('(').add('[');
+        for (Expr expr : listLiteral.elements) {
+            builder.add(' ');
+            builder.add(objToString(expr.accept(this)));
+        }
+        builder.add(']').add(')');
+        return builder.toString();
+    }
+
+    public Object visit(Expr.MapLiteral mapLiteral) {
+        StringBuilder builder = new StringBuilder();
+        builder.add('(').add('{');
+        for (Object element: mapLiteral.elements) {
+            builder.add(' ');
+            if (element instanceof Expr.Spread) {
+                builder.add(objToString(((Expr.Spread) element).accept(this)));
+                continue;
+            }
+
+            Expr.KeyValue keyValue = (Expr.KeyValue) element;
+            builder.add(objToString(keyValue.key.accept(this)));
+            builder.add(': ');
+            builder.add(objToString(keyValue.value.accept(this)));
+        }
+        builder.add('}').add(')');
+        return builder.toString();
     }
 
     public Object visit(Expr.Spread spread) {
