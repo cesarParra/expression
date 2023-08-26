@@ -14,7 +14,7 @@ Powerful formula-syntax evaluator for Apex and LWC.
 ## Features
 
 * Supports all the most important operators and functions available in Salesforce formulas
-* Support for lists and collections, including spread operator (`...`) support.
+* Support for lists and maps, including spread operator (`...`) support.
 * Automatically understands relationships and can extract data from child records
 * Comes with pre-built LWC component to evaluate formulas in record pages
 
@@ -113,9 +113,9 @@ will not be returned or taken into account in the operation.
 value is skipped. Take this into account when computing information using list
 functions.
 
-## Collections/List Support
+## List Support
 
-To work with collections/lists, you have 2 options:
+To work with lists, you have 2 options:
 
 Use square brackets to create a list:
 
@@ -127,6 +127,20 @@ or use the `LIST` function and pass as many arguments as you want:
 
 ```apex
 Object result = expression.Evaluator.run('LIST(1, 2, 3)'); // (1, 2, 3)
+```
+
+## Map Support
+
+To work with maps, you can use curly braces to create a map:
+
+```apex
+Object result = expression.Evaluator.run('{ "a": 1, "b": 2 }'); // { "a": 1, "b": 2 }
+```
+
+Keys are allowed to be any value type or even expressions:
+
+```apex
+Object result = expression.Evaluator.run('{ 1 + 1: 1, "b": 2 }'); // { 2: 1, "b": 2 }
 ```
 
 ## Supported Operators and Functions
@@ -251,15 +265,21 @@ Concatenates two strings together. The `&` and `+` operators are equivalent.
 expression.Evaluator.run('"Hello" & " " & "World"'); // "Hello World"
 ```
 
-#### List Operators
+#### List and Map Operators
 
 - `...` Spread Operator
 
-Expands a list into individual elements.
+When used within  a list, it expands the list into its elements.
 
 ```apex
 expression.Evaluator.run('LIST(1, 2, 3, ...LIST(4, 5, 6))'); // (1, 2, 3, 4, 5, 6)
 expression.Evaluator.run('[1, 2, 3, ...[4, 5, 6]]'); // (1, 2, 3, 4, 5, 6)
+```
+
+When using within a map it expands the map into its key-value pairs.
+
+```apex
+expression.Evaluator.run('{ "a": 1, "b": 2, ...{ "c": 3, "d": 4 } }'); // { "a": 1, "b": 2, "c": 3, "d": 4 }
 ```
 
 ### Functions
