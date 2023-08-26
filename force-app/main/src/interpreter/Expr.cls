@@ -107,6 +107,29 @@ public abstract class Expr {
         }
     }
 
+    public class KeyValue {
+        public final Expr key;
+        public final Expr value;
+
+        public KeyValue(Expr key, Expr value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    public class MapLiteral extends Expr {
+        // Elements should either be KeyValue or Spread
+        public final List<Object> elements;
+
+        public MapLiteral(List<Object> elements) {
+            this.elements = elements;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
+
     public class Spread extends Expr {
         public final Expr expression;
 

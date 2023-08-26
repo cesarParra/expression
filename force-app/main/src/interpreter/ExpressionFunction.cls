@@ -891,8 +891,8 @@ public with sharing abstract class ExpressionFunction {
             List<Object> result = new List<Object>();
             for (Expr argument : arguments) {
                 Object item = evaluate(argument);
-                if (item instanceof Interpreter.SpreadContents) {
-                    result.addAll(((Interpreter.SpreadContents) item).contents);
+                if (item instanceof Interpreter.ListSpreadContents) {
+                    result.addAll(((Interpreter.ListSpreadContents) item).contents);
                 } else {
                     result.add(item);
                 }

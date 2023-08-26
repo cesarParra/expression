@@ -67,6 +67,20 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.MapLiteral mp) {
+        for (Object element : mp.elements) {
+            if (element instanceof Expr.Spread) {
+                this.resolve(((Expr.Spread) element).expression);
+                continue;
+            }
+
+            Expr.KeyValue keyValue = (Expr.KeyValue)element;
+            this.resolve(keyValue.key);
+            this.resolve(keyValue.value);
+        }
+        return null;
+    }
+
     public String resolveExtractReferenceOutOfGetExpression(Expr.GetExpr getExpr) {
         // Get the relationship field to query out of the get/merge field contained.
         String relationshipToQuery = '';
