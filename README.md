@@ -143,6 +143,17 @@ Keys are allowed to be any value type or even expressions:
 Object result = expression.Evaluator.run('{ 1 + 1: 1, "b": 2 }'); // { 2: 1, "b": 2 }
 ```
 
+Maps allow you to represent complex data structures, including nested maps and lists:
+
+```apex
+Id parentId = '0018N00000IEEK8QAP';
+Object result = Evaluator.run(
+    '{"Family Name": Name, "Members": { "Count": SIZE(Contacts), "Names": TOLIST(Contacts, Name)}}',
+    parentId
+);
+// { "Family Name": "Doe", "Members": { "Count": 2, "Names": ["John Doe", "Jane Doe"] } }
+```
+
 ## Supported Operators and Functions
 
 ### Operators
@@ -269,7 +280,7 @@ expression.Evaluator.run('"Hello" & " " & "World"'); // "Hello World"
 
 - `...` Spread Operator
 
-When used within  a list, it expands the list into its elements.
+When used within a list, it expands the list into its elements.
 
 ```apex
 expression.Evaluator.run('LIST(1, 2, 3, ...LIST(4, 5, 6))'); // (1, 2, 3, 4, 5, 6)
