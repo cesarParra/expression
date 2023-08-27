@@ -165,32 +165,32 @@ public with sharing class Interpreter implements Visitor {
             Environment tempEnvironmentForGet = new Environment((SObject) result);
 
             // We might be dealing with either a field reference or with a reference to another parent
-            if (tempEnvironmentForGet.contains(getExpr.name.lexeme)) {
-                return tempEnvironmentForGet.get(getExpr.name.lexeme);
-            } else if (tempEnvironmentForGet.containsAsParent(getExpr.name.lexeme)) {
-                return tempEnvironmentForGet.getParentSObject(getExpr.name.lexeme);
+            if (tempEnvironmentForGet.contains(getExpr.field.name.lexeme)) {
+                return tempEnvironmentForGet.get(getExpr.field.name.lexeme);
+            } else if (tempEnvironmentForGet.containsAsParent(getExpr.field.name.lexeme)) {
+                return tempEnvironmentForGet.getParentSObject(getExpr.field.name.lexeme);
             }
 
             throw new InterpreterException(
                 'Error executing get expression: the SObject type ' +
                     tempEnvironmentForGet.getSObjectTypeName() +
-                    ' does not contain a field with the name' + getExpr.name.lexeme
+                    ' does not contain a field with the name: ' + getExpr.field.name.lexeme
             );
         } else if (result instanceof Environment) {
             // TODO: Take care of duplication
             Environment tempEnvironmentForGet = (Environment) result;
 
             // We might be dealing with either a field reference or with a reference to another parent
-            if (tempEnvironmentForGet.contains(getExpr.name.lexeme)) {
-                return tempEnvironmentForGet.get(getExpr.name.lexeme);
-            } else if (tempEnvironmentForGet.containsAsParent(getExpr.name.lexeme)) {
-                return tempEnvironmentForGet.getParentSObject(getExpr.name.lexeme);
+            if (tempEnvironmentForGet.contains(getExpr.field.name.lexeme)) {
+                return tempEnvironmentForGet.get(getExpr.field.name.lexeme);
+            } else if (tempEnvironmentForGet.containsAsParent(getExpr.field.name.lexeme)) {
+                return tempEnvironmentForGet.getParentSObject(getExpr.field.name.lexeme);
             }
 
             throw new InterpreterException(
                 'Error executing get expression: the SObject type ' +
                     tempEnvironmentForGet.getSObjectTypeName() +
-                    ' does not contain a field with the name' + getExpr.name.lexeme
+                    ' does not contain a field with the name' + getExpr.field.name.lexeme
             );
         }
         throw new InterpreterException(

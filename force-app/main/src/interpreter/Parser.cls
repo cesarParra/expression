@@ -93,7 +93,7 @@ public with sharing class Parser {
         while (true) {
             if (match(TokenType.DOT)) {
                 Token name = consume(TokenType.IDENTIFIER, 'Expect property name after \'.\'.');
-                expr = new Expr.GetExpr(expr, name);
+                expr = new Expr.GetExpr(expr, new Expr.MergeField(name));
             } else {
                 break;
             }

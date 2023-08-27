@@ -4,8 +4,12 @@ public with sharing class ContextResolver implements Visitor {
     private final SObjectType objectType;
     private final Q queryBuilder;
     private final Set<String> fields;
-    private final Map<String, Q> subqueriesByRelationshipName = new Map<String, Q>();
+    private final Map<String, Q> subQueriesByRelationshipName = new Map<String, Q>();
 
+    /**
+     * @description Creates a new context resolver for the given record id.
+     * @param recordId The record id to use as context.
+     */
     public ContextResolver(Id recordId) {
         this.recordId = recordId;
         this.objectType = recordId.getSobjectType();
@@ -13,10 +17,15 @@ public with sharing class ContextResolver implements Visitor {
         this.fields = new Set<String>();
     }
 
+    /**
+     * @description Constructor for a subquery context resolver.
+     * @param relationshipName The name of the relationship to query.
+     * @param objectType The SObjectType of the child object for which the query will be built.
+     */
     public ContextResolver(String relationshipName, SObjectType objectType) {
         this.queryBuilder = new Q(relationshipName);
         this.objectType = objectType;
-        this.fields = new Set<String>();
+        this.fields = new Set<String> { 'Id' };
     }
 
     public Object visit(Expr.Variable variable) {
@@ -36,7 +45,14 @@ public with sharing class ContextResolver implements Visitor {
         for (ChildRelationship relationship : this.recordId.getSobjectType().getDescribe().getChildRelationships()) {
             String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
             if (childRelationshipName != null && childRelationshipName == fieldName) {
-                // Do nothing
+                // Ensure there is going to be a subquery for this relationship
+                if (!this.subQueriesByRelationshipName.containsKey(childRelationshipName)) {
+                    this.subQueriesByRelationshipName.put(
+                        childRelationshipName,
+                        new Q(childRelationshipName).selectFields(new Set<String> { 'Id' })
+                    );
+                }
+
                 return null;
             }
         }
@@ -94,15 +110,12 @@ public with sharing class ContextResolver implements Visitor {
         // Get the relationship field to query out of the get/merge field contained.
         String relationshipToQuery = '';
         if ((getExpr.objectExpr instanceof Expr.MergeField)) {
-            relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme;
+            relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme + '.';
         } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
-            relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr);
-        } else {
-            throw new ResolverException('Did not understand the relationship to field ' +
-                getExpr.objectExpr + ' for SObjectType ' + this.objectType);
+            relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
         }
 
-        return relationshipToQuery + '.' + getExpr.name.lexeme;
+        return relationshipToQuery + getExpr.field.name.lexeme;
     }
 
     public Object visit(Expr.FunctionCall function) {
@@ -135,12 +148,12 @@ public with sharing class ContextResolver implements Visitor {
                 function.arguments.get(1)
             );
 
-            if (this.subqueriesByRelationshipName.containsKey(mapKey)) {
+            if (this.subQueriesByRelationshipName.containsKey(mapKey)) {
                 // If the sub query already exists, add all fields
-                this.subqueriesByRelationshipName.get(mapKey).selectFields(subQ.getFields());
+                this.subQueriesByRelationshipName.get(mapKey).selectFields(subQ.getFields());
             } else {
                 // Otherwise, add the sub query to the map
-                this.subqueriesByRelationshipName.put(mapKey, subQ);
+                this.subQueriesByRelationshipName.put(mapKey, subQ);
             }
 
             this.shouldExecuteQuery = true;
@@ -172,16 +185,16 @@ public with sharing class ContextResolver implements Visitor {
     private Q resolveToQ(Expr expression) {
         this.resolve(expression);
 
-        if (fields.isEmpty() && subqueriesByRelationshipName.isEmpty()) {
+        if (fields.isEmpty() && subQueriesByRelationshipName.isEmpty()) {
             return this.queryBuilder;
         }
 
         this.shouldExecuteQuery = true;
         this.queryBuilder.selectFields(this.fields);
 
-        for (String relationshipName : this.subqueriesByRelationshipName.keySet()) {
+        for (String relationshipName : this.subQueriesByRelationshipName.keySet()) {
             this.queryBuilder.addSubquery(
-                this.subqueriesByRelationshipName.get(relationshipName)
+                this.subQueriesByRelationshipName.get(relationshipName)
             );
         }
 

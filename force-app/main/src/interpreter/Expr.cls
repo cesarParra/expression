@@ -81,11 +81,11 @@ public abstract class Expr {
 
     public class GetExpr extends Expr {
         public final Expr objectExpr;
-        public final Token name;
+        public final MergeField field;
 
-        public GetExpr(Expr objectExpr, Token name) {
+        public GetExpr(Expr objectExpr, MergeField field) {
             this.objectExpr = objectExpr;
-            this.name = name;
+            this.field = field;
         }
 
         public override Object accept(Visitor v) {

@@ -941,7 +941,7 @@ public with sharing abstract class ExpressionFunction {
 
                 env.define('$current', child);
                 env.define('$index', i);
-                env.define('$parent', interpreter.getEnvironment());
+                env.define('$total', childrenAsList.size());
 
                 Interpreter interpreter = new Interpreter(env);
                 result.add(interpreter.interpret(secondArgument));

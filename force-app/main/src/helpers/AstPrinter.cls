@@ -43,7 +43,7 @@ public with sharing class AstPrinter implements Visitor {
 
     public Object visit(Expr.GetExpr getExpr) {
         return parenthesize(
-            'GET:' + getExpr.name.lexeme,
+            'GET:' + String.valueOf(visit(getExpr.field)),
             new List<Expr>{
                 getExpr.objectExpr
             }
@@ -120,25 +120,5 @@ public with sharing class AstPrinter implements Visitor {
         }
 
         return String.valueOf(obj.toString());
-    }
-
-    private class StringBuilder {
-        private String str;
-        private Integer index;
-
-        public StringBuilder() {
-            str = '';
-            index = 0;
-        }
-
-        public StringBuilder add(String s) {
-            str += s;
-            index += s.length();
-            return this;
-        }
-
-        public override String toString() {
-            return str;
-        }
     }
 }
