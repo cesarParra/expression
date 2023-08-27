@@ -71,6 +71,9 @@ public with sharing class Scanner {
             when ':' {
                 addToken(TokenType.COLON);
             }
+            when '`' {
+                addToken(TokenType.TICK);
+            }
 
             // One or more character tokens
             when '=' {

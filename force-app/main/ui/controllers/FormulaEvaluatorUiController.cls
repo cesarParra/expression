@@ -7,7 +7,9 @@ public with sharing class FormulaEvaluatorUiController {
         try {
             return Evaluator.run(formula, recordId);
         } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
+            AuraHandledException ex = new AuraHandledException(e.getMessage());
+            ex.setMessage(e.getMessage());
+            throw ex;
         }
     }
 }

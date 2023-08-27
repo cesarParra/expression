@@ -82,7 +82,7 @@ Assert.areEqual('ACME', result);
 ```
 
 References to child records are also supported. You can reference fields on child
-records by first extracting a list out of the child records using the `TOLIST`
+records by first extracting a list out of the child records using the `MAP`
 and then using any of the list functions to compute information from that list.
 
 When referencing child data in this way, the framework will take care of any necessary
@@ -109,7 +109,9 @@ There are a few limitations around merge fields at the moment
 - When using the endpoint that takes a record Id as the context, the query
 is performed `with sharing`, so any records that the user does not have access to
 will not be returned or taken into account in the operation.
-- When extracting data out of child records through the TOLIST function, any null
+- MAP only supports one level of relationship, so the second argument cannot contain
+references to children of the child record being mapped.
+- When extracting data out of child records through the MAP function, any null
 value is skipped. Take this into account when computing information using list
 functions.
 
@@ -148,7 +150,7 @@ Maps allow you to represent complex data structures, including nested maps and l
 ```apex
 Id parentId = '0018N00000IEEK8QAP';
 Object result = Evaluator.run(
-    '{"Family Name": Name, "Members": { "Count": SIZE(Contacts), "Names": TOLIST(Contacts, Name)}}',
+    '{"Family Name": Name, "Members": { "Count": SIZE(Contacts), "Names": MAP(Contacts, Name)}}',
     parentId
 );
 // { "Family Name": "Doe", "Members": { "Count": 2, "Names": ["John Doe", "Jane Doe"] } }
@@ -786,17 +788,21 @@ expression.Evaluator.run('WEEKDAY(DATE(2020, 1, 1))'); // 4
 
 #### List Functions
 
-- `TOLIST`
+- `MAP`
 
-Extracts a list out of a particular field of a list of child SObjects related to the context.
+Maps to a list using the first argument as the context and the second argument as the expression to evaluate.
 
-Accepts 2 arguments: The child relationship merge field and the name of the field of the child to extract,
-also as a merge field (not a string, so no quotes).
+Accepts 2 arguments: List of objects and an expression to evaluate.
 
 ```apex
-Account account = [SELECT (SELECT Id, Name FROM Contacts) FROM Account LIMIT 1];
-Object result = expression.Evaluator.run('TOLIST(Contacts, Name)', account);
+Account account = [SELECT (SELECT Id, Name, Email FROM Contacts) FROM Account LIMIT 1];
+
+Object result = expression.Evaluator.run('MAP(Contacts, Name)', account);
 // ["John Doe", "Jane Doe"]
+
+result = expression.Evaluator.run('MAP(Contacts, { "Name": Name, "Email": Email })', account);
+// [{ "Name": "John Doe", "Email": "test@example.com"},
+//  { "Name": "Jane Doe", "Email": test2@example.com }]
 ```
 
 This can be combined with list operations to extract aggregate information out
@@ -804,7 +810,7 @@ of child records.
 
 ```apex
 Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
-Object result = expression.Evaluator.run('AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
+Object result = expression.Evaluator.run('AVERAGE(MAP(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
 ```
 
 - `AVERAGE`

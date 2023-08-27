@@ -587,7 +587,7 @@ private class EvaluatorTest {
     }
 
     @IsTest
-    private static void toListFunctionReturnsGivenAChildRelationshipAndAFieldName() {
+    private static void mapFunctionReturnsGivenAChildRelationshipAndAFieldName() {
         Account account = new Account(Name = 'Test');
         insert account;
         Contact contact1 = new Contact(LastName = 'Test1', AccountId = account.Id);
@@ -597,7 +597,7 @@ private class EvaluatorTest {
         };
         Account accountWithContacts = [SELECT Id, Name, (SELECT Id, LastName FROM Contacts) FROM Account WHERE Id = :account.Id];
 
-        List<Object> result = (List<Object>) Evaluator.run('TOLIST(Contacts, LastName)', accountWithContacts);
+        List<Object> result = (List<Object>) Evaluator.run('MAP(Contacts, LastName)', accountWithContacts);
 
         Assert.areEqual(2, result.size());
         Assert.areEqual('Test1', result[0]);
@@ -605,7 +605,7 @@ private class EvaluatorTest {
     }
 
     @IsTest
-    private static void canCombineListFunctionsWithToList() {
+    private static void canCombineListFunctionsWithMap() {
         Account parentAccount = new Account(Name = 'Parent');
         insert parentAccount;
 
@@ -617,7 +617,7 @@ private class EvaluatorTest {
 
         Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
 
-        Decimal result = (Decimal) Evaluator.run('AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren);
+        Decimal result = (Decimal) Evaluator.run('AVERAGE(MAP(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren);
 
         Assert.areEqual(15, result);
     }
@@ -664,7 +664,7 @@ private class EvaluatorTest {
             childAccount1, childAccount2
         };
 
-        Object revenueByEmployee = Evaluator.run('AVERAGE(TOLIST(ChildAccounts, AnnualRevenue)) / AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))',
+        Object revenueByEmployee = Evaluator.run('AVERAGE(MAP(ChildAccounts, AnnualRevenue)) / AVERAGE(MAP(ChildAccounts, NumberOfEmployees))',
             parentAccount.Id);
 
         Assert.areEqual(10, revenueByEmployee);
@@ -681,7 +681,7 @@ private class EvaluatorTest {
             childAccount1, childAccount2
         };
 
-        Decimal revenueByEmployee = (Decimal) Evaluator.run('AVERAGE(TOLIST(ChildAccounts, AnnualRevenue)) / AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))',
+        Decimal revenueByEmployee = (Decimal) Evaluator.run('AVERAGE(MAP(ChildAccounts, AnnualRevenue)) / AVERAGE(MAP(ChildAccounts, NumberOfEmployees))',
             parentAccount.Id);
         revenueByEmployee = revenueByEmployee.setScale(2);
 
@@ -887,4 +887,9 @@ private class EvaluatorTest {
         Assert.areEqual(1, result.get('a'));
         Assert.areEqual(3, result.get('b'));
     }
+
+    // TODO: Map should work on any good ole list of anything
+    // TODO: More mapping tests now that we support more than just extracting the name
+    // TODO: Map should be able to either access fields from the parent or from the child (shadowing),
+        // so we might need to get more fancy with how we resolve stuff.
 }

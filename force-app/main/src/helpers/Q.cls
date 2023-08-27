@@ -34,6 +34,10 @@ public with sharing class Q {
         return this;
     }
 
+    public Set<String> getFields() {
+        return this.fieldList;
+    }
+
     public String buildSelect() {
         for (Q qb : this.subQueries) {
             this.fieldList.add('(' + qb.build() + ')');
