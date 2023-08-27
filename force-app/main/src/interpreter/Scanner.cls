@@ -71,9 +71,6 @@ public with sharing class Scanner {
             when ':' {
                 addToken(TokenType.COLON);
             }
-            when '`' {
-                addToken(TokenType.TICK);
-            }
 
             // One or more character tokens
             when '=' {
@@ -82,6 +79,10 @@ public with sharing class Scanner {
 
             when '.' {
                 addToken(match2('..') ? TokenType.DOT_DOT_DOT : TokenType.DOT);
+            }
+
+            when '$' {
+                variableAccess();
             }
 
             when '<' {
@@ -208,6 +209,15 @@ public with sharing class Scanner {
         }
 
         addToken(TokenType.NUMBER_LITERAL, Decimal.valueOf(source.substring(start, current)));
+    }
+
+    private void variableAccess() {
+        while (peek().isAlphanumeric()) {
+            advance();
+        }
+
+        TokenType type = TokenType.VARIABLE;
+        addToken(type);
     }
 
     private void identifierLiteral() {

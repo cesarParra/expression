@@ -4,12 +4,16 @@ public with sharing class Interpreter implements Visitor {
     private Boolean inListLiteral = false;
     private Boolean isInMapLiteral = false;
 
+    public Interpreter(Environment env) {
+        this.env = env;
+    }
+
     public void setIsInListLiteral(Boolean inListLiteral) {
         this.inListLiteral = inListLiteral;
     }
 
-    public Interpreter(Environment env) {
-        this.env = env;
+    public Environment getEnvironment() {
+        return env;
     }
 
     public Object interpret(Expr expression) {
@@ -161,7 +165,7 @@ public with sharing class Interpreter implements Visitor {
             Environment tempEnvironmentForGet = new Environment((SObject) result);
 
             // We might be dealing with either a field reference or with a reference to another parent
-            if (tempEnvironmentForGet.containsField(getExpr.name.lexeme)) {
+            if (tempEnvironmentForGet.contains(getExpr.name.lexeme)) {
                 return tempEnvironmentForGet.get(getExpr.name.lexeme);
             } else if (tempEnvironmentForGet.containsAsParent(getExpr.name.lexeme)) {
                 return tempEnvironmentForGet.getParentSObject(getExpr.name.lexeme);
@@ -178,14 +182,32 @@ public with sharing class Interpreter implements Visitor {
         );
     }
 
-    public Object visit(Expr.MergeField mergeField) {
+    public Object visit(Expr.Variable variable) {
         if (env == null) {
             throw new InterpreterException(
-                'Error executing merge field' + mergeField.name.lexeme + ': no context was provided.'
+                'Error executing variable expression: no context was provided.'
             );
         }
 
-        if (!env.containsField(mergeField.name.lexeme)) {
+        if (env.contains(variable.name.lexeme)) {
+            return env.get(variable.name.lexeme);
+        }
+
+        throw new InterpreterException(
+            'Error executing variable expression: the variable ' +
+                variable.name.lexeme +
+                ' is not defined in the current context.'
+        );
+    }
+
+    public Object visit(Expr.MergeField mergeField) {
+        if (env.noRecordContext()) {
+            throw new InterpreterException(
+                'Error executing merge field' + mergeField.name.lexeme + ': no record context was provided.'
+            );
+        }
+
+        if (!env.contains(mergeField.name.lexeme)) {
             if (env.containsAsParent(mergeField.name.lexeme)) {
                 return env.getParentSObject(mergeField.name.lexeme);
             }
@@ -248,7 +270,7 @@ public with sharing class Interpreter implements Visitor {
     public class InterpreterException extends Exception {
     }
 
-    public Object visit(Expr.Function function) {
+    public Object visit(Expr.FunctionCall function) {
         // Check if the function is in the list of supported functions
         if (!ExpressionFunction.FUNCTIONS.containsKey(function.functionName)) {
             throw new InterpreterException(

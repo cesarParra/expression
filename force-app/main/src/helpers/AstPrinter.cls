@@ -24,6 +24,10 @@ public with sharing class AstPrinter implements Visitor {
         return literal.value;
     }
 
+    public Object visit(Expr.Variable variable) {
+        return variable.name.lexeme;
+    }
+
     public Object visit(Expr.MergeField mergeField) {
         return 'MergeField(' + mergeField.name.lexeme + ')';
     }
@@ -46,7 +50,7 @@ public with sharing class AstPrinter implements Visitor {
         );
     }
 
-    public Object visit(Expr.Function function) {
+    public Object visit(Expr.FunctionCall function) {
         return parenthesize(
             'FN:' + function.functionName,
             function.arguments

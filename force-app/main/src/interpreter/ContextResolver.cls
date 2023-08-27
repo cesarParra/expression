@@ -19,6 +19,10 @@ public with sharing class ContextResolver implements Visitor {
         this.fields = new Set<String>();
     }
 
+    public Object visit(Expr.Variable variable) {
+        return null;
+    }
+
     public Object visit(Expr.MergeField mergeField) {
         String fieldName = mergeField.name.lexeme.toLowerCase();
 
@@ -101,7 +105,7 @@ public with sharing class ContextResolver implements Visitor {
         return relationshipToQuery + '.' + getExpr.name.lexeme;
     }
 
-    public Object visit(Expr.Function function) {
+    public Object visit(Expr.FunctionCall function) {
         if (function.functionName == 'MAP') {
             // The MAP function is a special case, since we might be dealing with a
             // child relationship whose fields need to be queried correctly as a subquery.
@@ -111,6 +115,13 @@ public with sharing class ContextResolver implements Visitor {
                 throw new ResolverException(
                     'Error executing "MAP" function: the function must have exactly 2 arguments.'
                 );
+            }
+
+            if (!(function.arguments.get(0) instanceof Expr.MergeField)) {
+                // If we are not dealing with a merge field that needs to be
+                // resolved to a query, that means we are likely dealing with a regular
+                // list, so do nothing
+                return null;
             }
 
             String mapKey = ((Expr.MergeField) function.arguments.get(0)).name.lexeme.toLowerCase();

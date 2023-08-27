@@ -1,12 +1,25 @@
 public with sharing class Environment {
     private final SObject context;
+    private final Map<String, Object> variables = new Map<String, Object>();
 
     public Environment(SObject context) {
         this.context = context;
     }
 
-    public Boolean containsField(String field) {
+    public Boolean noRecordContext() {
+        return context == null;
+    }
+
+    public void define(String name, Object value) {
+        variables.put(name.toLowerCase(), value);
+    }
+
+    public Boolean contains(String field) {
         String lowerCaseField = field.toLowerCase();
+
+        if (variables.containsKey(lowerCaseField)) {
+            return true;
+        }
 
         Set<String> fields = context.getSObjectType().getDescribe().fields.getMap().keySet();
         if (fields.contains(lowerCaseField)) {
@@ -35,6 +48,11 @@ public with sharing class Environment {
 
     public Object get(String field) {
         String lowerCaseField = field.toLowerCase();
+
+        // Try to get it from the variables first
+        if (variables.containsKey(lowerCaseField)) {
+            return variables.get(lowerCaseField);
+        }
 
         if (context.getSObjectType().getDescribe().fields.getMap().keySet().contains(lowerCaseField)) {
             return context.get(field);

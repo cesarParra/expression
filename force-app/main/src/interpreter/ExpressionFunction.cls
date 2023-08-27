@@ -930,13 +930,17 @@ public with sharing abstract class ExpressionFunction {
             // Each one of the children will now act as a standalone context for a new expression.
             Expr secondArgument = arguments.get(1);
             List<Object> result = new List<Object>();
-            for (Object child : childrenAsList) {
+            for (Integer i = 0; i < childrenAsList.size(); i++) {
+                Object child = childrenAsList.get(i);
                 Environment env;
                 if (child instanceof SObject) {
                     env = new Environment((SObject)child);
                 } else {
                     env = new Environment(null);
                 }
+
+                env.define('$current', child);
+                env.define('$index', i);
 
                 Interpreter interpreter = new Interpreter(env);
                 result.add(interpreter.interpret(secondArgument));

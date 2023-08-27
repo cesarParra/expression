@@ -29,11 +29,11 @@ public abstract class Expr {
         }
     }
 
-    public class Function extends Expr {
+    public class FunctionCall extends Expr {
         public final String functionName;
         public final List<Expr> arguments;
 
-        public Function(String functionName, List<Expr> arguments) {
+        public FunctionCall(String functionName, List<Expr> arguments) {
             this.functionName = functionName;
             this.arguments = arguments;
         }
@@ -48,6 +48,18 @@ public abstract class Expr {
 
         public Literal(Object value) {
             this.value = value;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
+
+    public class Variable extends Expr {
+        public final Token name;
+
+        public Variable(Token name) {
+            this.name = name;
         }
 
         public override Object accept(Visitor v) {

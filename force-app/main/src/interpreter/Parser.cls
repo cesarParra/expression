@@ -119,6 +119,10 @@ public with sharing class Parser {
             return new Expr.Literal(previous().literal);
         }
 
+        if (match(TokenType.VARIABLE)) {
+            return new Expr.Variable(previous());
+        }
+
         if (match(TokenType.IDENTIFIER)) {
             // First check if the identifier is a potential function name
             // by seeing if the next token is a left parenthesis
@@ -132,7 +136,7 @@ public with sharing class Parser {
                     } while (match(TokenType.COMMA));
                 }
                 consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
-                return new Expr.Function(fnName.lexeme.toUpperCase(), parameters);
+                return new Expr.FunctionCall(fnName.lexeme.toUpperCase(), parameters);
             }
 
             // Otherwise we assume it's a field reference
