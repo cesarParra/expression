@@ -154,7 +154,7 @@ public with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.GetExpr getExpr) {
-        if (env == null) {
+        if (env.noRecordContext()) {
             throw new InterpreterException(
                 'Error executing get expression: no context was provided.'
             );
@@ -163,6 +163,22 @@ public with sharing class Interpreter implements Visitor {
         Object result = evaluate(getExpr.objectExpr);
         if (result instanceof SObject) {
             Environment tempEnvironmentForGet = new Environment((SObject) result);
+
+            // We might be dealing with either a field reference or with a reference to another parent
+            if (tempEnvironmentForGet.contains(getExpr.name.lexeme)) {
+                return tempEnvironmentForGet.get(getExpr.name.lexeme);
+            } else if (tempEnvironmentForGet.containsAsParent(getExpr.name.lexeme)) {
+                return tempEnvironmentForGet.getParentSObject(getExpr.name.lexeme);
+            }
+
+            throw new InterpreterException(
+                'Error executing get expression: the SObject type ' +
+                    tempEnvironmentForGet.getSObjectTypeName() +
+                    ' does not contain a field with the name' + getExpr.name.lexeme
+            );
+        } else if (result instanceof Environment) {
+            // TODO: Take care of duplication
+            Environment tempEnvironmentForGet = (Environment) result;
 
             // We might be dealing with either a field reference or with a reference to another parent
             if (tempEnvironmentForGet.contains(getExpr.name.lexeme)) {

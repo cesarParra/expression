@@ -99,7 +99,7 @@ public with sharing class ContextResolver implements Visitor {
             relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr);
         } else {
             throw new ResolverException('Did not understand the relationship to field ' +
-                getExpr.objectExpr + ' for SObjectType ' + this.recordId.getSobjectType());
+                getExpr.objectExpr + ' for SObjectType ' + this.objectType);
         }
 
         return relationshipToQuery + '.' + getExpr.name.lexeme;

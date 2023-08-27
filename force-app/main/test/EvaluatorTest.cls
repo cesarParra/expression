@@ -888,8 +888,64 @@ private class EvaluatorTest {
         Assert.areEqual(3, result.get('b'));
     }
 
-    // TODO: Map should work on any good ole list of anything
-    // TODO: More mapping tests now that we support more than just extracting the name
-    // TODO: Map should be able to either access fields from the parent or from the child (shadowing),
-        // so we might need to get more fancy with how we resolve stuff.
+    @IsTest
+    private static void canMapARegularListToASingleValue() {
+        List<Object> result = (List<Object>) Evaluator.run('MAP(LIST("a", "b", "c"), upper($current))');
+        Assert.areEqual('A', result[0]);
+        Assert.areEqual('B', result[1]);
+        Assert.areEqual('C', result[2]);
+    }
+
+    @IsTest
+    private static void canMapToAnObjectLiteral() {
+        List<Object> result = (List<Object>) Evaluator.run('MAP(LIST("a", "b", "c"), {$index: $current})');
+        Assert.areEqual('a', ((Map<Object, Object>) result[0]).get(0));
+        Assert.areEqual('b', ((Map<Object, Object>) result[1]).get(1));
+        Assert.areEqual('c', ((Map<Object, Object>) result[2]).get(2));
+    }
+
+    @IsTest
+    private static void shouldBeAbleToAccessDataFromParentWhenMappingAChildRelationshipList_recordAsContext() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
+
+        List<Object> result = (List<Object>) Evaluator.run('MAP(ChildAccounts, {"parentName": $parent.Name, "numberOfEmployees": $current.NumberOfEmployees})', parentAccountWithChildren);
+
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[0]).get('parentName'));
+        Assert.areEqual(10, ((Map<Object, Object>) result[0]).get('numberOfEmployees'));
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parentName'));
+        Assert.areEqual(20, ((Map<Object, Object>) result[1]).get('numberOfEmployees'));
+    }
+
+//    @IsTest
+//    private static void shouldBeAbleToAccessDataFromParentWhenMappingAChildRelationshipList_idAsContext() {
+//        Account parentAccount = new Account(Name = 'Parent');
+//        insert parentAccount;
+//
+//        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+//        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+//        insert new List<SObject>{
+//            childAccount1, childAccount2
+//        };
+//
+//        List<Object> result = (List<Object>) Evaluator.run(
+//            'MAP(ChildAccounts, {"parentName": $parent.Name, "numberOfEmployees": $current.NumberOfEmployees})',
+//            parentAccount.Id
+//        );
+//
+//        Assert.areEqual('Parent', ((Map<Object, Object>) result[0]).get('parentName'));
+//        Assert.areEqual(10, ((Map<Object, Object>) result[0]).get('numberOfEmployees'));
+//        Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parentName'));
+//        Assert.areEqual(20, ((Map<Object, Object>) result[1]).get('numberOfEmployees'));
+//
+//        Assert.fail('We want to have this same test, but passing the record Id so that we can test the resolver');
+//    }
 }
