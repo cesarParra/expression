@@ -410,6 +410,17 @@ Object result = expression.Evaluator.run(
     testAccount); // "🔥"
 ```
 
+- `ISNUMBER`
+
+Returns TRUE if the expression is a number; otherwise, returns FALSE.
+
+Accepts 1 argument: the expression to check.
+
+```apex
+expression.Evaluator.run('ISNUMBER(1)'); // true
+expression.Evaluator.run('ISNUMBER("Hello")'); // false
+```
+
 #### String Functions
 
 - `BEGINS`
