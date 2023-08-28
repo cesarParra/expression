@@ -859,17 +859,34 @@ Accepts 1 argument: the list of numbers to evaluate.
 expression.Evaluator.run('AVERAGE(LIST(1, 2, 3))'); // 2
 ```
 
+- `MAX` and `MIN`
+
+#### Lists and Maps
+Functions that work with both lists and maps.
+
 - `SIZE`
 
-Returns the number of elements in a list.
+Returns the number of elements in a list or map.
 
-Accepts 1 argument: the list to evaluate.
+Accepts 1 argument: the list or map to evaluate.
 
 ```apex
 expression.Evaluator.run('SIZE(LIST(1, 2, 3))'); // 3
+expression.Evaluator.run('SIZE({ "a": 1, "b": 2, "c": 3 })'); // 3
 ```
 
-- `MAX` and `MIN`
+- `ISEMPTY`
+
+Returns true if the list or map is empty.
+
+Accepts 1 argument: the list or map to evaluate.
+
+```apex
+expression.Evaluator.run('ISEMPTY(LIST(1, 2, 3))'); // false
+expression.Evaluator.run('ISEMPTY({ "a": 1, "b": 2, "c": 3 })'); // false
+expression.Evaluator.run('ISEMPTY(LIST())'); // true
+expression.Evaluator.run('ISEMPTY({})'); // true
+```
 
 #### Math Functions
 

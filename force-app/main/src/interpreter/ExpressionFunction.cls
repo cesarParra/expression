@@ -56,7 +56,8 @@ public with sharing abstract class ExpressionFunction {
         'SUBSTITUTE' => new SubstituteFn(),
         'TEXT' => new TextFn(),
         'TRIM' => new TrimFn(),
-        'UPPER' => new UpperFn()
+        'UPPER' => new UpperFn(),
+        'ISEMPTY' => new IsEmptyFn()
     };
 
     private enum TimeType {
@@ -990,13 +991,18 @@ public with sharing abstract class ExpressionFunction {
     private class SizeFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object listOfValues = evaluate(arguments.get(0));
-            if (!(listOfValues instanceof List<Object>)) {
+            // Must be a list or a map
+            if (!(listOfValues instanceof List<Object>) && !(listOfValues instanceof Map<Object, Object>)) {
                 throw new Interpreter.InterpreterException(
-                    'Error executing "SIZE" function: the argument must evaluate to a list.'
+                    'Error executing "SIZE" function: the argument must evaluate to a list or a map.'
                 );
             }
 
-            return ((List<Object>) listOfValues).size();
+            if (listOfValues instanceof List<Object>) {
+                return ((List<Object>) listOfValues).size();
+            } else {
+                return ((Map<Object, Object>) listOfValues).size();
+            }
         }
     }
 
@@ -1229,6 +1235,31 @@ public with sharing abstract class ExpressionFunction {
             }
 
             return ((String) value).toUpperCase();
+        }
+    }
+
+    private class IsEmptyFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect 1 argument
+            if (arguments.size() != 1) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "ISEMPTY" function: the function must have exactly 1 argument.'
+                );
+            }
+
+            // The argument must either be a list or a map
+            Object value = evaluate(arguments.get(0));
+            if (!(value instanceof List<Object>) && !(value instanceof Map<Object, Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "ISEMPTY" function: the argument must evaluate to a list or a map.'
+                );
+            }
+
+            if (value instanceof List<Object>) {
+                return ((List<Object>) value).isEmpty();
+            } else {
+                return ((Map<Object, Object>) value).isEmpty();
+            }
         }
     }
 }

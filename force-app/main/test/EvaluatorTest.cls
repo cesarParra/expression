@@ -775,6 +775,11 @@ private class EvaluatorTest {
     }
 
     @IsTest
+    private static void sizeFunctionReturnsAMapSize() {
+        Assert.areEqual(2, Evaluator.run('SIZE({"a": 1, "b": 2})'));
+    }
+
+    @IsTest
     private static void canBuildListLiterals() {
         Assert.areEqual(3, Evaluator.run('SIZE([1, 2, 3])'));
     }
@@ -974,5 +979,25 @@ private class EvaluatorTest {
         Object result = Evaluator.run('map(ChildAccounts, Id)', parentAccount.Id);
 
         Assert.areEqual(childAccount.Id, ((List<Object>) result)[0]);
+    }
+
+    @IsTest
+    private static void isEmptyReturnsTrueForAnEmptyList() {
+        Assert.areEqual(true, Evaluator.run('ISEMPTY([])'));
+    }
+
+    @IsTest
+    private static void isEmptyReturnsFalseForANonEmptyList() {
+        Assert.areEqual(false, Evaluator.run('ISEMPTY([1])'));
+    }
+
+    @IsTest
+    private static void isEmptyReturnsTrueForAnEmptyMap() {
+        Assert.areEqual(true, Evaluator.run('ISEMPTY({})'));
+    }
+
+    @IsTest
+    private static void isEmptyReturnsFalseForANonEmptyMap() {
+        Assert.areEqual(false, Evaluator.run('ISEMPTY({"a": 1})'));
     }
 }
