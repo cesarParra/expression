@@ -81,6 +81,10 @@ public with sharing class Scanner {
                 addToken(match2('..') ? TokenType.DOT_DOT_DOT : TokenType.DOT);
             }
 
+            when '$' {
+                variableAccess();
+            }
+
             when '<' {
                 String next = peek();
                 if (next == '=') {
@@ -205,6 +209,15 @@ public with sharing class Scanner {
         }
 
         addToken(TokenType.NUMBER_LITERAL, Decimal.valueOf(source.substring(start, current)));
+    }
+
+    private void variableAccess() {
+        while (peek().isAlphanumeric()) {
+            advance();
+        }
+
+        TokenType type = TokenType.VARIABLE;
+        addToken(type);
     }
 
     private void identifierLiteral() {

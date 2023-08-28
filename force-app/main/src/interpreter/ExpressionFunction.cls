@@ -47,7 +47,7 @@ public with sharing abstract class ExpressionFunction {
         'ROUND' => new RoundAndTruncFns('ROUND'),
         'TRUNC' => new RoundAndTruncFns('TRUNC'),
         'LIST' => new ListFn(),
-        'TOLIST' => new ToListFn(),
+        'MAP' => new MapFn(),
         'AVERAGE' => new AverageFn(),
         'SIZE' => new SizeFn(),
         'UNIXTIMESTAMP' => new UnixTimeStampFn(),
@@ -902,13 +902,11 @@ public with sharing abstract class ExpressionFunction {
         }
     }
 
-    private class ToListFn extends ExpressionFunction {
+    private class MapFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            // Expect 2 arguments, the first will be the name of the child relationship field,
-            // the second the name of the fields for which we want the data
             if (arguments.size() != 2) {
                 throw new Interpreter.InterpreterException(
-                    'Error executing "TOLIST" function: the function must have exactly 2 arguments.'
+                    'Error executing "MAP" function: the function must have exactly 2 arguments.'
                 );
             }
 
@@ -916,30 +914,37 @@ public with sharing abstract class ExpressionFunction {
             if (children == null) {
                 return new List<Object>();
             }
-            if (!(children instanceof List<SObject>)) {
+            if (!(children instanceof List<Object>)) {
                 throw new Interpreter.InterpreterException(
-                    'Error executing "TOLIST" function: the first argument must evaluate to a list of SObject.'
+                    'Error executing "MAP" function: the first argument must evaluate to a list.'
                 );
             }
 
             // If the list of children is empty, return early
-            List<SObject> childrenAsList = (List<SObject>) children;
+            List<Object> childrenAsList = (List<Object>) children;
             if (childrenAsList.isEmpty()) {
                 return new List<Object>();
             }
 
-            // For all children we want to get the value of the field
-            // Each one of the children will now act as a standalone context for a new expression
-            if (!(arguments.get(1) instanceof Expr.MergeField)) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "TOLIST" function: the second argument must be a merge field.'
-                );
-            }
-
-            String secondArgument = ((Expr.MergeField) arguments.get(1)).name.lexeme;
+            // For all children we want to evaluate the subexpression.
+            // Each one of the children will now act as a standalone context for a new expression.
+            Expr secondArgument = arguments.get(1);
             List<Object> result = new List<Object>();
-            for (SObject child : childrenAsList) {
-                result.add(Evaluator.run(secondArgument, child));
+            for (Integer i = 0; i < childrenAsList.size(); i++) {
+                Object child = childrenAsList.get(i);
+                Environment env;
+                if (child instanceof SObject) {
+                    env = new Environment((SObject)child);
+                } else {
+                    env = new Environment(null);
+                }
+
+                env.define('$current', child);
+                env.define('$index', i);
+                env.define('$total', childrenAsList.size());
+
+                Interpreter interpreter = new Interpreter(env);
+                result.add(interpreter.interpret(secondArgument));
             }
             return result;
         }

@@ -1,8 +1,8 @@
 public with sharing class Q {
-    private String fromText;
-    private Set<String> fieldList = new Set<String>();
-    private List<QICondition> conditions = new List<QICondition>();
-    private List<Q> subQueries = new List<Q>();
+    private final String fromText;
+    private final Set<String> fieldList = new Set<String>();
+    private final List<QICondition> conditions = new List<QICondition>();
+    private final List<Q> subQueries = new List<Q>();
 
     public Q(SObjectType fromType) {
         this.fromText = String.valueOf(fromType);
@@ -29,9 +29,13 @@ public with sharing class Q {
 
     public Q selectFields(Set<String> fields) {
         for (String field : fields) {
-            this.fieldList.add(field);
+            this.fieldList.add(field.toLowerCase());
         }
         return this;
+    }
+
+    public Set<String> getFields() {
+        return this.fieldList;
     }
 
     public String buildSelect() {

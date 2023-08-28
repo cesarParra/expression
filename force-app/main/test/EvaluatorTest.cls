@@ -587,7 +587,7 @@ private class EvaluatorTest {
     }
 
     @IsTest
-    private static void toListFunctionReturnsGivenAChildRelationshipAndAFieldName() {
+    private static void mapFunctionReturnsGivenAChildRelationshipAndAFieldName() {
         Account account = new Account(Name = 'Test');
         insert account;
         Contact contact1 = new Contact(LastName = 'Test1', AccountId = account.Id);
@@ -597,7 +597,7 @@ private class EvaluatorTest {
         };
         Account accountWithContacts = [SELECT Id, Name, (SELECT Id, LastName FROM Contacts) FROM Account WHERE Id = :account.Id];
 
-        List<Object> result = (List<Object>) Evaluator.run('TOLIST(Contacts, LastName)', accountWithContacts);
+        List<Object> result = (List<Object>) Evaluator.run('MAP(Contacts, LastName)', accountWithContacts);
 
         Assert.areEqual(2, result.size());
         Assert.areEqual('Test1', result[0]);
@@ -605,7 +605,7 @@ private class EvaluatorTest {
     }
 
     @IsTest
-    private static void canCombineListFunctionsWithToList() {
+    private static void canCombineListFunctionsWithMap() {
         Account parentAccount = new Account(Name = 'Parent');
         insert parentAccount;
 
@@ -617,7 +617,7 @@ private class EvaluatorTest {
 
         Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
 
-        Decimal result = (Decimal) Evaluator.run('AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren);
+        Decimal result = (Decimal) Evaluator.run('AVERAGE(MAP(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren);
 
         Assert.areEqual(15, result);
     }
@@ -664,7 +664,7 @@ private class EvaluatorTest {
             childAccount1, childAccount2
         };
 
-        Object revenueByEmployee = Evaluator.run('AVERAGE(TOLIST(ChildAccounts, AnnualRevenue)) / AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))',
+        Object revenueByEmployee = Evaluator.run('AVERAGE(MAP(ChildAccounts, AnnualRevenue)) / AVERAGE(MAP(ChildAccounts, NumberOfEmployees))',
             parentAccount.Id);
 
         Assert.areEqual(10, revenueByEmployee);
@@ -681,7 +681,7 @@ private class EvaluatorTest {
             childAccount1, childAccount2
         };
 
-        Decimal revenueByEmployee = (Decimal) Evaluator.run('AVERAGE(TOLIST(ChildAccounts, AnnualRevenue)) / AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))',
+        Decimal revenueByEmployee = (Decimal) Evaluator.run('AVERAGE(MAP(ChildAccounts, AnnualRevenue)) / AVERAGE(MAP(ChildAccounts, NumberOfEmployees))',
             parentAccount.Id);
         revenueByEmployee = revenueByEmployee.setScale(2);
 
@@ -886,5 +886,93 @@ private class EvaluatorTest {
         Map<Object, Object> result = (Map<Object, Object>) Evaluator.run('{...{"a": 1, "b": 2}, "b": 3}');
         Assert.areEqual(1, result.get('a'));
         Assert.areEqual(3, result.get('b'));
+    }
+
+    @IsTest
+    private static void canMapARegularListToASingleValue() {
+        List<Object> result = (List<Object>) Evaluator.run('MAP(LIST("a", "b", "c"), upper($current))');
+        Assert.areEqual('A', result[0]);
+        Assert.areEqual('B', result[1]);
+        Assert.areEqual('C', result[2]);
+    }
+
+    @IsTest
+    private static void canMapToAnObjectLiteral() {
+        List<Object> result = (List<Object>) Evaluator.run('MAP(LIST("a", "b", "c"), {$index: $current})');
+        Assert.areEqual('a', ((Map<Object, Object>) result[0]).get(0));
+        Assert.areEqual('b', ((Map<Object, Object>) result[1]).get(1));
+        Assert.areEqual('c', ((Map<Object, Object>) result[2]).get(2));
+    }
+
+    @IsTest
+    private static void shouldBeAbleToAccessDataFromParentWhenMappingAChildRelationshipList_recordAsContext() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees, Parent.Name FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
+
+        List<Object> result = (List<Object>) Evaluator.run('MAP(ChildAccounts, {"parentName": Parent.Name, "numberOfEmployees": NumberOfEmployees})', parentAccountWithChildren);
+
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[0]).get('parentName'));
+        Assert.areEqual(10, ((Map<Object, Object>) result[0]).get('numberOfEmployees'));
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parentName'));
+        Assert.areEqual(20, ((Map<Object, Object>) result[1]).get('numberOfEmployees'));
+    }
+
+    @IsTest
+    private static void canExtractDataDirectlyFromChildren() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        Object result = Evaluator.run('SIZE(ChildAccounts)', parentAccount.Id);
+
+        Assert.areEqual(2, result);
+    }
+
+    @IsTest
+    private static void shouldBeAbleToAccessDataFromParentWhenMappingAChildRelationshipList_idAsContext() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run(
+            'MAP(ChildAccounts, {"parentName": Parent.Name, "numberOfEmployees": NumberOfEmployees})',
+            parentAccount.Id
+        );
+
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[0]).get('parentName'));
+        Assert.areEqual(10, ((Map<Object, Object>) result[0]).get('numberOfEmployees'));
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parentName'));
+        Assert.areEqual(20, ((Map<Object, Object>) result[1]).get('numberOfEmployees'));
+    }
+
+    @IsTest
+    private static void theIdIsNotReferencedTwiceInTheQueryWhenReferenced() {
+        Account parentAccount = new Account(Name = 'ACME');
+        insert parentAccount;
+
+        Account childAccount = new Account(Name = 'ACME Child', ParentId = parentAccount.Id);
+        insert childAccount;
+
+        Object result = Evaluator.run('map(ChildAccounts, Id)', parentAccount.Id);
+
+        Assert.areEqual(childAccount.Id, ((List<Object>) result)[0]);
     }
 }

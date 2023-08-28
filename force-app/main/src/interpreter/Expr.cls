@@ -29,11 +29,11 @@ public abstract class Expr {
         }
     }
 
-    public class Function extends Expr {
+    public class FunctionCall extends Expr {
         public final String functionName;
         public final List<Expr> arguments;
 
-        public Function(String functionName, List<Expr> arguments) {
+        public FunctionCall(String functionName, List<Expr> arguments) {
             this.functionName = functionName;
             this.arguments = arguments;
         }
@@ -55,6 +55,18 @@ public abstract class Expr {
         }
     }
 
+    public class Variable extends Expr {
+        public final Token name;
+
+        public Variable(Token name) {
+            this.name = name;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
+
     public class MergeField extends Expr {
         public final Token name;
 
@@ -69,11 +81,11 @@ public abstract class Expr {
 
     public class GetExpr extends Expr {
         public final Expr objectExpr;
-        public final Token name;
+        public final MergeField field;
 
-        public GetExpr(Expr objectExpr, Token name) {
+        public GetExpr(Expr objectExpr, MergeField field) {
             this.objectExpr = objectExpr;
-            this.name = name;
+            this.field = field;
         }
 
         public override Object accept(Visitor v) {

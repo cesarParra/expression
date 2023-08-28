@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYb4IAG)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYb4IAG)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYb9IAG)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYb9IAG)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm000000HYb4IAG
+sf package install --apex-compile package --wait 20 --package 04tDm000000HYb9IAG
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYb4IAG
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYb9IAG
 ```
 
 ### Direct Deployment to Salesforce
@@ -58,20 +58,11 @@ Object result = expression.Evaluator.run(formula);
 Assert.areEqual(2, result);
 ```
 
-You can also evaluate formulas providing an SObject as context. This allows you to
-make reference to fields of the provided SObject in the formula.
+You can also evaluate formulas providing an SObject Id as context. This allows you to
+make reference to merge fields in the formula and the framework will take care of querying the
+correct values.
 
-When using this endpoint, the user is in charge of providing the correct context
-with the correct fields being referenced in the formula correctly queried.
-
-```apex
-Account account = new Account(Name = 'ACME');
-Object result = expression.Evaluator.run('Name', account);
-Assert.areEqual('ACME', result);
-```
-
-If you want the framework to take care of querying the correct fields, you can
-use the `evaluate` method that takes a record Id as context.
+> 📓 One SOQL query is consumed when using this endpoint.
 
 ```apex
 Account account = new Account(Name = 'ACME');
@@ -81,15 +72,21 @@ Object result = expression.Evaluator.run('Name', account.Id);
 Assert.areEqual('ACME', result);
 ```
 
-References to child records are also supported. You can reference fields on child
-records by first extracting a list out of the child records using the `TOLIST`
-and then using any of the list functions to compute information from that list.
+Finally, you can use evaluate formulas providing an SObject as context. This can save you a
+query if you already have the SObject in memory.
 
-When referencing child data in this way, the framework will take care of any necessary
-subqueries, so only one SOQL query is consumed.
+When using this endpoint, the caller is in charge of providing the correct context
+with the correct fields being referenced in the formula correctly queried.
 
-Referencing parent relationships through dot notation is also supported by both
-endpoints (the one that takes an SObject as context and the one that takes a record Id).
+```apex
+Account account = new Account(Name = 'ACME');
+Object result = expression.Evaluator.run('Name', account);
+Assert.areEqual('ACME', result);
+```
+
+References to related (child or parent) records are also supported. 
+
+You can reference parent relationships through dot notation:
 
 ```apex
 Account parentAccount = new Account(Name = 'ACME');
@@ -98,9 +95,42 @@ insert parentAccount;
 Account childAccount = new Account(Name = 'ACME Child', ParentId = parentAccount.Id);
 insert childAccount;
 
-Object result = expression.Evaluator.run('Parent.Name', childAccount.Id);
+Object result = expression.Evaluator.run('Parent.Name', childAccount);
 Assert.areEqual('ACME', result);
 ```
+
+You can reference fields on child data in two ways: either referencing the child list directly
+to get aggregate data:
+
+```apex
+Object result = expression.Evaluator.run('SIZE(ChildAccounts)', parentAccount);
+Assert.areEqual(1, result);
+```
+
+Or you can use the `MAP` function to extract (or map) data out of the child records. `MAP` lets you
+specify the relationship name as the first argument, and then the expression to evaluate on each
+child record as the second argument.
+
+This expression can be anything, something as simple as extracting a single field:
+
+```apex
+Object result = expression.Evaluator.run('MAP(ChildAccounts, Name)', parentAccount);
+Assert.areEqual('[ACME Child]', result);
+```
+
+To as complex as building a map with multiple fields that even references the parent record:
+
+> In the inner expression, you have access to 3 special variables: `$index` (the index of the current
+> record in the list), `$current` (the current item being iterated over), and `$total` (the total number
+> of items in the list).
+
+```apex
+Object result = expression.Evaluator.run('MAP(ChildAccounts, { "Number": $index + 1, "Name": Name, "Parent Name": Parent.Name })', parentAccount);
+// [{ "Number": 1, "Name": "ACME Child", "Parent Name": "ACME" }]
+```
+
+> When referencing child data in this way, the framework will take care of any necessary
+> subqueries, so only one SOQL query is consumed.
 
 ### Considerations and Limitations
 
@@ -109,7 +139,9 @@ There are a few limitations around merge fields at the moment
 - When using the endpoint that takes a record Id as the context, the query
 is performed `with sharing`, so any records that the user does not have access to
 will not be returned or taken into account in the operation.
-- When extracting data out of child records through the TOLIST function, any null
+- `MAP` only supports one level of relationship, so the second argument cannot contain
+references to children of the child record being mapped.
+- When extracting data out of child records through the MAP function, any null
 value is skipped. Take this into account when computing information using list
 functions.
 
@@ -148,7 +180,7 @@ Maps allow you to represent complex data structures, including nested maps and l
 ```apex
 Id parentId = '0018N00000IEEK8QAP';
 Object result = Evaluator.run(
-    '{"Family Name": Name, "Members": { "Count": SIZE(Contacts), "Names": TOLIST(Contacts, Name)}}',
+    '{"Family Name": Name, "Members": { "Count": SIZE(Contacts), "Names": MAP(Contacts, Name)}}',
     parentId
 );
 // { "Family Name": "Doe", "Members": { "Count": 2, "Names": ["John Doe", "Jane Doe"] } }
@@ -786,17 +818,21 @@ expression.Evaluator.run('WEEKDAY(DATE(2020, 1, 1))'); // 4
 
 #### List Functions
 
-- `TOLIST`
+- `MAP`
 
-Extracts a list out of a particular field of a list of child SObjects related to the context.
+Maps to a list using the first argument as the context and the second argument as the expression to evaluate.
 
-Accepts 2 arguments: The child relationship merge field and the name of the field of the child to extract,
-also as a merge field (not a string, so no quotes).
+Accepts 2 arguments: List of objects and an expression to evaluate.
 
 ```apex
-Account account = [SELECT (SELECT Id, Name FROM Contacts) FROM Account LIMIT 1];
-Object result = expression.Evaluator.run('TOLIST(Contacts, Name)', account);
+Account account = [SELECT (SELECT Id, Name, Email FROM Contacts) FROM Account LIMIT 1];
+
+Object result = expression.Evaluator.run('MAP(Contacts, Name)', account);
 // ["John Doe", "Jane Doe"]
+
+result = expression.Evaluator.run('MAP(Contacts, { "Name": Name, "Email": Email })', account);
+// [{ "Name": "John Doe", "Email": "test@example.com"},
+//  { "Name": "Jane Doe", "Email": test2@example.com }]
 ```
 
 This can be combined with list operations to extract aggregate information out
@@ -804,7 +840,13 @@ of child records.
 
 ```apex
 Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
-Object result = expression.Evaluator.run('AVERAGE(TOLIST(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
+Object result = expression.Evaluator.run('AVERAGE(MAP(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
+```
+
+Any list can be used as the first argument, not just child relationships.
+
+```apex
+Object result = expression.Evaluator.run('MAP(["a", "b", "c"], UPPER($current))'); // ["A", "B", "C"]
 ```
 
 - `AVERAGE`

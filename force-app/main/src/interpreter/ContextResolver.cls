@@ -1,14 +1,35 @@
 public with sharing class ContextResolver implements Visitor {
+    private Boolean shouldExecuteQuery = false;
     private final Id recordId;
+    private final SObjectType objectType;
     private final Q queryBuilder;
     private final Set<String> fields;
-    private final Map<String, Set<String>> childRelationshipsFieldsByRelationshipName;
+    private final Map<String, Q> subQueriesByRelationshipName = new Map<String, Q>();
 
+    /**
+     * @description Creates a new context resolver for the given record id.
+     * @param recordId The record id to use as context.
+     */
     public ContextResolver(Id recordId) {
         this.recordId = recordId;
+        this.objectType = recordId.getSobjectType();
         this.queryBuilder = new Q(recordId.getSobjectType());
         this.fields = new Set<String>();
-        this.childRelationshipsFieldsByRelationshipName = new Map<String, Set<String>>();
+    }
+
+    /**
+     * @description Constructor for a subquery context resolver.
+     * @param relationshipName The name of the relationship to query.
+     * @param objectType The SObjectType of the child object for which the query will be built.
+     */
+    public ContextResolver(String relationshipName, SObjectType objectType) {
+        this.queryBuilder = new Q(relationshipName);
+        this.objectType = objectType;
+        this.fields = new Set<String> { 'Id' };
+    }
+
+    public Object visit(Expr.Variable variable) {
+        return null;
     }
 
     public Object visit(Expr.MergeField mergeField) {
@@ -24,8 +45,12 @@ public with sharing class ContextResolver implements Visitor {
         for (ChildRelationship relationship : this.recordId.getSobjectType().getDescribe().getChildRelationships()) {
             String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
             if (childRelationshipName != null && childRelationshipName == fieldName) {
-                if (!this.childRelationshipsFieldsByRelationshipName.containsKey(childRelationshipName)) {
-                    this.childRelationshipsFieldsByRelationshipName.put(childRelationshipName, new Set<String>());
+                // Ensure there is going to be a subquery for this relationship
+                if (!this.subQueriesByRelationshipName.containsKey(childRelationshipName)) {
+                    this.subQueriesByRelationshipName.put(
+                        childRelationshipName,
+                        new Q(childRelationshipName).selectFields(new Set<String> { 'Id' })
+                    );
                 }
 
                 return null;
@@ -74,7 +99,7 @@ public with sharing class ContextResolver implements Visitor {
                 continue;
             }
 
-            Expr.KeyValue keyValue = (Expr.KeyValue)element;
+            Expr.KeyValue keyValue = (Expr.KeyValue) element;
             this.resolve(keyValue.key);
             this.resolve(keyValue.value);
         }
@@ -85,53 +110,53 @@ public with sharing class ContextResolver implements Visitor {
         // Get the relationship field to query out of the get/merge field contained.
         String relationshipToQuery = '';
         if ((getExpr.objectExpr instanceof Expr.MergeField)) {
-            relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme;
+            relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme + '.';
         } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
-            relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr);
-        } else {
-            throw new ResolverException('Did not understand the relationship to field ' +
-                getExpr.objectExpr + ' for SObjectType ' + this.recordId.getSobjectType());
+            relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
         }
 
-        return relationshipToQuery + '.' + getExpr.name.lexeme;
+        return relationshipToQuery + getExpr.field.name.lexeme;
     }
 
-    public Object visit(Expr.Function function) {
-        if (function.functionName == 'TOLIST') {
-            // The TOLIST function is a special case, since here we know we are dealing with a
+    public Object visit(Expr.FunctionCall function) {
+        if (function.functionName == 'MAP') {
+            // The MAP function is a special case, since we might be dealing with a
             // child relationship whose fields need to be queried correctly as a subquery.
-            // Expect 2 arguments, the first will be the name of the child relationship field,
-            // the second the name of the fields for which we want the data
+            // Expect 2 arguments, the first will be the name of the child relationship field or any other list value,
+            // the second is an expression that might use fields of the child relationship.
             if (function.arguments.size() != 2) {
                 throw new ResolverException(
-                    'Error executing "TOLIST" function: the function must have exactly 2 arguments.'
+                    'Error executing "MAP" function: the function must have exactly 2 arguments.'
                 );
             }
 
-            // Evaluate the first argument as normal.
-            // This will eventually resolve as a Merge field and initialize
-            // the childRelationshipsFieldsByRelationshipName map.
-            this.resolve(function.arguments[0]);
-
-            // The first argument is the name of a child relationship, which will be the key to our map
             if (!(function.arguments.get(0) instanceof Expr.MergeField)) {
-                throw new ResolverException(
-                    'Error executing "TOLIST" function: the first argument must be a merge field.'
-                );
+                // If we are not dealing with a merge field that needs to be
+                // resolved to a query, that means we are likely dealing with a regular
+                // list, so do nothing
+                return null;
             }
 
             String mapKey = ((Expr.MergeField) function.arguments.get(0)).name.lexeme.toLowerCase();
-
-            // The second argument is the name of a child field, so we want to add it to the pre-initialized
-            // map so that it gets queried
-            if (!(function.arguments.get(1) instanceof Expr.MergeField)) {
-                throw new ResolverException(
-                    'Error executing "TOLIST" function: the second argument must be a merge field.'
-                );
+            SObjectType childRelationshipType = this.getChildRelationshipType(mapKey);
+            if (childRelationshipType == null) {
+                // If we are not dealing with a child relationship, do nothing
+                return null;
             }
-            String secondArgument = ((Expr.MergeField) function.arguments.get(1)).name.lexeme;
-            Set<String> fields = this.childRelationshipsFieldsByRelationshipName.get(mapKey);
-            fields.add(secondArgument);
+
+            Q subQ = new ContextResolver(mapKey, childRelationshipType).resolveToQ(
+                function.arguments.get(1)
+            );
+
+            if (this.subQueriesByRelationshipName.containsKey(mapKey)) {
+                // If the sub query already exists, add all fields
+                this.subQueriesByRelationshipName.get(mapKey).selectFields(subQ.getFields());
+            } else {
+                // Otherwise, add the sub query to the map
+                this.subQueriesByRelationshipName.put(mapKey, subQ);
+            }
+
+            this.shouldExecuteQuery = true;
 
             return null;
         }
@@ -150,36 +175,58 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public SObject build(Expr expression) {
-        this.resolve(expression);
-
-        if (fields.isEmpty() && childRelationshipsFieldsByRelationshipName.isEmpty()) {
-            // There is no need to consume a database query if there are no merge
-            // fields in the formula
+        String query = this.resolveToQ(expression).build();
+        if (!this.shouldExecuteQuery) {
             return null;
         }
-
-        this.queryBuilder.selectFields(this.fields).add(Q.condition('Id').equalsTo(this.recordId));
-        for (String relationshipName : this.childRelationshipsFieldsByRelationshipName.keySet()) {
-            Q childQ = new Q(relationshipName);
-            childQ.selectFields(this.childRelationshipsFieldsByRelationshipName.get(relationshipName));
-            this.queryBuilder.addSubquery(childQ);
-        }
-        String query = this.queryBuilder.build();
         return Database.query(query);
+    }
+
+    private Q resolveToQ(Expr expression) {
+        this.resolve(expression);
+
+        if (fields.isEmpty() && subQueriesByRelationshipName.isEmpty()) {
+            return this.queryBuilder;
+        }
+
+        this.shouldExecuteQuery = true;
+        this.queryBuilder.selectFields(this.fields);
+
+        for (String relationshipName : this.subQueriesByRelationshipName.keySet()) {
+            this.queryBuilder.addSubquery(
+                this.subQueriesByRelationshipName.get(relationshipName)
+            );
+        }
+
+        if (this.recordId != null) {
+            this.queryBuilder.add(Q.condition('Id').equalsTo(this.recordId));
+        }
+
+        return this.queryBuilder;
     }
 
     private void resolve(Expr expression) {
         expression.accept(this);
     }
 
-    private static Set<String> cachedFields;
+    private Set<String> cachedFields;
     private Set<String> getFields() {
         if (cachedFields == null) {
             cachedFields = new Set<String>();
-            cachedFields = recordId.getSobjectType().getDescribe().fields.getMap().keySet();
+            cachedFields = this.objectType.getDescribe().fields.getMap().keySet();
         }
 
         return cachedFields;
+    }
+
+    private SObjectType getChildRelationshipType(String targetChildRelationshipName) {
+        for (ChildRelationship relationship : this.recordId.getSobjectType().getDescribe().getChildRelationships()) {
+            String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
+            if (childRelationshipName != null && childRelationshipName == targetChildRelationshipName) {
+                return relationship.getChildSObject();
+            }
+        }
+        return null;
     }
 
     public class ResolverException extends Exception {
