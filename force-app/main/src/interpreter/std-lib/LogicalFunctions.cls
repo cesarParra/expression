@@ -1,5 +1,16 @@
 public with sharing class LogicalFunctions {
-    public class AndFn extends ExpressionFunction {
+    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+        'AND' => new LogicalFunctions.AndFn(),
+        'IF' => new LogicalFunctions.IfFn(),
+        'NOT' => new LogicalFunctions.NotFn(),
+        'OR' => new LogicalFunctions.OrFn(),
+        'BLANKVALUE' => new LogicalFunctions.BlankValue(),
+        'ISBLANK' => new LogicalFunctions.IsBlank(),
+        'ISNUMBER' => new LogicalFunctions.IsNumber(),
+        'CASE' => new LogicalFunctions.CaseFn()
+    };
+
+    private class AndFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             if (arguments.size() < 2) {
                 throw new Interpreter.InterpreterException(
@@ -25,7 +36,7 @@ public with sharing class LogicalFunctions {
         }
     }
 
-    public class IfFn extends ExpressionFunction {
+    private class IfFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Evaluate the condition
             Object condition = evaluate(arguments.get(0));
@@ -45,7 +56,7 @@ public with sharing class LogicalFunctions {
         }
     }
 
-    public class NotFn extends ExpressionFunction {
+    private class NotFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Evaluate the expression
             Object expression = evaluate(arguments.get(0));
@@ -60,7 +71,7 @@ public with sharing class LogicalFunctions {
         }
     }
 
-    public class OrFn extends ExpressionFunction {
+    private class OrFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Loop through all arguments and return true if any of them is true
             for (Expr argument : arguments) {
@@ -80,7 +91,7 @@ public with sharing class LogicalFunctions {
         }
     }
 
-    public class BlankValue extends ExpressionFunction {
+    private class BlankValue extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
             if (value == null) {
@@ -103,7 +114,7 @@ public with sharing class LogicalFunctions {
         }
     }
 
-    public class IsBlank extends ExpressionFunction {
+    private class IsBlank extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
             if ((value instanceof String)) {
@@ -114,14 +125,14 @@ public with sharing class LogicalFunctions {
         }
     }
 
-    public class IsNumber extends ExpressionFunction {
+    private class IsNumber extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
             return value instanceof Decimal;
         }
     }
 
-    public class CaseFn extends ExpressionFunction {
+    private class CaseFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // At the very least 4 arguments must be and if more are received it must
             // be an even number
