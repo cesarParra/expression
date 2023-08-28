@@ -29,7 +29,7 @@ public with sharing class Q {
 
     public Q selectFields(Set<String> fields) {
         for (String field : fields) {
-            this.fieldList.add(field);
+            this.fieldList.add(field.toLowerCase());
         }
         return this;
     }

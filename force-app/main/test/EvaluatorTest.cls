@@ -962,4 +962,17 @@ private class EvaluatorTest {
         Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parentName'));
         Assert.areEqual(20, ((Map<Object, Object>) result[1]).get('numberOfEmployees'));
     }
+
+    @IsTest
+    private static void theIdIsNotReferencedTwiceInTheQueryWhenReferenced() {
+        Account parentAccount = new Account(Name = 'ACME');
+        insert parentAccount;
+
+        Account childAccount = new Account(Name = 'ACME Child', ParentId = parentAccount.Id);
+        insert childAccount;
+
+        Object result = Evaluator.run('map(ChildAccounts, Id)', parentAccount.Id);
+
+        Assert.areEqual(childAccount.Id, ((List<Object>) result)[0]);
+    }
 }
