@@ -18,6 +18,8 @@ public with sharing abstract class ExpressionFunction {
 
     abstract public Object call(List<Expr> arguments);
 
+    abstract public Arity getArity();
+
     protected Object evaluate(Expr expression) {
         return interpreter.interpret(expression);
     }

@@ -38,6 +38,10 @@ public with sharing class StringFunctions {
 
             return ((String) text).startsWith((String) prefix);
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
     }
 
     private class Contains extends ExpressionFunction {
@@ -58,6 +62,10 @@ public with sharing class StringFunctions {
 
             return ((String) text).contains((String) substring);
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
     }
 
     private class Lower extends ExpressionFunction {
@@ -70,6 +78,10 @@ public with sharing class StringFunctions {
             }
 
             return ((String) text).toLowerCase();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 
@@ -103,6 +115,10 @@ public with sharing class StringFunctions {
 
             return ((String) text).indexOf((String) searchText, startIndex);
         }
+
+        public override Arity getArity() {
+            return Arity.between(2, 3);
+        }
     }
 
     private class LeftFn extends ExpressionFunction {
@@ -123,6 +139,10 @@ public with sharing class StringFunctions {
 
             return ((String) text).substring(0, ((Decimal) length).intValue());
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
     }
 
     private class LenFn extends ExpressionFunction {
@@ -135,6 +155,10 @@ public with sharing class StringFunctions {
             }
 
             return ((String) text).length();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 
@@ -176,6 +200,10 @@ public with sharing class StringFunctions {
                 return (String) text + ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length());
             }
         }
+
+        public override Arity getArity() {
+            return Arity.between(2, 3);
+        }
     }
 
     private class ReverseFn extends ExpressionFunction {
@@ -188,6 +216,10 @@ public with sharing class StringFunctions {
             }
 
             return ((String) text).reverse();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 
@@ -215,6 +247,10 @@ public with sharing class StringFunctions {
             }
 
             return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(3);
         }
     }
 
@@ -251,6 +287,10 @@ public with sharing class StringFunctions {
                 return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
             }
         }
+
+        public override Arity getArity() {
+            return Arity.between(2, 3);
+        }
     }
 
     private class RightFn extends ExpressionFunction {
@@ -277,6 +317,10 @@ public with sharing class StringFunctions {
 
             return ((String) text).right(lengthAsInteger);
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
     }
 
     private class BrFn extends ExpressionFunction {
@@ -297,6 +341,10 @@ public with sharing class StringFunctions {
                 return '<br/>'.repeat(linesToAdd);
             }
             return '\n'.repeat(linesToAdd);
+        }
+
+        public override Arity getArity() {
+            return Arity.between(0, 1);
         }
     }
 
@@ -353,6 +401,10 @@ public with sharing class StringFunctions {
 
             return link;
         }
+
+        public override Arity getArity() {
+            return Arity.between(2, 3);
+        }
     }
 
     private class SubstituteFn extends ExpressionFunction {
@@ -396,6 +448,10 @@ public with sharing class StringFunctions {
             // Replace all occurrences of the old text with the new text
             return ((String) text).replaceAll((String) oldText, (String) newText);
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(3);
+        }
     }
 
     private class TextFn extends ExpressionFunction {
@@ -435,6 +491,10 @@ public with sharing class StringFunctions {
                 return String.valueOf(value);
             }
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class TrimFn extends ExpressionFunction {
@@ -456,6 +516,10 @@ public with sharing class StringFunctions {
 
             return ((String) value).trim();
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class UpperFn extends ExpressionFunction {
@@ -476,6 +540,10 @@ public with sharing class StringFunctions {
             }
 
             return ((String) value).toUpperCase();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 }

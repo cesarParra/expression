@@ -9,13 +9,6 @@ public with sharing class CollectionFunctions {
 
     private class ListFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            // Check that there is at least one argument
-            if (arguments.isEmpty()) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "LIST" function: the function must have at least one argument.'
-                );
-            }
-
             interpreter.setIsInListLiteral(true);
 
             List<Object> result = new List<Object>();
@@ -30,16 +23,14 @@ public with sharing class CollectionFunctions {
 
             return result;
         }
+
+        public override Arity getArity() {
+            return Arity.atLeast(1);
+        }
     }
 
     private class MapFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            if (arguments.size() != 2) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "MAP" function: the function must have exactly 2 arguments.'
-                );
-            }
-
             Object children = evaluate(arguments.get(0));
             if (children == null) {
                 return new List<Object>();
@@ -78,6 +69,10 @@ public with sharing class CollectionFunctions {
             }
             return result;
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
     }
 
     private class AverageFn extends ExpressionFunction {
@@ -115,6 +110,10 @@ public with sharing class CollectionFunctions {
 
             return sum / sanitizedList.size();
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class SizeFn extends ExpressionFunction {
@@ -133,17 +132,14 @@ public with sharing class CollectionFunctions {
                 return ((Map<Object, Object>) listOfValues).size();
             }
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class IsEmptyFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            // Expect 1 argument
-            if (arguments.size() != 1) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "ISEMPTY" function: the function must have exactly 1 argument.'
-                );
-            }
-
             // The argument must either be a list or a map
             Object value = evaluate(arguments.get(0));
             if (!(value instanceof List<Object>) && !(value instanceof Map<Object, Object>)) {
@@ -157,6 +153,10 @@ public with sharing class CollectionFunctions {
             } else {
                 return ((Map<Object, Object>) value).isEmpty();
             }
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 }

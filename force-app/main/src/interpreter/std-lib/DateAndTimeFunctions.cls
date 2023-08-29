@@ -44,6 +44,10 @@ public with sharing class DateAndTimeFunctions {
 
             return ((Date) startMonth).addMonths(((Decimal) monthsToAdd).intValue());
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
     }
 
     private class DateFn extends ExpressionFunction {
@@ -69,6 +73,10 @@ public with sharing class DateAndTimeFunctions {
 
             return Date.newInstance(Integer.valueOf(year), Integer.valueOf(month), Integer.valueOf(day));
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(3);
+        }
     }
 
     private class DayFn extends ExpressionFunction {
@@ -81,6 +89,10 @@ public with sharing class DateAndTimeFunctions {
             }
 
             return ((Date) dateValue).day();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 
@@ -95,11 +107,19 @@ public with sharing class DateAndTimeFunctions {
 
             return ((Date) dateValue).dayOfYear();
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class NowFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             return Datetime.now();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(0);
         }
     }
 
@@ -119,6 +139,10 @@ public with sharing class DateAndTimeFunctions {
                 return ((Datetime) expression).date();
             }
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class DateTimeValueFn extends ExpressionFunction {
@@ -132,11 +156,19 @@ public with sharing class DateAndTimeFunctions {
 
             return Datetime.valueOf((String) expression);
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class TodayFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             return Date.today();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(0);
         }
     }
 
@@ -166,6 +198,10 @@ public with sharing class DateAndTimeFunctions {
             } else {
                 return ((Time) timeValue).hour();
             }
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 
@@ -205,11 +241,19 @@ public with sharing class DateAndTimeFunctions {
                 return ((Datetime) dateTimeOrText).time();
             }
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class TimeNowFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             return Datetime.now().time();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(0);
         }
     }
 
@@ -224,6 +268,10 @@ public with sharing class DateAndTimeFunctions {
 
             return Integer.valueOf(Datetime.newInstanceGmt((Date) dateValue, Time.newInstance(0, 0, 0, 0)).format('w'));
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class IsoYear extends ExpressionFunction {
@@ -237,6 +285,10 @@ public with sharing class DateAndTimeFunctions {
 
             return Integer.valueOf(Datetime.newInstanceGmt((Date) dateValue, Time.newInstance(0, 0, 0, 0)).format('Y'));
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class YearFn extends ExpressionFunction {
@@ -249,6 +301,10 @@ public with sharing class DateAndTimeFunctions {
             }
 
             return ((Date) dateValue).year();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 
@@ -264,6 +320,10 @@ public with sharing class DateAndTimeFunctions {
             Long timeStamp = ((Decimal) unixTime).longValue() * 1000;
             Datetime gmtDatetime = Datetime.newInstance(timeStamp);
             return gmtDatetime;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 
@@ -292,6 +352,10 @@ public with sharing class DateAndTimeFunctions {
                 return ((Time) dateOrDateTimeOrTime).hour() * 3600 + ((Time) dateOrDateTimeOrTime).minute() * 60 + ((Time) dateOrDateTimeOrTime).second();
             }
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     /**
@@ -317,6 +381,10 @@ public with sharing class DateAndTimeFunctions {
                 0,
                 0
             ).format('u'));
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 }

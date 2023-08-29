@@ -34,6 +34,10 @@ public with sharing class LogicalFunctions {
 
             return true;
         }
+
+        public override Arity getArity() {
+            return Arity.atLeast(2);
+        }
     }
 
     private class IfFn extends ExpressionFunction {
@@ -54,6 +58,10 @@ public with sharing class LogicalFunctions {
                 return evaluate(arguments.get(2));
             }
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(3);
+        }
     }
 
     private class NotFn extends ExpressionFunction {
@@ -68,6 +76,10 @@ public with sharing class LogicalFunctions {
 
             // Return the negated expression
             return !(Boolean) expression;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 
@@ -88,6 +100,10 @@ public with sharing class LogicalFunctions {
             }
 
             return false;
+        }
+
+        public override Arity getArity() {
+            return Arity.atLeast(1);
         }
     }
 
@@ -112,6 +128,10 @@ public with sharing class LogicalFunctions {
                 'Error executing "BLANKVALUE" function: the first argument must evaluate to a string value.'
             );
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
     }
 
     private class IsBlank extends ExpressionFunction {
@@ -123,12 +143,20 @@ public with sharing class LogicalFunctions {
 
             return value == null;
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class IsNumber extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
             return value instanceof Decimal;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 
@@ -155,6 +183,20 @@ public with sharing class LogicalFunctions {
 
             // If no match was found, return the else expression (the last argument)
             return evaluate(arguments.get(arguments.size() - 1));
+        }
+
+        public override Arity getArity() {
+            return new AtLeastFourAndEvenArity();
+        }
+    }
+
+    private class AtLeastFourAndEvenArity extends Arity {
+        public AtLeastFourAndEvenArity() {
+            super(4, null);
+        }
+
+        public override Boolean isSatisfiedBy(Integer argumentCount) {
+            return argumentCount >= 4 && Math.mod(argumentCount, 2) == 0;
         }
     }
 }

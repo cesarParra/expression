@@ -20,6 +20,10 @@ public with sharing class MathFunctions {
 
             return Math.abs((Decimal) numberValue);
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class CeilingFn extends ExpressionFunction {
@@ -33,6 +37,10 @@ public with sharing class MathFunctions {
 
             return Math.ceil((Decimal) numberValue);
         }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
     }
 
     private class FloorFn extends ExpressionFunction {
@@ -45,6 +53,10 @@ public with sharing class MathFunctions {
             }
 
             return Math.floor((Decimal) numberValue);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 
@@ -102,6 +114,10 @@ public with sharing class MathFunctions {
             }
             return result;
         }
+
+        public override Arity getArity() {
+            return Arity.atLeast(1);
+        }
     }
 
     private class RoundAndTruncFns extends ExpressionFunction {
@@ -135,6 +151,10 @@ public with sharing class MathFunctions {
             } else {
                 return ((Decimal) numberValue).setScale(precision.intValue(), RoundingMode.DOWN);
             }
+        }
+
+        public override Arity getArity() {
+            return Arity.atLeast(1);
         }
     }
 }
