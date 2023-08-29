@@ -909,6 +909,26 @@ Accepts 2 arguments: the list to append to and the element to append.
 expression.Evaluator.run('APPEND([1, 2, 3], 4)'); // (1, 2, 3, 4)
 ```
 
+- `REVERSE`
+
+Reverses a list.
+
+Accepts 1 argument: the list to reverse.
+
+```apex
+expression.Evaluator.run('REVERSE([1, 2, 3])'); // (3, 2, 1)
+```
+
+- `DISTINCT`
+
+Returns a list of unique values.
+
+Accepts 1 argument: the list to evaluate.
+
+```apex
+expression.Evaluator.run('DISTINCT([1, 2, 3, 1, 2, 3])'); // (1, 2, 3)
+```
+
 - `SORT`
 
 Sorts a list.

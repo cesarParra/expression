@@ -1027,4 +1027,14 @@ private class EvaluatorTest {
         Assert.areEqual(2, result[1]);
         Assert.areEqual(1, result[2]);
     }
+
+    @IsTest
+    private static void distinctFunctionReturnsDistinctValues() {
+        List<Object> result = (List<Object>) Evaluator.run('DISTINCT([1, 2, 1, 3, 2, 4])');
+        Assert.areEqual(4, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+        Assert.areEqual(4, result[3]);
+    }
 }

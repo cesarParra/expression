@@ -208,14 +208,23 @@ public with sharing class StringFunctions {
 
     private class ReverseFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            Object text = evaluate(arguments.get(0));
-            if (!(text instanceof String)) {
+            Object val = evaluate(arguments.get(0));
+            // Must evaluate to string or list
+            if (!(val instanceof String) && !(val instanceof List<Object>)) {
                 throw new Interpreter.InterpreterException(
-                    'Error executing "REVERSE" function: the argument must evaluate to a string value.'
+                    'Error executing "REVERSE" function: the argument must evaluate to a string or list value.'
                 );
             }
 
-            return ((String) text).reverse();
+            if (val instanceof String) {
+                return ((String) val).reverse();
+            } else {
+                List<Object> reversedList = new List<Object>();
+                for (Integer i = ((List<Object>) val).size() - 1; i >= 0; i--) {
+                    reversedList.add(((List<Object>) val).get(i));
+                }
+                return reversedList;
+            }
         }
 
         public override Arity getArity() {

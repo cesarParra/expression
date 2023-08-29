@@ -7,7 +7,7 @@ public with sharing class CollectionFunctions {
         'ISEMPTY' => new IsEmptyFn(),
         'APPEND' => new AppendFn(),
         'SORT' => new SortFn(),
-        'REVERSE' => new ReverseFn()
+        'DISTINCT' => new DistinctFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -206,23 +206,22 @@ public with sharing class CollectionFunctions {
         }
     }
 
-    private class ReverseFn extends ExpressionFunction {
+    private class DistinctFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
-            if (listObj == null) {
-                listObj = new List<Object>();
-            }
             if (!(listObj instanceof List<Object>)) {
                 throw new Interpreter.InterpreterException(
-                    'Error executing "REVERSE" function: the first argument must evaluate to a list.'
+                    'Error executing "DISTINCT" function: the first argument must evaluate to a list.'
                 );
             }
             List<Object> result = new List<Object>((List<Object>) listObj);
-            List<Object> reversed = new List<Object>();
-            for (Integer i = result.size() - 1; i >= 0; i--) {
-                reversed.add(result.get(i));
+            List<Object> distinct = new List<Object>();
+            for (Object obj : result) {
+                if (!distinct.contains(obj)) {
+                    distinct.add(obj);
+                }
             }
-            return reversed;
+            return distinct;
         }
 
         public override Arity getArity() {
