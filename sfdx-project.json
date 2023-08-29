@@ -3,9 +3,13 @@
     {
       "path": "force-app",
       "package": "Expression (Unlocked)",
-      "versionName": "Version 1.3",
-      "versionNumber": "1.3.0.NEXT",
+      "versionName": "Version 1.4",
+      "versionNumber": "1.4.0.NEXT",
       "default": true
+    },
+    {
+      "path": "unpackaged",
+      "default": false
     }
   ],
   "name": "formula-evaluator",
