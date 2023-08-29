@@ -6,10 +6,6 @@
       "versionName": "Version 1.4",
       "versionNumber": "1.4.0.NEXT",
       "default": true
-    },
-    {
-      "path": "unpackaged",
-      "default": false
     }
   ],
   "name": "formula-evaluator",
