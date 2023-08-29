@@ -68,12 +68,6 @@ public with sharing class MathFunctions {
         }
 
         public override Object call(List<Expr> arguments) {
-            if (arguments.isEmpty()) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing ' + name + ' function: the function must have at least one argument.'
-                );
-            }
-
             List<Object> values = new List<Object>();
 
             // If the first argument is a list then only one argument is expected

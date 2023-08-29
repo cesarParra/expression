@@ -12,12 +12,6 @@ public with sharing class LogicalFunctions {
 
     private class AndFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            if (arguments.size() < 2) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "AND" function: expected at least 2 arguments, but found ' + arguments.size()
-                );
-            }
-
             // Loop through all arguments and return false if any of them is false
             for (Expr argument : arguments) {
                 Object evaluated = evaluate(argument);
@@ -162,14 +156,6 @@ public with sharing class LogicalFunctions {
 
     private class CaseFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            // At the very least 4 arguments must be and if more are received it must
-            // be an even number
-            if (arguments.size() < 4 || Math.mod(arguments.size(), 2) != 0) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "CASE" function: expected an even number of arguments, but found ' + arguments.size()
-                );
-            }
-
             // The first argument is the when expression
             Object whenExpression = evaluate(arguments.get(0));
 
@@ -197,6 +183,10 @@ public with sharing class LogicalFunctions {
 
         public override Boolean isSatisfiedBy(Integer argumentCount) {
             return argumentCount >= 4 && Math.mod(argumentCount, 2) == 0;
+        }
+
+        public override String toString() {
+            return 'an even number with at least 4';
         }
     }
 }

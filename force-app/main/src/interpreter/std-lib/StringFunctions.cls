@@ -353,18 +353,6 @@ public with sharing class StringFunctions {
      */
     private class HyperLinkFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            // Expected arguments:
-            // 1. Url
-            // 2. Friendly text
-            // 3. Option - target
-
-            // Check that there is at least 2 arguments
-            if (arguments.size() < 2) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "HYPERLINK" function: the function must have at least 2 arguments.'
-                );
-            }
-
             // Check that the first argument is a string
             Object url = evaluate(arguments.get(0));
             if (!(url instanceof String)) {
@@ -409,18 +397,6 @@ public with sharing class StringFunctions {
 
     private class SubstituteFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            // Expected arguments:
-            // 1. text
-            // 2. old text
-            // 3. new text
-
-            // Check that there is at least 3 arguments
-            if (arguments.size() < 3) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "SUBSTITUTE" function: the function must have at least 3 arguments.'
-                );
-            }
-
             // Check that the first argument is a string
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
@@ -456,13 +432,6 @@ public with sharing class StringFunctions {
 
     private class TextFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            // Expect 1 argument
-            if (arguments.size() != 1) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "TEXT" function: the function must have exactly 1 argument.'
-                );
-            }
-
             Object value = evaluate(arguments.get(0));
             if (value == null) {
                 return '';
@@ -499,13 +468,6 @@ public with sharing class StringFunctions {
 
     private class TrimFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            // Expect 1 argument
-            if (arguments.size() != 1) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "TRIM" function: the function must have exactly 1 argument.'
-                );
-            }
-
             // The argument must be a string
             Object value = evaluate(arguments.get(0));
             if (!(value instanceof String)) {
@@ -524,13 +486,6 @@ public with sharing class StringFunctions {
 
     private class UpperFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            // Expect 1 argument
-            if (arguments.size() != 1) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "UPPER" function: the function must have exactly 1 argument.'
-                );
-            }
-
             // The argument must be a string
             Object value = evaluate(arguments.get(0));
             if (!(value instanceof String)) {

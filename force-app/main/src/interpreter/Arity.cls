@@ -23,7 +23,7 @@ public virtual with sharing class Arity {
         return (min == null || n >= min) && (max == null || n <= max);
     }
 
-    public override String toString() {
+    public override virtual String toString() {
         if (min == null && max == null) {
             return 'any number of';
         } else if (min == null) {
