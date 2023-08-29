@@ -899,6 +899,16 @@ expression.Evaluator.run('ISEMPTY(LIST())'); // true
 expression.Evaluator.run('ISEMPTY({})'); // true
 ```
 
+- `APPEND`
+
+Appends an element to a list.
+
+Accepts 2 arguments: the list to append to and the element to append.
+
+```apex
+expression.Evaluator.run('APPEND([1, 2, 3], 4)'); // (1, 2, 3, 4)
+```
+
 #### Math Functions
 
 - `ABS`

@@ -1000,4 +1000,13 @@ private class EvaluatorTest {
     private static void isEmptyReturnsFalseForANonEmptyMap() {
         Assert.areEqual(false, Evaluator.run('ISEMPTY({"a": 1})'));
     }
+
+    @IsTest
+    private static void appendFunctionAppendsToAList() {
+        List<Object> result = (List<Object>) Evaluator.run('APPEND([1, 2], 3)');
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+    }
 }

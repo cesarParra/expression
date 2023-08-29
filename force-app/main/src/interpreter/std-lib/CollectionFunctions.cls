@@ -4,7 +4,8 @@ public with sharing class CollectionFunctions {
         'MAP' => new MapFn(),
         'AVERAGE' => new AverageFn(),
         'SIZE' => new SizeFn(),
-        'ISEMPTY' => new IsEmptyFn()
+        'ISEMPTY' => new IsEmptyFn(),
+        'APPEND' => new AppendFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -157,6 +158,28 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(1);
+        }
+    }
+
+    private class AppendFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object listObj = evaluate(arguments.get(0));
+            Object item = evaluate(arguments.get(1));
+            if (listObj == null) {
+                listObj = new List<Object>();
+            }
+            if (!(listObj instanceof List<Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "APPEND" function: the first argument must evaluate to a list.'
+                );
+            }
+            List<Object> result = new List<Object>((List<Object>) listObj);
+            result.add(item);
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
         }
     }
 }
