@@ -1009,4 +1009,22 @@ private class EvaluatorTest {
         Assert.areEqual(2, result[1]);
         Assert.areEqual(3, result[2]);
     }
+
+    @IsTest
+    private static void sortFunctionSortsAList() {
+        List<Object> result = (List<Object>) Evaluator.run('SORT([3, 2, 1])');
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+    }
+
+    @IsTest
+    private static void reverseFunctionReversesAList() {
+        List<Object> result = (List<Object>) Evaluator.run('REVERSE([1, 2, 3])');
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(3, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(1, result[2]);
+    }
 }

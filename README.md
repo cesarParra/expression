@@ -909,6 +909,16 @@ Accepts 2 arguments: the list to append to and the element to append.
 expression.Evaluator.run('APPEND([1, 2, 3], 4)'); // (1, 2, 3, 4)
 ```
 
+- `SORT`
+
+Sorts a list.
+
+Accepts 1 argument: the list to sort.
+
+```apex
+expression.Evaluator.run('SORT([3, 2, 1])'); // (1, 2, 3)
+```
+
 #### Math Functions
 
 - `ABS`

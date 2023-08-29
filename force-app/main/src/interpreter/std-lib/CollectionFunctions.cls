@@ -5,7 +5,9 @@ public with sharing class CollectionFunctions {
         'AVERAGE' => new AverageFn(),
         'SIZE' => new SizeFn(),
         'ISEMPTY' => new IsEmptyFn(),
-        'APPEND' => new AppendFn()
+        'APPEND' => new AppendFn(),
+        'SORT' => new SortFn(),
+        'REVERSE' => new ReverseFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -180,6 +182,51 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+    }
+
+    private class SortFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object listObj = evaluate(arguments.get(0));
+            if (listObj == null) {
+                listObj = new List<Object>();
+            }
+            if (!(listObj instanceof List<Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SORT" function: the first argument must evaluate to a list.'
+                );
+            }
+            List<Object> result = new List<Object>((List<Object>) listObj);
+            result.sort();
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class ReverseFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object listObj = evaluate(arguments.get(0));
+            if (listObj == null) {
+                listObj = new List<Object>();
+            }
+            if (!(listObj instanceof List<Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "REVERSE" function: the first argument must evaluate to a list.'
+                );
+            }
+            List<Object> result = new List<Object>((List<Object>) listObj);
+            List<Object> reversed = new List<Object>();
+            for (Integer i = result.size() - 1; i >= 0; i--) {
+                reversed.add(result.get(i));
+            }
+            return reversed;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 }
