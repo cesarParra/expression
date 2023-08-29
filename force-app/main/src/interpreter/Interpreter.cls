@@ -296,6 +296,13 @@ public with sharing class Interpreter implements Visitor {
 
         ExpressionFunction fn = ExpressionFunction.FUNCTIONS.get(function.functionName);
         fn.setInterpreter(this);
+        if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
+            throw new InterpreterException(
+                'Error executing ' + function.functionName + ' function: the function expects ' +
+                    fn.getArity().toString() + ' argument(s), but ' +
+                    function.arguments.size() + ' were provided.'
+            );
+        }
         return fn.call(function.arguments);
     }
 

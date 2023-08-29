@@ -775,6 +775,11 @@ private class EvaluatorTest {
     }
 
     @IsTest
+    private static void sizeFunctionReturnsAMapSize() {
+        Assert.areEqual(2, Evaluator.run('SIZE({"a": 1, "b": 2})'));
+    }
+
+    @IsTest
     private static void canBuildListLiterals() {
         Assert.areEqual(3, Evaluator.run('SIZE([1, 2, 3])'));
     }
@@ -974,5 +979,62 @@ private class EvaluatorTest {
         Object result = Evaluator.run('map(ChildAccounts, Id)', parentAccount.Id);
 
         Assert.areEqual(childAccount.Id, ((List<Object>) result)[0]);
+    }
+
+    @IsTest
+    private static void isEmptyReturnsTrueForAnEmptyList() {
+        Assert.areEqual(true, Evaluator.run('ISEMPTY([])'));
+    }
+
+    @IsTest
+    private static void isEmptyReturnsFalseForANonEmptyList() {
+        Assert.areEqual(false, Evaluator.run('ISEMPTY([1])'));
+    }
+
+    @IsTest
+    private static void isEmptyReturnsTrueForAnEmptyMap() {
+        Assert.areEqual(true, Evaluator.run('ISEMPTY({})'));
+    }
+
+    @IsTest
+    private static void isEmptyReturnsFalseForANonEmptyMap() {
+        Assert.areEqual(false, Evaluator.run('ISEMPTY({"a": 1})'));
+    }
+
+    @IsTest
+    private static void appendFunctionAppendsToAList() {
+        List<Object> result = (List<Object>) Evaluator.run('APPEND([1, 2], 3)');
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+    }
+
+    @IsTest
+    private static void sortFunctionSortsAList() {
+        List<Object> result = (List<Object>) Evaluator.run('SORT([3, 2, 1])');
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+    }
+
+    @IsTest
+    private static void reverseFunctionReversesAList() {
+        List<Object> result = (List<Object>) Evaluator.run('REVERSE([1, 2, 3])');
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(3, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(1, result[2]);
+    }
+
+    @IsTest
+    private static void distinctFunctionReturnsDistinctValues() {
+        List<Object> result = (List<Object>) Evaluator.run('DISTINCT([1, 2, 1, 3, 2, 4])');
+        Assert.areEqual(4, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+        Assert.areEqual(4, result[3]);
     }
 }

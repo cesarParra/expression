@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYb9IAG)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYb9IAG)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYbEIAW)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYbEIAW)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm000000HYb9IAG
+sf package install --apex-compile package --wait 20 --package 04tDm000000HYbEIAW
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYb9IAG
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYbEIAW
 ```
 
 ### Direct Deployment to Salesforce
@@ -408,6 +408,17 @@ Account testAccount = new Account(Rating = 'Hot');
 Object result = expression.Evaluator.run(
     'CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")', 
     testAccount); // "🔥"
+```
+
+- `ISNUMBER`
+
+Returns TRUE if the expression is a number; otherwise, returns FALSE.
+
+Accepts 1 argument: the expression to check.
+
+```apex
+expression.Evaluator.run('ISNUMBER(1)'); // true
+expression.Evaluator.run('ISNUMBER("Hello")'); // false
 ```
 
 #### String Functions
@@ -859,17 +870,74 @@ Accepts 1 argument: the list of numbers to evaluate.
 expression.Evaluator.run('AVERAGE(LIST(1, 2, 3))'); // 2
 ```
 
+- `MAX` and `MIN`
+
+#### Lists and Maps
+Functions that work with both lists and maps.
+
 - `SIZE`
 
-Returns the number of elements in a list.
+Returns the number of elements in a list or map.
+
+Accepts 1 argument: the list or map to evaluate.
+
+```apex
+expression.Evaluator.run('SIZE(LIST(1, 2, 3))'); // 3
+expression.Evaluator.run('SIZE({ "a": 1, "b": 2, "c": 3 })'); // 3
+```
+
+- `ISEMPTY`
+
+Returns true if the list or map is empty.
+
+Accepts 1 argument: the list or map to evaluate.
+
+```apex
+expression.Evaluator.run('ISEMPTY(LIST(1, 2, 3))'); // false
+expression.Evaluator.run('ISEMPTY({ "a": 1, "b": 2, "c": 3 })'); // false
+expression.Evaluator.run('ISEMPTY(LIST())'); // true
+expression.Evaluator.run('ISEMPTY({})'); // true
+```
+
+- `APPEND`
+
+Appends an element to a list.
+
+Accepts 2 arguments: the list to append to and the element to append.
+
+```apex
+expression.Evaluator.run('APPEND([1, 2, 3], 4)'); // (1, 2, 3, 4)
+```
+
+- `REVERSE`
+
+Reverses a list.
+
+Accepts 1 argument: the list to reverse.
+
+```apex
+expression.Evaluator.run('REVERSE([1, 2, 3])'); // (3, 2, 1)
+```
+
+- `DISTINCT`
+
+Returns a list of unique values.
 
 Accepts 1 argument: the list to evaluate.
 
 ```apex
-expression.Evaluator.run('SIZE(LIST(1, 2, 3))'); // 3
+expression.Evaluator.run('DISTINCT([1, 2, 3, 1, 2, 3])'); // (1, 2, 3)
 ```
 
-- `MAX` and `MIN`
+- `SORT`
+
+Sorts a list.
+
+Accepts 1 argument: the list to sort.
+
+```apex
+expression.Evaluator.run('SORT([3, 2, 1])'); // (1, 2, 3)
+```
 
 #### Math Functions
 
