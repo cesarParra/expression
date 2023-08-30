@@ -1037,4 +1037,25 @@ private class EvaluatorTest {
         Assert.areEqual(3, result[2]);
         Assert.areEqual(4, result[3]);
     }
+
+    @IsTest
+    private static void keysFunctionReturnsTheKeysOfAMap() {
+        List<Object> result = (List<Object>) Evaluator.run('KEYS({"a": 1, "b": 2})');
+        Assert.areEqual(2, result.size());
+        Assert.areEqual('a', result[0]);
+        Assert.areEqual('b', result[1]);
+    }
+
+    @IsTest
+    private static void getFunctionReturnsAMapValue() {
+        Assert.areEqual(1, Evaluator.run('GET({"a": 1, "b": 2}, "a")'));
+    }
+
+    @IsTest
+    private static void valuesFunctionReturnsTheValuesOfAMap() {
+        List<Object> result = (List<Object>) Evaluator.run('VALUES({"a": 1, "b": 2})');
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+    }
 }

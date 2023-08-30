@@ -7,7 +7,10 @@ public with sharing class CollectionFunctions {
         'ISEMPTY' => new IsEmptyFn(),
         'APPEND' => new AppendFn(),
         'SORT' => new SortFn(),
-        'DISTINCT' => new DistinctFn()
+        'DISTINCT' => new DistinctFn(),
+        'KEYS' => new KeysFn(),
+        'GET' => new GetFn(),
+        'VALUES' => new ValuesFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -222,6 +225,55 @@ public with sharing class CollectionFunctions {
                 }
             }
             return distinct;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class KeysFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object mapObj = evaluate(arguments.get(0));
+            if (!(mapObj instanceof Map<Object, Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "KEYS" function: the first argument must evaluate to a map.'
+                );
+            }
+            return new List<Object>(((Map<Object, Object>) mapObj).keySet());
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class GetFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object mapObj = evaluate(arguments.get(0));
+            Object key = evaluate(arguments.get(1));
+            if (!(mapObj instanceof Map<Object, Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "GET" function: the first argument must evaluate to a map.'
+                );
+            }
+            return ((Map<Object, Object>) mapObj).get(key);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class ValuesFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object mapObj = evaluate(arguments.get(0));
+            if (!(mapObj instanceof Map<Object, Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "VALUES" function: the first argument must evaluate to a map.'
+                );
+            }
+            return ((Map<Object, Object>) mapObj).values();
         }
 
         public override Arity getArity() {

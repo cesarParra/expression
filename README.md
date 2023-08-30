@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYbEIAW)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYbEIAW)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYbJIAW)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYbJIAW)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm000000HYbEIAW
+sf package install --apex-compile package --wait 20 --package 04tDm000000HYbJIAW
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYbEIAW
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYbJIAW
 ```
 
 ### Direct Deployment to Salesforce
@@ -872,7 +872,40 @@ expression.Evaluator.run('AVERAGE(LIST(1, 2, 3))'); // 2
 
 - `MAX` and `MIN`
 
-#### Lists and Maps
+#### Map Functions
+
+- `KEYS`
+
+Returns a list of keys in a map.
+
+Accepts 1 argument: the map to evaluate.
+
+```apex
+expression.Evaluator.run('KEYS({ "a": 1, "b": 2, "c": 3 })'); // ["a", "b", "c"]
+```
+
+- `GET`
+
+Returns the value of a key in a map.
+
+Accepts 2 arguments: the map to evaluate and the key to get.
+
+```apex
+expression.Evaluator.run('GET({ "a": 1, "b": 2, "c": 3 }, "b")'); // 2
+```
+
+- `VALUES`
+
+Returns a list of values in a map.
+
+Accepts 1 argument: the map to evaluate.
+
+```apex
+expression.Evaluator.run('VALUES({ "a": 1, "b": 2, "c": 3 })'); // [1, 2, 3]
+```
+
+#### Lists and Maps Functions
+
 Functions that work with both lists and maps.
 
 - `SIZE`
