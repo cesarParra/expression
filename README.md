@@ -894,6 +894,16 @@ Accepts 2 arguments: the map to evaluate and the key to get.
 expression.Evaluator.run('GET({ "a": 1, "b": 2, "c": 3 }, "b")'); // 2
 ```
 
+- `VALUES`
+
+Returns a list of values in a map.
+
+Accepts 1 argument: the map to evaluate.
+
+```apex
+expression.Evaluator.run('VALUES({ "a": 1, "b": 2, "c": 3 })'); // [1, 2, 3]
+```
+
 #### Lists and Maps Functions
 
 Functions that work with both lists and maps.
