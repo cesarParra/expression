@@ -8,7 +8,8 @@ public with sharing class CollectionFunctions {
         'APPEND' => new AppendFn(),
         'SORT' => new SortFn(),
         'DISTINCT' => new DistinctFn(),
-        'KEYS' => new KeysFn()
+        'KEYS' => new KeysFn(),
+        'GET' => new GetFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -243,6 +244,23 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(1);
+        }
+    }
+
+    private class GetFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object mapObj = evaluate(arguments.get(0));
+            Object key = evaluate(arguments.get(1));
+            if (!(mapObj instanceof Map<Object, Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "GET" function: the first argument must evaluate to a map.'
+                );
+            }
+            return ((Map<Object, Object>) mapObj).get(key);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
         }
     }
 }

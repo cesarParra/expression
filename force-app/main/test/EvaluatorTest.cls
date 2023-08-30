@@ -1045,4 +1045,9 @@ private class EvaluatorTest {
         Assert.areEqual('a', result[0]);
         Assert.areEqual('b', result[1]);
     }
+
+    @IsTest
+    private static void getFunctionReturnsAMapValue() {
+        Assert.areEqual(1, Evaluator.run('GET({"a": 1, "b": 2}, "a")'));
+    }
 }
