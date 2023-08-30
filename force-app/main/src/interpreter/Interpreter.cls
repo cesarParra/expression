@@ -12,10 +12,6 @@ public with sharing class Interpreter implements Visitor {
         this.inListLiteral = inListLiteral;
     }
 
-    public Environment getEnvironment() {
-        return env;
-    }
-
     public Object interpret(Expr expression) {
         return evaluate(expression);
     }

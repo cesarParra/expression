@@ -872,7 +872,20 @@ expression.Evaluator.run('AVERAGE(LIST(1, 2, 3))'); // 2
 
 - `MAX` and `MIN`
 
-#### Lists and Maps
+#### Map Functions
+
+- `KEYS`
+
+Returns a list of keys in a map.
+
+Accepts 1 argument: the map to evaluate.
+
+```apex
+expression.Evaluator.run('KEYS({ "a": 1, "b": 2, "c": 3 })'); // ["a", "b", "c"]
+```
+
+#### Lists and Maps Functions
+
 Functions that work with both lists and maps.
 
 - `SIZE`

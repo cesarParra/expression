@@ -7,7 +7,8 @@ public with sharing class CollectionFunctions {
         'ISEMPTY' => new IsEmptyFn(),
         'APPEND' => new AppendFn(),
         'SORT' => new SortFn(),
-        'DISTINCT' => new DistinctFn()
+        'DISTINCT' => new DistinctFn(),
+        'KEYS' => new KeysFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -222,6 +223,22 @@ public with sharing class CollectionFunctions {
                 }
             }
             return distinct;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class KeysFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object mapObj = evaluate(arguments.get(0));
+            if (!(mapObj instanceof Map<Object, Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "KEYS" function: the first argument must evaluate to a map.'
+                );
+            }
+            return new List<Object>(((Map<Object, Object>) mapObj).keySet());
         }
 
         public override Arity getArity() {
