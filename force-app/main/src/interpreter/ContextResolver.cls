@@ -25,7 +25,9 @@ public with sharing class ContextResolver implements Visitor {
     public ContextResolver(String relationshipName, SObjectType objectType) {
         this.queryBuilder = new Q(relationshipName);
         this.objectType = objectType;
-        this.fields = new Set<String> { 'Id' };
+        this.fields = new Set<String>{
+            'Id'
+        };
     }
 
     public Object visit(Expr.Variable variable) {
@@ -49,7 +51,9 @@ public with sharing class ContextResolver implements Visitor {
                 if (!this.subQueriesByRelationshipName.containsKey(childRelationshipName)) {
                     this.subQueriesByRelationshipName.put(
                         childRelationshipName,
-                        new Q(childRelationshipName).selectFields(new Set<String> { 'Id' })
+                        new Q(childRelationshipName).selectFields(new Set<String>{
+                            'Id'
+                        })
                     );
                 }
 
@@ -119,14 +123,13 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.FunctionCall function) {
-        if (function.functionName == 'MAP') {
-            // The MAP function is a special case, since we might be dealing with a
-            // child relationship whose fields need to be queried correctly as a subquery.
+        ExpressionFunction fn = ExpressionFunction.FUNCTIONS.get(function.functionName);
+        if (fn.needsChildrenResolution()) {
             // Expect 2 arguments, the first will be the name of the child relationship field or any other list value,
             // the second is an expression that might use fields of the child relationship.
             if (function.arguments.size() != 2) {
                 throw new ResolverException(
-                    'Error executing "MAP" function: the function must have exactly 2 arguments.'
+                    'Error executing ' + function.functionName + ' function: the function must have exactly 2 arguments.'
                 );
             }
 
@@ -134,6 +137,9 @@ public with sharing class ContextResolver implements Visitor {
                 // If we are not dealing with a merge field that needs to be
                 // resolved to a query, that means we are likely dealing with a regular
                 // list, so do nothing
+                for (Expr argument : function.arguments) {
+                    this.resolve(argument);
+                }
                 return null;
             }
 

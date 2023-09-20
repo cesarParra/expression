@@ -2,6 +2,7 @@ public with sharing class CollectionFunctions {
     public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'LIST' => new ListFn(),
         'MAP' => new MapFn(),
+        'WHERE' => new WhereFn(),
         'AVERAGE' => new AverageFn(),
         'SIZE' => new SizeFn(),
         'ISEMPTY' => new IsEmptyFn(),
@@ -78,6 +79,69 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+
+        public override Boolean needsChildrenResolution() {
+            return true;
+        }
+    }
+
+    private class WhereFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object children = evaluate(arguments.get(0));
+            if (children == null) {
+                return new List<Object>();
+            }
+            if (!(children instanceof List<Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "WHERE" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // If the list of children is empty, return early
+            List<Object> childrenAsList = (List<Object>) children;
+            if (childrenAsList.isEmpty()) {
+                return new List<Object>();
+            }
+
+            // For all children we want to evaluate the subexpression.
+            // Each one of the children will now act as a standalone context for a new expression.
+            Expr secondArgument = arguments.get(1);
+            List<Object> result = new List<Object>();
+            for (Integer i = 0; i < childrenAsList.size(); i++) {
+                Object child = childrenAsList.get(i);
+                Environment env;
+                if (child instanceof SObject) {
+                    env = new Environment((SObject)child);
+                } else {
+                    env = new Environment(null);
+                }
+
+                env.define('$current', child);
+                env.define('$index', i);
+                env.define('$total', childrenAsList.size());
+
+                Interpreter interpreter = new Interpreter(env);
+                Object evaluated = interpreter.interpret(secondArgument);
+                if (evaluated instanceof Boolean) {
+                    if ((Boolean) evaluated) {
+                        result.add(child);
+                    }
+                } else {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "WHERE" function: the second argument must evaluate to a boolean.'
+                    );
+                }
+            }
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+
+        public override Boolean needsChildrenResolution() {
+            return true;
         }
     }
 

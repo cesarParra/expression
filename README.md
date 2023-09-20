@@ -107,30 +107,8 @@ Object result = expression.Evaluator.run('SIZE(ChildAccounts)', parentAccount);
 Assert.areEqual(1, result);
 ```
 
-Or you can use the `MAP` function to extract (or map) data out of the child records. `MAP` lets you
-specify the relationship name as the first argument, and then the expression to evaluate on each
-child record as the second argument.
-
-This expression can be anything, something as simple as extracting a single field:
-
-```apex
-Object result = expression.Evaluator.run('MAP(ChildAccounts, Name)', parentAccount);
-Assert.areEqual('[ACME Child]', result);
-```
-
-To as complex as building a map with multiple fields that even references the parent record:
-
-> In the inner expression, you have access to 3 special variables: `$index` (the index of the current
-> record in the list), `$current` (the current item being iterated over), and `$total` (the total number
-> of items in the list).
-
-```apex
-Object result = expression.Evaluator.run('MAP(ChildAccounts, { "Number": $index + 1, "Name": Name, "Parent Name": Parent.Name })', parentAccount);
-// [{ "Number": 1, "Name": "ACME Child", "Parent Name": "ACME" }]
-```
-
-> When referencing child data in this way, the framework will take care of any necessary
-> subqueries, so only one SOQL query is consumed.
+Or you can use some of the collection functions (like `MAP` or `WHERE`) to extract (or map) data out of the child records
+or filter records. See more information about these functions below.
 
 ### Considerations and Limitations
 
@@ -835,15 +813,32 @@ Maps to a list using the first argument as the context and the second argument a
 
 Accepts 2 arguments: List of objects and an expression to evaluate.
 
+> In the inner expression, you have access to 3 special variables: `$index` (the index of the current
+> record in the list), `$current` (the current item being iterated over), and `$total` (the total number
+> of items in the list).
+
 ```apex
-Account account = [SELECT (SELECT Id, Name, Email FROM Contacts) FROM Account LIMIT 1];
+Object result = expression.Evaluator.run('MAP(["a", "b", "c"], UPPER($current))'); // ["A", "B", "C"]
+```
 
-Object result = expression.Evaluator.run('MAP(Contacts, Name)', account);
-// ["John Doe", "Jane Doe"]
+To work with child records, you can specify the child relationship name as the first argument, and then the expression to evaluate on each
+child item as the second argument.
 
-result = expression.Evaluator.run('MAP(Contacts, { "Name": Name, "Email": Email })', account);
-// [{ "Name": "John Doe", "Email": "test@example.com"},
-//  { "Name": "Jane Doe", "Email": test2@example.com }]
+> When referencing child data through the record Id endpoint, the framework will take care of any necessary
+> subqueries, so only one SOQL query is consumed.
+
+This expression can be anything, something as simple as extracting a single field:
+
+```apex
+Object result = expression.Evaluator.run('MAP(ChildAccounts, Name)', parentAccountRecordOrId);
+Assert.areEqual('[ACME Child, Another Child]', result);
+```
+
+To as complex as building a map with multiple fields that even references the parent record:
+
+```apex
+Object result = expression.Evaluator.run('MAP(ChildAccounts, { "Number": $index + 1, "Name": Name, "Parent Name": Parent.Name })', parentAccount);
+// [{ "Number": 1, "Name": "ACME Child", "Parent Name": "ACME" }]
 ```
 
 This can be combined with list operations to extract aggregate information out
@@ -854,11 +849,21 @@ Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmploy
 Object result = expression.Evaluator.run('AVERAGE(MAP(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
 ```
 
-Any list can be used as the first argument, not just child relationships.
+- `WHERE`
+
+Filters a list using the first argument as the context and the second argument as the expression to evaluate.
+
+Accepts 2 arguments: List of objects and an expression to evaluate.
+
+> In the inner expression, you have access to 3 special variables: `$index` (the index of the current
+> record in the list), `$current` (the current item being iterated over), and `$total` (the total number
+> of items in the list).
 
 ```apex
-Object result = expression.Evaluator.run('MAP(["a", "b", "c"], UPPER($current))'); // ["A", "B", "C"]
+Object result = expression.Evaluator.run('WHERE([1, 2, 3], $current > 1)'); // [2, 3]
 ```
+
+Everything that applies to `MAP` also applies here as well, including the ability to reference child data.
 
 - `AVERAGE`
 

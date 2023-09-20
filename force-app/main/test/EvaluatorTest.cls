@@ -1058,4 +1058,65 @@ private class EvaluatorTest {
         Assert.areEqual(1, result[0]);
         Assert.areEqual(2, result[1]);
     }
+
+    @IsTest
+    private static void whereFunctionAllowsForValuesToBeFiltered() {
+        List<Object> result = (List<Object>) Evaluator.run('WHERE([1, 2, 3, 4], $current > 2)');
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(3, result[0]);
+        Assert.areEqual(4, result[1]);
+    }
+
+    @IsTest
+    private static void whereFunctionAllowsToFilterByFieldsOnChildRecords_usingRecord() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees, Parent.Name FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
+
+        List<Object> result = (List<Object>) Evaluator.run('WHERE(ChildAccounts, NumberOfEmployees > 10)', parentAccountWithChildren);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(20, ((Account) result[0]).NumberOfEmployees);
+    }
+
+    @IsTest
+    private static void whereFunctionAllowsToFilterByFieldsOnChildRecords_usingId() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('WHERE(ChildAccounts, NumberOfEmployees > 10)', parentAccount.Id);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(20, ((Account) result[0]).NumberOfEmployees);
+    }
+
+    @IsTest
+    private static void combiningWhereAndMap() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('MAP(WHERE(ChildAccounts, NumberOfEmployees > 10), Name)', parentAccount.Id);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual('Child2', result[0]);
+    }
 }
