@@ -27,6 +27,11 @@ public with sharing class Q {
         return this;
     }
 
+    public Q selectField(String field) {
+        this.fieldList.add(field.toLowerCase());
+        return this;
+    }
+
     public Q selectFields(Set<String> fields) {
         for (String field : fields) {
             this.fieldList.add(field.toLowerCase());

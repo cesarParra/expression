@@ -138,7 +138,13 @@ public with sharing class ContextResolver implements Visitor {
                 // resolved to a query, that means we are likely dealing with a regular
                 // list, so do nothing
                 for (Expr argument : function.arguments) {
-                    this.resolve(argument);
+                    Object tmp = this.resolve(argument);
+                    if (tmp instanceof Map<String, Q>) {
+                        // If we are dealing with a map, that means we are dealing with a
+                        // sub-function that itself returned a subquery, so we might be refercing
+                        // more merge fields that we want to make sure are added to the query
+                        // TODO
+                    }
                 }
                 return null;
             }
@@ -164,7 +170,9 @@ public with sharing class ContextResolver implements Visitor {
 
             this.shouldExecuteQuery = true;
 
-            return null;
+            return new Map<String, Q>{
+                mapKey => subQ
+            };
         }
 
         for (Expr argument : function.arguments) {
@@ -211,8 +219,8 @@ public with sharing class ContextResolver implements Visitor {
         return this.queryBuilder;
     }
 
-    private void resolve(Expr expression) {
-        expression.accept(this);
+    private Object resolve(Expr expression) {
+        return expression.accept(this);
     }
 
     private Set<String> cachedFields;
