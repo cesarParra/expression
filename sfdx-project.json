@@ -3,8 +3,8 @@
     {
       "path": "force-app",
       "package": "Expression (Unlocked)",
-      "versionName": "Version 1.5",
-      "versionNumber": "1.5.0.NEXT",
+      "versionName": "Version 1.6",
+      "versionNumber": "1.6.0.NEXT",
       "default": true
     }
   ],
@@ -14,6 +14,7 @@
   "sourceApiVersion": "58.0",
   "packageAliases": {
     "Expression (Unlocked)": "0HoDm000000XZKSKA4",
-    "Expression (Unlocked)@1.5.0-1": "04tDm000000HYbJIAW"
+    "Expression (Unlocked)@1.5.0-1": "04tDm000000HYbJIAW",
+    "Expression (Unlocked)@1.6.0-1": "04tDm000000HYclIAG"
   }
 }

@@ -20,6 +20,15 @@ public with sharing abstract class ExpressionFunction {
 
     abstract public Arity getArity();
 
+    /**
+     * @description Indicate if we are dealing with function where children values can be referenced, and thus
+     *              the arguments need to be resolved as a subquery.
+     * @return {Boolean}
+     */
+    public virtual Boolean needsChildrenResolution() {
+        return false;
+    }
+
     protected Object evaluate(Expr expression) {
         return interpreter.interpret(expression);
     }

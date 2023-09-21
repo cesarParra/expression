@@ -2,7 +2,7 @@
   "name": "formula-evaluator",
   "private": true,
   "scripts": {
-    "scratch:create": "sfdx force:org:create -f config/project-scratch-def.json -a formula-evaluator --setdefaultusername",
+    "scratch:create": "sfdx force:org:create -f config/project-scratch-def.json -a Expression --setdefaultusername",
     "docs:init": "docsify init docs",
     "docs:serve": "docsify serve docs",
     "docs:generate": "apexdocs-generate -s force-app -t docs --scope public global -g docsify"
