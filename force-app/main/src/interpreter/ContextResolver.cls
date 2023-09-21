@@ -1,78 +1,40 @@
 public with sharing class ContextResolver implements Visitor {
     private Boolean shouldExecuteQuery = false;
-    private final Id recordId;
-    private final SObjectType objectType;
-    private final Q queryBuilder;
-    private final Set<String> fields;
-    private final Map<String, Q> subQueriesByRelationshipName = new Map<String, Q>();
+    private Query queryContext;
+    private final List<Query> subQueries = new List<Query>();
 
-    /**
-     * @description Creates a new context resolver for the given record id.
-     * @param recordId The record id to use as context.
-     */
     public ContextResolver(Id recordId) {
-        this.recordId = recordId;
-        this.objectType = recordId.getSobjectType();
-        this.queryBuilder = new Q(recordId.getSobjectType());
-        this.fields = new Set<String>();
+        this.queryContext = new Query(recordId);
     }
 
-    /**
-     * @description Constructor for a subquery context resolver.
-     * @param relationshipName The name of the relationship to query.
-     * @param objectType The SObjectType of the child object for which the query will be built.
-     */
-    public ContextResolver(String relationshipName, SObjectType objectType) {
-        this.queryBuilder = new Q(relationshipName);
-        this.objectType = objectType;
-        this.fields = new Set<String>{
-            'Id'
-        };
+    private Object resolve(Expr expr) {
+        return expr.accept(this);
     }
 
-    public Object visit(Expr.Variable variable) {
-        return null;
-    }
-
-    public Object visit(Expr.MergeField mergeField) {
-        String fieldName = mergeField.name.lexeme.toLowerCase();
-
-        // Check if the field belongs to the parent object
-        if (this.getFields().contains(fieldName)) {
-            this.fields.add(fieldName);
+    public SObject build(Expr expression) {
+        this.resolve(expression);
+        if (!this.shouldExecuteQuery) {
             return null;
         }
 
-        // Check if the merge field is a child relationship field
-        for (ChildRelationship relationship : this.recordId.getSobjectType().getDescribe().getChildRelationships()) {
-            String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
-            if (childRelationshipName != null && childRelationshipName == fieldName) {
-                // Ensure there is going to be a subquery for this relationship
-                if (!this.subQueriesByRelationshipName.containsKey(childRelationshipName)) {
-                    this.subQueriesByRelationshipName.put(
-                        childRelationshipName,
-                        new Q(childRelationshipName).selectFields(new Set<String>{
-                            'Id'
-                        })
-                    );
-                }
-
-                return null;
-            }
+        for (Query subquery : this.subQueries) {
+            this.queryContext.queryBuilder.addSubquery(subquery.queryBuilder);
         }
 
-        throw new ResolverException('Did not understand the relationship to field ' +
-            mergeField.name.lexeme + ' for SObjectType ' + this.recordId.getSobjectType());
+        this.queryContext.queryBuilder.add(Q.condition('Id').equalsTo(this.queryContext.recordId));
+
+        String query = this.queryContext.queryBuilder.build();
+        return Database.query(query);
     }
 
     public Object visit(Expr.Binary binary) {
-        this.resolve(binary.left);
-        this.resolve(binary.right);
+        resolve(binary.left);
+        resolve(binary.right);
         return null;
     }
 
     public Object visit(Expr.Grouping grouping) {
-        this.resolve(grouping.expression);
+        resolve(grouping.expression);
         return null;
     }
 
@@ -81,45 +43,8 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.Unary unary) {
-        this.resolve(unary.right);
+        resolve(unary.right);
         return null;
-    }
-
-    public Object visit(Expr.GetExpr getExpr) {
-        String referenceName = this.resolveExtractReferenceOutOfGetExpression(getExpr);
-        this.fields.add(referenceName);
-        return null;
-    }
-
-    public Object visit(Expr.Spread spread) {
-        this.resolve(spread.expression);
-        return null;
-    }
-
-    public Object visit(Expr.MapLiteral mp) {
-        for (Object element : mp.elements) {
-            if (element instanceof Expr.Spread) {
-                this.resolve(((Expr.Spread) element).expression);
-                continue;
-            }
-
-            Expr.KeyValue keyValue = (Expr.KeyValue) element;
-            this.resolve(keyValue.key);
-            this.resolve(keyValue.value);
-        }
-        return null;
-    }
-
-    public String resolveExtractReferenceOutOfGetExpression(Expr.GetExpr getExpr) {
-        // Get the relationship field to query out of the get/merge field contained.
-        String relationshipToQuery = '';
-        if ((getExpr.objectExpr instanceof Expr.MergeField)) {
-            relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme + '.';
-        } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
-            relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
-        }
-
-        return relationshipToQuery + getExpr.field.name.lexeme;
     }
 
     public Object visit(Expr.FunctionCall function) {
@@ -133,116 +58,154 @@ public with sharing class ContextResolver implements Visitor {
                 );
             }
 
-            if (!(function.arguments.get(0) instanceof Expr.MergeField)) {
-                // If we are not dealing with a merge field that needs to be
-                // resolved to a query, that means we are likely dealing with a regular
-                // list, so do nothing
-                for (Expr argument : function.arguments) {
-                    Object tmp = this.resolve(argument);
-                    if (tmp instanceof Map<String, Q>) {
-                        // If we are dealing with a map, that means we are dealing with a
-                        // sub-function that itself returned a subquery, so we might be refercing
-                        // more merge fields that we want to make sure are added to the query
-                        // TODO
-                    }
-                }
+            // We want to first resolve the left side and it should resolve to a Query object
+            // which we will use as the context for the right side.
+
+            Query previousContext = this.queryContext;
+            Object result = resolve(function.arguments[0]);
+            if (!(result instanceof Query)) {
                 return null;
             }
 
-            String mapKey = ((Expr.MergeField) function.arguments.get(0)).name.lexeme.toLowerCase();
-            SObjectType childRelationshipType = this.getChildRelationshipType(mapKey);
-            if (childRelationshipType == null) {
-                // If we are not dealing with a child relationship, do nothing
-                return null;
-            }
+            this.queryContext = (Query) result;
+            resolve(function.arguments[1]);
 
-            Q subQ = new ContextResolver(mapKey, childRelationshipType).resolveToQ(
-                function.arguments.get(1)
-            );
+            this.queryContext = previousContext;
 
-            if (this.subQueriesByRelationshipName.containsKey(mapKey)) {
-                // If the sub query already exists, add all fields
-                this.subQueriesByRelationshipName.get(mapKey).selectFields(subQ.getFields());
+            if (function.functionName == 'WHERE') {
+                // The WHERE function is a special case where we might want to keep building
+                // the query it started resolving.
+                return result;
             } else {
-                // Otherwise, add the sub query to the map
-                this.subQueriesByRelationshipName.put(mapKey, subQ);
+                return null;
             }
-
-            this.shouldExecuteQuery = true;
-
-            return new Map<String, Q>{
-                mapKey => subQ
-            };
-        }
-
-        for (Expr argument : function.arguments) {
-            this.resolve(argument);
+        } else {
+            for (Expr argument : function.arguments) {
+                resolve(argument);
+            }
         }
         return null;
+    }
+
+    public Object visit(Expr.GetExpr getExpr) {
+        String referenceName = this.resolveExtractReferenceOutOfGetExpression(getExpr);
+        this.queryContext.queryBuilder.selectField(referenceName);
+        this.shouldExecuteQuery = true;
+        return null;
+    }
+
+    private String resolveExtractReferenceOutOfGetExpression(Expr.GetExpr getExpr) {
+        // Get the relationship field to query out of the get/merge field contained.
+        String relationshipToQuery = '';
+        if ((getExpr.objectExpr instanceof Expr.MergeField)) {
+            relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme + '.';
+        } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
+            relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
+        }
+
+        return relationshipToQuery + getExpr.field.name.lexeme;
+    }
+
+    public Object visit(Expr.Variable variable) {
+        return null;
+    }
+
+    public Object visit(Expr.MergeField mergeField) {
+        String fieldName = mergeField.name.lexeme.toLowerCase();
+
+        // Check if the field belongs to the parent object
+        if (this.getFields().contains(fieldName)) {
+            this.queryContext.queryBuilder.selectField(fieldName);
+            this.shouldExecuteQuery = true;
+            return null;
+        }
+
+        // Check if the merge field is a child relationship field
+        for (ChildRelationship relationship : this.queryContext.objectType.getDescribe().getChildRelationships()) {
+            String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
+            if (childRelationshipName != null && childRelationshipName == fieldName) {
+                // We have a child relationship, so we want to start building a subquery
+                Query subQuery = this.getSubqueryFor(childRelationshipName);
+                if (subQuery == null) {
+                    subQuery = new Query(relationship.getChildSObject(), childRelationshipName);
+                    this.subQueries.add(subQuery);
+                }
+
+                this.shouldExecuteQuery = true;
+                return subQuery;
+            }
+        }
+
+        throw new ResolverException('Did not understand the relationship to field ' +
+            mergeField.name.lexeme + ' for SObjectType ' + this.queryContext.objectType);
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
         for (Expr element : listLiteral.elements) {
-            this.resolve(element);
+            resolve(element);
         }
         return null;
     }
 
-    public SObject build(Expr expression) {
-        String query = this.resolveToQ(expression).build();
-        if (!this.shouldExecuteQuery) {
-            return null;
+    public Object visit(Expr.MapLiteral mapLiteral) {
+        for (Object element : mapLiteral.elements) {
+            if (element instanceof Expr.Spread) {
+                this.resolve(((Expr.Spread) element).expression);
+                continue;
+            }
+
+            Expr.KeyValue keyValue = (Expr.KeyValue) element;
+            this.resolve(keyValue.key);
+            this.resolve(keyValue.value);
         }
-        return Database.query(query);
+        return null;
     }
 
-    private Q resolveToQ(Expr expression) {
-        this.resolve(expression);
-
-        if (fields.isEmpty() && subQueriesByRelationshipName.isEmpty()) {
-            return this.queryBuilder;
-        }
-
-        this.shouldExecuteQuery = true;
-        this.queryBuilder.selectFields(this.fields);
-
-        for (String relationshipName : this.subQueriesByRelationshipName.keySet()) {
-            this.queryBuilder.addSubquery(
-                this.subQueriesByRelationshipName.get(relationshipName)
-            );
-        }
-
-        if (this.recordId != null) {
-            this.queryBuilder.add(Q.condition('Id').equalsTo(this.recordId));
-        }
-
-        return this.queryBuilder;
-    }
-
-    private Object resolve(Expr expression) {
-        return expression.accept(this);
+    public Object visit(Expr.Spread spread) {
+        this.resolve(spread.expression);
+        return null;
     }
 
     private Set<String> cachedFields;
     private Set<String> getFields() {
         if (cachedFields == null) {
             cachedFields = new Set<String>();
-            cachedFields = this.objectType.getDescribe().fields.getMap().keySet();
+            cachedFields = this.queryContext.objectType.getDescribe().fields.getMap().keySet();
         }
 
         return cachedFields;
     }
 
-    private SObjectType getChildRelationshipType(String targetChildRelationshipName) {
-        for (ChildRelationship relationship : this.recordId.getSobjectType().getDescribe().getChildRelationships()) {
-            String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
-            if (childRelationshipName != null && childRelationshipName == targetChildRelationshipName) {
-                return relationship.getChildSObject();
+    public class ResolverException extends Exception {
+    }
+
+    public class Query {
+        public Q queryBuilder { get; private set; }
+        public Id recordId { get; private set; }
+        public SObjectType objectType { get; private set; }
+        public String relationshipName { get; private set; }
+
+        public Query(Id recordId) {
+            this.recordId = recordId;
+            this.objectType = this.recordId.getSobjectType();
+            this.queryBuilder = new Q(this.objectType);
+            this.queryBuilder.selectField('Id');
+        }
+
+        public Query(SObjectType objectType, String relationshipName) {
+            this.objectType = objectType;
+            this.relationshipName = relationshipName;
+            this.queryBuilder = new Q(relationshipName);
+            this.queryBuilder.selectField('Id');
+        }
+    }
+
+    private Query getSubqueryFor(String relationshipName) {
+        for (Query subquery : this.subQueries) {
+            if (subquery.relationshipName == relationshipName) {
+                return subquery;
             }
         }
         return null;
-    }
-
-    public class ResolverException extends Exception {
     }
 }

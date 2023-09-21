@@ -57,7 +57,7 @@ global with sharing class Evaluator {
             printer.printAst(expression);
         }
 
-        ContextResolver2 ctxInterpreter = new ContextResolver2(recordId);
+        ContextResolver ctxInterpreter = new ContextResolver(recordId);
         SObject record = ctxInterpreter.build(expression);
 
         Environment env = new Environment(record);

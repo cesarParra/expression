@@ -1119,4 +1119,22 @@ private class EvaluatorTest {
         Assert.areEqual(1, result.size());
         Assert.areEqual('Child2', result[0]);
     }
+
+    @IsTest
+    private static void nestingwheres() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30, AnnualRevenue = 300);
+        insert new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('MAP(WHERE(WHERE(ChildAccounts, NumberOfEmployees > 10), AnnualRevenue > 200), Name)', parentAccount.Id);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual('Child3', result[0]);
+    }
 }
