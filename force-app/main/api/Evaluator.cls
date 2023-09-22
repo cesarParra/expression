@@ -32,9 +32,12 @@ global with sharing class Evaluator {
             printer.printAst(expression);
         }
 
+        PipeResolver pipeInterpreter = new PipeResolver();
+        Expr pipedExpression = pipeInterpreter.resolve(expression);
+
         Environment env = new Environment(context);
         Interpreter interpreter = new Interpreter(env);
-        return interpreter.interpret(expression);
+        return interpreter.interpret(pipedExpression);
     }
 
     /**
@@ -57,11 +60,14 @@ global with sharing class Evaluator {
             printer.printAst(expression);
         }
 
+        PipeResolver pipeInterpreter = new PipeResolver();
+        Expr pipedExpression = pipeInterpreter.resolve(expression);
+
         ContextResolver ctxInterpreter = new ContextResolver(recordId);
-        SObject record = ctxInterpreter.build(expression);
+        SObject record = ctxInterpreter.build(pipedExpression);
 
         Environment env = new Environment(record);
         Interpreter interpreter = new Interpreter(env);
-        return interpreter.interpret(expression);
+        return interpreter.interpret(pipedExpression);
     }
 }
