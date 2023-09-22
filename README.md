@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYclIAG)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYclIAG)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYd0IAG)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYd0IAG)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm000000HYclIAG
+sf package install --apex-compile package --wait 20 --package 04tDm000000HYd0IAG
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYclIAG
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYd0IAG
 ```
 
 ### Direct Deployment to Salesforce
@@ -169,14 +169,14 @@ Object result = Evaluator.run(
 The pipe operator (`->`) allows you to chain operations together. The result of the previous operation
 is passed as the first argument to the next operation.
 
-This allows you to "flip" your code, where `a(b)` becomes `b -> a`.
+This allows you to "flip" your code, where `a(b)` becomes `b -> a()`.
 
 Why would you use it?
 
 Consider a chain of operations like this:
 
 ```
-WHERE(WHERE([1, 2, 3, 4, 5, 6], $current > 2), $current < 4)
+WHERE(WHERE([1, 2, 3, 4, 5, 6], $current > 2), $current < 5)
 ```
 
 This is slightly hard to read, and it's easy to get lost in the parenthesis. With piping, you can
