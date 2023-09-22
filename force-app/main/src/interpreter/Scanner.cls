@@ -35,9 +35,6 @@ public with sharing class Scanner {
             when '+' {
                 addToken(TokenType.PLUS);
             }
-            when '-' {
-                addToken(TokenType.MINUS);
-            }
             when '*' {
                 addToken(TokenType.STAR);
             }
@@ -79,6 +76,10 @@ public with sharing class Scanner {
 
             when '.' {
                 addToken(match2('..') ? TokenType.DOT_DOT_DOT : TokenType.DOT);
+            }
+
+            when '-' {
+                addToken(match('>') ? TokenType.ARROW : TokenType.MINUS);
             }
 
             when '$' {

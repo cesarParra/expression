@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYclIAG)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYclIAG)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYd0IAG)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYd0IAG)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm000000HYclIAG
+sf package install --apex-compile package --wait 20 --package 04tDm000000HYd0IAG
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYclIAG
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYd0IAG
 ```
 
 ### Direct Deployment to Salesforce
@@ -164,6 +164,43 @@ Object result = Evaluator.run(
 // { "Family Name": "Doe", "Members": { "Count": 2, "Names": ["John Doe", "Jane Doe"] } }
 ```
 
+## Piping
+
+The pipe operator (`->`) allows you to chain operations together. The result of the previous operation
+is passed as the first argument to the next operation.
+
+This allows you to "flip" your code, where `a(b)` becomes `b -> a()`.
+
+Why would you use it?
+
+Consider a chain of operations like this:
+
+```
+WHERE(WHERE([1, 2, 3, 4, 5, 6], $current > 2), $current < 5)
+```
+
+This is slightly hard to read, and it's easy to get lost in the parenthesis. With piping, you can
+write it like this:
+
+```
+[1, 2, 3, 4, 5, 6]
+    -> WHERE($current > 2)
+    -> WHERE($current < 5) 
+```
+
+This works when working with record data as well. These 2 are equivalent:
+
+```apex
+Evaluator.run('MAP(WHERE(WHERE(ChildAccounts, NumberOfEmployees > 10), AnnualRevenue > 200), Name)', recordId);
+
+Evaluator.run(
+    'ChildAccounts ' +
+    '-> WHERE(AnnualRevenue > 200) ' +
+    '-> WHERE(NumberOfEmployees > 10) ' +
+    '-> MAP(Name)', 
+    recordId);
+```
+
 ## Supported Operators and Functions
 
 ### Operators
@@ -208,6 +245,14 @@ Groups expressions together.
 
 ```apex
 expression.Evaluator.run('(1 + 1) * 2'); // 4
+```
+
+- `->` Pipe
+
+Read more about piping [here](#piping).
+
+```apex
+expression.Evaluator.run('[1, 2, 3] -> MAP($current + 1)'); // (2, 3, 4)
 ```
 
 #### Logical Operators
