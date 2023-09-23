@@ -11,7 +11,8 @@ public with sharing class CollectionFunctions {
         'DISTINCT' => new DistinctFn(),
         'KEYS' => new KeysFn(),
         'GET' => new GetFn(),
-        'VALUES' => new ValuesFn()
+        'VALUES' => new ValuesFn(),
+        'FETCH' => new FetchFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -342,6 +343,42 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(1);
+        }
+    }
+
+    private class FetchFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a string representing the sobject type name
+            Object sobjectType = evaluate(arguments.get(0));
+            if (!(sobjectType instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "FETCH" function: the first argument must evaluate to a string.'
+                );
+            }
+
+            // Second argument is a list of strings representing the field names
+            Object fieldNames = evaluate(arguments.get(1));
+            if (!(fieldNames instanceof List<Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "FETCH" function: the second argument must evaluate to a list of strings.'
+                );
+            }
+
+            Q query = new Q((String) sobjectType);
+            for (Object fieldName : (List<Object>) fieldNames) {
+                if (!(fieldName instanceof String)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "FETCH" function: the second argument must evaluate to a list of strings.'
+                    );
+                }
+                query.selectField((String) fieldName);
+            }
+
+            return Database.query(query.build());
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
         }
     }
 }
