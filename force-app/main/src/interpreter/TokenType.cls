@@ -8,7 +8,7 @@ public enum TokenType {
     BANG, BANG_EQUAL,
     GREATER, GREATER_EQUAL,
     AMPERSAND, DOUBLE_AMPERSAND,
-    EQUAL, EQUAL_EQUAL,
+    EQUAL, EQUAL_EQUAL, ARROW,
 
     // One or more character
     DOT, DOT_DOT_DOT,
