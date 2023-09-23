@@ -25,13 +25,27 @@ public with sharing class Parser {
     }
 
     private Expr comparison() {
-        Expr expr = term();
+        Expr expr = pipe();
 
         while (match(
             new List<TokenType>{
                 TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL
             }
         )) {
+            Token operator = previous();
+            Expr right = term();
+            expr = new Expr.Binary(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expr pipe() {
+        Expr expr = term();
+
+        while (match(new List<TokenType>{
+            TokenType.ARROW
+        })) {
             Token operator = previous();
             Expr right = term();
             expr = new Expr.Binary(expr, operator, right);

@@ -1121,7 +1121,7 @@ private class EvaluatorTest {
     }
 
     @IsTest
-    private static void nestingwheres() {
+    private static void nestingWheres() {
         Account parentAccount = new Account(Name = 'Parent');
         insert parentAccount;
 
@@ -1136,5 +1136,18 @@ private class EvaluatorTest {
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Child3', result[0]);
+    }
+
+    @IsTest
+    private static void canPipeFunctionCalls() {
+        Assert.areEqual(3, Evaluator.run('LIST(1, 2, 3) -> SIZE()'));
+    }
+
+    @IsTest
+    private static void canPipeFunctionCallsMultipleTimes() {
+        Object result = Evaluator.run('[1, 2, 3, 4, 5, 6] -> WHERE($current > 2) -> WHERE($current < 5)');
+        Assert.areEqual(2, ((List<Object>) result).size());
+        Assert.areEqual(3, ((List<Object>) result)[0]);
+        Assert.areEqual(4, ((List<Object>) result)[1]);
     }
 }
