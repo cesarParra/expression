@@ -284,22 +284,44 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.FunctionCall function) {
         // Check if the function is in the list of supported functions
-        if (!ExpressionFunction.FUNCTIONS.containsKey(function.functionName)) {
-            throw new InterpreterException(
-                'Error executing ' + function.functionName + ' function: the function is not supported.'
-            );
+        if (ExpressionFunction.FUNCTIONS.containsKey(function.functionName)) {
+            ExpressionFunction fn = ExpressionFunction.FUNCTIONS.get(function.functionName);
+            fn.setInterpreter(this);
+            if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
+                throw new InterpreterException(
+                    'Error executing ' + function.functionName + ' function: the function expects ' +
+                        fn.getArity().toString() + ' argument(s), but ' +
+                        function.arguments.size() + ' were provided.'
+                );
+            }
+            return fn.call(function.arguments);
+        } else {
+            // Otherwise try to get a custom function from the Expression Function custom metadata type.
+            List<Expression_Function__mdt> customFunctions = [
+                SELECT
+                    Apex_Class__c
+                FROM Expression_Function__mdt
+                WHERE DeveloperName = :function.functionName
+            ];
+
+            if (!customFunctions.isEmpty()) {
+                String className = customFunctions[0].Apex_Class__c;
+                Object objectInstance = Type.forName(className).newInstance();
+                if (objectInstance instanceof IExpressionFunction) {
+                    IExpressionFunction fn = (IExpressionFunction) objectInstance;
+                    return fn.execute();
+                } else {
+                    throw new InterpreterException(
+                        'Error executing ' + function.functionName + ' function: The class ' +
+                            className + ' does not implement the IExpressionFunction interface.'
+                    );
+                }
+            }
         }
 
-        ExpressionFunction fn = ExpressionFunction.FUNCTIONS.get(function.functionName);
-        fn.setInterpreter(this);
-        if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
-            throw new InterpreterException(
-                'Error executing ' + function.functionName + ' function: the function expects ' +
-                    fn.getArity().toString() + ' argument(s), but ' +
-                    function.arguments.size() + ' were provided.'
-            );
-        }
-        return fn.call(function.arguments);
+        throw new InterpreterException(
+            'Error executing ' + function.functionName + ' function: the function is not supported.'
+        );
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
