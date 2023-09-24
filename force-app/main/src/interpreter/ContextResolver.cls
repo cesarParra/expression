@@ -49,6 +49,9 @@ public with sharing class ContextResolver implements Visitor {
 
     public Object visit(Expr.FunctionCall function) {
         ExpressionFunction fn = ExpressionFunction.FUNCTIONS.get(function.functionName);
+        if (fn == null) {
+            return null;
+        }
         if (fn.needsChildrenResolution()) {
             // Expect 2 arguments, the first will be the name of the child relationship field or any other list value,
             // the second is an expression that might use fields of the child relationship.

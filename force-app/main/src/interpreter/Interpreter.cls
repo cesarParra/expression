@@ -284,22 +284,33 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.FunctionCall function) {
         // Check if the function is in the list of supported functions
-        if (!ExpressionFunction.FUNCTIONS.containsKey(function.functionName)) {
-            throw new InterpreterException(
-                'Error executing ' + function.functionName + ' function: the function is not supported.'
-            );
+        if (ExpressionFunction.FUNCTIONS.containsKey(function.functionName)) {
+            ExpressionFunction fn = ExpressionFunction.FUNCTIONS.get(function.functionName);
+            fn.setInterpreter(this);
+            if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
+                throw new InterpreterException(
+                    'Error executing ' + function.functionName + ' function: the function expects ' +
+                        fn.getArity().toString() + ' argument(s), but ' +
+                        function.arguments.size() + ' were provided.'
+                );
+            }
+            return fn.call(function.arguments);
+        } else {
+            // Otherwise try to get a custom function from the Expression Function custom metadata type.
+            IExpressionFunction fn = CustomFunctionRepository.getInstance().getByName(function.functionName);
+            if (fn != null) {
+                List<Object> arguments = new List<Object>();
+                for (Expr argument : function.arguments) {
+                    arguments.add(evaluate(argument));
+                }
+
+                return fn.execute(arguments);
+            }
         }
 
-        ExpressionFunction fn = ExpressionFunction.FUNCTIONS.get(function.functionName);
-        fn.setInterpreter(this);
-        if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
-            throw new InterpreterException(
-                'Error executing ' + function.functionName + ' function: the function expects ' +
-                    fn.getArity().toString() + ' argument(s), but ' +
-                    function.arguments.size() + ' were provided.'
-            );
-        }
-        return fn.call(function.arguments);
+        throw new InterpreterException(
+            'Error executing ' + function.functionName + ' function: the function is not supported.'
+        );
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
