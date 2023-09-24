@@ -309,7 +309,13 @@ public with sharing class Interpreter implements Visitor {
                 Object objectInstance = Type.forName(className).newInstance();
                 if (objectInstance instanceof IExpressionFunction) {
                     IExpressionFunction fn = (IExpressionFunction) objectInstance;
-                    return fn.execute();
+
+                    List<Object> arguments = new List<Object>();
+                    for (Expr argument : function.arguments) {
+                        arguments.add(evaluate(argument));
+                    }
+
+                    return fn.execute(arguments);
                 } else {
                     throw new InterpreterException(
                         'Error executing ' + function.functionName + ' function: The class ' +

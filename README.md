@@ -114,8 +114,8 @@ or filter records. See more information about these functions below.
 
 There are a few limitations around merge fields at the moment
 
-- When using the endpoint that takes a record Id as the context, the query
-is performed `with sharing`, so any records that the user does not have access to
+- When using the endpoint that takes a record Id as the context or fetching data through the `FETCH` function, 
+the query is performed `with sharing`, so any records that the user does not have access to
 will not be returned or taken into account in the operation.
 - `MAP` only supports one level of relationship, so the second argument cannot contain
 references to children of the child record being mapped.
@@ -200,6 +200,55 @@ Evaluator.run(
     '-> MAP(Name)', 
     recordId);
 ```
+## Fetching Data from the Database
+
+A special function, `FETCH`, is provided which allows you to query data from the database. This is useful
+when the data you want to use is not provided as part of the context.
+
+The `FETCH` function takes 2 arguments: a string with the `SOjectName` you wish to extract data from,
+and a list of strings with the fields you wish to extract. This will query all the records of the given
+type and return a list of `SObjects` with the data.
+
+```apex
+Object result = expression.Evaluator.run('FETCH("Account", ["Id", "Name"])');
+```
+
+This can be combined with other collection functions like `MAP` and `WHERE` to filter or map the data.
+
+```apex
+Object result = expression.Evaluator.run('MAP(WHERE(FETCH("Account", ["Id", "Name"]), Name = "ACME"), Id)');
+```
+
+Note that when using this function, the automatic context resolution is not performed, so you need to
+explicitly specify all fields you wish to reference in the formula.
+
+At this moment advanced querying capabilities like filtering, sorting, or limiting the number of records
+are not supported. To get over these limitations, you can create a custom formula using Apex. See the
+[Advanced Usage](#advanced-usage) section for more information.
+
+## Advanced Usage
+
+### Custom Formula Functions
+
+You can create your own custom formula functions by implementing the `expression.IExpressionFunction` interface.
+This interface has a single method, `Object run(List<Object> args)`, which receives the arguments passed to the
+function (if any) and returns the result.
+
+```apex
+global class MyCustomFunction implements expression.IExpressionFunction {
+    global Object run(List<Object> args) {
+        // Do something with the arguments and return the result
+    }
+}
+```
+
+To register your custom function, you need to create a new Custom Metadata record of type `Expression Function`
+and specify the name of the function and the Apex class that implements it:
+
+* Go to `Setup > Custom Metadata Types` and click `Manage Records` next to `Expression Function`
+* Click `New` and enter the name of your function and the Apex class that implements it
+* Click `Save`
+* Your function is now available to use in formulas using the name you specified
 
 ## Supported Operators and Functions
 
