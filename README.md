@@ -1159,16 +1159,36 @@ expression.Evaluator.run('TRUNC(1.5, 1)'); // 1.5
 
 ---
 
-## LWC Components
+# Expression Components
 
-Included in this repository is an LWC component that can be placed in record pages, and allows
-you to evaluate formulas in the context of the current record.
+`Expression Components` is a UI library included that can be deployed independenty of the core library.
+These components give you powerful configuration abilities, as their configuration properties are powered
+by the `Expression` language.
 
-Feel free to deploy and use this as you see fit, use it as an example to build your own, or
-just ignore it (there are no dependencies to it so you can safely delete it or not deploy the `ui` folder).
+## Components
 
-### Sample Usage
+### Formula
 
+The `Formula` component allows you to evaluate an expression and display the result. It can be used
+in a record page or in a community page.
+
+When using in a record page, the record Id is automatically used as the context of the expression.
+
+When using in a community page, you can optionally specify the context by setting the `Record Id` property. This can
+receive the record Id directly or in the form of a merge field, e.g. `{!recordId}` which will be replaced
+with the value of the `recordId` URL parameter.
+
+> Keep in mind that if a record Id is not specified, the expression provided should not contain any merge field
+references.
+
+#### Properties
+
+- `Record Id` - The record Id to use as the context of the expression. This can be a merge field, e.g. `{!recordId}`. Only
+    used when the component is used in a community page.
+- `Title` - The card title.
+- `Formula Expression` - The expression to evaluate.
+
+#### Sample Usage
 Placing the component in an Account page and using the following formula:
 
 ```bash
@@ -1176,7 +1196,7 @@ Placing the component in an Account page and using the following formula:
 ```
 
 Results in the following. Note that the component reacts to changes in the record and updates
-itself based on the new values.
+itself based on the new values when placed in a record page.
 
 ![Sample Usage](assets/sample-lwc-usage.gif)
 
