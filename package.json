@@ -4,6 +4,8 @@
   "scripts": {
     "scratch:create": "sfdx force:org:create -f config/dev.json -a Expression --setdefaultusername",
     "scratch:create:communities": "sfdx force:org:create -f config/dev-communities.json -a Expression --setdefaultusername",
+    "package:create:expression": "sf package version create -x -c -p 0HoDm000000XZKSKA4 -w 30",
+    "package:create:expression:components": "sf package version create -x -c -p 0HoDm000000XZKhKAO -w 30",
     "docs:init": "docsify init docs",
     "docs:serve": "docsify serve docs",
     "docs:generate": "apexdocs-generate -s force-app -t docs --scope public global -g docsify"

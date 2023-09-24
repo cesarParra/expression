@@ -1,4 +1,5 @@
 @IsTest
+@NamespaceAccessible
 public with sharing class IdGenerator {
     private static Integer fakeIdCount = 0;
     private static final String ID_PATTERN = '000000000000';

@@ -14,12 +14,12 @@
             <property name="recordId" type="String" description="Record Id to use as the context of the formula" label="Record Id" required="false" />
             <property name="title" type="String" description="Component title" label="Title" required="false" />
             <property name="expr" type="String" placeholder="1 + 1" required="true" label="Formula Expression"
-                      description="Formula expression to be evaluated." />
+                      description="Formula expression to be evaluated." default="" />
         </targetConfig>
         <targetConfig targets="lightning__RecordPage">
             <property name="title" type="String" description="Component title" label="Title" required="false" />
             <property name="expr" type="String" placeholder="1 + 1" required="true" label="Formula Expression"
-                      description="Formula expression to be evaluated." />
+                      description="Formula expression to be evaluated." default="" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
