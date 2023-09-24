@@ -297,31 +297,14 @@ public with sharing class Interpreter implements Visitor {
             return fn.call(function.arguments);
         } else {
             // Otherwise try to get a custom function from the Expression Function custom metadata type.
-            List<Expression_Function__mdt> customFunctions = [
-                SELECT
-                    Apex_Class__c
-                FROM Expression_Function__mdt
-                WHERE DeveloperName = :function.functionName
-            ];
-
-            if (!customFunctions.isEmpty()) {
-                String className = customFunctions[0].Apex_Class__c;
-                Object objectInstance = Type.forName(className).newInstance();
-                if (objectInstance instanceof IExpressionFunction) {
-                    IExpressionFunction fn = (IExpressionFunction) objectInstance;
-
-                    List<Object> arguments = new List<Object>();
-                    for (Expr argument : function.arguments) {
-                        arguments.add(evaluate(argument));
-                    }
-
-                    return fn.execute(arguments);
-                } else {
-                    throw new InterpreterException(
-                        'Error executing ' + function.functionName + ' function: The class ' +
-                            className + ' does not implement the IExpressionFunction interface.'
-                    );
+            IExpressionFunction fn = CustomFunctionRepository.getInstance().getByName(function.functionName);
+            if (fn != null) {
+                List<Object> arguments = new List<Object>();
+                for (Expr argument : function.arguments) {
+                    arguments.add(evaluate(argument));
                 }
+
+                return fn.execute(arguments);
             }
         }
 

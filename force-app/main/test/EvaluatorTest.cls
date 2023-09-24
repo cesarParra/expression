@@ -1162,4 +1162,30 @@ private class EvaluatorTest {
         Assert.areEqual(account.Id, ((Map<Object, Object>) ((List<Object>) result)[0]).get('Id'));
         Assert.areEqual(account.Name, ((Map<Object, Object>) ((List<Object>) result)[0]).get('Name'));
     }
+
+    @IsTest
+    private static void canUseCustomFunctions() {
+        CustomFunctionRepository mockRepository = new MockFunctionRepository();
+        CustomFunctionRepository.mockInstance = mockRepository;
+
+        // This custom function concatenates the arguments.
+        Object result = Evaluator.run('CUSTOMFUNCION("TestFormula", 1, 2)');
+        Assert.areEqual('TestFormula12', result);
+    }
+
+    private class MockFunctionRepository extends CustomFunctionRepository {
+        public override IExpressionFunction getByName(String functionName) {
+            return new MockFunction();
+        }
+    }
+
+    private class MockFunction implements IExpressionFunction {
+        public Object execute(List<Object> args) {
+            String concatenated = '';
+            for (Object arg : args) {
+                concatenated += String.valueOf(arg);
+            }
+            return concatenated;
+        }
+    }
 }
