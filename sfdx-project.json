@@ -12,7 +12,13 @@
       "package": "Expression Components",
       "versionName": "Version 0.1",
       "versionNumber": "0.1.0.NEXT",
-      "default": false
+      "default": false,
+      "dependencies": [
+        {
+          "package": "Expression (Unlocked)",
+          "versionNumber": "1.8.0.LATEST"
+        }
+      ]
     }
   ],
   "name": "Expression",
