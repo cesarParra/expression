@@ -17,7 +17,6 @@ export default class Stats extends LightningElement {
     @wire(evaluate, {recordId: '$recordId', formula: '$expr'})
     evaluate(result) {
         this.computedWire = result;
-        console.log('result', this.computedWire.data);
         const {error} = result;
         if (error) {
             console.error(this.error);
