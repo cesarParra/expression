@@ -6,6 +6,13 @@
       "versionName": "Version 1.8",
       "versionNumber": "1.8.0.NEXT",
       "default": true
+    },
+    {
+      "path": "expression-components",
+      "package": "Expression Components",
+      "versionName": "Version 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "default": false
     }
   ],
   "name": "Expression",
@@ -15,6 +22,7 @@
   "packageAliases": {
     "Expression (Unlocked)": "0HoDm000000XZKSKA4",
     "Expression (Unlocked)@1.7.0-1": "04tDm000000HYd0IAG",
-    "Expression (Unlocked)@1.8.0-1": "04tDm000000HYd5IAG"
+    "Expression (Unlocked)@1.8.0-1": "04tDm000000HYd5IAG",
+    "Expression Components": "0HoDm000000XZKhKAO"
   }
 }
