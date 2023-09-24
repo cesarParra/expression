@@ -1,14 +1,14 @@
 {
   "packageDirectories": [
     {
-      "path": "force-app",
+      "path": "expression-src",
       "package": "Expression (Unlocked)",
       "versionName": "Version 1.8",
       "versionNumber": "1.8.0.NEXT",
       "default": true
     }
   ],
-  "name": "formula-evaluator",
+  "name": "Expression",
   "namespace": "expression",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "58.0",

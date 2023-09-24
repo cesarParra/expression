@@ -1,0 +1,19 @@
+{
+  "orgName": "Expression Dev",
+  "edition": "Developer",
+  "features": ["EnableSetPasswordInApi", "Communities"],
+  "settings": {
+    "experienceBundleSettings": {
+      "enableExperienceBundleMetadata": true
+    },
+    "communitiesSettings": {
+      "enableNetworksEnabled": true
+    },
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    }
+  }
+}

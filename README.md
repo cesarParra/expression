@@ -1189,7 +1189,7 @@ Contributions are welcome! Feel free to open an issue or submit a pull request.
 Create a scratch org by running:
 
 ```bash
-sfdx force:org:create -f config/project-scratch-def.json -a formula-evaluator -s
+sfdx force:org:create -f config/dev.json -a formula-evaluator -s
 ```
 
 Then push the source to the scratch org:
