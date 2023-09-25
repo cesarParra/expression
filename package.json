@@ -8,7 +8,9 @@
     "package:create:expression:components": "sf package version create -x -c -p 0HoDm000000XZKhKAO -w 30",
     "docs:init": "docsify init docs",
     "docs:serve": "docsify serve docs",
-    "docs:generate": "apexdocs-generate -s force-app -t docs --scope public global -g docsify"
+    "docs:generate": "apexdocs-generate -s force-app -t docs --scope public global -g docsify",
+    "tw:build": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify",
+    "tw:build:watch": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify --watch"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,7 @@
   "homepage": "https://github.com/cesarParra/formula-evaluator#readme",
   "devDependencies": {
     "@cparra/apexdocs": "^2.17.0",
-    "docsify": "^4.11.4"
+    "docsify": "^4.11.4",
+    "tailwindcss": "^3.3.3"
   }
 }
