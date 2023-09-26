@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYdAIAW)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYdAIAW)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MfoIAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MfoIAE)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm000000HYdAIAW
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MfoIAE
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYdAIAW
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MfoIAE
 ```
 
 ### Direct Deployment to Salesforce
@@ -1178,6 +1178,25 @@ expression.Evaluator.run('TRUNC(1.5, 1)'); // 1.5
 `Expression Components` is a UI library included that can be deployed independently of the core library.
 These components give you powerful configuration abilities, as their configuration properties are powered
 by the `Expression` language.
+
+## Installation
+
+### Unlocked Package (`expression` namespace)
+
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MftIAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MftIAE)
+
+Install with SF CLI:
+
+```shell
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MftIAE
+```
+
+Install with SFDX CLI:
+
+```shell
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MftIAE
+```
 
 ## Components
 
