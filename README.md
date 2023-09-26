@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYd5IAG)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000HYd5IAG)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MfoIAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MfoIAE)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm000000HYd5IAG
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MfoIAE
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000HYd5IAG
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MfoIAE
 ```
 
 ### Direct Deployment to Salesforce
@@ -1065,10 +1065,24 @@ expression.Evaluator.run('DISTINCT([1, 2, 3, 1, 2, 3])'); // (1, 2, 3)
 
 Sorts a list.
 
-Accepts 1 argument: the list to sort.
+Accepts at least one argument: the list to sort.
+When sorting a list of Maps or a list of SObjects,
+two additional arguments can be provided: the field to sort by and the sort direction.
+
+The field to sort can either be a field name as a merge field (field name without quotes), or an expression that evaluates to a string
+representing the field name. Merge fields are only supported when sorting SObjects and are useful to get the framework to automatically
+query the field for you.
+
+> The merge field must be a field on the SObject being sorted itself, not a relationship field.
+
+The sort direction can either be the literal string (requires quotes) `ASC` or `DESC`.
 
 ```apex
 expression.Evaluator.run('SORT([3, 2, 1])'); // (1, 2, 3)
+expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a")'); // ({ "a": 1 }, { "a": 2 }, { "a": 3 })
+expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a", "DESC")'); // ({ "a": 3 }, { "a": 2 }, { "a": 1 })
+expression.Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")'); // ({"Name": "ACME"}, {"Name": "Another Account"})
+expression.Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc")', parentAccount.Id); // ({"NumberOfEmployees": 1}, {"NumberOfEmployees": 2})
 ```
 
 #### Math Functions
@@ -1159,16 +1173,55 @@ expression.Evaluator.run('TRUNC(1.5, 1)'); // 1.5
 
 ---
 
-## LWC Components
+# Expression Components
 
-Included in this repository is an LWC component that can be placed in record pages, and allows
-you to evaluate formulas in the context of the current record.
+`Expression Components` is a UI library included that can be deployed independently of the core library.
+These components give you powerful configuration abilities, as their configuration properties are powered
+by the `Expression` language.
 
-Feel free to deploy and use this as you see fit, use it as an example to build your own, or
-just ignore it (there are no dependencies to it so you can safely delete it or not deploy the `ui` folder).
+## Installation
 
-### Sample Usage
+### Unlocked Package (`expression` namespace)
 
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MftIAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MftIAE)
+
+Install with SF CLI:
+
+```shell
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MftIAE
+```
+
+Install with SFDX CLI:
+
+```shell
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MftIAE
+```
+
+## Components
+
+### Formula
+
+The `Formula` component allows you to evaluate an expression and display the result. It can be used
+in a record page or in a community page.
+
+When using in a record page, the record Id is automatically used as the context of the expression.
+
+When using in a community page, you can optionally specify the context by setting the `Record Id` property. This can
+receive the record Id directly or in the form of a merge field, e.g. `{!recordId}` which will be replaced
+with the value of the `recordId` URL parameter.
+
+> Keep in mind that if a record Id is not specified, the expression provided should not contain any merge field
+references.
+
+#### Properties
+
+- `Record Id` - The record Id to use as the context of the expression. This can be a merge field, e.g. `{!recordId}`. Only
+    used when the component is used in a community page.
+- `Title` - The card title.
+- `Formula Expression` - The expression to evaluate.
+
+#### Sample Usage
 Placing the component in an Account page and using the following formula:
 
 ```bash
@@ -1176,9 +1229,63 @@ Placing the component in an Account page and using the following formula:
 ```
 
 Results in the following. Note that the component reacts to changes in the record and updates
-itself based on the new values.
+itself based on the new values when placed in a record page.
 
 ![Sample Usage](assets/sample-lwc-usage.gif)
+
+### Nav Bar
+
+The `Nav Bar` component allows you to display a navigation bar with links to other pages. It can be used
+in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+```json
+{
+  "logo": {
+    "name": <<String value or expression>>,
+    "url": <<String value or expression>>
+  },
+  "menuItems": [
+    {
+      "label": <<String value or expression>>,
+      "url": <<String value or expression>>
+    }
+  ],
+  "callToAction": {
+    "label": <<String value or expression>>,
+    "url": <<String value or expression>>
+  }
+}
+```
+
+> The `callToAction` property is optional.
+
+#### Sample Usage
+The following formula can be used to query for Navigation Menu Items and display them in the Nav Bar component:
+
+```bash
+{
+	"logo": {
+		"name": "Example",
+		"imagePath": "https://example.com/img/logos/primary.svg",
+		"url": "/"
+	},
+	"menuItems": FETCH("NavigationMenuItem", ["Label", "Target", "Status", "Position"]) 
+		-> WHERE(Status = "Live") 
+		-> SORT("Position")
+		-> MAP({
+			"label": Label,
+			"url": Target
+		}),
+	"callToAction": {
+		"label": "Contact Us",
+		"url": "/contact"
+	}
+}
+```
 
 ## Contributing
 
@@ -1189,7 +1296,7 @@ Contributions are welcome! Feel free to open an issue or submit a pull request.
 Create a scratch org by running:
 
 ```bash
-sfdx force:org:create -f config/project-scratch-def.json -a formula-evaluator -s
+sfdx force:org:create -f config/dev.json -a formula-evaluator -s
 ```
 
 Then push the source to the scratch org:

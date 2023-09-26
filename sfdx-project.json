@@ -1,20 +1,34 @@
 {
   "packageDirectories": [
     {
-      "path": "force-app",
+      "path": "expression-src",
       "package": "Expression (Unlocked)",
-      "versionName": "Version 1.8",
-      "versionNumber": "1.8.0.NEXT",
+      "versionName": "Version 1.11",
+      "versionNumber": "1.11.0.NEXT",
       "default": true
+    },
+    {
+      "path": "expression-components",
+      "package": "Expression Components",
+      "versionName": "Version 0.1",
+      "versionNumber": "0.1.0.NEXT",
+      "default": false,
+      "dependencies": [
+        {
+          "package": "Expression (Unlocked)",
+          "versionNumber": "1.11.0.LATEST"
+        }
+      ]
     }
   ],
-  "name": "formula-evaluator",
+  "name": "Expression",
   "namespace": "expression",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "58.0",
   "packageAliases": {
     "Expression (Unlocked)": "0HoDm000000XZKSKA4",
-    "Expression (Unlocked)@1.7.0-1": "04tDm000000HYd0IAG",
-    "Expression (Unlocked)@1.8.0-1": "04tDm000000HYd5IAG"
+    "Expression Components": "0HoDm000000XZKhKAO",
+    "Expression (Unlocked)@1.11.0-1": "04tDm0000011MfoIAE",
+    "Expression Components@0.1.0-2": "04tDm0000011MftIAE"
   }
 }
