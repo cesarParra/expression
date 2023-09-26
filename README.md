@@ -1161,7 +1161,7 @@ expression.Evaluator.run('TRUNC(1.5, 1)'); // 1.5
 
 # Expression Components
 
-`Expression Components` is a UI library included that can be deployed independenty of the core library.
+`Expression Components` is a UI library included that can be deployed independently of the core library.
 These components give you powerful configuration abilities, as their configuration properties are powered
 by the `Expression` language.
 

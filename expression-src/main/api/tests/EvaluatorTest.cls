@@ -1020,6 +1020,139 @@ private class EvaluatorTest {
     }
 
     @IsTest
+    private static void canSortAListOfMapByAField() {
+        List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"a": 1}], "a")');
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(1, ((Map<Object, Object>) result[0]).get('a'));
+        Assert.areEqual(2, ((Map<Object, Object>) result[1]).get('a'));
+        Assert.areEqual(3, ((Map<Object, Object>) result[2]).get('a'));
+    }
+
+    @IsTest
+    private static void canSortAListOfMapByAFieldInAscendingOrder() {
+        List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"a": 1}], "a", "asc")');
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(1, ((Map<Object, Object>) result[0]).get('a'));
+        Assert.areEqual(2, ((Map<Object, Object>) result[1]).get('a'));
+        Assert.areEqual(3, ((Map<Object, Object>) result[2]).get('a'));
+    }
+
+    @IsTest
+    private static void canSortAListOfMapByAFieldInDescendingOrder() {
+        List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"a": 1}], "a", "desc")');
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(3, ((Map<Object, Object>) result[0]).get('a'));
+        Assert.areEqual(2, ((Map<Object, Object>) result[1]).get('a'));
+        Assert.areEqual(1, ((Map<Object, Object>) result[2]).get('a'));
+    }
+
+    @IsTest
+    private static void whenSortingIfAMapDoesNotContainTheFieldItIsSortedAtTheEnd() {
+        List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"b": 1}], "a")');
+        System.debug(result);
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(2, ((Map<Object, Object>) result[0]).get('a'));
+        Assert.areEqual(3, ((Map<Object, Object>) result[1]).get('a'));
+        Assert.areEqual(1, ((Map<Object, Object>) result[2]).get('b'));
+    }
+
+    @IsTest
+    private static void canSortBySObjectField() {
+        Account account1 = new Account(Name = 'A');
+        Account account2 = new Account(Name = 'C');
+        Account account3 = new Account(Name = 'B');
+
+        insert new List<SObject>{
+            account1, account2, account3
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")');
+
+        Assert.areEqual(3, result.size());
+        System.debug(result);
+        Assert.areEqual('A', ((Account) result[0]).Name);
+        Assert.areEqual('B', ((Account) result[1]).Name);
+        Assert.areEqual('C', ((Account) result[2]).Name);
+    }
+
+    @IsTest
+    private static void canSortBySObjectFieldInDescendingOrder() {
+        Account account1 = new Account(Name = 'A');
+        Account account2 = new Account(Name = 'C');
+        Account account3 = new Account(Name = 'B');
+
+        insert new List<SObject>{
+            account1, account2, account3
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name", "desc")');
+
+        Assert.areEqual(3, result.size());
+        System.debug(result);
+        Assert.areEqual('C', ((Account) result[0]).Name);
+        Assert.areEqual('B', ((Account) result[1]).Name);
+        Assert.areEqual('A', ((Account) result[2]).Name);
+    }
+
+    @IsTest
+    private static void canSortBySObjectFieldInAscendingOrder() {
+        Account account1 = new Account(Name = 'A');
+        Account account2 = new Account(Name = 'C');
+        Account account3 = new Account(Name = 'B');
+
+        insert new List<SObject>{
+            account1, account2, account3
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name", "asc")');
+
+        Assert.areEqual(3, result.size());
+        System.debug(result);
+        Assert.areEqual('A', ((Account) result[0]).Name);
+        Assert.areEqual('B', ((Account) result[1]).Name);
+        Assert.areEqual('C', ((Account) result[2]).Name);
+    }
+
+    @IsTest
+    private static void canSortSObjectByField_nullsArePlacedLast() {
+        Account account1 = new Account(Name = 'A', NumberOfEmployees = 10);
+        Account account2 = new Account(Name = 'B', NumberOfEmployees = 20);
+        Account account3 = new Account(Name = 'C', NumberOfEmployees = 30);
+        Account account4 = new Account(Name = 'D', NumberOfEmployees = null);
+
+        insert new List<SObject>{
+            account1, account2, account3, account4
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name", "NumberOfEmployees"]) -> SORT("NumberOfEmployees")');
+
+        Assert.areEqual(4, result.size());
+        System.debug(result);
+        Assert.areEqual('A', ((Account) result[0]).Name);
+        Assert.areEqual('B', ((Account) result[1]).Name);
+        Assert.areEqual('C', ((Account) result[2]).Name);
+        Assert.areEqual('D', ((Account) result[3]).Name);
+    }
+
+    @IsTest
+    private static void fieldResolutionWorksWhenUsingTheSortFunction() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc")', parentAccount.Id);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(10, ((Account) result[0]).NumberOfEmployees);
+        Assert.areEqual(20, ((Account) result[1]).NumberOfEmployees);
+    }
+
+    @IsTest
     private static void reverseFunctionReversesAList() {
         List<Object> result = (List<Object>) Evaluator.run('REVERSE([1, 2, 3])');
         Assert.areEqual(3, result.size());

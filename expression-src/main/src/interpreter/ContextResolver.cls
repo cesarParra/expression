@@ -53,9 +53,9 @@ public with sharing class ContextResolver implements Visitor {
             return null;
         }
         if (fn.needsChildrenResolution()) {
-            // Expect 2 arguments, the first will be the name of the child relationship field or any other list value,
+            // Expect at least 2 arguments, the first will be the name of the child relationship field or any other list value,
             // the second is an expression that might use fields of the child relationship.
-            if (function.arguments.size() != 2) {
+            if (function.arguments.size() < 2) {
                 throw new ResolverException(
                     'Error executing ' + function.functionName + ' function: the function must have exactly 2 arguments.'
                 );
