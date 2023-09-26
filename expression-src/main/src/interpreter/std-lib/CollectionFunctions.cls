@@ -424,12 +424,12 @@ public with sharing class CollectionFunctions {
 
             // If each element in the list is a map, sort by the field
             if (listVal.get(0) instanceof Map<Object, Object>) {
-                return doSort((List<Object>)listVal, (String) fieldToSortBy, (String) direction);
+                return doSort(listVal, (String) fieldToSortBy, (String) direction);
             }
 
             // If each element in the list is an sobject, sort by the field
             if (listVal.get(0) instanceof SObject) {
-                return doSort((List<SObject>)listVal, (String) fieldToSortBy, (String) direction);
+                return doSort(listVal, (String) fieldToSortBy, (String) direction);
             }
 
             // Otherwise, throw an error
