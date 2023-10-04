@@ -5,7 +5,7 @@
       "package": "Expression (Unlocked)",
       "versionName": "Version 1.11",
       "versionNumber": "1.11.0.NEXT",
-      "default": true
+      "default": false
     },
     {
       "path": "expression-components",
@@ -19,6 +19,10 @@
           "versionNumber": "1.11.0.LATEST"
         }
       ]
+    },
+    {
+      "path": "src-pull",
+      "default": true
     }
   ],
   "name": "Expression",

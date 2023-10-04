@@ -45,3 +45,4 @@ $RECYCLE.BIN/
 **/venv/
 /force-app/main/default/profiles/
 /IlluminatedCloud/Expression/OfflineSymbolTable.zip
+/src-pull/
