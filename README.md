@@ -1287,6 +1287,43 @@ The following formula can be used to query for Navigation Menu Items and display
 }
 ```
 
+### Hero
+
+The `Hero` component allows you to display a hero image with a title and description. It can be used
+in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+##### Map Format
+
+- `title` - The title to display.
+- `description` Optional - The description to display.
+- `callToAction` Optional - The call to action to display. This should be a map with the following format:
+  - `label` - The label to display.
+  - `url` - The URL to navigate to when the call to action is clicked.
+- `secondaryAction` Optional - The secondary action to display. This should be a map with the following format:
+  - `label` - The label to display.
+  - `url` - The URL to navigate to when the secondary action is clicked.
+- `bannerImage` Optional - The URL of the image to display.
+
+```json
+{
+  "title": <<String value or expression>>,
+  "description": <<String value or expression>>,
+  "callToAction": {
+    "label": <<String value or expression>>,
+    "url": <<String value or expression>>
+  },
+  "secondaryAction": {
+    "label": <<String value or expression>>,
+    "url": <<String value or expression>>
+  },
+  "bannerImage": <<String value or expression>>
+}
+```
+
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or submit a pull request.
