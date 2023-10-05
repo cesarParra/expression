@@ -1183,19 +1183,19 @@ by the `Expression` language.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MftIAE)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MftIAE)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MfyIAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MfyIAE)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011MftIAE
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MfyIAE
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MftIAE
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MfyIAE
 ```
 
 ## Components
@@ -1284,6 +1284,43 @@ The following formula can be used to query for Navigation Menu Items and display
 		"label": "Contact Us",
 		"url": "/contact"
 	}
+}
+```
+
+### Hero
+
+The `Hero` component allows you to display a hero image with a title and description. It can be used
+in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+##### Map Format
+
+- `title` - The title to display.
+- `description` Optional - The description to display.
+- `callToAction` Optional - The call to action to display. This should be a map with the following format:
+  - `label` - The label to display.
+  - `url` - The URL to navigate to when the call to action is clicked.
+- `secondaryAction` Optional - The secondary action to display. This should be a map with the following format:
+  - `label` - The label to display.
+  - `url` - The URL to navigate to when the secondary action is clicked.
+- `bannerImage` Optional - The URL of the image to display.
+
+```json
+{
+  "title": <<String value or expression>>,
+  "description": <<String value or expression>>,
+  "callToAction": {
+    "label": <<String value or expression>>,
+    "url": <<String value or expression>>
+  },
+  "secondaryAction": {
+    "label": <<String value or expression>>,
+    "url": <<String value or expression>>
+  },
+  "bannerImage": <<String value or expression>>
 }
 ```
 

@@ -1,0 +1,30 @@
+<template>
+  <div if:true={ready} class="relative isolate overflow-hidden bg-dxp-bg-root">
+    <div class={containerClasses}>
+      <div class={mainClasses}>
+        <h1 class="mt-10 text-4xl font-bold tracking-tight text-dxp-text-contrast sm:text-6xl">{computed.title}</h1>
+        <p if:true={computed.description} class="mt-6 text-lg leading-8 text-dxp-text-contrast-2">{computed.description}</p>
+        <div class={buttonClasses}>
+          <a if:true={computed.callToAction} href={computed.callToAction.url} class="rounded-md bg-dxp-brand
+          px-3.5 py-2.5 text-sm font-semibold text-dxp-brand-foreground shadow-sm hover:bg-dxp-brand-2
+          focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+          focus-visible:outline-dxp-brand">
+            {computed.callToAction.label}
+          </a>
+          <a if:true={computed.secondaryAction} href={computed.secondaryAction.url} class="text-sm font-semibold
+          leading-6 text-dxp-text-contrast">Learn more <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div if:true={computed.bannerImage} class="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32">
+        <div class="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
+          <div class="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
+            <img src={computed.bannerImage} alt="Banner" width="2432" height="1442" class="w-[76rem] rounded-md shadow-2xl ring-1 ring-gray-900/10">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div if:true={error}>
+    <c-alert title="Error parsing expression" message={error}></c-alert>
+  </div>
+</template>
