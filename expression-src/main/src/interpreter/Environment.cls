@@ -4,6 +4,9 @@ public with sharing class Environment {
 
     public Environment(SObject context) {
         this.context = context;
+
+        // Define global variables
+        define('$label', new CustomLabelVariableResolver.CustomLabelResolverWrapper());
     }
 
     public Boolean noRecordContext() {
@@ -21,7 +24,10 @@ public with sharing class Environment {
             return true;
         }
 
-        Set<String> fields = context.getSObjectType().getDescribe().fields.getMap().keySet();
+        Set<String> fields = context?.getSObjectType().getDescribe().fields.getMap().keySet();
+        if (fields == null) {
+            return false;
+        }
         if (fields.contains(lowerCaseField)) {
             return true;
         }

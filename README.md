@@ -226,6 +226,22 @@ At this moment advanced querying capabilities like filtering, sorting, or limiti
 are not supported. To get over these limitations, you can create a custom formula using Apex. See the
 [Advanced Usage](#advanced-usage) section for more information.
 
+## Referencing Org Data
+
+### Custom Labels
+
+You can reference custom labels using the `$Label` global variable.
+
+> ️❗ A namespace needs to be provided when referencing a label. To use the current namesapce
+> (or no namespace at all), use the letter `c`.
+
+Label references will automatically be translated to the current user's language.
+
+```apex
+Object result = expression.Evaluator.run('$Label.c.MyCustomLabel');
+Object result = expression.Evaluator.run('$Label.namespace.MyCustomLabel');
+```
+
 ## Advanced Usage
 
 ### Custom Formula Functions

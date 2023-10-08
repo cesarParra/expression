@@ -25,7 +25,7 @@ public with sharing class AstPrinter implements Visitor {
     }
 
     public Object visit(Expr.Variable variable) {
-        return variable.name.lexeme;
+        return 'Variable(' + variable.name.lexeme + ')';
     }
 
     public Object visit(Expr.MergeField mergeField) {
@@ -43,7 +43,7 @@ public with sharing class AstPrinter implements Visitor {
 
     public Object visit(Expr.GetExpr getExpr) {
         return parenthesize(
-            'GET:' + String.valueOf(visit(getExpr.field)),
+            'GET:' + getExpr.field.lexeme,
             new List<Expr>{
                 getExpr.objectExpr
             }

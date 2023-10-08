@@ -81,9 +81,9 @@ public abstract class Expr {
 
     public class GetExpr extends Expr {
         public final Expr objectExpr;
-        public final MergeField field;
+        public final Token field;
 
-        public GetExpr(Expr objectExpr, MergeField field) {
+        public GetExpr(Expr objectExpr, Token field) {
             this.objectExpr = objectExpr;
             this.field = field;
         }
