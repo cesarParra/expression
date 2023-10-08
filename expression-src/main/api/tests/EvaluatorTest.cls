@@ -1287,6 +1287,11 @@ private class EvaluatorTest {
     }
 
     @IsTest
+    private static void canPipeFunctionCalls_pipeHasPrecedenceWhenPairedWithOtherExpressions() {
+        Assert.areEqual(8, Evaluator.run('LIST(1, 2, 3) -> SIZE() + 5'));
+    }
+
+    @IsTest
     private static void canPipeFunctionCallsMultipleTimes() {
         Object result = Evaluator.run('[1, 2, 3, 4, 5, 6] -> WHERE($current > 2) -> WHERE($current < 5)');
         Assert.areEqual(2, ((List<Object>) result).size());
@@ -1464,8 +1469,8 @@ private class EvaluatorTest {
         };
 
         String formula = 'REDUCE(ChildAccounts, ' +
-                '{"employees": NumberOfEmployees + GET($accumulator, "employees"), "revenue": AnnualRevenue + GET($accumulator, "revenue")}, ' +
-                '{"employees": 0, "revenue": 0}' +
+            '{"employees": NumberOfEmployees + GET($accumulator, "employees"), "revenue": AnnualRevenue + GET($accumulator, "revenue")}, ' +
+            '{"employees": 0, "revenue": 0}' +
             ')';
         Object result = Evaluator.run(formula, parentAccount.Id);
 
@@ -1484,5 +1489,14 @@ private class EvaluatorTest {
         public String get(String namespace, String label, String language) {
             return 'Value';
         }
+    }
+
+    @IsTest
+    private static void canAccessMapKeysUsingDotNotation() {
+        String formula = 'MAP([{"keyName": "A"}, {"keyName": "B"}], $current.keyName)';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual(2, ((List<Object>) result).size());
+        Assert.areEqual('A', ((List<Object>) result)[0]);
+        Assert.areEqual('B', ((List<Object>) result)[1]);
     }
 }

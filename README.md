@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgDIAU)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgDIAU)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgNIAU)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgNIAU)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011MgDIAU
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MgNIAU
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MgDIAU
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MgNIAU
 ```
 
 ### Direct Deployment to Salesforce
@@ -42,6 +42,27 @@ sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000001
 Clone the repo and deploy the source code, or click the button below to directly deploy to Salesforce.
 
 [![Deploy to Salesforce](assets/deploy.png)](https://githubsfdeploy.herokuapp.com/app/githubdeploy/cesarParra/formula-evaluator)
+
+## Setup
+
+Grant the `Expression Admin` permission set to any user that will be configuring and
+managing the application.
+
+This permission set grants access to the Expression Playground tab, and the Expression
+Function custom metadata type.
+
+## Playground
+
+The Expression Playground tab allows you to test and evaluate formulas in a
+visual way.
+
+[![Expression Playground](assets/expression-playground.png)](assets/expression-playground.png)
+
+With it, you can quickly test and validate expressions, and see the results
+in real-time. You can also use it to learn about the different operators and
+functions available.
+
+To provide a context for the expression you can also specify a record Id (optional).
 
 ## Usage
 
