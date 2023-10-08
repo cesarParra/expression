@@ -72,7 +72,6 @@ public with sharing class ContextResolver implements Visitor {
 
             this.queryContext = (Query) result;
             resolve(function.arguments[1]);
-
             this.queryContext = previousContext;
 
             if (function.functionName == 'WHERE') {
