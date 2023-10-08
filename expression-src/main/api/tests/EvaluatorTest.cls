@@ -1321,4 +1321,64 @@ private class EvaluatorTest {
             return concatenated;
         }
     }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoTimes_hoursDifference() {
+        String formula = 'FORMATDURATION(TIMEVALUE("01:00:00"), TIMEVALUE("02:00:00"))';
+        Assert.areEqual('01:00:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoTimes_minutesDifference() {
+        String formula = 'FORMATDURATION(TIMEVALUE("01:30:00"), TIMEVALUE("02:00:00"))';
+        Assert.areEqual('00:30:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoTimes_secondsDifference() {
+        String formula = 'FORMATDURATION(TIMEVALUE("01:30:00"), TIMEVALUE("01:30:45"))';
+        Assert.areEqual('00:00:45', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoTimes_multipleDifferences() {
+        String formula = 'FORMATDURATION(TIMEVALUE("01:45:00"), TIMEVALUE("09:00:01"))';
+        Assert.areEqual('07:15:01', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoTimes_firstTimeGreaterThanSecond() {
+        String formula = 'FORMATDURATION(TIMEVALUE("02:00:00"), TIMEVALUE("01:00:00"))';
+        Assert.areEqual('01:00:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoDateTimes_daysDifference() {
+        String formula = 'FORMATDURATION(DATETIMEVALUE("2015-01-01 00:00:00"), DATETIMEVALUE("2015-01-02 00:00:00"))';
+        Assert.areEqual('24:00:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoDateTimes_hoursDifference() {
+        String formula = 'FORMATDURATION(DATETIMEVALUE("2015-01-01 01:00:00"), DATETIMEVALUE("2015-01-01 02:00:00"))';
+        Assert.areEqual('01:00:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoDateTimes_minutesDifference() {
+        String formula = 'FORMATDURATION(DATETIMEVALUE("2015-01-01 01:30:00"), DATETIMEVALUE("2015-01-01 02:00:00"))';
+        Assert.areEqual('00:30:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoDateTimes_secondsDifference() {
+        String formula = 'FORMATDURATION(DATETIMEVALUE("2015-01-01 01:30:00"), DATETIMEVALUE("2015-01-01 01:30:45"))';
+        Assert.areEqual('00:00:45', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoDateTimes_multipleDifferences() {
+        String formula = 'FORMATDURATION(DATETIMEVALUE("2015-01-01 01:45:00"), DATETIMEVALUE("2015-01-01 09:00:01"))';
+        Assert.areEqual('07:15:01', Evaluator.run(formula));
+    }
 }

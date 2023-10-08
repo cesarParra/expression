@@ -856,7 +856,7 @@ expression.Evaluator.run('MINUTE(TIMEVALUE("12:10:00"))'); // 10
 
 - `SECOND`
 
-REturns the second value of a provided time.
+Returns the second value of a provided time.
 
 Accepts 1 argument: the time to evaluate.
 
@@ -897,6 +897,21 @@ Accepts 1 argument: the date to evaluate.
 
 ```apex
 expression.Evaluator.run('WEEKDAY(DATE(2020, 1, 1))'); // 4
+```
+
+- `FORMATDURATION`
+
+Calculates the difference between 2 Times or 2 DateTimes
+and formats it as "HH:MM:SS".
+
+Accepts 2 arguments: either 2 Times or 2 DateTimes.
+
+Note that the order of the argument is not important, the
+function will always return a positive duration.
+
+```apex
+expression.Evaluator.run('FORMATDURATION(TIMEVALUE("12:00:00"), TIMEVALUE("12:00:01"))'); // "00:00:01"
+expression.Evaluator.run('FORMATDURATION(DATETIMEVALUE("2015-01-01 00:00:00"), DATETIMEVALUE("2015-01-02 00:00:00"))'); // "24:00:00"
 ```
 
 #### List Functions
