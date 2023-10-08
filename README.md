@@ -1183,19 +1183,19 @@ by the `Expression` language.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MfyIAE)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MfyIAE)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011Mg8IAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011Mg8IAE)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011MfyIAE
+sf package install --apex-compile package --wait 20 --package 04tDm0000011Mg8IAE
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MfyIAE
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011Mg8IAE
 ```
 
 ## Components
@@ -1321,6 +1321,36 @@ in a community page.
     "url": <<String value or expression>>
   },
   "bannerImage": <<String value or expression>>
+}
+```
+
+### Logos
+
+The `Logos` component allows you to display a list of logos. It can be used
+to display a list of sponsors, partners, clients, etc.
+
+Supports being placed in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+##### Map Format
+
+- `title` - The title to display.
+- `logos` - List of logos to display. Each logo should be a map with the following format:
+  - `name` - The name of the logo.
+  - `src` - The URL of the image to display.
+
+```json
+{
+  "title": <<String value or expression>>,
+  "logos": [
+    {
+      "name": <<String value or expression>>,
+      "src": <<String value or expression>>
+    }
+  ]
 }
 ```
 
