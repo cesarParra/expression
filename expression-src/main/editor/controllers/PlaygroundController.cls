@@ -1,13 +1,13 @@
-/**
- * Created by cesar on 10/2/2023.
- */
-
 public with sharing class PlaygroundController {
     @AuraEnabled(Cacheable=true)
     public static List<String> getFunctions() {
-        // TODO: Also add custom functions configured through CMTs
+        Set<String> builtInFunctionNames = ExpressionFunction.FUNCTIONS.keySet();
+        Set<String> customFunctionNames = Expression_Function__mdt.getAll().keySet();
+        Set<String> functionNames = new Set<String>();
+        functionNames.addAll(builtInFunctionNames);
+        functionNames.addAll(customFunctionNames);
         return new List<String>(
-            ExpressionFunction.FUNCTIONS.keySet()
+            functionNames
         );
     }
 
