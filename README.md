@@ -242,6 +242,16 @@ Object result = expression.Evaluator.run('$Label.c.MyCustomLabel');
 Object result = expression.Evaluator.run('$Label.namespace.MyCustomLabel');
 ```
 
+### Custom Metadata
+
+You can reference custom metadata records using the `$CustomMetadata` global variable.
+
+To access the data of a custom metadata record, you need to specify the type, the record name, and the field:
+
+```apex
+Object result = expression.Evaluator.run('$CustomMetadata.MyCustomMetadataType.MyCustomMetadataRecord.MyField__c');
+```
+
 ## Advanced Usage
 
 ### Custom Formula Functions

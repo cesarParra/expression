@@ -213,7 +213,7 @@ public with sharing class Scanner {
     }
 
     private void variableAccess() {
-        while (peek().isAlphanumeric()) {
+        while (isValidSalesforceIdentifier(peek())) {
             advance();
         }
 
@@ -222,7 +222,7 @@ public with sharing class Scanner {
     }
 
     private void identifierLiteral() {
-        while (peek().isAlphanumeric()) {
+        while (isValidSalesforceIdentifier(peek())) {
             advance();
         }
 
@@ -234,6 +234,13 @@ public with sharing class Scanner {
             type = TokenType.IDENTIFIER;
         }
         addToken(type);
+    }
+
+    private static Boolean isValidSalesforceIdentifier(String identifier) {
+        // Any alphanumeric character, and underscores
+        Pattern p = Pattern.compile('^[a-zA-Z0-9_]+$');
+        Matcher m = p.matcher(identifier);
+        return m.matches();
     }
 
     private Boolean isAtEnd() {
