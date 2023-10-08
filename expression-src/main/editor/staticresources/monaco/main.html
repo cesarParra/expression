@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link
+            rel="stylesheet"
+            data-name="vs/editor/editor.main"
+            href="min/vs/editor/editor.main.css"
+    />
+</head>
+<body style="margin: 0;">
+<div id="container" style="width: 800px; height: 600px;"></div>
+
+<script>
+    var require = {paths: {vs: 'min/vs'}};
+</script>
+<script src="min/vs/loader.js"></script>
+<script src="min/vs/editor/editor.main.nls.js"></script>
+<script src="min/vs/editor/editor.main.js"></script>
+
+<script>
+    window.addEventListener("message", onMessage, false);
+
+    function onMessage(event) {
+        console.log(JSON.stringify(event.data));
+        if (event.data.name === 'initialize') {
+            initialize(event.data.keywords);
+        }
+    }
+
+    function initialize(functionKeywords) {
+        monaco.languages.register({id: 'expression'});
+        let keywords = functionKeywords;
+        monaco.languages.setMonarchTokensProvider('expression', {
+            keywords,
+            tokenizer: {
+                root: [
+                    // identifiers and keywords
+                    [/[a-zA-Z_$][\w$]*/, {
+                        cases: {
+                            '@keywords': 'keyword',
+                        }
+                    }],
+                    [/".*?"/, 'string'],
+                    [/[{}()\[\]]/, '@brackets'],
+                ],
+            },
+            ignoreCase: true
+        });
+        monaco.languages.registerCompletionItemProvider('expression', {
+            provideCompletionItems(model, position, context, token) {
+                const suggestions = [
+                    ...keywords.map(
+                        k => {
+                            return {
+                                label: k,
+                                kind: monaco.languages.CompletionItemKind.Keyword,
+                                insertText: k,
+                            }
+                        }
+                    )
+                ];
+                return {suggestions: suggestions};
+            }
+        });
+
+        window.editor = monaco.editor.create(document.getElementById('container'), {
+            value: [''].join('\n'),
+            language: 'expression',
+        });
+    }
+</script>
+</body>
+</html>
