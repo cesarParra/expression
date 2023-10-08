@@ -246,6 +246,16 @@ private class EvaluatorTest {
     }
 
     @IsTest
+    private static void containsFunctionReturnsTrueIfAListContainsTheGivenValue() {
+        Assert.areEqual(true, Evaluator.run('CONTAINS(LIST(1, 2, 3), 2)'));
+    }
+
+    @IsTest
+    private static void containsFunctionReturnsFalseIfAListDoesNotContainTheGivenValue() {
+        Assert.areEqual(false, Evaluator.run('CONTAINS(LIST(1, 2, 3), 4)'));
+    }
+
+    @IsTest
     private static void lowerFunctionReturnsLowercaseString() {
         Assert.areEqual('hello world', Evaluator.run('LOWER("Hello World")'));
     }

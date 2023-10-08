@@ -960,6 +960,16 @@ Accepts 1 argument: the list to evaluate.
 expression.Evaluator.run('LAST([1, 2, 3])'); // 3
 ```
 
+- `CONTAINS`
+
+Returns true if the list contains the given value.
+
+Accepts 2 arguments: the list to evaluate and the value to check.
+
+```apex
+expression.Evaluator.run('CONTAINS([1, 2, 3], 2)'); // true
+```
+
 - `MAP`
 
 Maps to a list using the first argument as the context and the second argument as the expression to evaluate.
