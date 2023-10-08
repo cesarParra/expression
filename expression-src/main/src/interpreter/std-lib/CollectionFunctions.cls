@@ -12,7 +12,8 @@ public with sharing class CollectionFunctions {
         'KEYS' => new KeysFn(),
         'GET' => new GetFn(),
         'VALUES' => new ValuesFn(),
-        'FETCH' => new FetchFn()
+        'FETCH' => new FetchFn(),
+        'FIRST' => new FirstFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -542,6 +543,26 @@ public with sharing class CollectionFunctions {
                 return -1;
             }
             return 1;
+        }
+    }
+
+    private class FirstFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "FIRST" function: the first argument must evaluate to a list.'
+                );
+            }
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return null;
+            }
+            return listVal.get(0);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 }

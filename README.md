@@ -936,6 +936,16 @@ expression.Evaluator.run('MONTH(DATE(2020, 1, 1))'); // 1
 
 #### List Functions
 
+- `FIRST`
+
+Returns the first element of a list.
+
+Accepts 1 argument: the list to evaluate.
+
+```apex
+expression.Evaluator.run('FIRST([1, 2, 3])'); // 1
+```
+
 - `MAP`
 
 Maps to a list using the first argument as the context and the second argument as the expression to evaluate.

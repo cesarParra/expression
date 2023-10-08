@@ -1397,4 +1397,9 @@ private class EvaluatorTest {
     private static void valueFunctionConvertsAStringToANumber() {
         Assert.areEqual(1, Evaluator.run('VALUE("1")'));
     }
+
+    @IsTest
+    private static void firstFunctionReturnsTheFirstElementOfAList() {
+        Assert.areEqual(1, Evaluator.run('FIRST([1, 2, 3])'));
+    }
 }
