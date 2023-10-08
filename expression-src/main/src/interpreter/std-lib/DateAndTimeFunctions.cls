@@ -20,7 +20,8 @@ public with sharing class DateAndTimeFunctions {
         'FROMUNIXTIME' => new DateAndTimeFunctions.FromUnixTimeFn(),
         'UNIXTIMESTAMP' => new UnixTimeStampFn(),
         'WEEKDAY' => new WeekdayFn(),
-        'FORMATDURATION' => new FormatDuration()
+        'FORMATDURATION' => new FormatDuration(),
+        'MONTH' => new MonthFn()
     };
 
     private enum TimeType {
@@ -444,6 +445,24 @@ public with sharing class DateAndTimeFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+    }
+
+    private class MonthFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect a Date
+            Object dateValue = evaluate(arguments.get(0));
+            if (!(dateValue instanceof Date)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "MONTH" function: the argument must evaluate to a date value.'
+                );
+            }
+
+            return ((Date) dateValue).month();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 }

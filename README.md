@@ -914,6 +914,16 @@ expression.Evaluator.run('FORMATDURATION(TIMEVALUE("12:00:00"), TIMEVALUE("12:00
 expression.Evaluator.run('FORMATDURATION(DATETIMEVALUE("2015-01-01 00:00:00"), DATETIMEVALUE("2015-01-02 00:00:00"))'); // "24:00:00"
 ```
 
+- `MONTH`
+
+Returns the month, a number between 1 and 12 (December) in number format of a given date.
+
+Accepts 1 argument: the date to evaluate.
+
+```apex
+expression.Evaluator.run('MONTH(DATE(2020, 1, 1))'); // 1
+```
+
 #### List Functions
 
 - `MAP`

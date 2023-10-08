@@ -1381,4 +1381,10 @@ private class EvaluatorTest {
         String formula = 'FORMATDURATION(DATETIMEVALUE("2015-01-01 01:45:00"), DATETIMEVALUE("2015-01-01 09:00:01"))';
         Assert.areEqual('07:15:01', Evaluator.run(formula));
     }
+
+    @IsTest
+    private static void monthReturnsANumberBetween1And12ForTheSpecifiedDate() {
+        Assert.areEqual(1, Evaluator.run('MONTH(DATE(2015, 1, 1))'));
+        Assert.areEqual(12, Evaluator.run('MONTH(DATE(2015, 12, 1))'));
+    }
 }
