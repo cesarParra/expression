@@ -1427,4 +1427,49 @@ private class EvaluatorTest {
     private static void lastFunctionReturnsNullIfTheListIsEmpty() {
         Assert.isNull(Evaluator.run('LAST([])'));
     }
+
+    @IsTest
+    private static void reduceCanSumAListOfNumbers() {
+        Assert.areEqual(6, Evaluator.run('REDUCE([1, 2, 3], $current + $accumulator, 0)'));
+    }
+
+    @IsTest
+    private static void reduceWorksWithSObjectExpressions() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30, AnnualRevenue = 300);
+        insert new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        };
+
+        String formula = 'REDUCE(ChildAccounts, NumberOfEmployees + $accumulator, 0)';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(60, result);
+    }
+
+    @IsTest
+    private static void reduceToMap() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30, AnnualRevenue = 300);
+        insert new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        };
+
+        String formula = 'REDUCE(ChildAccounts, ' +
+                '{"employees": NumberOfEmployees + GET($accumulator, "employees"), "revenue": AnnualRevenue + GET($accumulator, "revenue")}, ' +
+                '{"employees": 0, "revenue": 0}' +
+            ')';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(60, ((Map<Object, Object>) result).get('employees'));
+        Assert.areEqual(600, ((Map<Object, Object>) result).get('revenue'));
+    }
 }

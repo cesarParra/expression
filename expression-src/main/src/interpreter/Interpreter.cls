@@ -173,7 +173,6 @@ public with sharing class Interpreter implements Visitor {
                     ' does not contain a field with the name: ' + getExpr.field.name.lexeme
             );
         } else if (result instanceof Environment) {
-            // TODO: Take care of duplication
             Environment tempEnvironmentForGet = (Environment) result;
 
             // We might be dealing with either a field reference or with a reference to another parent

@@ -1012,6 +1012,35 @@ Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmploy
 Object result = expression.Evaluator.run('AVERAGE(MAP(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
 ```
 
+- `REDUCE`
+
+Reduces a list to a single value using the first argument as the context, the second argument as the expression to evaluate,
+and the third argument as the initial value.
+
+Accepts 3 arguments: List of objects, an expression to evaluate, and the initial value.
+
+Provides 2 special variables in the inner expression: 
+- `$current` - the current item being iterated over 
+- `$accumulator` - the current value of the accumulator that will be returned
+
+```apex
+Object result = expression.Evaluator.run('REDUCE([1, 2, 3], $accumulator + $current, 0)'); // 6
+```
+
+This function can be used to build complex objects from a list of data. For example, to aggregate
+the number of employees and revenue for an account based on the values from its children, an expression
+as follows can be used:
+
+```apex
+Id parentAccountId = '001000000000000AAA';
+String formula = 'REDUCE(ChildAccounts, ' +
+    '{"employees": NumberOfEmployees + GET($accumulator, "employees"), "revenue": AnnualRevenue + GET($accumulator, "revenue")}, ' +
+    '{"employees": 0, "revenue": 0}' +
+    ')';
+Object result = Evaluator.run(formula, parentAccountId);
+// { "employees": 10, "revenue": 1000000 }
+```
+
 - `WHERE`
 
 Filters a list using the first argument as the context and the second argument as the expression to evaluate.

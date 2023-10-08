@@ -14,7 +14,8 @@ public with sharing class CollectionFunctions {
         'VALUES' => new ValuesFn(),
         'FETCH' => new FetchFn(),
         'FIRST' => new FirstFn(),
-        'LAST' => new LastFn()
+        'LAST' => new LastFn(),
+        'REDUCE' => new ReduceFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -584,6 +585,57 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(1);
+        }
+    }
+
+    private class ReduceFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "REDUCE" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            // Third argument is an initial value
+            Object initialValue = evaluate(arguments.get(2));
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return initialValue;
+            }
+
+            // Loop through each element in the list, evaluating the
+            // expression with the current value (as $current) being looped
+            // through and the accumulator (as $accumulator)
+            // The result of the expression will be the new value.
+            Object accumulator = initialValue;
+            for (Object currentVal : listVal) {
+                Environment env;
+                if (currentVal instanceof SObject) {
+                    env = new Environment((SObject)currentVal);
+                } else {
+                    env = new Environment(null);
+                }
+                env.define('$current', currentVal);
+                env.define('$accumulator', accumulator);
+                Interpreter interpreter = new Interpreter(env);
+                accumulator = interpreter.interpret(expr);
+            }
+            return accumulator;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(3);
+        }
+
+        public override Boolean needsChildrenResolution() {
+            return true;
         }
     }
 }
