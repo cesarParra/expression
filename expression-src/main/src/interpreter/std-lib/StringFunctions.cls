@@ -17,7 +17,8 @@ public with sharing class StringFunctions {
         'SUBSTITUTE' => new SubstituteFn(),
         'TEXT' => new TextFn(),
         'TRIM' => new TrimFn(),
-        'UPPER' => new UpperFn()
+        'UPPER' => new UpperFn(),
+        'VALUE' => new ValueFn()
     };
 
     private class Begins extends ExpressionFunction {
@@ -504,6 +505,24 @@ public with sharing class StringFunctions {
             }
 
             return ((String) value).toUpperCase();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class ValueFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // The argument must be a string
+            Object value = evaluate(arguments.get(0));
+            if (!(value instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "VALUE" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return Decimal.valueOf((String) value);
         }
 
         public override Arity getArity() {

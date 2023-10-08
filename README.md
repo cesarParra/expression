@@ -699,6 +699,16 @@ Accepts 1 argument: the text to convert.
 expression.Evaluator.run('UPPER("Hello World")'); // "HELLO WORLD"
 ```
 
+- `VALUE`
+
+Converts a text string that represents a number to a number.
+
+Accepts 1 argument: the text to convert.
+
+```apex
+expression.Evaluator.run('VALUE("1")'); // 1
+```
+
 #### Date and Time Functions
 
 - `DATE`

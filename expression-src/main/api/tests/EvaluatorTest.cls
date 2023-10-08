@@ -1392,4 +1392,9 @@ private class EvaluatorTest {
     private static void modFunctionReturnsTheRemainderOfTheDivision() {
         Assert.areEqual(1, Evaluator.run('MOD(5, 2)'));
     }
+
+    @IsTest
+    private static void valueFunctionConvertsAStringToANumber() {
+        Assert.areEqual(1, Evaluator.run('VALUE("1")'));
+    }
 }
