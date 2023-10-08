@@ -983,6 +983,16 @@ expression.Evaluator.run('MONTH(DATE(2020, 1, 1))'); // 1
 
 #### List Functions
 
+- `APPEND`
+
+Appends an element to a list.
+
+Accepts 2 arguments: the list to append to and the element to append.
+
+```apex
+expression.Evaluator.run('APPEND([1, 2, 3], 4)'); // (1, 2, 3, 4)
+```
+
 - `FIRST`
 
 Returns the first element of a list.
@@ -993,6 +1003,16 @@ Accepts 1 argument: the list to evaluate.
 
 ```apex
 expression.Evaluator.run('FIRST([1, 2, 3])'); // 1
+```
+
+- `DISTINCT`
+
+Returns a list of unique values.
+
+Accepts 1 argument: the list to evaluate.
+
+```apex
+expression.Evaluator.run('DISTINCT([1, 2, 3, 1, 2, 3])'); // (1, 2, 3)
 ```
 
 - `LAST`
@@ -1088,6 +1108,40 @@ Object result = Evaluator.run(formula, parentAccountId);
 // { "employees": 10, "revenue": 1000000 }
 ```
 
+- `REVERSE`
+
+Reverses a list.
+
+Accepts 1 argument: the list to reverse.
+
+```apex
+expression.Evaluator.run('REVERSE([1, 2, 3])'); // (3, 2, 1)
+```
+
+- `SORT`
+
+Sorts a list.
+
+Accepts at least one argument: the list to sort.
+When sorting a list of Maps or a list of SObjects,
+two additional arguments can be provided: the field to sort by and the sort direction.
+
+The field to sort can either be a field name as a merge field (field name without quotes), or an expression that evaluates to a string
+representing the field name. Merge fields are only supported when sorting SObjects and are useful to get the framework to automatically
+query the field for you.
+
+> The merge field must be a field on the SObject being sorted itself, not a relationship field.
+
+The sort direction can either be the literal string (requires quotes) `ASC` or `DESC`.
+
+```apex
+expression.Evaluator.run('SORT([3, 2, 1])'); // (1, 2, 3)
+expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a")'); // ({ "a": 1 }, { "a": 2 }, { "a": 3 })
+expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a", "DESC")'); // ({ "a": 3 }, { "a": 2 }, { "a": 1 })
+expression.Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")'); // ({"Name": "ACME"}, {"Name": "Another Account"})
+expression.Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc")', parentAccount.Id); // ({"NumberOfEmployees": 1}, {"NumberOfEmployees": 2})
+```
+
 - `WHERE`
 
 Filters a list using the first argument as the context and the second argument as the expression to evaluate.
@@ -1174,60 +1228,6 @@ expression.Evaluator.run('ISEMPTY(LIST(1, 2, 3))'); // false
 expression.Evaluator.run('ISEMPTY({ "a": 1, "b": 2, "c": 3 })'); // false
 expression.Evaluator.run('ISEMPTY(LIST())'); // true
 expression.Evaluator.run('ISEMPTY({})'); // true
-```
-
-- `APPEND`
-
-Appends an element to a list.
-
-Accepts 2 arguments: the list to append to and the element to append.
-
-```apex
-expression.Evaluator.run('APPEND([1, 2, 3], 4)'); // (1, 2, 3, 4)
-```
-
-- `REVERSE`
-
-Reverses a list.
-
-Accepts 1 argument: the list to reverse.
-
-```apex
-expression.Evaluator.run('REVERSE([1, 2, 3])'); // (3, 2, 1)
-```
-
-- `DISTINCT`
-
-Returns a list of unique values.
-
-Accepts 1 argument: the list to evaluate.
-
-```apex
-expression.Evaluator.run('DISTINCT([1, 2, 3, 1, 2, 3])'); // (1, 2, 3)
-```
-
-- `SORT`
-
-Sorts a list.
-
-Accepts at least one argument: the list to sort.
-When sorting a list of Maps or a list of SObjects,
-two additional arguments can be provided: the field to sort by and the sort direction.
-
-The field to sort can either be a field name as a merge field (field name without quotes), or an expression that evaluates to a string
-representing the field name. Merge fields are only supported when sorting SObjects and are useful to get the framework to automatically
-query the field for you.
-
-> The merge field must be a field on the SObject being sorted itself, not a relationship field.
-
-The sort direction can either be the literal string (requires quotes) `ASC` or `DESC`.
-
-```apex
-expression.Evaluator.run('SORT([3, 2, 1])'); // (1, 2, 3)
-expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a")'); // ({ "a": 1 }, { "a": 2 }, { "a": 3 })
-expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a", "DESC")'); // ({ "a": 3 }, { "a": 2 }, { "a": 1 })
-expression.Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")'); // ({"Name": "ACME"}, {"Name": "Another Account"})
-expression.Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc")', parentAccount.Id); // ({"NumberOfEmployees": 1}, {"NumberOfEmployees": 2})
 ```
 
 #### Math Functions
