@@ -168,7 +168,17 @@ public with sharing class Interpreter implements Visitor {
             );
         } else if (result instanceof IGlobalVariableResolver) {
             return ((IGlobalVariableResolver) result).get(getExpr.field.lexeme);
+        } else if (result instanceof Map<Object, Object>) {
+            Map<Object, Object> castMap = (Map<Object, Object>) result;
+            if (castMap.containsKey(getExpr.field.lexeme)) {
+                return castMap.get(getExpr.field.lexeme);
+            }
+
+            throw new InterpreterException(
+                'Error executing get expression: the map does not contain a key with the name: ' + getExpr.field.lexeme
+            );
         }
+
         throw new InterpreterException(
             'Error executing get expression: could not determine the value of: ' +
                 getExpr.field.lexeme + ' from ' + result
@@ -196,7 +206,7 @@ public with sharing class Interpreter implements Visitor {
     public Object visit(Expr.MergeField mergeField) {
         if (env.noRecordContext()) {
             throw new InterpreterException(
-                'Error executing merge field' + mergeField.name.lexeme + ': no record context was provided.'
+                'Error executing merge field ' + mergeField.name.lexeme + ': no record context was provided.'
             );
         }
 
