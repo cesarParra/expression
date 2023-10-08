@@ -17,7 +17,8 @@ public with sharing class StringFunctions {
         'SUBSTITUTE' => new SubstituteFn(),
         'TEXT' => new TextFn(),
         'TRIM' => new TrimFn(),
-        'UPPER' => new UpperFn()
+        'UPPER' => new UpperFn(),
+        'VALUE' => new ValueFn()
     };
 
     private class Begins extends ExpressionFunction {
@@ -46,21 +47,29 @@ public with sharing class StringFunctions {
 
     private class Contains extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            Object text = evaluate(arguments.get(0));
-            if (!(text instanceof String)) {
+            Object firstValue = evaluate(arguments.get(0));
+            if (!(firstValue instanceof String) && !(firstValue instanceof List<Object>)) {
                 throw new Interpreter.InterpreterException(
-                    'Error executing "CONTAINS" function: the argument must evaluate to a string value.'
+                    'Error executing "CONTAINS" function: the argument must evaluate to a string or list value.'
                 );
             }
 
-            Object substring = evaluate(arguments.get(1));
-            if (!(substring instanceof String)) {
-                throw new Interpreter.InterpreterException(
-                    'Error executing "CONTAINS function: the argument must evaluate to a string value.'
-                );
+            // When dealing with text
+            if (firstValue instanceof String) {
+                Object substring = evaluate(arguments.get(1));
+                if (!(substring instanceof String)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "CONTAINS" function: the argument must evaluate to a string value.'
+                    );
+                }
+
+                return ((String) firstValue).contains((String) substring);
             }
 
-            return ((String) text).contains((String) substring);
+            // When dealing with lists
+            Object value = evaluate(arguments.get(1));
+            List<Object> castList = (List<Object>) firstValue;
+            return castList.contains(value);
         }
 
         public override Arity getArity() {
@@ -504,6 +513,24 @@ public with sharing class StringFunctions {
             }
 
             return ((String) value).toUpperCase();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class ValueFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // The argument must be a string
+            Object value = evaluate(arguments.get(0));
+            if (!(value instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "VALUE" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return Decimal.valueOf((String) value);
         }
 
         public override Arity getArity() {

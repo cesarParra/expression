@@ -91,10 +91,14 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.GetExpr getExpr) {
-        String referenceName = this.resolveExtractReferenceOutOfGetExpression(getExpr);
-        this.queryContext.queryBuilder.selectField(referenceName);
-        this.shouldExecuteQuery = true;
-        return null;
+        try {
+            String referenceName = this.resolveExtractReferenceOutOfGetExpression(getExpr);
+            this.queryContext.queryBuilder.selectField(referenceName);
+            this.shouldExecuteQuery = true;
+            return null;
+        } catch (NotSupportedGetResolutionException e) {
+            return null;
+        }
     }
 
     private String resolveExtractReferenceOutOfGetExpression(Expr.GetExpr getExpr) {
@@ -104,9 +108,14 @@ public with sharing class ContextResolver implements Visitor {
             relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme + '.';
         } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
             relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
+        } else {
+            // If we are doing a "get" expression on anything that is not either a merge field
+            // or another inner get expression, we don't know how to resolve it, so we shouldn't
+            // end up adding it to the query
+            throw new NotSupportedGetResolutionException();
         }
 
-        return relationshipToQuery + getExpr.field.name.lexeme;
+        return relationshipToQuery + getExpr.field.lexeme;
     }
 
     public Object visit(Expr.Variable variable) {
@@ -210,5 +219,8 @@ public with sharing class ContextResolver implements Visitor {
             }
         }
         return null;
+    }
+
+    private class NotSupportedGetResolutionException extends Exception {
     }
 }

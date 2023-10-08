@@ -6,7 +6,8 @@ public with sharing class MathFunctions {
         'MAX' => new MaxMixFns('MAX'),
         'MIN' => new MaxMixFns('MIN'),
         'ROUND' => new RoundAndTruncFns('ROUND'),
-        'TRUNC' => new RoundAndTruncFns('TRUNC')
+        'TRUNC' => new RoundAndTruncFns('TRUNC'),
+        'MOD' => new ModFn()
     };
 
     private class AbsFn extends ExpressionFunction {
@@ -149,6 +150,30 @@ public with sharing class MathFunctions {
 
         public override Arity getArity() {
             return Arity.atLeast(1);
+        }
+    }
+
+    private class ModFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object dividendValue = evaluate(arguments.get(0));
+            if (!(dividendValue instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "MOD" function: the first argument must evaluate to a number value.'
+                );
+            }
+
+            Object divisorValue = evaluate(arguments.get(1));
+            if (!(divisorValue instanceof Decimal)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "MOD" function: the second argument must evaluate to a number value.'
+                );
+            }
+
+            return Math.mod(Integer.valueOf(dividendValue), Integer.valueOf(divisorValue));
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
         }
     }
 }

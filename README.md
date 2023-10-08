@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MfoIAE)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MfoIAE)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgDIAU)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgDIAU)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011MfoIAE
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MgDIAU
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MfoIAE
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MgDIAU
 ```
 
 ### Direct Deployment to Salesforce
@@ -225,6 +225,32 @@ explicitly specify all fields you wish to reference in the formula.
 At this moment advanced querying capabilities like filtering, sorting, or limiting the number of records
 are not supported. To get over these limitations, you can create a custom formula using Apex. See the
 [Advanced Usage](#advanced-usage) section for more information.
+
+## Referencing Org Data
+
+### Custom Labels
+
+You can reference custom labels using the `$Label` global variable.
+
+> ️❗ A namespace needs to be provided when referencing a label. To use the current namesapce
+> (or no namespace at all), use the letter `c`.
+
+Label references will automatically be translated to the current user's language.
+
+```apex
+Object result = expression.Evaluator.run('$Label.c.MyCustomLabel');
+Object result = expression.Evaluator.run('$Label.namespace.MyCustomLabel');
+```
+
+### Custom Metadata
+
+You can reference custom metadata records using the `$CustomMetadata` global variable.
+
+To access the data of a custom metadata record, you need to specify the type, the record name, and the field:
+
+```apex
+Object result = expression.Evaluator.run('$CustomMetadata.MyCustomMetadataType.MyCustomMetadataRecord.MyField__c');
+```
 
 ## Advanced Usage
 
@@ -699,6 +725,16 @@ Accepts 1 argument: the text to convert.
 expression.Evaluator.run('UPPER("Hello World")'); // "HELLO WORLD"
 ```
 
+- `VALUE`
+
+Converts a text string that represents a number to a number.
+
+Accepts 1 argument: the text to convert.
+
+```apex
+expression.Evaluator.run('VALUE("1")'); // 1
+```
+
 #### Date and Time Functions
 
 - `DATE`
@@ -856,7 +892,7 @@ expression.Evaluator.run('MINUTE(TIMEVALUE("12:10:00"))'); // 10
 
 - `SECOND`
 
-REturns the second value of a provided time.
+Returns the second value of a provided time.
 
 Accepts 1 argument: the time to evaluate.
 
@@ -899,7 +935,66 @@ Accepts 1 argument: the date to evaluate.
 expression.Evaluator.run('WEEKDAY(DATE(2020, 1, 1))'); // 4
 ```
 
+- `FORMATDURATION`
+
+Calculates the difference between 2 Times or 2 DateTimes
+and formats it as "HH:MM:SS".
+
+Accepts 2 arguments: either 2 Times or 2 DateTimes.
+
+Note that the order of the argument is not important, the
+function will always return a positive duration.
+
+```apex
+expression.Evaluator.run('FORMATDURATION(TIMEVALUE("12:00:00"), TIMEVALUE("12:00:01"))'); // "00:00:01"
+expression.Evaluator.run('FORMATDURATION(DATETIMEVALUE("2015-01-01 00:00:00"), DATETIMEVALUE("2015-01-02 00:00:00"))'); // "24:00:00"
+```
+
+- `MONTH`
+
+Returns the month, a number between 1 and 12 (December) in number format of a given date.
+
+Accepts 1 argument: the date to evaluate.
+
+```apex
+expression.Evaluator.run('MONTH(DATE(2020, 1, 1))'); // 1
+```
+
 #### List Functions
+
+- `FIRST`
+
+Returns the first element of a list.
+
+> Note: If the list is empty, this function will return null.
+
+Accepts 1 argument: the list to evaluate.
+
+```apex
+expression.Evaluator.run('FIRST([1, 2, 3])'); // 1
+```
+
+- `LAST`
+
+Returns the last element of a list.
+
+> Note: If the list is empty, this function will return null.
+
+Accepts 1 argument: the list to evaluate.
+
+```apex
+expression.Evaluator.run('LAST([1, 2, 3])'); // 3
+```
+
+- `CONTAINS`
+
+Returns true if the list contains the given value.
+
+Accepts 2 arguments: the list to evaluate and the value to check.
+
+```apex
+expression.Evaluator.run('CONTAINS([1, 2, 3], 2)'); // true
+```
 
 - `MAP`
 
@@ -941,6 +1036,35 @@ of child records.
 ```apex
 Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
 Object result = expression.Evaluator.run('AVERAGE(MAP(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
+```
+
+- `REDUCE`
+
+Reduces a list to a single value using the first argument as the context, the second argument as the expression to evaluate,
+and the third argument as the initial value.
+
+Accepts 3 arguments: List of objects, an expression to evaluate, and the initial value.
+
+Provides 2 special variables in the inner expression: 
+- `$current` - the current item being iterated over 
+- `$accumulator` - the current value of the accumulator that will be returned
+
+```apex
+Object result = expression.Evaluator.run('REDUCE([1, 2, 3], $accumulator + $current, 0)'); // 6
+```
+
+This function can be used to build complex objects from a list of data. For example, to aggregate
+the number of employees and revenue for an account based on the values from its children, an expression
+as follows can be used:
+
+```apex
+Id parentAccountId = '001000000000000AAA';
+String formula = 'REDUCE(ChildAccounts, ' +
+    '{"employees": NumberOfEmployees + GET($accumulator, "employees"), "revenue": AnnualRevenue + GET($accumulator, "revenue")}, ' +
+    '{"employees": 0, "revenue": 0}' +
+    ')';
+Object result = Evaluator.run(formula, parentAccountId);
+// { "employees": 10, "revenue": 1000000 }
 ```
 
 - `WHERE`
@@ -1147,6 +1271,16 @@ Accepts either a list of numbers as a single argument, or multiple numerical arg
 ```apex
 expression.Evaluator.run('MIN(LIST(1, 2, 3))'); // 1
 expression.Evaluator.run('MIN(1, 2, 3)'); // 1
+```
+
+- `MOD`
+
+Returns the remainder of one number divided by another.
+
+Accepts 2 arguments: the dividend and the divisor.
+
+```apex
+expression.Evaluator.run('MOD(5, 2)'); // 1
 ```
 
 - `ROUND`

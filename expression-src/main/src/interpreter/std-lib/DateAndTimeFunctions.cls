@@ -19,7 +19,9 @@ public with sharing class DateAndTimeFunctions {
         'YEAR' => new DateAndTimeFunctions.YearFn(),
         'FROMUNIXTIME' => new DateAndTimeFunctions.FromUnixTimeFn(),
         'UNIXTIMESTAMP' => new UnixTimeStampFn(),
-        'WEEKDAY' => new WeekdayFn()
+        'WEEKDAY' => new WeekdayFn(),
+        'FORMATDURATION' => new FormatDuration(),
+        'MONTH' => new MonthFn()
     };
 
     private enum TimeType {
@@ -381,6 +383,82 @@ public with sharing class DateAndTimeFunctions {
                 0,
                 0
             ).format('u'));
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class FormatDuration extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Datetime startDateTime;
+            Datetime endDateTime;
+
+            // Expects either 2 Times or 2 DateTimes
+            Object startVal = evaluate(arguments.get(0));
+            if (startVal instanceof Time) {
+                Time startTime = (Time) startVal;
+                // Check that the second value is also a Time
+                Object endVal = evaluate(arguments.get(1));
+                if (!(endVal instanceof Time)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "FORMATDURATION" function: the second argument must evaluate to a time value.'
+                    );
+                }
+
+                Time endTime = (Time) endVal;
+                // Convert both times to date times
+                startDateTime = Datetime.newInstanceGmt(Date.newInstance(0, 1, 1), startTime);
+                endDateTime = Datetime.newInstanceGmt(Date.newInstance(0, 1, 1), endTime);
+            } else if (startVal instanceof Datetime) {
+                startDateTime = (Datetime) startVal;
+                // Check that the second value is also a Datetime
+                Object endVal = evaluate(arguments.get(1));
+                if (!(endVal instanceof Datetime)) {
+                    throw new Interpreter.InterpreterException(
+                        'Error executing "FORMATDURATION" function: the second argument must evaluate to a datetime value.'
+                    );
+                }
+
+                endDateTime = (Datetime) endVal;
+            } else {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "FORMATDURATION" function: the first argument must evaluate to a time or datetime value.'
+                );
+            }
+
+            // Calculate the difference between the two
+            Long differenceInMs = Math.abs(endDateTime.getTime() - startDateTime.getTime());
+            Integer hours = (Integer) Math.floor(differenceInMs / 1000 / 60 / 60);
+            Integer minutes = (Integer) Math.floor((differenceInMs - hours * 1000 * 60 * 60) / 1000 / 60);
+            Integer seconds = (Integer) Math.floor((differenceInMs - hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000);
+
+            // Format in HH:MM:SS
+            // Use StringUtils.leftPad if necessary
+            return StringUtils.leftPad(String.valueOf(hours), 2, '0') +
+                ':' +
+                StringUtils.leftPad(String.valueOf(minutes), 2, '0') +
+                ':' +
+                StringUtils.leftPad(String.valueOf(seconds), 2, '0');
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class MonthFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect a Date
+            Object dateValue = evaluate(arguments.get(0));
+            if (!(dateValue instanceof Date)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "MONTH" function: the argument must evaluate to a date value.'
+                );
+            }
+
+            return ((Date) dateValue).month();
         }
 
         public override Arity getArity() {

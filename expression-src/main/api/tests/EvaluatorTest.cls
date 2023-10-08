@@ -246,6 +246,16 @@ private class EvaluatorTest {
     }
 
     @IsTest
+    private static void containsFunctionReturnsTrueIfAListContainsTheGivenValue() {
+        Assert.areEqual(true, Evaluator.run('CONTAINS(LIST(1, 2, 3), 2)'));
+    }
+
+    @IsTest
+    private static void containsFunctionReturnsFalseIfAListDoesNotContainTheGivenValue() {
+        Assert.areEqual(false, Evaluator.run('CONTAINS(LIST(1, 2, 3), 4)'));
+    }
+
+    @IsTest
     private static void lowerFunctionReturnsLowercaseString() {
         Assert.areEqual('hello world', Evaluator.run('LOWER("Hello World")'));
     }
@@ -1319,6 +1329,160 @@ private class EvaluatorTest {
                 concatenated += String.valueOf(arg);
             }
             return concatenated;
+        }
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoTimes_hoursDifference() {
+        String formula = 'FORMATDURATION(TIMEVALUE("01:00:00"), TIMEVALUE("02:00:00"))';
+        Assert.areEqual('01:00:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoTimes_minutesDifference() {
+        String formula = 'FORMATDURATION(TIMEVALUE("01:30:00"), TIMEVALUE("02:00:00"))';
+        Assert.areEqual('00:30:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoTimes_secondsDifference() {
+        String formula = 'FORMATDURATION(TIMEVALUE("01:30:00"), TIMEVALUE("01:30:45"))';
+        Assert.areEqual('00:00:45', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoTimes_multipleDifferences() {
+        String formula = 'FORMATDURATION(TIMEVALUE("01:45:00"), TIMEVALUE("09:00:01"))';
+        Assert.areEqual('07:15:01', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoTimes_firstTimeGreaterThanSecond() {
+        String formula = 'FORMATDURATION(TIMEVALUE("02:00:00"), TIMEVALUE("01:00:00"))';
+        Assert.areEqual('01:00:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoDateTimes_daysDifference() {
+        String formula = 'FORMATDURATION(DATETIMEVALUE("2015-01-01 00:00:00"), DATETIMEVALUE("2015-01-02 00:00:00"))';
+        Assert.areEqual('24:00:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoDateTimes_hoursDifference() {
+        String formula = 'FORMATDURATION(DATETIMEVALUE("2015-01-01 01:00:00"), DATETIMEVALUE("2015-01-01 02:00:00"))';
+        Assert.areEqual('01:00:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoDateTimes_minutesDifference() {
+        String formula = 'FORMATDURATION(DATETIMEVALUE("2015-01-01 01:30:00"), DATETIMEVALUE("2015-01-01 02:00:00"))';
+        Assert.areEqual('00:30:00', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoDateTimes_secondsDifference() {
+        String formula = 'FORMATDURATION(DATETIMEVALUE("2015-01-01 01:30:00"), DATETIMEVALUE("2015-01-01 01:30:45"))';
+        Assert.areEqual('00:00:45', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void formatDurationFormatsTheTimeBetweenTwoDateTimes_multipleDifferences() {
+        String formula = 'FORMATDURATION(DATETIMEVALUE("2015-01-01 01:45:00"), DATETIMEVALUE("2015-01-01 09:00:01"))';
+        Assert.areEqual('07:15:01', Evaluator.run(formula));
+    }
+
+    @IsTest
+    private static void monthReturnsANumberBetween1And12ForTheSpecifiedDate() {
+        Assert.areEqual(1, Evaluator.run('MONTH(DATE(2015, 1, 1))'));
+        Assert.areEqual(12, Evaluator.run('MONTH(DATE(2015, 12, 1))'));
+    }
+
+    @IsTest
+    private static void modFunctionReturnsTheRemainderOfTheDivision() {
+        Assert.areEqual(1, Evaluator.run('MOD(5, 2)'));
+    }
+
+    @IsTest
+    private static void valueFunctionConvertsAStringToANumber() {
+        Assert.areEqual(1, Evaluator.run('VALUE("1")'));
+    }
+
+    @IsTest
+    private static void firstFunctionReturnsTheFirstElementOfAList() {
+        Assert.areEqual(1, Evaluator.run('FIRST([1, 2, 3])'));
+    }
+
+    @IsTest
+    private static void firstFunctionReturnsNullIfTheListIsEmpty() {
+        Assert.isNull(Evaluator.run('FIRST([])'));
+    }
+
+    @IsTest
+    private static void lastFunctionReturnsTheLastElementOfAList() {
+        Assert.areEqual(3, Evaluator.run('LAST([1, 2, 3])'));
+    }
+
+    @IsTest
+    private static void lastFunctionReturnsNullIfTheListIsEmpty() {
+        Assert.isNull(Evaluator.run('LAST([])'));
+    }
+
+    @IsTest
+    private static void reduceCanSumAListOfNumbers() {
+        Assert.areEqual(6, Evaluator.run('REDUCE([1, 2, 3], $current + $accumulator, 0)'));
+    }
+
+    @IsTest
+    private static void reduceWorksWithSObjectExpressions() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30, AnnualRevenue = 300);
+        insert new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        };
+
+        String formula = 'REDUCE(ChildAccounts, NumberOfEmployees + $accumulator, 0)';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(60, result);
+    }
+
+    @IsTest
+    private static void reduceToMap() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30, AnnualRevenue = 300);
+        insert new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        };
+
+        String formula = 'REDUCE(ChildAccounts, ' +
+                '{"employees": NumberOfEmployees + GET($accumulator, "employees"), "revenue": AnnualRevenue + GET($accumulator, "revenue")}, ' +
+                '{"employees": 0, "revenue": 0}' +
+            ')';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(60, ((Map<Object, Object>) result).get('employees'));
+        Assert.areEqual(600, ((Map<Object, Object>) result).get('revenue'));
+    }
+
+    @IsTest
+    private static void canEvaluateCustomLabels() {
+        LabelWrapper.mockLabel = new DummyLabel();
+        String formula = '$Label.c.MyLabelName';
+        Assert.areEqual('Value', Evaluator.run(formula));
+    }
+
+    private class DummyLabel implements LabelWrapper.ILabel {
+        public String get(String namespace, String label, String language) {
+            return 'Value';
         }
     }
 }
