@@ -1387,4 +1387,9 @@ private class EvaluatorTest {
         Assert.areEqual(1, Evaluator.run('MONTH(DATE(2015, 1, 1))'));
         Assert.areEqual(12, Evaluator.run('MONTH(DATE(2015, 12, 1))'));
     }
+
+    @IsTest
+    private static void modFunctionReturnsTheRemainderOfTheDivision() {
+        Assert.areEqual(1, Evaluator.run('MOD(5, 2)'));
+    }
 }

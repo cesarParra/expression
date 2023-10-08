@@ -1174,6 +1174,16 @@ expression.Evaluator.run('MIN(LIST(1, 2, 3))'); // 1
 expression.Evaluator.run('MIN(1, 2, 3)'); // 1
 ```
 
+- `MOD`
+
+Returns the remainder of one number divided by another.
+
+Accepts 2 arguments: the dividend and the divisor.
+
+```apex
+expression.Evaluator.run('MOD(5, 2)'); // 1
+```
+
 - `ROUND`
 
 Returns a rounded number. Optionally specify the number of decimal places to round to.
