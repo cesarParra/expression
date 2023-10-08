@@ -940,10 +940,24 @@ expression.Evaluator.run('MONTH(DATE(2020, 1, 1))'); // 1
 
 Returns the first element of a list.
 
+> Note: If the list is empty, this function will return null.
+
 Accepts 1 argument: the list to evaluate.
 
 ```apex
 expression.Evaluator.run('FIRST([1, 2, 3])'); // 1
+```
+
+- `LAST`
+
+Returns the last element of a list.
+
+> Note: If the list is empty, this function will return null.
+
+Accepts 1 argument: the list to evaluate.
+
+```apex
+expression.Evaluator.run('LAST([1, 2, 3])'); // 3
 ```
 
 - `MAP`

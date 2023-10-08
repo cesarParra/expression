@@ -13,7 +13,8 @@ public with sharing class CollectionFunctions {
         'GET' => new GetFn(),
         'VALUES' => new ValuesFn(),
         'FETCH' => new FetchFn(),
-        'FIRST' => new FirstFn()
+        'FIRST' => new FirstFn(),
+        'LAST' => new LastFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -559,6 +560,26 @@ public with sharing class CollectionFunctions {
                 return null;
             }
             return listVal.get(0);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class LastFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "LAST" function: the first argument must evaluate to a list.'
+                );
+            }
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return null;
+            }
+            return listVal.get(listVal.size() - 1);
         }
 
         public override Arity getArity() {

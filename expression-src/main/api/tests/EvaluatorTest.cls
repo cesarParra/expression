@@ -1402,4 +1402,19 @@ private class EvaluatorTest {
     private static void firstFunctionReturnsTheFirstElementOfAList() {
         Assert.areEqual(1, Evaluator.run('FIRST([1, 2, 3])'));
     }
+
+    @IsTest
+    private static void firstFunctionReturnsNullIfTheListIsEmpty() {
+        Assert.isNull(Evaluator.run('FIRST([])'));
+    }
+
+    @IsTest
+    private static void lastFunctionReturnsTheLastElementOfAList() {
+        Assert.areEqual(3, Evaluator.run('LAST([1, 2, 3])'));
+    }
+
+    @IsTest
+    private static void lastFunctionReturnsNullIfTheListIsEmpty() {
+        Assert.isNull(Evaluator.run('LAST([])'));
+    }
 }
