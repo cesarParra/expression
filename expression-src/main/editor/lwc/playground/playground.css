@@ -1,0 +1,8 @@
+.lgc-bg {
+    background-color: rgb(242 242 242);
+}
+.top-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}

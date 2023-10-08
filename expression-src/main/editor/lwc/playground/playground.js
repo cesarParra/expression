@@ -4,6 +4,7 @@ import getFunctions from '@salesforce/apex/PlaygroundController.getFunctions';
 import validate from '@salesforce/apex/PlaygroundController.validate';
 
 export default class Monaco extends LightningElement {
+  recordId;
   iframeUrl = `${monaco}/main.html`;
   result = {};
 
@@ -18,7 +19,7 @@ export default class Monaco extends LightningElement {
 
   async getExpression() {
     const expr = this.iframeWindow.editor.getValue();
-    const result = await validate({expr: expr});
+    const result = await validate({expr: expr, recordId: this.recordId});
     if (result.error) {
       this.result = {
         type: "error",
@@ -30,6 +31,10 @@ export default class Monaco extends LightningElement {
         payload: JSON.stringify(result.result, null, 2)
       }
     }
+  }
+
+  handleInputChange(event) {
+    this.recordId = event.detail.value;
   }
 
   get iframeWindow() {

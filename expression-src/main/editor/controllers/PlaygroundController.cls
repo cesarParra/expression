@@ -12,10 +12,14 @@ public with sharing class PlaygroundController {
     }
 
     @AuraEnabled
-    public static Result validate(String expr) {
+    public static Result validate(String expr, Id recordId) {
         Result toReturn = new Result();
         try {
-            toReturn.result = Evaluator.run(expr);
+            if (recordId != null) {
+                toReturn.result = Evaluator.run(expr, recordId);
+            } else {
+                toReturn.result = Evaluator.run(expr);
+            }
         } catch (Exception e) {
             toReturn.error = e.getMessage();
         }
