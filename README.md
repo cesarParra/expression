@@ -43,6 +43,27 @@ Clone the repo and deploy the source code, or click the button below to directly
 
 [![Deploy to Salesforce](assets/deploy.png)](https://githubsfdeploy.herokuapp.com/app/githubdeploy/cesarParra/formula-evaluator)
 
+## Setup
+
+Grant the `Expression Admin` permission set to any user that will be configuring and
+managing the application.
+
+This permission set grants access to the Expression Playground tab, and the Expression
+Function custom metadata type.
+
+## Playground
+
+The Expression Playground tab allows you to test and evaluate formulas in a
+visual way.
+
+[![Expression Playground](assets/expression-playground.png)](assets/expression-playground.png)
+
+With it, you can quickly test and validate expressions, and see the results
+in real-time. You can also use it to learn about the different operators and
+functions available.
+
+To provide a context for the expression you can also specify a record Id (optional).
+
 ## Usage
 
 > 📓Code samples use the `expression` namespace, which assumes you are using the 
