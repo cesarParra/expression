@@ -299,12 +299,19 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             Object mapObj = evaluate(arguments.get(0));
             Object key = evaluate(arguments.get(1));
-            if (!(mapObj instanceof Map<Object, Object>)) {
+
+            // Should evaluate to either a map or an SObject
+            if (!(mapObj instanceof Map<Object, Object>) && !(mapObj instanceof SObject)) {
                 throw new Interpreter.InterpreterException(
-                    'Error executing "GET" function: the first argument must evaluate to a map.'
+                    'Error executing "GET" function: the first argument must evaluate to a map or an SObject.'
                 );
             }
-            return ((Map<Object, Object>) mapObj).get(key);
+
+            if ((mapObj instanceof Map<Object, Object>)) {
+                return ((Map<Object, Object>) mapObj).get(key);
+            } else {
+                return ((SObject) mapObj).get((String) key);
+            }
         }
 
         public override Arity getArity() {

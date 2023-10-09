@@ -55,24 +55,10 @@ public with sharing class Parser {
     }
 
     private Expr factor() {
-        Expr expr = pipe();
-
-        while (match(new List<TokenType>{
-            TokenType.SLASH, TokenType.STAR, TokenType.EXPONENT
-        })) {
-            Token operator = previous();
-            Expr right = pipe();
-            expr = new Expr.Binary(expr, operator, right);
-        }
-
-        return expr;
-    }
-
-    private Expr pipe() {
         Expr expr = unary();
 
         while (match(new List<TokenType>{
-            TokenType.ARROW
+            TokenType.SLASH, TokenType.STAR, TokenType.EXPONENT
         })) {
             Token operator = previous();
             Expr right = unary();
@@ -94,11 +80,25 @@ public with sharing class Parser {
 
     private Expr spread() {
         if (match(TokenType.DOT_DOT_DOT)) {
-            Expr right = unary();
+            Expr right = pipe();
             return new Expr.Spread(right);
         }
 
-        return getExpr();
+        return pipe();
+    }
+
+    private Expr pipe() {
+        Expr expr = getExpr();
+
+        while (match(new List<TokenType>{
+            TokenType.ARROW
+        })) {
+            Token operator = previous();
+            Expr right = getExpr();
+            expr = new Expr.Binary(expr, operator, right);
+        }
+
+        return expr;
     }
 
     private Expr getExpr() {

@@ -273,6 +273,16 @@ To access the data of a custom metadata record, you need to specify the type, th
 Object result = expression.Evaluator.run('$CustomMetadata.MyCustomMetadataType.MyCustomMetadataRecord.MyField__c');
 ```
 
+### Static Resources
+
+You can reference static resources using the `$Resource` global variable.
+
+This will return the URL where the static resource is hosted.
+
+```apex
+Object result = expression.Evaluator.run('$Resource.MyStaticResourceName');
+```
+
 ## Advanced Usage
 
 ### Custom Formula Functions
@@ -1518,13 +1528,19 @@ Contributions are welcome! Feel free to open an issue or submit a pull request.
 Create a scratch org by running:
 
 ```bash
-sfdx force:org:create -f config/dev.json -a formula-evaluator -s
+sfdx force:org:create -f config/dev.json -a Expression --setdefaultusername
 ```
 
-Then push the source to the scratch org:
+Push the source to the scratch org:
 
 ```bash
 sfdx force:source:push
+```
+
+Assign the `Expression Admin` permission set to the default user:
+
+```bash
+sfdx force:user:permset:assign -n Expression_Admin
 ```
 
 #### Debugging

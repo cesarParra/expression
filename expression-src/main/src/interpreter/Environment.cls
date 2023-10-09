@@ -8,6 +8,7 @@ public with sharing class Environment {
         // Define global variables
         define('$label', new CustomLabelVariableResolver.CustomLabelResolverWrapper());
         define('$custommetadata', new CustomMetadataVariableResolver.CmtApiName());
+        define('$resource', new StaticResourceVariableResolver());
     }
 
     public Boolean noRecordContext() {
