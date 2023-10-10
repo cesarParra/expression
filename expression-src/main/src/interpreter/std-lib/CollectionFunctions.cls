@@ -335,7 +335,7 @@ public with sharing class CollectionFunctions {
         }
     }
 
-    private class FetchFn extends ExpressionFunction {
+    private without sharing class FetchFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a string representing the sobject type name
             Object sobjectType = evaluate(arguments.get(0));

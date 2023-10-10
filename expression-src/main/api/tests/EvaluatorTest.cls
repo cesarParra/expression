@@ -1499,4 +1499,25 @@ private class EvaluatorTest {
         Assert.areEqual('A', ((List<Object>) result)[0]);
         Assert.areEqual('B', ((List<Object>) result)[1]);
     }
+
+    @IsTest
+    private static void transformFunctionCanConvertFromOneObjectToAnyOther() {
+        String formula = 'TRANSFORM("a", UPPER($source))';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual('A', result);
+    }
+
+    @IsTest
+    private static void dateTimeFormatFormatsADateTimeToTheSpecifiedStringFormat() {
+        String formula = 'DATETIMEFORMAT(DATETIMEVALUE("2015-01-01 01:00:00"), "yyyy-MM-dd HH:mm:ss")';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual('2015-01-01 01:00:00', result);
+    }
+
+    @IsTest
+    private static void dateToDateTimeConvertsADateToADateTime() {
+        String formula = 'DATETODATETIME(DATEVALUE("2015-01-01"))';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual(Datetime.newInstance(2015, 1, 1, 0, 0, 0), result);
+    }
 }

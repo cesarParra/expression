@@ -3,7 +3,9 @@
     <div class={containerClasses}>
       <div class={mainClasses}>
         <h1 class="mt-10 text-4xl font-bold tracking-tight text-dxp-text-contrast sm:text-6xl">{computed.title}</h1>
-        <p if:true={computed.description} class="mt-6 text-lg leading-8 text-dxp-text-contrast-2">{computed.description}</p>
+        <div if:true={computed.description} class="mt-6 text-lg leading-8 text-dxp-text-contrast-2">
+          <lightning-formatted-rich-text value={computed.description}></lightning-formatted-rich-text>
+        </div>
         <div class={buttonClasses}>
           <a if:true={computed.callToAction} href={computed.callToAction.url} class="rounded-md bg-dxp-brand
           px-3.5 py-2.5 text-sm font-semibold text-dxp-brand-foreground shadow-sm hover:bg-dxp-brand-2
