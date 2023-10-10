@@ -87,6 +87,8 @@ public with sharing class Parser {
         return pipe();
     }
 
+    // TODO: Move all of the way to the bottom
+    // TODO: When the right side is a parenthesis, it should work with pipes
     private Expr pipe() {
         Expr expr = getExpr();
 
