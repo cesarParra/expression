@@ -1520,4 +1520,14 @@ private class EvaluatorTest {
         Object result = Evaluator.run(formula);
         Assert.areEqual(Datetime.newInstance(2015, 1, 1, 0, 0, 0), result);
     }
+
+    @IsTest
+    private static void splitFunctionSplitsAString() {
+        String formula = 'SPLIT("a,b,c", ",")';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual(3, ((List<Object>) result).size());
+        Assert.areEqual('a', ((List<Object>) result)[0]);
+        Assert.areEqual('b', ((List<Object>) result)[1]);
+        Assert.areEqual('c', ((List<Object>) result)[2]);
+    }
 }
