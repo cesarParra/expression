@@ -109,7 +109,15 @@ public with sharing class Parser {
         while (true) {
             if (match(TokenType.DOT)) {
                 Token name = consume(TokenType.IDENTIFIER, 'Expect property name after \'.\'.');
-                expr = new Expr.GetExpr(expr, name);
+                if (peek().type == TokenType.LEFT_PAREN) {
+                    System.debug('Saw a left paren after a dot, so this is a function call.');
+                    List<Expr> parameters = getParameters();
+                    System.debug('name: ' + name);
+                    System.debug('Parameters: ' + parameters);
+                    expr = new Expr.GetExpr(expr, name, parameters);
+                } else {
+                    expr = new Expr.GetExpr(expr, name, new List<Expr>());
+                }
             } else {
                 break;
             }
@@ -144,14 +152,7 @@ public with sharing class Parser {
             // by seeing if the next token is a left parenthesis
             if (peek().type == TokenType.LEFT_PAREN) {
                 Token fnName = previous();
-                consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-                List<Expr> parameters = new List<Expr>();
-                if (!check(TokenType.RIGHT_PAREN)) {
-                    do {
-                        parameters.add(expression());
-                    } while (match(TokenType.COMMA));
-                }
-                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+                List<Expr> parameters = getParameters();
                 return new Expr.FunctionCall(fnName.lexeme.toUpperCase(), parameters);
             }
 
@@ -195,6 +196,18 @@ public with sharing class Parser {
         }
 
         throw error(peek(), 'Expect expression.');
+    }
+
+    private List<Expr> getParameters() {
+        consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+        List<Expr> parameters = new List<Expr>();
+        if (!check(TokenType.RIGHT_PAREN)) {
+            do {
+                parameters.add(expression());
+            } while (match(TokenType.COMMA));
+        }
+        consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+        return parameters;
     }
 
     private Expr expression() {

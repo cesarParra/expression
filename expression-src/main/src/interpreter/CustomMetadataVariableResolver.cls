@@ -1,6 +1,6 @@
 public with sharing class CustomMetadataVariableResolver {
     public with sharing class CmtApiName implements IGlobalVariableResolver {
-        public Object get(String customMetadataApiName) {
+        public Object get(String customMetadataApiName, List<Object> args) {
            return new CmtRecordName(customMetadataApiName);
         }
     }
@@ -12,7 +12,7 @@ public with sharing class CustomMetadataVariableResolver {
             this.cmtApiName = cmtApiName;
         }
 
-        public Object get(String recordName) {
+        public Object get(String recordName, List<Object> args) {
            return new CmtFieldResolver(cmtApiName, recordName);
         }
     }
@@ -26,7 +26,7 @@ public with sharing class CustomMetadataVariableResolver {
             this.recordName = recordName;
         }
 
-        public Object get(String fieldName) {
+        public Object get(String fieldName, List<Object> args) {
             String query = 'SELECT ' + fieldName + ' FROM ' + cmtApiName + ' WHERE DeveloperName = \'' + recordName + '\'';
             List<SObject> records = Database.query(query);
             if (records.isEmpty()) {

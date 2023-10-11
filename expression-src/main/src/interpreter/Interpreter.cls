@@ -150,8 +150,16 @@ public with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.GetExpr getExpr) {
+        System.debug('getExpr: ' + getExpr.field.lexeme);
+        System.debug('with args: ' + getExpr.arguments);
         Object result = evaluate(getExpr.objectExpr);
         if (result instanceof SObject) {
+            if (!getExpr.arguments.isEmpty()) {
+                throw new InterpreterException(
+                    'Error executing expression. Get expressions on SObjects must not have arguments.'
+                );
+            }
+
             Environment tempEnvironmentForGet = new Environment((SObject) result);
 
             // We might be dealing with either a field reference or with a reference to another parent
@@ -167,8 +175,19 @@ public with sharing class Interpreter implements Visitor {
                     ' does not contain a field with the name: ' + getExpr.field.lexeme
             );
         } else if (result instanceof IGlobalVariableResolver) {
-            return ((IGlobalVariableResolver) result).get(getExpr.field.lexeme);
+            List<Object> arguments = new List<Object>();
+            for (Expr argument : getExpr.arguments) {
+                arguments.add(evaluate(argument));
+            }
+            System.debug('passing args to get: ' + arguments);
+            return ((IGlobalVariableResolver) result).get(getExpr.field.lexeme, arguments);
         } else if (result instanceof Map<Object, Object>) {
+            if (!getExpr.arguments.isEmpty()) {
+                throw new InterpreterException(
+                    'Error executing expression. Get expressions on Maps must not have arguments.'
+                );
+            }
+
             Map<Object, Object> castMap = (Map<Object, Object>) result;
             if (castMap.containsKey(getExpr.field.lexeme)) {
                 return castMap.get(getExpr.field.lexeme);

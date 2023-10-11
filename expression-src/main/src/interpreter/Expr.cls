@@ -82,11 +82,19 @@ public abstract class Expr {
     public class GetExpr extends Expr {
         public final Expr objectExpr;
         public final Token field;
+        public final List<Expr> arguments;
 
-        public GetExpr(Expr objectExpr, Token field) {
+        public GetExpr(Expr objectExpr, Token field, List<Expr> arguments) {
             this.objectExpr = objectExpr;
             this.field = field;
+            this.arguments = arguments;
         }
+
+//        public GetExpr(Expr objectExpr, Token field) {
+//            this.objectExpr = objectExpr;
+//            this.field = field;
+//            this.arguments = new List<Expr>();
+//        }
 
         public override Object accept(Visitor v) {
             return v.visit(this);

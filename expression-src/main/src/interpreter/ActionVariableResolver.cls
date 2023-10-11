@@ -1,5 +1,6 @@
 public with sharing class ActionVariableResolver implements IGlobalVariableResolver {
-    public Object get(String referenceName) {
+    public Object get(String referenceName, List<Object> args) {
+        System.debug('args1 ' + args);
         switch on referenceName.toLowerCase() {
             when 'apex' {
                 return new ApexAction();
@@ -15,7 +16,8 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
     }
 
     private class ApexAction implements IGlobalVariableResolver {
-        public Object get(String className) {
+        public Object get(String className, List<Object> args) {
+            System.debug('args2 ' + args);
             // Check if the class exists and it is a Callable
             Type t = Type.forName(className);
             if (t == null)  {
@@ -24,7 +26,10 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
                 throw new Interpreter.InterpreterException('Class ' + className + ' is not a IExpressionFunction');
             }
 
-            return className;
+            return new Map<String, Object> {
+                'class' => className,
+                'args' => args
+            };
         }
     }
 }
