@@ -37,10 +37,6 @@ export default class PricingTable extends TwElement {
     }
   }
 
-  get hasText() {
-    return this.computed?.title || this.computed?.description;
-  }
-
   get loading() {
     return !this.computed && !this.error;
   }

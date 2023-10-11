@@ -18,13 +18,7 @@
                 <span class="text-5xl font-bold tracking-tight text-dxp-text-contrast">
                   <lightning-formatted-number format-style="currency" value={plan.price}></lightning-formatted-number> </span>
               </p>
-              <a href="#" aria-describedby="tier-basic" class="mt-10 block rounded-md bg-dxp-brand px-3 py-2
-            text-center text-sm font-semibold leading-6 text-dxp-brand-foreground shadow-sm hover:bg-dxp-brand-1
-            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-            focus-visible:outline-dxp-brand-3"
-                 data-plan={plan.name}
-              onclick={executeAction}
-              >{plan.action.label}</a>
+              <c-button action={plan.action}></c-button>
               <p class="mt-10 text-sm font-semibold leading-6 text-dxp-text-contrast">{plan.description}</p>
               <ul role="list" class="mt-6 space-y-3 text-sm leading-6 text-gray-600">
                 <template for:each={plan.features} for:item="feature">

@@ -10,6 +10,10 @@ public with sharing class Environment {
         define('$custommetadata', new CustomMetadataVariableResolver.CmtApiName());
         define('$resource', new StaticResourceVariableResolver());
         define('$action', new ActionVariableResolver());
+
+        // Placeholder value for whatever the called Action returned. Not used by language,
+        // but can be used by the caller to get the return value of the Action.
+        define('$returnvalue', '{!placeholder}');
     }
 
     public Boolean noRecordContext() {

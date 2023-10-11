@@ -9,6 +9,9 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
                 // TODO
                 throw new Interpreter.InterpreterException('Flow actions are not yet supported');
             }
+            when 'lwc' {
+                return new LwcAction();
+            }
             when else {
                 throw new Interpreter.InterpreterException('Unknown action reference: ' + referenceName);
             }
@@ -30,6 +33,37 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
                 'class' => className,
                 'args' => args
             };
+        }
+    }
+
+    private class LwcAction implements IGlobalVariableResolver {
+        public Object get(String referenceName, List<Object> args) {
+            switch on referenceName.toLowerCase()   {
+                when 'gotonamedpage' {
+                    Map<Object, Object> navigateArgs = (Map<Object, Object>) args[0];
+
+                    // Must contain the "name" key
+                    if (!navigateArgs.containsKey('name')) {
+                        throw new Interpreter.InterpreterException('Missing "name" key in navigate args');
+                    }
+
+                    Map<Object, Object> extraArgs = new Map<Object, Object>();
+                    for (Object key : navigateArgs.keySet()) {
+                        if (key != 'name') {
+                            extraArgs.put(key, navigateArgs.get(key));
+                        }
+                    }
+
+                    return new Map<String, Object> {
+                        'type' => 'navigate',
+                        'namedPage' => (String) navigateArgs.get('name'),
+                        'args' => extraArgs
+                    };
+                }
+                when else {
+                    throw new Interpreter.InterpreterException('Unknown LWC action: ' + referenceName);
+                }
+            }
         }
     }
 }
