@@ -16,4 +16,17 @@ public with sharing class FormulaEvaluatorUiController {
             throw ex;
         }
     }
+
+    @AuraEnabled
+    public static void execute(String className) {
+        try {
+            Type t = Type.forName(className);
+            IExpressionFunction f = (IExpressionFunction) t.newInstance();
+            f.execute(new List<Object>());
+        } catch (Exception e) {
+            AuraHandledException ex = new AuraHandledException(e.getMessage());
+            ex.setMessage(e.getMessage());
+            throw ex;
+        }
+    }
 }

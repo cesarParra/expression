@@ -9,6 +9,7 @@ public with sharing class Environment {
         define('$label', new CustomLabelVariableResolver.CustomLabelResolverWrapper());
         define('$custommetadata', new CustomMetadataVariableResolver.CmtApiName());
         define('$resource', new StaticResourceVariableResolver());
+        define('$action', new ActionVariableResolver());
     }
 
     public Boolean noRecordContext() {

@@ -1,7 +1,7 @@
 import TwElement from "c/twElement";
 import evaluate from '@salesforce/apex/FormulaEvaluatorUiController.evaluate';
+import execute from '@salesforce/apex/FormulaEvaluatorUiController.execute';
 import { api, wire } from "lwc";
-import { classNames } from 'c/utils';
 
 // TODO: Dynamically style based on the number of plans:
 // 1 plan: 100% width
@@ -22,6 +22,17 @@ export default class PricingTable extends TwElement {
     } else {
       this.computed = data;
       this._validate();
+    }
+  }
+
+  async executeAction(e) {
+    e.preventDefault();
+    const planName = e.target.dataset.plan;
+    const action = this.computed.plans.find(p => p.name === planName).action;
+    try {
+      await execute({className: action.src});
+    } catch (e) {
+      console.error(e);
     }
   }
 

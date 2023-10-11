@@ -21,6 +21,7 @@
       <sourceFolder url="file://$MODULE_DIR$/force-app" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/expression-components" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/expression-src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-pull" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.sf" />
       <excludeFolder url="file://$MODULE_DIR$/.sfdx" />
     </content>
