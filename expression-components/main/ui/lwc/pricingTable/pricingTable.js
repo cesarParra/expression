@@ -3,6 +3,11 @@ import evaluate from '@salesforce/apex/FormulaEvaluatorUiController.evaluate';
 import { api, wire } from "lwc";
 import { classNames } from 'c/utils';
 
+// TODO: Dynamically style based on the number of plans:
+// 1 plan: 100% width
+// 2 plans: 50% width
+// 3 plans: 33% width
+// More than 3 then flow to a new row.
 export default class PricingTable extends TwElement {
   @api expr;
 
@@ -16,6 +21,7 @@ export default class PricingTable extends TwElement {
       this.error = error.body.message;
     } else {
       this.computed = data;
+      this._validate();
     }
   }
 
@@ -33,5 +39,15 @@ export default class PricingTable extends TwElement {
 
   get ready() {
     return !this.loading && !this.hasError;
+  }
+
+  _validate() {
+    if (!this.computed) {
+      return;
+    }
+    // Computed should contain a "plans" array.
+    if (!("plans" in this.computed)) {
+      this.error = 'The evaluated Expression must contain a "plans" array.';
+    }
   }
 }
