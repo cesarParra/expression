@@ -30,7 +30,8 @@ export default class PricingTable extends TwElement {
     const planName = e.target.dataset.plan;
     const action = this.computed.plans.find(p => p.name === planName).action;
     try {
-      await execute({fnReference: action.src});
+      const result = await execute({fnReference: action.src});
+      console.log(result);
     } catch (e) {
       console.error(e);
     }

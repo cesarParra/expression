@@ -28,6 +28,7 @@
   "homepage": "https://github.com/cesarParra/formula-evaluator#readme",
   "devDependencies": {
     "@cparra/apexdocs": "^2.17.0",
+    "@tailwindcss/forms": "^0.5.6",
     "docsify": "^4.11.4",
     "tailwindcss": "^3.3.3"
   }
