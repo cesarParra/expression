@@ -90,12 +90,6 @@ public abstract class Expr {
             this.arguments = arguments;
         }
 
-//        public GetExpr(Expr objectExpr, Token field) {
-//            this.objectExpr = objectExpr;
-//            this.field = field;
-//            this.arguments = new List<Expr>();
-//        }
-
         public override Object accept(Visitor v) {
             return v.visit(this);
         }

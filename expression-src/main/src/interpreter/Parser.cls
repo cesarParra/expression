@@ -80,31 +80,15 @@ public with sharing class Parser {
 
     private Expr spread() {
         if (match(TokenType.DOT_DOT_DOT)) {
-            Expr right = pipe();
+            Expr right = getExpr();
             return new Expr.Spread(right);
         }
 
-        return pipe();
-    }
-
-    // TODO: Move all of the way to the bottom
-    // TODO: When the right side is a parenthesis, it should work with pipes
-    private Expr pipe() {
-        Expr expr = getExpr();
-
-        while (match(new List<TokenType>{
-            TokenType.ARROW
-        })) {
-            Token operator = previous();
-            Expr right = getExpr();
-            expr = new Expr.Binary(expr, operator, right);
-        }
-
-        return expr;
+        return getExpr();
     }
 
     private Expr getExpr() {
-        Expr expr = primary();
+        Expr expr = pipe();
 
         while (true) {
             if (match(TokenType.DOT)) {
@@ -118,6 +102,20 @@ public with sharing class Parser {
             } else {
                 break;
             }
+        }
+
+        return expr;
+    }
+
+    private Expr pipe() {
+        Expr expr = primary();
+
+        while (match(new List<TokenType>{
+            TokenType.ARROW
+        })) {
+            Token operator = previous();
+            Expr right = primary();
+            expr = new Expr.Binary(expr, operator, right);
         }
 
         return expr;

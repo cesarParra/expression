@@ -150,8 +150,6 @@ public with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.GetExpr getExpr) {
-        System.debug('getExpr: ' + getExpr.field.lexeme);
-        System.debug('with args: ' + getExpr.arguments);
         Object result = evaluate(getExpr.objectExpr);
         if (result instanceof SObject) {
             if (!getExpr.arguments.isEmpty()) {
@@ -179,7 +177,6 @@ public with sharing class Interpreter implements Visitor {
             for (Expr argument : getExpr.arguments) {
                 arguments.add(evaluate(argument));
             }
-            System.debug('passing args to get: ' + arguments);
             return ((IGlobalVariableResolver) result).get(getExpr.field.lexeme, arguments);
         } else if (result instanceof Map<Object, Object>) {
             if (!getExpr.arguments.isEmpty()) {
