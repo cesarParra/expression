@@ -17,6 +17,7 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
     }
 
     private class ApexAction implements IGlobalVariableResolver {
+        // Known limitation: Only top level class names without namespaces are supported.
         public Object get(String className, List<Object> args) {
             // Check if the class exists and it is a Callable
             Type t = Type.forName(className);

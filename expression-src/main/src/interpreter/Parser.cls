@@ -110,10 +110,7 @@ public with sharing class Parser {
             if (match(TokenType.DOT)) {
                 Token name = consume(TokenType.IDENTIFIER, 'Expect property name after \'.\'.');
                 if (peek().type == TokenType.LEFT_PAREN) {
-                    System.debug('Saw a left paren after a dot, so this is a function call.');
                     List<Expr> parameters = getParameters();
-                    System.debug('name: ' + name);
-                    System.debug('Parameters: ' + parameters);
                     expr = new Expr.GetExpr(expr, name, parameters);
                 } else {
                     expr = new Expr.GetExpr(expr, name, new List<Expr>());

@@ -1419,10 +1419,7 @@ in a community page.
       "url": <<String value or expression>>
     }
   ],
-  "callToAction": {
-    "label": <<String value or expression>>,
-    "url": <<String value or expression>>
-  }
+  "callToAction": "TODO"
 }
 ```
 

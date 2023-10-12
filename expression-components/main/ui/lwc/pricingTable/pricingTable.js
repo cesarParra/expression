@@ -2,12 +2,8 @@ import TwElement from "c/twElement";
 import evaluate from '@salesforce/apex/FormulaEvaluatorUiController.evaluate';
 import execute from '@salesforce/apex/FormulaEvaluatorUiController.execute';
 import { api, wire } from "lwc";
+import { classNames } from 'c/utils';
 
-// TODO: Dynamically style based on the number of plans:
-// 1 plan: 100% width
-// 2 plans: 50% width
-// 3 plans: 33% width
-// More than 3 then flow to a new row.
 export default class PricingTable extends TwElement {
   @api expr;
 
@@ -25,13 +21,22 @@ export default class PricingTable extends TwElement {
     }
   }
 
+  get gridClasses() {
+    return classNames(
+      'isolate -mt-16 grid max-w-sm grid-cols-1 gap-y-16 divide-y divide-gray-100 ' +
+      'sm:mx-auto lg:-mx-8 lg:mt-0 lg:max-w-none lg:divide-x lg:divide-y-0 xl:-mx-4',
+      {'lg:grid-cols-3': this.computed.plans.length >= 3},
+      {'lg:grid-cols-2': this.computed.plans.length === 2},
+      {'lg:grid-cols-1': this.computed.plans.length === 1},
+    );
+  }
+
   async executeAction(e) {
     e.preventDefault();
     const planName = e.target.dataset.plan;
     const action = this.computed.plans.find(p => p.name === planName).action;
     try {
       const result = await execute({fnReference: action.src});
-      console.log(result);
     } catch (e) {
       console.error(e);
     }
