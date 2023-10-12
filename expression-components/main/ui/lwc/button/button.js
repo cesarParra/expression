@@ -2,6 +2,7 @@ import { api } from 'lwc';
 import TwElement from "c/twElement";
 import { NavigationMixin } from "lightning/navigation";
 import execute from '@salesforce/apex/FormulaEvaluatorUiController.execute';
+import { classNames } from 'c/utils';
 
 export default class PricingTable extends NavigationMixin(TwElement) {
   /**
@@ -25,6 +26,30 @@ export default class PricingTable extends NavigationMixin(TwElement) {
    * @property {ApexFunctionCallback} callback
    */
   @api action;
+
+  @api size = "md";
+
+  @api variant = "primary";
+
+  get btnClasses() {
+    switch (this.variant) {
+      case "primary":
+        return classNames(
+          'block rounded-md bg-dxp-brand text-center text-sm font-semibold ' +
+          'leading-6 text-dxp-brand-foreground shadow-sm hover:bg-dxp-brand-1 focus-visible:outline ' +
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dxp-brand-3 ' +
+          'hover:no-underline',
+          {'px-3 py-2': this.size === "md"},
+          {'px-3.5 py-2.5': this.size === "lg"},
+        );
+      case "secondary":
+        return classNames(
+          'text-sm font-semibold leading-6 text-dxp-brand'
+        );
+      default:
+        throw new Error(`Unknown variant: ${this.variant}`);
+    }
+  }
 
   async executeAction(e) {
     e.preventDefault();

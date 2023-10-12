@@ -1465,26 +1465,16 @@ in a community page.
 
 - `title` - The title to display.
 - `description` Optional - The description to display.
-- `callToAction` Optional - The call to action to display. This should be a map with the following format:
-  - `label` - The label to display.
-  - `url` - The URL to navigate to when the call to action is clicked.
-- `secondaryAction` Optional - The secondary action to display. This should be a map with the following format:
-  - `label` - The label to display.
-  - `url` - The URL to navigate to when the secondary action is clicked.
+- `callToAction` Optional - `Action type` -> @Cesar to document
+- `secondaryAction` Optional - `Action type` -> @Cesar to document
 - `bannerImage` Optional - The URL of the image to display.
 
 ```json
 {
   "title": <<String value or expression>>,
   "description": <<String value or expression>>,
-  "callToAction": {
-    "label": <<String value or expression>>,
-    "url": <<String value or expression>>
-  },
-  "secondaryAction": {
-    "label": <<String value or expression>>,
-    "url": <<String value or expression>>
-  },
+  "callToAction": "TODO",
+  "secondaryAction": "TODO",
   "bannerImage": <<String value or expression>>
 }
 ```

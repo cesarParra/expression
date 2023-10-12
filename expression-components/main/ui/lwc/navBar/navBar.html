@@ -21,11 +21,7 @@
         </template>
       </div>
       <div if:true={computed.callToAction} class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <button onclick={callToAction} type="button" class="rounded-md bg-dxp-brand px-3 py-2 text-sm
-        font-semibold text-dxp-brand-foreground shadow-sm hover:bg-dxp-brand-1 focus-visible:outline
-        focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dxp-brand-1">
-          {computed.callToAction.label}
-        </button>
+        <c-button action={computed.callToAction} size="md"></c-button>
       </div>
     </nav>
     <div if:true={isOpen} class="lg:hidden" role="dialog" aria-modal="true">
@@ -51,7 +47,7 @@
               </template>
             </div>
             <div if:true={computed.callToAction} class="py-6">
-              <button onclick={callToAction} type="button" class="rounded-md bg-dxp-brand px-3 py-2 text-sm font-semibold text-dxp-brand-foreground shadow-sm hover:bg-dxp-brand-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dxp-brand-1">{computed.callToAction.label}</button>
+              <c-button action={computed.callToAction} size="md"></c-button>
             </div>
           </div>
         </div>

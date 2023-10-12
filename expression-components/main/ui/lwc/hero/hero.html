@@ -7,14 +7,14 @@
           <lightning-formatted-rich-text value={computed.description}></lightning-formatted-rich-text>
         </div>
         <div class={buttonClasses}>
-          <a if:true={computed.callToAction} href={computed.callToAction.url} class="rounded-md bg-dxp-brand
-          px-3.5 py-2.5 text-sm font-semibold text-dxp-brand-foreground shadow-sm hover:bg-dxp-brand-2
-          focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-          focus-visible:outline-dxp-brand">
-            {computed.callToAction.label}
-          </a>
-          <a if:true={computed.secondaryAction} href={computed.secondaryAction.url} class="text-sm font-semibold
-          leading-6 text-dxp-text-contrast">Learn more <span aria-hidden="true">→</span></a>
+          <c-button if:true={computed.callToAction}
+                    action={computed.callToAction}
+                    size="lg"
+          ></c-button>
+          <c-button if:true={computed.secondaryAction}
+                    action={computed.secondaryAction}
+                    variant="secondary"
+          ></c-button>
         </div>
       </div>
       <div if:true={computed.bannerImage} class="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32">
