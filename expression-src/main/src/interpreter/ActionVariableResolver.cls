@@ -1,12 +1,10 @@
 public with sharing class ActionVariableResolver implements IGlobalVariableResolver {
     public Object get(String referenceName, List<Object> args) {
-        System.debug('args1 ' + args);
         switch on referenceName.toLowerCase() {
             when 'apex' {
                 return new ApexAction();
             }
             when 'flow' {
-                // TODO
                 throw new Interpreter.InterpreterException('Flow actions are not yet supported');
             }
             when 'lwc' {
@@ -20,7 +18,6 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
 
     private class ApexAction implements IGlobalVariableResolver {
         public Object get(String className, List<Object> args) {
-            System.debug('args2 ' + args);
             // Check if the class exists and it is a Callable
             Type t = Type.forName(className);
             if (t == null)  {
@@ -55,8 +52,8 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
                     }
 
                     return new Map<String, Object> {
-                        'type' => 'navigate',
-                        'namedPage' => (String) navigateArgs.get('name'),
+                        'type' => 'navigate__namedPage',
+                        'name' => (String) navigateArgs.get('name'),
                         'args' => extraArgs
                     };
                 }
