@@ -5,13 +5,14 @@ import { classNames } from 'c/utils';
 
 export default class TextBlock extends TwElement {
   @api expr;
+  @api respectSharing;
   @api textAlignment;
   @api color;
 
   computed;
   error;
 
-  @wire(evaluate, {recordId: '', formula: '$expr'})
+  @wire(evaluate, {recordId: '', formula: '$expr', respectSharing: '$respectSharing'})
   evaluate({error, data}) {
     if (error) {
       console.error(error);

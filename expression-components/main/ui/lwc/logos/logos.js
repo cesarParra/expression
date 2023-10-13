@@ -4,11 +4,12 @@ import { api, wire } from "lwc";
 
 export default class Logos extends TwElement {
   @api expr;
+  @api respectSharing;
 
   computed;
   error;
 
-  @wire(evaluate, {recordId: '', formula: '$expr'})
+  @wire(evaluate, {recordId: '', formula: '$expr', respectSharing: '$respectSharing'})
   evaluate({error, data}) {
     if (error) {
       console.error(error);

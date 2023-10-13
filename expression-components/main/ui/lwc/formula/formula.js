@@ -9,6 +9,7 @@ export default class Formula extends LightningElement {
   @api recordId;
   @api title;
   @api expr;
+  @api respectSharing;
 
   computedWire;
 
@@ -25,7 +26,7 @@ export default class Formula extends LightningElement {
     }
   }
 
-  @wire(evaluate, {recordId: '$evaluatedId', formula: '$expr'})
+  @wire(evaluate, {recordId: '$evaluatedId', formula: '$expr', respectSharing: '$respectSharing'})
   evaluate(result) {
     this.computedWire = result;
     const {error} = result;

@@ -4,12 +4,13 @@ import {api, wire} from "lwc";
 
 export default class NavBar extends TwElement {
   @api expr;
+  @api respectSharing;
 
   isOpen = false;
   computed;
   error;
 
-  @wire(evaluate, {recordId: '', formula: '$expr'})
+  @wire(evaluate, {recordId: '', formula: '$expr', respectSharing: '$respectSharing'})
   evaluate({error, data}) {
     if (error) {
       console.error(error);

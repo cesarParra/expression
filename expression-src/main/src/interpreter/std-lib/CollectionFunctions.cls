@@ -363,7 +363,7 @@ public with sharing class CollectionFunctions {
                 query.selectField((String) fieldName);
             }
 
-            return Database.query(query.build());
+            return QRunner.getInstance().run(query);
         }
 
         public override Arity getArity() {

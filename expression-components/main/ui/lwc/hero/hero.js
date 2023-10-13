@@ -6,11 +6,12 @@ import { classNames } from 'c/utils';
 export default class Hero extends TwElement {
   @api expr;
   @api centerItems;
+  @api respectSharing;
 
   computed;
   error;
 
-  @wire(evaluate, {recordId: '', formula: '$expr'})
+  @wire(evaluate, {recordId: '', formula: '$expr', respectSharing: '$respectSharing'})
   evaluate({error, data}) {
     if (error) {
       console.error(error);

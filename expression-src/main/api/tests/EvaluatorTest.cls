@@ -1195,6 +1195,17 @@ private class EvaluatorTest {
     }
 
     @IsTest
+    private static void getFunctionReturnsAField() {
+        Account account = new Account(Name = 'Test');
+        insert account;
+
+        String formula = 'FETCH("Account", ["Name"]) -> FIRST() -> GET("Name")';
+        Object result = Evaluator.run(formula);
+
+        Assert.areEqual('Test', result);
+    }
+
+    @IsTest
     private static void valuesFunctionReturnsTheValuesOfAMap() {
         List<Object> result = (List<Object>) Evaluator.run('VALUES({"a": 1, "b": 2})');
         Assert.areEqual(2, result.size());

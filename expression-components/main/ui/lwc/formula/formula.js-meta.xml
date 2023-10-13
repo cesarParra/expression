@@ -15,11 +15,15 @@
             <property name="title" type="String" description="Component title" label="Title" required="false" />
             <property name="expr" type="String" placeholder="1 + 1" required="true" label="Formula Expression"
                       description="Formula expression to be evaluated." default="" />
+            <property name="respectSharing" type="Boolean" default="true" label="Respect Sharing"
+                      description="Whether to run the evaluation with or without sharing." />
         </targetConfig>
         <targetConfig targets="lightning__RecordPage">
             <property name="title" type="String" description="Component title" label="Title" required="false" />
             <property name="expr" type="String" placeholder="1 + 1" required="true" label="Formula Expression"
                       description="Formula expression to be evaluated." default="" />
+            <property name="respectSharing" type="Boolean" default="true" label="Respect Sharing"
+                      description="Whether to run the evaluation with or without sharing." />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
