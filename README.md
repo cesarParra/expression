@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgNIAU)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgNIAU)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgXIAU)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgXIAU)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011MgNIAU
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MgXIAU
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MgNIAU
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MgXIAU
 ```
 
 ### Direct Deployment to Salesforce
@@ -273,6 +273,16 @@ To access the data of a custom metadata record, you need to specify the type, th
 Object result = expression.Evaluator.run('$CustomMetadata.MyCustomMetadataType.MyCustomMetadataRecord.MyField__c');
 ```
 
+### Static Resources
+
+You can reference static resources using the `$Resource` global variable.
+
+This will return the URL where the static resource is hosted.
+
+```apex
+Object result = expression.Evaluator.run('$Resource.MyStaticResourceName');
+```
+
 ## Advanced Usage
 
 ### Custom Formula Functions
@@ -296,6 +306,26 @@ and specify the name of the function and the Apex class that implements it:
 * Click `New` and enter the name of your function and the Apex class that implements it
 * Click `Save`
 * Your function is now available to use in formulas using the name you specified
+
+### Apex Interoperability
+
+Besides being able to create custom Apex formulas, you can also reference Apex actions to be executed later.
+This is useful when the goal is not to retrieve data, but to perform some action. This about this as having
+a reference to a function in Javascript, which you can then execute later.
+
+> This is how you can call Apex actions from [Expression Component Buttons](#Button).
+
+Any class that implements the `expression.IExpressionFunction` interface can be referenced in this way.
+
+```apex
+$Action.Apex.ClassName
+````
+
+To pass arguments to your Apex class, you can pass any number of expressions as arguments to the action:
+
+```apex
+$Action.Apex.ClassName(expression1, expression2, ...)
+```
 
 ## Supported Operators and Functions
 
@@ -638,6 +668,17 @@ Accepts 1 argument: the text to reverse.
 expression.Evaluator.run('REVERSE("Hello World")'); // "dlroW olleH"
 ```
 
+- `SPLIT`
+
+Returns a list that contains each substring of the String that is terminated 
+by the provided delimiter.
+
+Accepts 2 arguments: the text to split and the delimiter.
+
+```apex
+expression.Evaluator.run('SPLIT("Hello World", " ")'); // ("Hello", "World")
+```
+
 - `MID`
 
 Returns a specified number of characters from a text string starting at the position you specify up
@@ -830,6 +871,16 @@ Accepts 1 argument: the date as a string.
 expression.Evaluator.run('DATETIMEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
 ```
 
+- `DATETIMEFORMAT`
+
+Formats a DateTime into a string using the provided format.
+
+Accepts 2 arguments: the datetime to format and the format string.
+
+```apex
+expression.Evaluator.run('DATETIMEFORMAT(DATETIMEVALUE("2020-01-01 12:00:00"), "yyyy-MM-dd")'); // "2020-01-01"
+```
+
 - `TODAY`
 
 Returns the current date.
@@ -838,6 +889,16 @@ Accepts no arguments.
 
 ```apex
 expression.Evaluator.run('TODAY()'); // 2020-01-01
+```
+
+- `DATETODATETIME`
+
+Converts a Date to a Datetime.
+
+Accepts 1 argument: the date to convert.
+
+```apex
+expression.Evaluator.run('DATETODATETIME(DATE(2020, 1, 1))'); // 2020-01-01 00:00:00
 ```
 
 - `TIMEVALUE`
@@ -1184,9 +1245,9 @@ expression.Evaluator.run('KEYS({ "a": 1, "b": 2, "c": 3 })'); // ["a", "b", "c"]
 
 - `GET`
 
-Returns the value of a key in a map.
+Returns the value of a key in a map or the field in an SObject.
 
-Accepts 2 arguments: the map to evaluate and the key to get.
+Accepts 2 arguments: the map or SObject to evaluate and the key to get.
 
 ```apex
 expression.Evaluator.run('GET({ "a": 1, "b": 2, "c": 3 }, "b")'); // 2
@@ -1326,6 +1387,20 @@ expression.Evaluator.run('TRUNC(1.5)'); // 1
 expression.Evaluator.run('TRUNC(1.5, 1)'); // 1.5
 ```
 
+#### Misc Functions
+
+- `TRANSFORM`
+
+Transforms any input using the provided expression.
+
+Provides a special variable `$source` in the inner expression that contains the original input.
+
+Accepts 2 arguments: the input to transform and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('TRANSFORM("Hello World", UPPER($source))'); // "HELLO WORLD"
+```
+
 ---
 
 # Expression Components
@@ -1338,19 +1413,19 @@ by the `Expression` language.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011Mg8IAE)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011Mg8IAE)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgcIAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgcIAE)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011Mg8IAE
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MgcIAE
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011Mg8IAE
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MgcIAE
 ```
 
 ## Components
@@ -1388,6 +1463,75 @@ itself based on the new values when placed in a record page.
 
 ![Sample Usage](assets/sample-lwc-usage.gif)
 
+
+### Button
+
+The `Button` component allows you to display a button that can be used to trigger an action or navigate to a URL. 
+It can be used in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+* `label` - Expression that evaluates to a String - The label to display on the button.
+* `type` - Expression that evaluates to a String - The type of button to display. Valid values are `action`, `navigation_namedPage`, `navigation_url`
+* `src` - Depending on the `type` specified, this can hold one of the following values:
+    * `action` - Reference to an Apex action to execute using the `$Action.Apex.ClassName` format.
+    * `navigation_namedPage` - The API name of the page to navigate to.
+    * `navigation_url` - The URL to navigate to.
+* `callback` - Only to be used when the `action` type is specified. This should be a reference to an LWC action using the
+`$Action.LWC.ActionName` format. The special variable `$returnValue` can be used to reference the return value of the action.
+
+**Example**
+
+```json
+{
+  "label": "Checkout",
+  "type": "action",
+  "src": $Action.Apex.CreateSalesOrder("00A56643Dr563lcwkL"),
+  "callback": $Action.Lwc.GoToNamedPage(
+    {
+      "name": "checkout__c",
+      "id": $returnValue
+    }
+  )
+}
+```
+
+For more on how to call Apex actions, see [Apex Interoperability](#Apex-Interoperability)
+
+#### Callbacks
+
+After executing an action, it is common to want to react to that action in some way. This is accomplished
+through callbacks and LWC Interoperability. To reference an LWC callback, 
+use the `$Action.Lwc.ActionName(parameter_expression)` format.
+
+The following LWC action names are supported:
+
+* `GoToNamedPage`
+
+This action navigates to a named page. A Map expression with a "name" property must be provided containing
+the page's API Name.
+To add query parameters to the URL, pass as many extra keys to the map as you wish.
+
+```json
+{
+  "name": "pageApiName",
+  "namedParam1": "success",
+  "namedParam2": "any_value"
+}
+```
+
+* `GoToUrl`
+
+This action navigates to a URL. A Map expression with a "name" property must be provided containing the URL.
+
+```json
+{
+  "name": "pageApiName"
+}
+```
+
 ### Nav Bar
 
 The `Nav Bar` component allows you to display a navigation bar with links to other pages. It can be used
@@ -1409,10 +1553,7 @@ in a community page.
       "url": <<String value or expression>>
     }
   ],
-  "callToAction": {
-    "label": <<String value or expression>>,
-    "url": <<String value or expression>>
-  }
+  "callToAction": <<Expression that evaluates to a Button action>>
 }
 ```
 
@@ -1455,26 +1596,16 @@ in a community page.
 
 - `title` - The title to display.
 - `description` Optional - The description to display.
-- `callToAction` Optional - The call to action to display. This should be a map with the following format:
-  - `label` - The label to display.
-  - `url` - The URL to navigate to when the call to action is clicked.
-- `secondaryAction` Optional - The secondary action to display. This should be a map with the following format:
-  - `label` - The label to display.
-  - `url` - The URL to navigate to when the secondary action is clicked.
+- `callToAction` Optional - `Button Action type` -> The action to execute. Expects the same format as the `Button` component.
+- `secondaryAction` Optional - `Button Action type` -> The action to execute. Expects the same format as the `Button` component.
 - `bannerImage` Optional - The URL of the image to display.
 
 ```json
 {
   "title": <<String value or expression>>,
   "description": <<String value or expression>>,
-  "callToAction": {
-    "label": <<String value or expression>>,
-    "url": <<String value or expression>>
-  },
-  "secondaryAction": {
-    "label": <<String value or expression>>,
-    "url": <<String value or expression>>
-  },
+  "callToAction": <<Expression that evaluates to a Button action>>,
+  "secondaryAction": <<Expression that evaluates to a Button action>>,
   "bannerImage": <<String value or expression>>
 }
 ```
@@ -1509,6 +1640,131 @@ Supports being placed in a community page.
 }
 ```
 
+### People
+
+The `People` component allows you to display a list of people. It can be used
+to display a list of team members, board members, event speakers, etc.
+
+Supports being placed in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+##### Map Format
+
+- `title` - The title to display.
+- `description` Optional - The description to display.
+- `people` - List of people to display. Each person should be a map with the following format:
+  - `name` - The name of the person.
+  - `title` - The title of the person.
+  - `imageUrl` - The URL of the image to display.
+  - `about` - Optional - The description of the person.
+
+```json
+{
+  "title": <<String value or expression>>,
+  "description": <<String value or expression>>,
+  "people": [
+    {
+      "name": <<String value or expression>>,
+      "title": <<String value or expression>>,
+      "imageUrl": <<String value or expression>>,
+      "about": <<String value or expression>>
+    }
+  ]
+}
+```
+
+### Pricing Table
+
+The `Pricing Table` component allows you to display a pricing table. It can be used
+to display a list of plans, packages, etc.
+
+Supports being placed in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+##### Map Format
+
+- `tag` Optional - The tag to display at the top of the component.
+- `title` - The title to display.
+- `description` Optional - The description to display.
+- `plans` - List of plans to display. Each plan should be a map with the following format:
+  - `name` - The name of the plan.
+  - `price` - The price of the plan.
+  - `action` - Action to execute when the plan is selected. Expects the same format as the `Button` component.
+  - `description` Optional - The description of the plan.
+  - `features` - List of strings detailing the features of the plan.
+
+```json
+{
+  "tag": <<String value or expression>>,
+  "title": <<String value or expression>>,
+  "description": <<String value or expression>>,
+  "plans": [
+    {
+      "name": <<String value or expression>>,
+      "price": <<String value or expression>>,
+      "action": <<Expression that evaluates to a Button action>>,
+      "description": <<String value or expression>>,
+      "features": [
+        <<String value or expression>>
+      ]
+    }
+  ]
+}
+```
+
+### Stats
+
+The `Stats` component allows you to display a list of stats. It can be used
+to display a list of metrics, KPIs, etc.
+
+Supports being placed in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+##### Map Format
+
+- `title` - The title to display.
+- `description` Optional - The description to display.
+- `stats` - List of stats to display. Each stat should be a map with the following format:
+  - `label` - The name of the stat.
+  - `value` - The value of the stat.
+
+```json
+{
+  "title": <<String value or expression>>,
+  "description": <<String value or expression>>,
+  "stats": [
+    {
+      "label": <<String value or expression>>,
+      "value": <<String value or expression>>
+    }
+  ]
+}
+```
+
+### Text Block
+
+The `Text Block` component allows you to display a block of text. It can be used
+to display any row of text.
+
+Supports being placed in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a String.
+
+```json
+<<String value or expression>>
+```
+
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or submit a pull request.
@@ -1518,13 +1774,19 @@ Contributions are welcome! Feel free to open an issue or submit a pull request.
 Create a scratch org by running:
 
 ```bash
-sfdx force:org:create -f config/dev.json -a formula-evaluator -s
+sfdx force:org:create -f config/dev.json -a Expression --setdefaultusername
 ```
 
-Then push the source to the scratch org:
+Push the source to the scratch org:
 
 ```bash
 sfdx force:source:push
+```
+
+Assign the `Expression Admin` permission set to the default user:
+
+```bash
+sfdx force:user:permset:assign -n Expression_Admin
 ```
 
 #### Debugging
@@ -1536,11 +1798,13 @@ The source code includes a `Visitor` implementation
 whose sole purpose is to do this, `AstPrinter`. When enabled, it will
 print the AST to the logs.
 
-You can enable it by setting the `expression.Evaluator.printAst` static variable to `true`.
+You can enable it by passing an `expression.Evaluator.Config` option to the `run` 
+method with the `printAst` option enabled :
 
 ```apex
-expression.Evaluator.printAst = true;
-Object value = expression.Evaluator.run('AND(true, false, 1=1)');
+expression.Evaluator.Config config = new expression.Evaluator.Config();
+config.printAst = true;
+Object value = expression.Evaluator.run('AND(true, false, 1=1)', config);
 // Outputs to the logs:
 // (AND true false (= 1 1))
 ```

@@ -21,7 +21,9 @@ public with sharing class DateAndTimeFunctions {
         'UNIXTIMESTAMP' => new UnixTimeStampFn(),
         'WEEKDAY' => new WeekdayFn(),
         'FORMATDURATION' => new FormatDuration(),
-        'MONTH' => new MonthFn()
+        'MONTH' => new MonthFn(),
+        'DATETIMEFORMAT' => new DateTimeFormatFn(),
+        'DATETODATETIME' => new DateToDateTimeFn()
     };
 
     private enum TimeType {
@@ -464,5 +466,50 @@ public with sharing class DateAndTimeFunctions {
         public override Arity getArity() {
             return Arity.exactly(1);
         }
+    }
+
+    private class DateTimeFormatFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect a DateTime
+            Object dateTimeValue = evaluate(arguments.get(0));
+            if (!(dateTimeValue instanceof Datetime)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "DATETIMEFORMAT" function: the argument must evaluate to a datetime value.'
+                );
+            }
+
+            // Expect a format string
+            Object formatValue = evaluate(arguments.get(1));
+            if (!(formatValue instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "DATETIMEFORMAT" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return ((Datetime) dateTimeValue).format((String) formatValue);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class DateToDateTimeFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect a Date
+            Object dateValue = evaluate(arguments.get(0));
+            if (!(dateValue instanceof Date)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "DATETODATETIME" function: the argument must evaluate to a date value.'
+                );
+            }
+
+            return Datetime.newInstance((Date) dateValue, Time.newInstance(0, 0, 0, 0));
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+
     }
 }

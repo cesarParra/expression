@@ -1,0 +1,8 @@
+<template>
+  <div if:true={ready}>
+    <c-base-button action={computed} size="lg"></c-base-button>
+  </div>
+  <div if:true={error}>
+    <c-alert title="Error parsing expression" message={error}></c-alert>
+  </div>
+</template>

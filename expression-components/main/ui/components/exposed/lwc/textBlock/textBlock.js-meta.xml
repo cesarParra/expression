@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>58.0</apiVersion>
+    <description>Text Block</description>
+    <isExposed>true</isExposed>
+    <masterLabel>Text Block</masterLabel>
+    <targets>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="expr" type="String" placeholder="1 + 1" required="true" label="Formula Expression"
+                      description="Formula expression to be evaluated." default="" />
+            <property name="respectSharing" type="Boolean" default="true" label="Respect Sharing"
+                      description="Whether to run the evaluation with or without sharing." />
+            <property name="textAlignment" default="Left" label="Text Alignment" type="String" datasource="Left,Right,Center" />
+            <property name="color" type="color" label="Color" default="#000000" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

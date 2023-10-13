@@ -18,7 +18,8 @@ public with sharing class StringFunctions {
         'TEXT' => new TextFn(),
         'TRIM' => new TrimFn(),
         'UPPER' => new UpperFn(),
-        'VALUE' => new ValueFn()
+        'VALUE' => new ValueFn(),
+        'SPLIT' => new SplitFn()
     };
 
     private class Begins extends ExpressionFunction {
@@ -535,6 +536,32 @@ public with sharing class StringFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(1);
+        }
+    }
+
+    private class SplitFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument must be a string
+            Object value = evaluate(arguments.get(0));
+            if (!(value instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SPLIT" function: the first argument must evaluate to a string value.'
+                );
+            }
+
+            // Second argument must be a string
+            Object delimiter = evaluate(arguments.get(1));
+            if (!(delimiter instanceof String)) {
+                throw new Interpreter.InterpreterException(
+                    'Error executing "SPLIT" function: the second argument must evaluate to a string value.'
+                );
+            }
+
+            return ((String) value).split((String) delimiter);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
         }
     }
 }

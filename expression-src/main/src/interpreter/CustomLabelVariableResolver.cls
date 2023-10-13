@@ -1,6 +1,6 @@
 public with sharing class CustomLabelVariableResolver {
     public class CustomLabelResolverWrapper implements IGlobalVariableResolver {
-        public Object get(String namespace) {
+        public Object get(String namespace, List<Object> args) {
             return new CustomLabelResolver(namespace);
         }
     }
@@ -12,7 +12,7 @@ public with sharing class CustomLabelVariableResolver {
             this.namespace = namespace;
         }
 
-        public Object get(String referenceName) {
+        public Object get(String referenceName, List<Object> args) {
             String userLanguage = UserInfo.getLanguage();
             if (namespace == 'c') {
                 namespace = '';

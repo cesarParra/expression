@@ -1,0 +1,11 @@
+{
+  "type" : "sfdc_cms__trustedSites",
+  "title" : "trustedSites",
+  "contentBody" : {
+    "trustedSites" : [ {
+      "isActive" : true,
+      "source" : "https://flow-computing-2485-dev-ed.scratch.my.salesforce.com",
+      "sourceName" : "ThisSite"
+    } ]
+  }
+}

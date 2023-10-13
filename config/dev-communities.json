@@ -1,7 +1,7 @@
 {
   "orgName": "Expression Dev",
   "edition": "Developer",
-  "features": ["EnableSetPasswordInApi", "Communities"],
+  "features": ["EnableSetPasswordInApi", "Communities", "Sites"],
   "settings": {
     "experienceBundleSettings": {
       "enableExperienceBundleMetadata": true
@@ -14,6 +14,9 @@
     },
     "mobileSettings": {
       "enableS1EncryptedStoragePref2": false
+    },
+    "userManagementSettings": {
+      "enableNewProfileUI": true
     }
   }
 }

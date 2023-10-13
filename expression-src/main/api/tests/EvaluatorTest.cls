@@ -1059,7 +1059,6 @@ private class EvaluatorTest {
     @IsTest
     private static void whenSortingIfAMapDoesNotContainTheFieldItIsSortedAtTheEnd() {
         List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"b": 1}], "a")');
-        System.debug(result);
         Assert.areEqual(3, result.size());
         Assert.areEqual(2, ((Map<Object, Object>) result[0]).get('a'));
         Assert.areEqual(3, ((Map<Object, Object>) result[1]).get('a'));
@@ -1079,7 +1078,6 @@ private class EvaluatorTest {
         List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")');
 
         Assert.areEqual(3, result.size());
-        System.debug(result);
         Assert.areEqual('A', ((Account) result[0]).Name);
         Assert.areEqual('B', ((Account) result[1]).Name);
         Assert.areEqual('C', ((Account) result[2]).Name);
@@ -1098,7 +1096,6 @@ private class EvaluatorTest {
         List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name", "desc")');
 
         Assert.areEqual(3, result.size());
-        System.debug(result);
         Assert.areEqual('C', ((Account) result[0]).Name);
         Assert.areEqual('B', ((Account) result[1]).Name);
         Assert.areEqual('A', ((Account) result[2]).Name);
@@ -1117,7 +1114,6 @@ private class EvaluatorTest {
         List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name", "asc")');
 
         Assert.areEqual(3, result.size());
-        System.debug(result);
         Assert.areEqual('A', ((Account) result[0]).Name);
         Assert.areEqual('B', ((Account) result[1]).Name);
         Assert.areEqual('C', ((Account) result[2]).Name);
@@ -1137,7 +1133,6 @@ private class EvaluatorTest {
         List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name", "NumberOfEmployees"]) -> SORT("NumberOfEmployees")');
 
         Assert.areEqual(4, result.size());
-        System.debug(result);
         Assert.areEqual('A', ((Account) result[0]).Name);
         Assert.areEqual('B', ((Account) result[1]).Name);
         Assert.areEqual('C', ((Account) result[2]).Name);
@@ -1192,6 +1187,17 @@ private class EvaluatorTest {
     @IsTest
     private static void getFunctionReturnsAMapValue() {
         Assert.areEqual(1, Evaluator.run('GET({"a": 1, "b": 2}, "a")'));
+    }
+
+    @IsTest
+    private static void getFunctionReturnsAField() {
+        Account account = new Account(Name = 'Test');
+        insert account;
+
+        String formula = 'FETCH("Account", ["Name"]) -> FIRST() -> GET("Name")';
+        Object result = Evaluator.run(formula);
+
+        Assert.areEqual('Test', result);
     }
 
     @IsTest
@@ -1498,5 +1504,71 @@ private class EvaluatorTest {
         Assert.areEqual(2, ((List<Object>) result).size());
         Assert.areEqual('A', ((List<Object>) result)[0]);
         Assert.areEqual('B', ((List<Object>) result)[1]);
+    }
+
+    @IsTest
+    private static void transformFunctionCanConvertFromOneObjectToAnyOther() {
+        String formula = 'TRANSFORM("a", UPPER($source))';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual('A', result);
+    }
+
+    @IsTest
+    private static void dateTimeFormatFormatsADateTimeToTheSpecifiedStringFormat() {
+        String formula = 'DATETIMEFORMAT(DATETIMEVALUE("2015-01-01 01:00:00"), "yyyy-MM-dd HH:mm:ss")';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual('2015-01-01 01:00:00', result);
+    }
+
+    @IsTest
+    private static void dateToDateTimeConvertsADateToADateTime() {
+        String formula = 'DATETODATETIME(DATEVALUE("2015-01-01"))';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual(Datetime.newInstance(2015, 1, 1, 0, 0, 0), result);
+    }
+
+    @IsTest
+    private static void splitFunctionSplitsAString() {
+        String formula = 'SPLIT("a,b,c", ",")';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual(3, ((List<Object>) result).size());
+        Assert.areEqual('a', ((List<Object>) result)[0]);
+        Assert.areEqual('b', ((List<Object>) result)[1]);
+        Assert.areEqual('c', ((List<Object>) result)[2]);
+    }
+
+    @IsTest
+    private static void canReferenceExecutableApex() {
+        String formula = '$Action.Apex.FakeApexAction';
+        Object result = Evaluator.run(formula);
+
+        // Expect a map with a key of "class" containing the class name
+        Assert.areEqual('FakeApexAction', ((Map<String, Object>) result).get('class'));
+    }
+
+    @IsTest
+    private static void canPassArgumentsToApexActions() {
+        String formula = '$Action.Apex.FakeApexAction("a", "b")';
+        Object result = Evaluator.run(formula);
+
+        // Expect a map with a key of "class" containing the class name
+        Map<String, Object> castResult = (Map<String, Object>) result;
+        Assert.areEqual('FakeApexAction', castResult.get('class'));
+
+        Assert.areEqual(2, ((List<Object>) castResult.get('args')).size());
+        Assert.areEqual('a', ((List<Object>) castResult.get('args'))[0]);
+        Assert.areEqual('b', ((List<Object>) castResult.get('args'))[1]);
+    }
+
+    @IsTest
+    private static void canReferenceExecutableLwcActions() {
+        String formula = '$Action.LWC.GoToNamedPage({"name": "pageName"})';
+        Object result = Evaluator.run(formula);
+
+        // Expect a map with keys: type, name, args
+        Map<String, Object> castResult = (Map<String, Object>) result;
+        Assert.areEqual('navigate__namedPage', castResult.get('type'));
+        Assert.areEqual('pageName', castResult.get('name'));
+        Assert.isTrue(((Map<Object, Object>) castResult.get('args')).isEmpty());
     }
 }

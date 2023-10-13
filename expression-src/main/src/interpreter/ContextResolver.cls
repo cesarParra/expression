@@ -23,8 +23,11 @@ public with sharing class ContextResolver implements Visitor {
 
         this.queryContext.queryBuilder.add(Q.condition('Id').equalsTo(this.queryContext.recordId));
 
-        String query = this.queryContext.queryBuilder.build();
-        return Database.query(query);
+        List<SObject> results = QRunner.getInstance().run(this.queryContext.queryBuilder);
+        if (results.isEmpty()) {
+            return null;
+        }
+        return results[0];
     }
 
     public Object visit(Expr.Binary binary) {

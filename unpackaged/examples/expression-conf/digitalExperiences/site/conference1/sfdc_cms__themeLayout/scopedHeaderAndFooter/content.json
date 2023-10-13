@@ -1,0 +1,60 @@
+{
+  "type" : "sfdc_cms__themeLayout",
+  "title" : "Scoped Header and Footer",
+  "contentBody" : {
+    "component" : {
+      "attributes" : { },
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "dxpStyle" : {
+              "isVisible" : true
+            },
+            "sectionConfig" : "{\"UUID\":\"fbf009c9-c9d4-4323-9071-11c1b2ce23d0\",\"columns\":[{\"UUID\":\"f7765f17-903a-4387-afa6-24547aad189e\",\"columnName\":\"Column 1\",\"columnKey\":\"headerSection\",\"columnWidth\":\"12\",\"seedComponents\":null}]}"
+          },
+          "children" : [ {
+            "id" : "f7765f17-903a-4387-afa6-24547aad189e",
+            "name" : "headerSection",
+            "title" : "Theme Header",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "fbf009c9-c9d4-4323-9071-11c1b2ce23d0",
+          "scopedBrandingSetId" : "Blank_Palette",
+          "type" : "component"
+        } ],
+        "id" : "57ce95b0-9d8f-4a2d-8be0-97dc715a5a7a",
+        "name" : "header",
+        "title" : "Theme Header",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "sectionConfig" : "{\"UUID\":\"587bc701-50ea-44f4-8964-42b9849d41e3\",\"columns\":[{\"UUID\":\"b7d54237-8b35-4e4f-a18d-d5578af225a2\",\"columnName\":\"Column 1\",\"columnKey\":\"footerSection\",\"columnWidth\":\"12\",\"seedComponents\":null}]}"
+          },
+          "children" : [ {
+            "id" : "b7d54237-8b35-4e4f-a18d-d5578af225a2",
+            "name" : "footerSection",
+            "title" : "Theme Footer",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "587bc701-50ea-44f4-8964-42b9849d41e3",
+          "scopedBrandingSetId" : "Blank_Palette",
+          "type" : "component"
+        } ],
+        "id" : "72129be1-65c8-4a53-8361-436b66a05c33",
+        "name" : "footer",
+        "title" : "Theme Footer",
+        "type" : "region"
+      } ],
+      "definition" : "community_byo:scopedHeaderAndFooter",
+      "id" : "4cc9da0b-d61b-4e20-a376-c7f481f134e3",
+      "type" : "component"
+    }
+  }
+}

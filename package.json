@@ -2,8 +2,13 @@
   "name": "formula-evaluator",
   "private": true,
   "scripts": {
-    "scratch:create": "sfdx force:org:create -f config/dev.json -a Expression --setdefaultusername",
-    "scratch:create:communities": "sfdx force:org:create -f config/dev-communities.json -a Expression --setdefaultusername",
+    "scratch:create": "sf org create -f config/dev.json -a Expression --setdefaultusername",
+    "scratch:create:communities": "sf org create -f config/dev-communities.json -a Expression --setdefaultusername",
+    "source:push": "sfdx force:source:push",
+    "permset:assign": "sfdx force:user:permset:assign -n Expression_Admin",
+    "start:dev": "npm run scratch:create && npm run source:push && npm run permset:assign",
+    "start:dev:components": "npm run scratch:create:communities && npm run source:push && npm run permset:assign",
+    "start:dev:example:conf": "npm run start:dev:components && sfdx force:source:deploy -p unpackaged/examples/expression-conf",
     "package:create:expression": "sf package version create -x -c -p 0HoDm000000XZKSKA4 -w 30",
     "package:create:expression:components": "sf package version create -x -c -p 0HoDm000000XZKhKAO -w 30",
     "docs:init": "docsify init docs",
@@ -24,6 +29,7 @@
   "homepage": "https://github.com/cesarParra/formula-evaluator#readme",
   "devDependencies": {
     "@cparra/apexdocs": "^2.17.0",
+    "@tailwindcss/forms": "^0.5.6",
     "docsify": "^4.11.4",
     "tailwindcss": "^3.3.3"
   }

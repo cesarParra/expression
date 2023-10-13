@@ -8,6 +8,7 @@ public with sharing abstract class ExpressionFunction {
         FUNCTIONS.putAll(DateAndTimeFunctions.FUNCTIONS);
         FUNCTIONS.putAll(MathFunctions.FUNCTIONS);
         FUNCTIONS.putAll(CollectionFunctions.FUNCTIONS);
+        FUNCTIONS.putAll(MiscFunctions.FUNCTIONS);
     }
 
     protected Interpreter interpreter;

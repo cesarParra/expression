@@ -55,24 +55,10 @@ public with sharing class Parser {
     }
 
     private Expr factor() {
-        Expr expr = pipe();
-
-        while (match(new List<TokenType>{
-            TokenType.SLASH, TokenType.STAR, TokenType.EXPONENT
-        })) {
-            Token operator = previous();
-            Expr right = pipe();
-            expr = new Expr.Binary(expr, operator, right);
-        }
-
-        return expr;
-    }
-
-    private Expr pipe() {
         Expr expr = unary();
 
         while (match(new List<TokenType>{
-            TokenType.ARROW
+            TokenType.SLASH, TokenType.STAR, TokenType.EXPONENT
         })) {
             Token operator = previous();
             Expr right = unary();
@@ -94,7 +80,7 @@ public with sharing class Parser {
 
     private Expr spread() {
         if (match(TokenType.DOT_DOT_DOT)) {
-            Expr right = unary();
+            Expr right = getExpr();
             return new Expr.Spread(right);
         }
 
@@ -102,15 +88,34 @@ public with sharing class Parser {
     }
 
     private Expr getExpr() {
-        Expr expr = primary();
+        Expr expr = pipe();
 
         while (true) {
             if (match(TokenType.DOT)) {
                 Token name = consume(TokenType.IDENTIFIER, 'Expect property name after \'.\'.');
-                expr = new Expr.GetExpr(expr, name);
+                if (peek().type == TokenType.LEFT_PAREN) {
+                    List<Expr> parameters = getParameters();
+                    expr = new Expr.GetExpr(expr, name, parameters);
+                } else {
+                    expr = new Expr.GetExpr(expr, name, new List<Expr>());
+                }
             } else {
                 break;
             }
+        }
+
+        return expr;
+    }
+
+    private Expr pipe() {
+        Expr expr = primary();
+
+        while (match(new List<TokenType>{
+            TokenType.ARROW
+        })) {
+            Token operator = previous();
+            Expr right = primary();
+            expr = new Expr.Binary(expr, operator, right);
         }
 
         return expr;
@@ -142,14 +147,7 @@ public with sharing class Parser {
             // by seeing if the next token is a left parenthesis
             if (peek().type == TokenType.LEFT_PAREN) {
                 Token fnName = previous();
-                consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
-                List<Expr> parameters = new List<Expr>();
-                if (!check(TokenType.RIGHT_PAREN)) {
-                    do {
-                        parameters.add(expression());
-                    } while (match(TokenType.COMMA));
-                }
-                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+                List<Expr> parameters = getParameters();
                 return new Expr.FunctionCall(fnName.lexeme.toUpperCase(), parameters);
             }
 
@@ -193,6 +191,18 @@ public with sharing class Parser {
         }
 
         throw error(peek(), 'Expect expression.');
+    }
+
+    private List<Expr> getParameters() {
+        consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+        List<Expr> parameters = new List<Expr>();
+        if (!check(TokenType.RIGHT_PAREN)) {
+            do {
+                parameters.add(expression());
+            } while (match(TokenType.COMMA));
+        }
+        consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+        return parameters;
     }
 
     private Expr expression() {

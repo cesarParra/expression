@@ -2,12 +2,21 @@ public with sharing class Environment {
     private final SObject context;
     private final Map<String, Object> variables = new Map<String, Object>();
 
+    private static final Map<String, Object> GLOBAL_VARIABLES = new Map<String, Object>();
+
+    static {
+        GLOBAL_VARIABLES.put('$label', new CustomLabelVariableResolver.CustomLabelResolverWrapper());
+        GLOBAL_VARIABLES.put('$custommetadata', new CustomMetadataVariableResolver.CmtApiName());
+        GLOBAL_VARIABLES.put('$resource', new StaticResourceVariableResolver());
+        GLOBAL_VARIABLES.put('$action', new ActionVariableResolver());
+
+        // Placeholder value for whatever the called Action returned. Not used by language,
+        // but can be used by the caller to get the return value of the Action.
+        GLOBAL_VARIABLES.put('$returnvalue', '{!placeholder}');
+    }
+
     public Environment(SObject context) {
         this.context = context;
-
-        // Define global variables
-        define('$label', new CustomLabelVariableResolver.CustomLabelResolverWrapper());
-        define('$custommetadata', new CustomMetadataVariableResolver.CmtApiName());
     }
 
     public Boolean noRecordContext() {
@@ -21,7 +30,7 @@ public with sharing class Environment {
     public Boolean contains(String field) {
         String lowerCaseField = field.toLowerCase();
 
-        if (variables.containsKey(lowerCaseField)) {
+        if (variables.containsKey(lowerCaseField) || GLOBAL_VARIABLES.containsKey(lowerCaseField)) {
             return true;
         }
 
@@ -44,7 +53,7 @@ public with sharing class Environment {
         return false;
     }
 
-    public Boolean containsAsParent(String fieldName){
+    public Boolean containsAsParent(String fieldName) {
         try {
             context.getSObject(fieldName);
             return true;
@@ -59,6 +68,15 @@ public with sharing class Environment {
         // Try to get it from the variables first
         if (variables.containsKey(lowerCaseField)) {
             return variables.get(lowerCaseField);
+        }
+
+        // Look in global variables
+        if (GLOBAL_VARIABLES.containsKey(lowerCaseField)) {
+            return GLOBAL_VARIABLES.get(lowerCaseField);
+        }
+
+        if (context == null) {
+            throw new Interpreter.InterpreterException('No such field: ' + field);
         }
 
         if (context.getSObjectType().getDescribe().fields.getMap().keySet().contains(lowerCaseField)) {

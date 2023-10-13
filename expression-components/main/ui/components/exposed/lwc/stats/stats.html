@@ -1,0 +1,28 @@
+<template>
+  <div if:true={ready} class="mx-auto max-w-7xl">
+    <div class="mx-auto max-w-2xl lg:max-w-none">
+      <div if:true={hasText} class="text-center">
+        <h2 if:true={computed.title}
+          class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          {computed.title}
+        </h2>
+        <p if:true={computed.description}
+          class="mt-4 text-lg leading-8 text-gray-600">
+          <lightning-formatted-rich-text value={computed.description}></lightning-formatted-rich-text>
+        </p>
+      </div>
+      <dl class="grid max-w-lg auto-cols-max grid-flow-row place-content-center items-center gap-x-8
+          gap-y-10 sm:max-w-xl sm:gap-x-10 md:grid-flow-col md:auto-cols-auto lg:mx-0 lg:max-w-none">
+        <template for:each={computed.stats} for:item="stat">
+          <div key={stat.label} class="flex flex-col p-8">
+            <dt class="text-sm text-center font-semibold leading-6 text-dxp-text-contrast">{stat.label}</dt>
+            <dd class="order-first text-3xl text-center font-semibold tracking-tight text-dxp-text-contrast-3">{stat.value}</dd>
+          </div>
+        </template>
+      </dl>
+    </div>
+  </div>
+  <div if:true={error}>
+    <c-alert title="Error parsing expression" message={error}></c-alert>
+  </div>
+</template>

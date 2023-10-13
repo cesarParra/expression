@@ -70,7 +70,8 @@ public with sharing class PipeResolver implements Visitor {
     public Object visit(Expr.GetExpr getExpr) {
         Expr.GetExpr newGetExpr = new Expr.GetExpr(
             resolve(getExpr.objectExpr),
-            getExpr.field
+            getExpr.field,
+            getExpr.arguments
         );
 
         return newGetExpr;

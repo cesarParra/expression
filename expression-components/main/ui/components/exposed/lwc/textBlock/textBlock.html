@@ -1,0 +1,8 @@
+<template>
+  <div if:true={ready} class={containerClasses}>
+    <span style={textStyle}>{computed}</span>
+  </div>
+  <div if:true={error}>
+    <c-alert title="Error parsing expression" message={error}></c-alert>
+  </div>
+</template>
