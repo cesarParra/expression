@@ -307,6 +307,26 @@ and specify the name of the function and the Apex class that implements it:
 * Click `Save`
 * Your function is now available to use in formulas using the name you specified
 
+### Apex Interoperability
+
+Besides being able to create custom Apex formulas, you can also reference Apex actions to be executed later.
+This is useful when the goal is not to retrieve data, but to perform some action. This about this as having
+a reference to a function in Javascript, which you can then execute later.
+
+> This is how you can call Apex actions from [Expression Component Buttons](#Button).
+
+Any class that implements the `expression.IExpressionFunction` interface can be referenced in this way.
+
+```apex
+$Action.Apex.ClassName
+````
+
+To pass arguments to your Apex class, you can pass any number of expressions as arguments to the action:
+
+```apex
+$Action.Apex.ClassName(expression1, expression2, ...)
+```
+
 ## Supported Operators and Functions
 
 ### Operators
@@ -1398,6 +1418,75 @@ itself based on the new values when placed in a record page.
 
 ![Sample Usage](assets/sample-lwc-usage.gif)
 
+
+### Button
+
+The `Button` component allows you to display a button that can be used to trigger an action or navigate to a URL. 
+It can be used in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+* `label` - Expression that evaluates to a String - The label to display on the button.
+* `type` - Expression that evaluates to a String - The type of button to display. Valid values are `action`, `navigation_namedPage`, `navigation_url`
+* `src` - Depending on the `type` specified, this can hold one of the following values:
+    * `action` - Reference to an Apex action to execute using the `$Action.Apex.ClassName` format.
+    * `navigation_namedPage` - The API name of the page to navigate to.
+    * `navigation_url` - The URL to navigate to.
+* `callback` - Only to be used when the `action` type is specified. This should be a reference to an LWC action using the
+`$Action.LWC.ActionName` format. The special variable `$returnValue` can be used to reference the return value of the action.
+
+**Example**
+
+```json
+{
+  "label": "Checkout",
+  "type": "action",
+  "src": $Action.Apex.CreateSalesOrder("00A56643Dr563lcwkL"),
+  "callback": $Action.Lwc.GoToNamedPage(
+    {
+      "name": "checkout__c",
+      "id": $returnValue
+    }
+  )
+}
+```
+
+For more on how to call Apex actions, see [Apex Interoperability](#Apex-Interoperability)
+
+#### Callbacks
+
+After executing an action, it is common to want to react to that action in some way. This is accomplished
+through callbacks and LWC Interoperability. To reference an LWC callback, 
+use the `$Action.Lwc.ActionName(parameter_expression)` format.
+
+The following LWC action names are supported:
+
+* `GoToNamedPage`
+
+This action navigates to a named page. A Map expression with a "name" property must be provided containing
+the page's API Name.
+To add query parameters to the URL, pass as many extra keys to the map as you wish.
+
+```json
+{
+  "name": "pageApiName",
+  "namedParam1": "success",
+  "namedParam2": "any_value"
+}
+```
+
+* `GoToUrl`
+
+This action navigates to a URL. A Map expression with a "name" property must be provided containing the URL.
+
+```json
+{
+  "name": "pageApiName"
+}
+```
+
 ### Nav Bar
 
 The `Nav Bar` component allows you to display a navigation bar with links to other pages. It can be used
@@ -1419,7 +1508,7 @@ in a community page.
       "url": <<String value or expression>>
     }
   ],
-  "callToAction": "TODO"
+  "callToAction": <<Expression that evaluates to a Button action>>
 }
 ```
 
@@ -1462,16 +1551,16 @@ in a community page.
 
 - `title` - The title to display.
 - `description` Optional - The description to display.
-- `callToAction` Optional - `Action type` -> @Cesar to document
-- `secondaryAction` Optional - `Action type` -> @Cesar to document
+- `callToAction` Optional - `Button Action type` -> The action to execute. Expects the same format as the `Button` component.
+- `secondaryAction` Optional - `Button Action type` -> The action to execute. Expects the same format as the `Button` component.
 - `bannerImage` Optional - The URL of the image to display.
 
 ```json
 {
   "title": <<String value or expression>>,
   "description": <<String value or expression>>,
-  "callToAction": "TODO",
-  "secondaryAction": "TODO",
+  "callToAction": <<Expression that evaluates to a Button action>>,
+  "secondaryAction": <<Expression that evaluates to a Button action>>,
   "bannerImage": <<String value or expression>>
 }
 ```
@@ -1504,6 +1593,131 @@ Supports being placed in a community page.
     }
   ]
 }
+```
+
+### People
+
+The `People` component allows you to display a list of people. It can be used
+to display a list of team members, board members, event speakers, etc.
+
+Supports being placed in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+##### Map Format
+
+- `title` - The title to display.
+- `description` Optional - The description to display.
+- `people` - List of people to display. Each person should be a map with the following format:
+  - `name` - The name of the person.
+  - `title` - The title of the person.
+  - `imageUrl` - The URL of the image to display.
+  - `about` - Optional - The description of the person.
+
+```json
+{
+  "title": <<String value or expression>>,
+  "description": <<String value or expression>>,
+  "people": [
+    {
+      "name": <<String value or expression>>,
+      "title": <<String value or expression>>,
+      "imageUrl": <<String value or expression>>,
+      "about": <<String value or expression>>
+    }
+  ]
+}
+```
+
+### Pricing Table
+
+The `Pricing Table` component allows you to display a pricing table. It can be used
+to display a list of plans, packages, etc.
+
+Supports being placed in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+##### Map Format
+
+- `tag` Optional - The tag to display at the top of the component.
+- `title` - The title to display.
+- `description` Optional - The description to display.
+- `plans` - List of plans to display. Each plan should be a map with the following format:
+  - `name` - The name of the plan.
+  - `price` - The price of the plan.
+  - `action` - Action to execute when the plan is selected. Expects the same format as the `Button` component.
+  - `description` Optional - The description of the plan.
+  - `features` - List of strings detailing the features of the plan.
+
+```json
+{
+  "tag": <<String value or expression>>,
+  "title": <<String value or expression>>,
+  "description": <<String value or expression>>,
+  "plans": [
+    {
+      "name": <<String value or expression>>,
+      "price": <<String value or expression>>,
+      "action": <<Expression that evaluates to a Button action>>,
+      "description": <<String value or expression>>,
+      "features": [
+        <<String value or expression>>
+      ]
+    }
+  ]
+}
+```
+
+### Stats
+
+The `Stats` component allows you to display a list of stats. It can be used
+to display a list of metrics, KPIs, etc.
+
+Supports being placed in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+##### Map Format
+
+- `title` - The title to display.
+- `description` Optional - The description to display.
+- `stats` - List of stats to display. Each stat should be a map with the following format:
+  - `label` - The name of the stat.
+  - `value` - The value of the stat.
+
+```json
+{
+  "title": <<String value or expression>>,
+  "description": <<String value or expression>>,
+  "stats": [
+    {
+      "label": <<String value or expression>>,
+      "value": <<String value or expression>>
+    }
+  ]
+}
+```
+
+### Text Block
+
+The `Text Block` component allows you to display a block of text. It can be used
+to display any row of text.
+
+Supports being placed in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a String.
+
+```json
+<<String value or expression>>
 ```
 
 ## Contributing
@@ -1539,11 +1753,13 @@ The source code includes a `Visitor` implementation
 whose sole purpose is to do this, `AstPrinter`. When enabled, it will
 print the AST to the logs.
 
-You can enable it by setting the `expression.Evaluator.printAst` static variable to `true`.
+You can enable it by passing an `expression.Evaluator.Config` option to the `run` 
+method with the `printAst` option enabled :
 
 ```apex
-expression.Evaluator.printAst = true;
-Object value = expression.Evaluator.run('AND(true, false, 1=1)');
+expression.Evaluator.Config config = new expression.Evaluator.Config();
+config.printAst = true;
+Object value = expression.Evaluator.run('AND(true, false, 1=1)', config);
 // Outputs to the logs:
 // (AND true false (= 1 1))
 ```

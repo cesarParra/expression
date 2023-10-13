@@ -38,30 +38,40 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
         public Object get(String referenceName, List<Object> args) {
             switch on referenceName.toLowerCase()   {
                 when 'gotonamedpage' {
-                    Map<Object, Object> navigateArgs = (Map<Object, Object>) args[0];
-
-                    // Must contain the "name" key
-                    if (!navigateArgs.containsKey('name')) {
-                        throw new Interpreter.InterpreterException('Missing "name" key in navigate args');
-                    }
-
-                    Map<Object, Object> extraArgs = new Map<Object, Object>();
-                    for (Object key : navigateArgs.keySet()) {
-                        if (key != 'name') {
-                            extraArgs.put(key, navigateArgs.get(key));
-                        }
-                    }
-
-                    return new Map<String, Object> {
-                        'type' => 'navigate__namedPage',
-                        'name' => (String) navigateArgs.get('name'),
-                        'args' => extraArgs
-                    };
+                    Map<String, Object> returnMap = buildLwcActionMap(args);
+                    returnMap.put('type', 'navigate__namedPage');
+                    return returnMap;
+                }
+                when 'gotourl' {
+                    Map<String, Object> returnMap = buildLwcActionMap(args);
+                    returnMap.put('type', 'navigate__url');
+                    return returnMap;
                 }
                 when else {
                     throw new Interpreter.InterpreterException('Unknown LWC action: ' + referenceName);
                 }
             }
+        }
+
+        private Map<String, Object> buildLwcActionMap(List<Object> args) {
+            Map<Object, Object> navigateArgs = (Map<Object, Object>) args[0];
+
+            // Must contain the "name" key
+            if (!navigateArgs.containsKey('name')) {
+                throw new Interpreter.InterpreterException('Missing "name" key in navigate args');
+            }
+
+            Map<Object, Object> extraArgs = new Map<Object, Object>();
+            for (Object key : navigateArgs.keySet()) {
+                if (key != 'name') {
+                    extraArgs.put(key, navigateArgs.get(key));
+                }
+            }
+
+            return new Map<String, Object>{
+                'name' => (String) navigateArgs.get('name'),
+                'args' => extraArgs
+            };
         }
     }
 }
