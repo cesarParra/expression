@@ -11,14 +11,12 @@ public inherited sharing abstract class QRunner {
 
     private with sharing class WithSharingRunner extends QRunner {
         public override List<SObject> run(Q query) {
-            System.debug('running with sharing');
-            return Database.query(query.build());
+            return Database.query(query.build(), AccessLevel.USER_MODE);
         }
     }
 
     private without sharing class WithoutSharingRunner extends QRunner {
         public override List<SObject> run(Q query) {
-            System.debug('running without sharing ' + query.build() + ' ' + AccessLevel.SYSTEM_MODE);
             return Database.query(query.build(), AccessLevel.SYSTEM_MODE);
         }
     }

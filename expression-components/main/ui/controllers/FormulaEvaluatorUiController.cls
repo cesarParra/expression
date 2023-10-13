@@ -16,7 +16,6 @@ public with sharing class FormulaEvaluatorUiController {
         try {
             Evaluator.Config config = new Evaluator.Config();
             config.sharing = respectSharing ? Evaluator.SharingMode.WITH : Evaluator.SharingMode.WITHOUT;
-            System.debug('config.sharing: ' + config.sharing);
             if (String.isBlank(recordId)) {
                 return Evaluator.run(formula, config);
             } else {

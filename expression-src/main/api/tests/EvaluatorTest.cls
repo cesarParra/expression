@@ -1059,7 +1059,6 @@ private class EvaluatorTest {
     @IsTest
     private static void whenSortingIfAMapDoesNotContainTheFieldItIsSortedAtTheEnd() {
         List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"b": 1}], "a")');
-        System.debug(result);
         Assert.areEqual(3, result.size());
         Assert.areEqual(2, ((Map<Object, Object>) result[0]).get('a'));
         Assert.areEqual(3, ((Map<Object, Object>) result[1]).get('a'));
@@ -1079,7 +1078,6 @@ private class EvaluatorTest {
         List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")');
 
         Assert.areEqual(3, result.size());
-        System.debug(result);
         Assert.areEqual('A', ((Account) result[0]).Name);
         Assert.areEqual('B', ((Account) result[1]).Name);
         Assert.areEqual('C', ((Account) result[2]).Name);
@@ -1098,7 +1096,6 @@ private class EvaluatorTest {
         List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name", "desc")');
 
         Assert.areEqual(3, result.size());
-        System.debug(result);
         Assert.areEqual('C', ((Account) result[0]).Name);
         Assert.areEqual('B', ((Account) result[1]).Name);
         Assert.areEqual('A', ((Account) result[2]).Name);
@@ -1117,7 +1114,6 @@ private class EvaluatorTest {
         List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name", "asc")');
 
         Assert.areEqual(3, result.size());
-        System.debug(result);
         Assert.areEqual('A', ((Account) result[0]).Name);
         Assert.areEqual('B', ((Account) result[1]).Name);
         Assert.areEqual('C', ((Account) result[2]).Name);
@@ -1137,7 +1133,6 @@ private class EvaluatorTest {
         List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name", "NumberOfEmployees"]) -> SORT("NumberOfEmployees")');
 
         Assert.areEqual(4, result.size());
-        System.debug(result);
         Assert.areEqual('A', ((Account) result[0]).Name);
         Assert.areEqual('B', ((Account) result[1]).Name);
         Assert.areEqual('C', ((Account) result[2]).Name);

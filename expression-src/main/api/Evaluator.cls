@@ -81,7 +81,6 @@ global with sharing class Evaluator {
 
     private static Expr parseExpression(String formula, Config config) {
         evaluationSharingMode = config.sharing;
-        System.debug('Sharing mode: ' + evaluationSharingMode);
         Scanner scanner = new Scanner(formula);
         List<Token> tokens = scanner.scanTokens();
 
