@@ -7,14 +7,14 @@
           <lightning-formatted-rich-text value={computed.description}></lightning-formatted-rich-text>
         </div>
         <div class={buttonClasses}>
-          <c-button if:true={computed.callToAction}
+          <c-base-button if:true={computed.callToAction}
                     action={computed.callToAction}
                     size="lg"
-          ></c-button>
-          <c-button if:true={computed.secondaryAction}
+          ></c-base-button>
+          <c-base-button if:true={computed.secondaryAction}
                     action={computed.secondaryAction}
                     variant="secondary"
-          ></c-button>
+          ></c-base-button>
         </div>
       </div>
       <div if:true={computed.bannerImage} class="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32">

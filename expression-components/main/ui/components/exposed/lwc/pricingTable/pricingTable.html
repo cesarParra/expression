@@ -17,7 +17,7 @@
                 <span class="text-5xl font-bold tracking-tight text-dxp-text-contrast">
                   <lightning-formatted-number format-style="currency" value={plan.price}></lightning-formatted-number> </span>
               </p>
-              <c-button action={plan.action}></c-button>
+              <c-base-button action={plan.action}></c-base-button>
               <p class="mt-10 text-sm font-semibold leading-6 text-dxp-text-contrast">{plan.description}</p>
               <ul role="list" class="mt-6 space-y-3 text-sm leading-6 text-gray-600">
                 <template for:each={plan.features} for:item="feature">

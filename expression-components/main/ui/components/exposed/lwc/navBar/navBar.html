@@ -21,7 +21,7 @@
         </template>
       </div>
       <div if:true={computed.callToAction} class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <c-button action={computed.callToAction} size="md"></c-button>
+        <c-base-button action={computed.callToAction} size="md"></c-base-button>
       </div>
     </nav>
     <div if:true={isOpen} class="lg:hidden" role="dialog" aria-modal="true">
@@ -47,7 +47,7 @@
               </template>
             </div>
             <div if:true={computed.callToAction} class="py-6">
-              <c-button action={computed.callToAction} size="md"></c-button>
+              <c-base-button action={computed.callToAction} size="md"></c-base-button>
             </div>
           </div>
         </div>
