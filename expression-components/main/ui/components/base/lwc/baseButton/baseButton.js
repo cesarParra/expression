@@ -4,7 +4,7 @@ import { NavigationMixin } from "lightning/navigation";
 import execute from '@salesforce/apex/FormulaEvaluatorUiController.execute';
 import { classNames } from 'c/utils';
 
-export default class PricingTable extends NavigationMixin(TwElement) {
+export default class BaseButton extends NavigationMixin(TwElement) {
   /**
    * @typedef ApexFunction
    * @property { string } class
