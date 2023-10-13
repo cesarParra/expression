@@ -310,7 +310,7 @@ and specify the name of the function and the Apex class that implements it:
 ### Apex Interoperability
 
 Besides being able to create custom Apex formulas, you can also reference Apex actions to be executed later.
-This is useful when the goal is not to retrieve data, but to perform some action. This about this as having
+This is useful when the goal is not to retrieve data, but to perform some action. Think about this as having
 a reference to a function in Javascript, which you can then execute later.
 
 > This is how you can call Apex actions from [Expression Component Buttons](#Button).
