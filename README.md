@@ -668,6 +668,17 @@ Accepts 1 argument: the text to reverse.
 expression.Evaluator.run('REVERSE("Hello World")'); // "dlroW olleH"
 ```
 
+- `SPLIT`
+
+Returns a list that contains each substring of the String that is terminated 
+by the provided delimiter.
+
+Accepts 2 arguments: the text to split and the delimiter.
+
+```apex
+expression.Evaluator.run('SPLIT("Hello World", " ")'); // ("Hello", "World")
+```
+
 - `MID`
 
 Returns a specified number of characters from a text string starting at the position you specify up
@@ -860,6 +871,16 @@ Accepts 1 argument: the date as a string.
 expression.Evaluator.run('DATETIMEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
 ```
 
+- `DATETIMEFORMAT`
+
+Formats a DateTime into a string using the provided format.
+
+Accepts 2 arguments: the datetime to format and the format string.
+
+```apex
+expression.Evaluator.run('DATETIMEFORMAT(DATETIMEVALUE("2020-01-01 12:00:00"), "yyyy-MM-dd")'); // "2020-01-01"
+```
+
 - `TODAY`
 
 Returns the current date.
@@ -868,6 +889,16 @@ Accepts no arguments.
 
 ```apex
 expression.Evaluator.run('TODAY()'); // 2020-01-01
+```
+
+- `DATETODATETIME`
+
+Converts a Date to a Datetime.
+
+Accepts 1 argument: the date to convert.
+
+```apex
+expression.Evaluator.run('DATETODATETIME(DATE(2020, 1, 1))'); // 2020-01-01 00:00:00
 ```
 
 - `TIMEVALUE`
@@ -1214,9 +1245,9 @@ expression.Evaluator.run('KEYS({ "a": 1, "b": 2, "c": 3 })'); // ["a", "b", "c"]
 
 - `GET`
 
-Returns the value of a key in a map.
+Returns the value of a key in a map or the field in an SObject.
 
-Accepts 2 arguments: the map to evaluate and the key to get.
+Accepts 2 arguments: the map or SObject to evaluate and the key to get.
 
 ```apex
 expression.Evaluator.run('GET({ "a": 1, "b": 2, "c": 3 }, "b")'); // 2
@@ -1354,6 +1385,20 @@ Accepts 1 or 2 arguments: the number to truncate and optionally the number of de
 ```apex
 expression.Evaluator.run('TRUNC(1.5)'); // 1
 expression.Evaluator.run('TRUNC(1.5, 1)'); // 1.5
+```
+
+#### Misc Functions
+
+- `TRANSFORM`
+
+Transforms any input using the provided expression.
+
+Provides a special variable `$source` in the inner expression that contains the original input.
+
+Accepts 2 arguments: the input to transform and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('TRANSFORM("Hello World", UPPER($source))'); // "HELLO WORLD"
 ```
 
 ---
