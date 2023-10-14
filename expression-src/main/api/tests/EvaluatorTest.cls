@@ -1571,4 +1571,11 @@ private class EvaluatorTest {
         Assert.areEqual('pageName', castResult.get('name'));
         Assert.isTrue(((Map<Object, Object>) castResult.get('args')).isEmpty());
     }
+
+    @IsTest
+    private static void letFunctionAllowsForVariablesToBeDefined() {
+        String formula = 'LET({"$a": 1, "$b": 2},  $a + $b)';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual(3, result);
+    }
 }
