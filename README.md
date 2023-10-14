@@ -131,13 +131,18 @@ Assert.areEqual(1, result);
 Or you can use some of the collection functions (like `MAP` or `WHERE`) to extract (or map) data out of the child records
 or filter records. See more information about these functions below.
 
-### Considerations and Limitations
+### Considerations
 
-There are a few limitations around merge fields at the moment
-
-- When using the endpoint that takes a record Id as the context or fetching data through the `FETCH` function, 
-the query is performed `with sharing`, so any records that the user does not have access to
+When using the endpoint that takes a record Id as the context or fetching data through the `FETCH` function, 
+the query is performed `with sharing` by default, so any records that the user does not have access to
 will not be returned or taken into account in the operation.
+  
+To change this behavior, use configuration settings used by the evaluator by passing 
+  an `expression.Evaluator.Config` object to the `run` method with a `sharing` property set to 
+  `expression.Evalutor.SharingMode.WITHOUT`.
+
+### Limitations
+
 - `MAP` only supports one level of relationship, so the second argument cannot contain
 references to children of the child record being mapped.
 - When extracting data out of child records through the MAP function, any null
@@ -312,6 +317,11 @@ and specify the name of the function and the Apex class that implements it:
 Besides being able to create custom Apex formulas, you can also reference Apex actions to be executed later.
 This is useful when the goal is not to retrieve data, but to perform some action. Think about this as having
 a reference to a function in Javascript, which you can then execute later.
+
+Note that there is no need to register this class through a Custom Metadata Record
+in order to use this functionality.
+
+⚠️ Only top level classes without namespaces are currently supported.
 
 > This is how you can call Apex actions from [Expression Component Buttons](#Button).
 
