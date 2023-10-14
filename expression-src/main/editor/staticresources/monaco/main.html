@@ -67,6 +67,9 @@
         window.editor = monaco.editor.create(document.getElementById('container'), {
             value: [''].join('\n'),
             language: 'expression',
+            minimap: {
+                enabled: false
+            },
         });
     }
 </script>

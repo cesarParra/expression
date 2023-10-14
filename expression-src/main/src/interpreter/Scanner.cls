@@ -3,6 +3,8 @@ public with sharing class Scanner {
     private final List<Token> tokens = new List<Token>();
     private Integer start = 0;
     private Integer current = 0;
+    private Integer column = 1;
+    private Integer line = 1;
 
     private static final Map<String, TokenType> keywords;
 
@@ -23,7 +25,7 @@ public with sharing class Scanner {
             scanToken();
         }
 
-        tokens.add(new Token(TokenType.EOF, '', null));
+        tokens.add(new Token(TokenType.EOF, '', null, new Token.Position(line, column)));
         return tokens;
     }
 
@@ -113,7 +115,10 @@ public with sharing class Scanner {
                     advance();
                     addToken(TokenType.DOUBLE_PIPE);
                 } else {
-                    throw new ScannerException('Unexpected character' + next + ' Expected another | for an OR operator');
+                    Integer column = this.column - 1;
+                    throw new ScannerException(
+                        'Line ' + line + ', column ' + column + ': ' +
+                        'Unexpected character' + next + ' Expected another | for an OR operator');
                 }
             }
 
@@ -131,7 +136,10 @@ public with sharing class Scanner {
                 } else if (character.isAlpha()) {
                     identifierLiteral();
                 } else {
-                    throw new ScannerException('Unexpected character: ' + character);
+                    Integer column = this.column - 1;
+                    throw new ScannerException(
+                        'Line ' + line + ', column ' + column + ': ' +
+                        'Unexpected character: ' + character);
                 }
             }
         }
@@ -147,7 +155,13 @@ public with sharing class Scanner {
 
     private String advance() {
         current++;
-        return source.substring(current - 1, current);
+        column++;
+        String c = source.substring(current - 1, current);
+        if (c == '\n') {
+            line++;
+            column = 1;
+        }
+        return c;
     }
 
     private void addToken(TokenType type) {
@@ -156,7 +170,17 @@ public with sharing class Scanner {
 
     private void addToken(TokenType type, Object literal) {
         String text = source.substring(start, current);
-        tokens.add(new Token(type, text, literal));
+
+        // Count how many \n characters are in the text
+        Integer line = this.line - text.countMatches('\n');
+
+        // The column is wherever the text started, so subtract the length of the text
+        // from the current column. If the text spans multiple lines we only
+        // want the column of the first line.
+        List<String> textLines = text.split('\n');
+        Integer column = this.column - textLines[0].length();
+
+        tokens.add(new Token(type, text, literal, new Token.Position(line, column)));
     }
 
     private Boolean match(String expected) {
