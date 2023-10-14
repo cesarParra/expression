@@ -8,7 +8,7 @@
     "permset:assign": "sfdx force:user:permset:assign -n Expression_Admin",
     "start:dev": "npm run scratch:create && npm run source:push && npm run permset:assign",
     "start:dev:components": "npm run scratch:create:communities && npm run source:push && npm run permset:assign",
-    "start:dev:example:conf": "npm run start:dev:components && sfdx force:source:deploy -p unpackaged/examples/expression-conf",
+    "start:dev:example:conf": "npm run start:dev:components && sfdx force:source:deploy -p unpackaged/examples/expression-conf/main && sf data import -p unpackaged/examples/expression-conf/data-plan.json",
     "package:create:expression": "sf package version create -x -c -p 0HoDm000000XZKSKA4 -w 30",
     "package:create:expression:components": "sf package version create -x -c -p 0HoDm000000XZKhKAO -w 30",
     "docs:init": "docsify init docs",

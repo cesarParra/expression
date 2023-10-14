@@ -1,0 +1,50 @@
+[
+    {
+        "sobject": "Contact",
+        "saveRefs": true,
+        "resolveRefs": false,
+        "files": [
+            "Contacts.json"
+        ]
+    },
+    {
+        "sobject": "expression__Event__c",
+        "saveRefs": true,
+        "resolveRefs": false,
+        "files": [
+            "expression__Event__cs.json"
+        ]
+    },
+    {
+        "sobject": "expression__Speaker__c",
+        "saveRefs": false,
+        "resolveRefs": true,
+        "files": [
+            "expression__Speaker__cs.json"
+        ]
+    },
+    {
+        "sobject": "expression__Product__c",
+        "saveRefs": true,
+        "resolveRefs": true,
+        "files": [
+            "expression__Product__cs.json"
+        ]
+    },
+    {
+        "sobject": "expression__Price_Component__c",
+        "saveRefs": true,
+        "resolveRefs": false,
+        "files": [
+            "expression__Price_Component__cs.json"
+        ]
+    },
+    {
+        "sobject": "expression__Product_Price_Component__c",
+        "saveRefs": false,
+        "resolveRefs": true,
+        "files": [
+            "expression__Product_Price_Component__cs.json"
+        ]
+    }
+]
