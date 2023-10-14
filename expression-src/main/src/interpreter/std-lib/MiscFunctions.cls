@@ -1,6 +1,7 @@
 public with sharing class MiscFunctions {
     public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
-        'TRANSFORM' => new TransformFn()
+        'TRANSFORM' => new TransformFn(),
+        'LET' => new LET()
     };
 
     private class TransformFn extends ExpressionFunction {
@@ -10,6 +11,36 @@ public with sharing class MiscFunctions {
             env.define('$source', sourceObj);
             Interpreter interpreter = new Interpreter(env);
             return interpreter.interpret(arguments.get(1));
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class LET extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument should be a map
+            Object left = evaluate(arguments.get(0));
+            if (!(left instanceof Map<Object, Object>)) {
+                throw new Interpreter.InterpreterException('First argument to LET must be a map');
+            }
+
+            for (Object key : ((Map<Object, Object>)left).keySet()) {
+                if (!(key instanceof String)) {
+                    throw new Interpreter.InterpreterException('Keys in map passed to LET must be strings');
+                }
+
+                String keyStr = (String)key;
+                if (!keyStr.startsWith('$')) {
+                    throw new Interpreter.InterpreterException('Custom variables created through LET must start with $');
+                }
+
+                Environment.addGlobalVariable(keyStr, ((Map<Object, Object>)left).get(key));
+            }
+
+            // Second argument is any expression
+            return evaluate(arguments.get(1));
         }
 
         public override Arity getArity() {

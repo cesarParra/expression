@@ -22,19 +22,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgXIAU)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgXIAU)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MghIAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MghIAE)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011MgXIAU
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MghIAE
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MgXIAU
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MghIAE
 ```
 
 ### Direct Deployment to Salesforce
@@ -336,6 +336,31 @@ To pass arguments to your Apex class, you can pass any number of expressions as 
 ```apex
 $Action.Apex.ClassName(expression1, expression2, ...)
 ```
+
+### Providing More Context To Your Expressions
+
+To perform complex operations where you need to manange additional contextual
+information, you can define custom variables that can be used throughout
+your expressions. For this, a special function is provided: `LET`.
+
+The `LET` function takes 2 arguments: a map expression which binds
+the desired variable name to its value, and the expression to evaluate.
+
+All variables defined by let must be defined as a string key using the `$` prefix.
+
+```
+LET(
+    {
+        "$myVariable": 1, 
+        "$myVariable2": 2 
+    },
+    
+    $myVariable + $myVariable2 + 1
+    
+)
+// Output: 4
+```
+
 
 ## Supported Operators and Functions
 
@@ -1409,6 +1434,18 @@ Accepts 2 arguments: the input to transform and the expression to evaluate.
 
 ```apex
 expression.Evaluator.run('TRANSFORM("Hello World", UPPER($source))'); // "HELLO WORLD"
+```
+
+- `LET`
+
+Allows you to define custom variables that can be used in the expression.
+
+Accepts 2 arguments: a map of variables to define and the expression to evaluate.
+
+The map keys should be the variable names prefixed with `$`.
+
+```apex
+expression.Evaluator.run('LET({ "$a": 1, "$b": 2 }, $a + $b)'); // 3
 ```
 
 ---

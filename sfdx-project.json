@@ -3,8 +3,8 @@
     {
       "path": "expression-src",
       "package": "Expression (Unlocked)",
-      "versionName": "Version 1.15",
-      "versionNumber": "1.15.0.NEXT",
+      "versionName": "Version 1.16",
+      "versionNumber": "1.16.0.NEXT",
       "default": false
     },
     {
@@ -36,6 +36,7 @@
     "Expression Components@0.2.0-1": "04tDm0000011MfyIAE",
     "Expression Components@0.3.0-1": "04tDm0000011Mg8IAE",
     "Expression (Unlocked)@1.15.0-1": "04tDm0000011MgXIAU",
-    "Expression Components@0.4.0-1": "04tDm0000011MgcIAE"
+    "Expression Components@0.4.0-1": "04tDm0000011MgcIAE",
+    "Expression (Unlocked)@1.16.0-1": "04tDm0000011MghIAE"
   }
 }
