@@ -13,7 +13,7 @@
           <template for:each={computed.plans} for:item="plan">
             <div key={plan.name} class="pt-16 lg:px-8 lg:pt-0 xl:px-14">
               <h3 id="tier-basic" class="text-base font-semibold leading-7 text-dxp-text-contrast">{plan.name}</h3>
-              <p class="mt-6 flex items-baseline gap-x-1">
+              <p class="mt-6 mb-2 flex items-baseline gap-x-1">
                 <span class="text-5xl font-bold tracking-tight text-dxp-text-contrast">
                   <lightning-formatted-number format-style="currency" value={plan.price}></lightning-formatted-number> </span>
               </p>

@@ -1,0 +1,168 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "ExpressionConf",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "sectionConfig" : "{\"UUID\":\"01c5ab86-ff98-431b-9b41-9781d5bdeb63\",\"columns\":[{\"UUID\":\"d737fd0f-1f9e-48d4-bcd4-c896f1798934\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "expr" : "{   \"logo\": {     \"name\": \"Logo\",     \"imagePath\": \"/resource/1696872935000/expression__logo?aura.ApexAction.execute=1&aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A%22MlRqRU5YT3pjWFRNenJranFOMWFjQXlMaWFpdmxPSTZWeEo0bWtiN0hsaXcyNDQuMjAuNC0yLjQxLjQ%22%2C%22app%22%3A%22one%3Aone%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fone%3Aone%22%3A%22LYI_D_s7631bZj0jNii5LQ%22%7D%2C%22dn%22%3A%5B%5D%2C%22globals%22%3A%7B%22density%22%3A%22VIEW_ONE%22%2C%22appContextId%22%3A%2206mDS000001gLvHYAU%22%7D%2C%22uad%22%3Atrue%7D&aura.pageURI=%2Flightning%2Fn%2Fexpression__Expression_Playground&aura.token=eyJub25jZSI6Im4zOWR1dkVrWHhDVmRXNXJoRHJkclJQcFh3eXMzWDhSN3U0LWJXaUFTX1VcdTAwM2QiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IntcInRcIjpcIjAwRDFGMDAwMDAwczdxc1wiLFwidlwiOlwiMDJHMUYwMDAwMDBQczRzXCIsXCJhXCI6XCJjYWltYW5zaWduZXJcIn0iLCJjcml0IjpbImlhdCJdLCJpYXQiOjE2OTY4NzM2OTA5MTQsImV4cCI6MH0%3D..l5f0eGay5IwTgvdqmSVIO89D6IHWP32sJr4dEXGAR4Y%3D&message=%7B%22actions%22%3A%5B%7B%22id%22%3A%22860%3Ba%22%2C%22descriptor%22%3A%22aura%3A%2F%2FApexActionController%2FACTION%24execute%22%2C%22callingDescriptor%22%3A%22UNKNOWN%22%2C%22params%22%3A%7B%22namespace%22%3A%22expression%22%2C%22classname%22%3A%22PlaygroundController%22%2C%22method%22%3A%22validate%22%2C%22params%22%3A%7B%22expr%22%3A%22%7B%5Cr%5Cn%5Ct%5C%22logo%5C%22%3A+%7B%5Cr%5Cn%5Ct%5Ct%5C%22name%5C%22%3A+%5C%22Logo%5C%22%2C%5Cr%5Cn%5Ct%5Ct%5C%22imagePath%5C%22%3A+%24Resource.logo%2C%5Cr%5Cn%5Ct%5Ct%5C%22url%5C%22%3A+%5C%22%2F%5C%22%5Cr%5Cn%5Ct%7D%2C%5Cr%5Cn%5Ct%5C%22menuItems%5C%22%3A+%5B%5D%2C%5Cr%5Cn%5Ct%5C%22callToAction%5C%22%3A+%7B%5Cr%5Cn%5Ct%5Ct%5C%22label%5C%22%3A+%24label.c.Register_Now%2C%5Cr%5Cn%5Ct%5Ct%5C%22url%5C%22%3A+%5C%22%2F%5C%22%5Cr%5Cn%5Ct%7D%5Cr%5Cn%7D%22%7D%2C%22cacheable%22%3Afalse%2C%22isContinuation%22%3Afalse%7D%7D%5D%7D&r=35\",     \"url\": \"/\"   },   \"menuItems\": [],   \"callToAction\": {     \"label\": \"Register Now!\",     \"url\": \"/\"   } }",
+                "respectSharing" : false
+              },
+              "definition" : "expression:navBar",
+              "id" : "441f2532-7721-4629-9712-b937d83c94fb",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "centerItems" : false,
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "",
+                    "right" : "",
+                    "top" : ""
+                  },
+                  "padding" : {
+                    "bottom" : "",
+                    "left" : "200px",
+                    "right" : "200px",
+                    "top" : ""
+                  }
+                },
+                "expr" : "FETCH(\"Event__c\", [\"Id\", \"Name\", \"Tag_Line__c\", \"Description__c\"])  -> WHERE(Name = \"ExpressionConf\")  -> FIRST()  -> TRANSFORM(     {     \"title\": $source.expression__Tag_Line__c,     \"description\": SUBSTITUTE($source.expression__Description__c, \"\\n\", BR())     }  )",
+                "respectSharing" : false
+              },
+              "definition" : "expression:hero",
+              "id" : "0e8c3e79-de83-4d54-a207-512face1d396",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "color" : "rgb(13, 10, 10)",
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "",
+                    "right" : "",
+                    "top" : "25px"
+                  }
+                },
+                "expr" : "FETCH(\"Event__c\", [\"Id\", \"Name\", \"Start_Date__c\", \"End_Date__c\"])  -> WHERE(Name = \"ExpressionConf\")  -> FIRST()  -> TRANSFORM(         \"\uD83D\uDCC5\" +         TEXT(DAY($source.expression__Start_Date__c)) +          \"-\" +         DATETIMEFORMAT(DATETODATETIME($source.expression__End_Date__c), \"dd MMMM yyyy\") +         \" ◆ \" +         \"\uD83D\uDDFA️Los Angeles, CA\"     )",
+                "respectSharing" : false,
+                "textAlignment" : "Center"
+              },
+              "definition" : "expression:textBlock",
+              "id" : "bc76549e-6f06-4e5e-b17a-80774ef89b8e",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "",
+                    "left" : "",
+                    "right" : "",
+                    "top" : "50px"
+                  }
+                },
+                "expr" : "{ \t\"stats\": [ \t\t{ \t\t\t\"label\": \"Speakers\", \t\t\t\"value\": TEXT(SIZE(FETCH(\"Speaker__c\", []))) \t\t},         {             \"label\": \"Days\",             \"value\":                  FETCH(\"Event__c\", [\"Name\", \"Start_Date__c\", \"End_Date__c\"])                 -> WHERE(Name = \"ExpressionConf\")                 -> FIRST()                 -> TRANSFORM(                     DAY($source.expression__End_Date__c)                     -                     DAY($source.expression__Start_Date__c)                 )         }, \t\t{ \t\t\t\"label\": \"Venue\", \t\t\t\"value\": \"Staples Center\" \t\t}, \t\t{ \t\t\t\"label\": \"Location\", \t\t\t\"value\": \"Los Angeles\" \t\t} \t] }",
+                "respectSharing" : false
+              },
+              "definition" : "expression:stats",
+              "id" : "05bf6d04-2d22-4bd9-ad39-9321587e84cb",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "50px",
+                    "left" : "",
+                    "right" : "",
+                    "top" : "100px"
+                  }
+                },
+                "expr" : "FETCH(\"Speaker__c\",      [     \"Id\", \"Name\", \"Event__r.Name\",      \"Person__r.Name\", \"Person__r.Title\",     \"Person__r.PhotoUrl__c\", \"About__c\"     ]     )     -> WHERE(expression__Event__r.Name = \"ExpressionConf\")     -> MAP(         {             \"name\": $current.Person__r.Name,             \"title\": $current.Person__r.Title,             \"imgUrl\": $current.Person__r.expression__PhotoUrl__c,             \"about\": $current.expression__About__c         }     )     -> TRANSFORM(         {             \"title\": \"Speakers\",             \"description\": \"Learn from the experts on the cutting-edge of deception at the most sinister companies.\",             \"people\": $source         }     )",
+                "respectSharing" : false
+              },
+              "definition" : "expression:people",
+              "id" : "4219a3e2-6b5d-491f-ae1e-ef9a63b757fa",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "alignment" : "center",
+                "lineStyle" : "solid",
+                "size" : 1,
+                "width" : 100
+              },
+              "definition" : "dxp_base:horizontalLine",
+              "id" : "28bee451-d063-43e3-8243-794868676431",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "dxpStyle" : {
+                  "margin" : {
+                    "bottom" : "50px",
+                    "left" : "",
+                    "right" : "",
+                    "top" : "50px"
+                  }
+                },
+                "expr" : "{ \t\"tag\": \"Pricing\", \t\"title\": \"Choose the righ pass for you\", \t\"description\": \"Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et quasi iusto modi velit ut non voluptas in. Explicabo id ut laborum.\", \t\"plans\": FETCH(\"Product__c\", [\"Name\", \"Features__c\", \"Description__c\", \"Event__r.Name\"])     -> WHERE(expression__Event__r.Name = \"ExpressionConf\")     -> MAP(         {             \"name\": Name,             \"price\": GETLISTPRICE(Id),             \"action\": {                 \"label\": \"Register\", \t\t\t\t\t\t\t\t\"src\": $Action.Apex.CreateSalesOrder(Id)             },             \"description\": expression__Description__c,             \"features\": SPLIT(expression__Features__c, \"\\r\\n\")         }     )     -> SORT(\"price\") }",
+                "respectSharing" : false
+              },
+              "definition" : "expression:pricingTable",
+              "id" : "ce4a8451-9dad-44bb-a8df-fd56ea4027e9",
+              "type" : "component"
+            }, {
+              "attributes" : {
+                "expr" : "{   \"title\": \"Proudly Sponsored By\",   \"logos\": [     {       \"name\": \"Transistor\",       \"src\": \"https://tailwindui.com/img/logos/158x48/transistor-logo-gray-900.svg\"     }, { \"name\": \"Reform\", \"src\": \"https://tailwindui.com/img/logos/158x48/reform-logo-gray-900.svg\" }, { \"name\": \"Tuple\", \"src\": \"https://tailwindui.com/img/logos/158x48/tuple-logo-gray-900.svg\" }   ] }",
+                "respectSharing" : false
+              },
+              "definition" : "expression:logos",
+              "id" : "3b9f085c-fa42-4434-b1be-52b816d5151c",
+              "type" : "component"
+            } ],
+            "id" : "d737fd0f-1f9e-48d4-bcd4-c896f1798934",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "01c5ab86-ff98-431b-9b41-9781d5bdeb63",
+          "type" : "component"
+        } ],
+        "id" : "5820b569-0a06-4213-a086-741a96505bb3",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "customHeadTags" : "",
+            "description" : "",
+            "pageTitle" : "ExpressionConf",
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "00cfe44e-a167-4733-b14f-b9cfe4e927e1",
+          "type" : "component"
+        } ],
+        "id" : "d3ffbcfb-575b-4279-a972-58a722374de0",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "36f27ede-9448-4694-bb9d-9e6945961d43",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "home"
+  }
+}
