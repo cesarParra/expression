@@ -15,6 +15,15 @@ public with sharing class Environment {
         GLOBAL_VARIABLES.put('$returnvalue', '{!placeholder}');
     }
 
+    public static void addGlobalVariable(String name, Object value) {
+        // Check that the name has not already been declared
+        if (GLOBAL_VARIABLES.containsKey(name.toLowerCase())) {
+            throw new Interpreter.InterpreterException('Variable with name ' + name + ' already exists');
+        }
+
+        GLOBAL_VARIABLES.put(name.toLowerCase(), value);
+    }
+
     public Environment(SObject context) {
         this.context = context;
     }
