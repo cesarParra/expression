@@ -10,7 +10,8 @@ public with sharing class PipeResolver implements Visitor {
         if (binary.operator.type == TokenType.ARROW) {
             // Check that the right side is a function call
             if (!(binary.right instanceof Expr.FunctionCall)) {
-                throw new Interpreter.InterpreterException(
+                throw new Exceptions.RuntimeException(
+                    binary.operator,
                     'Right side of pipe must be a function call'
                 );
             }
@@ -60,7 +61,7 @@ public with sharing class PipeResolver implements Visitor {
         }
 
         Expr.FunctionCall newFunction = new Expr.FunctionCall(
-            function.functionName,
+            function.functionToken,
             newArguments
         );
 
@@ -121,7 +122,7 @@ public with sharing class PipeResolver implements Visitor {
     }
 
     public Object visit(Expr.Spread spread) {
-        Expr.Spread newSpread = new Expr.Spread(resolve(spread.expression));
+        Expr.Spread newSpread = new Expr.Spread(spread.spreadToken, resolve(spread.expression));
         return newSpread;
     }
 }

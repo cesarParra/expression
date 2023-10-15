@@ -80,8 +80,12 @@ public with sharing class Parser {
 
     private Expr spread() {
         if (match(TokenType.DOT_DOT_DOT)) {
+            Token spreadToken = previous();
             Expr right = getExpr();
-            return new Expr.Spread(right);
+            return new Expr.Spread(
+                spreadToken,
+                right
+            );
         }
 
         return getExpr();
@@ -148,7 +152,7 @@ public with sharing class Parser {
             if (peek().type == TokenType.LEFT_PAREN) {
                 Token fnName = previous();
                 List<Expr> parameters = getParameters();
-                return new Expr.FunctionCall(fnName.lexeme.toUpperCase(), parameters);
+                return new Expr.FunctionCall(fnName, parameters);
             }
 
             // Otherwise we assume it's a field reference

@@ -14,7 +14,7 @@ public with sharing class MathFunctions {
         public override Object call(List<Expr> arguments) {
             Object numberValue = evaluate(arguments.get(0));
             if (!(numberValue instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "ABS" function: the argument must evaluate to a number value.'
                 );
             }
@@ -31,7 +31,7 @@ public with sharing class MathFunctions {
         public override Object call(List<Expr> arguments) {
             Object numberValue = evaluate(arguments.get(0));
             if (!(numberValue instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "CEILING" function: the argument must evaluate to a number value.'
                 );
             }
@@ -48,7 +48,7 @@ public with sharing class MathFunctions {
         public override Object call(List<Expr> arguments) {
             Object numberValue = evaluate(arguments.get(0));
             if (!(numberValue instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "FLOOR" function: the argument must evaluate to a number value.'
                 );
             }
@@ -75,7 +75,7 @@ public with sharing class MathFunctions {
             Object firstArgument = evaluate(arguments.get(0));
             if (firstArgument instanceof List<Object>) {
                 if (arguments.size() > 1) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing ' + name + ' function: the function must have at most one argument when the first argument is a list.'
                     );
                 }
@@ -92,7 +92,7 @@ public with sharing class MathFunctions {
             Decimal result = null;
             for (Object value : values) {
                 if (!(value instanceof Decimal)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing ' + name + ' function: the value ' + value + ' is not a number.'
                     );
                 }
@@ -125,7 +125,7 @@ public with sharing class MathFunctions {
         public override Object call(List<Expr> arguments) {
             Object numberValue = evaluate(arguments.get(0));
             if (!(numberValue instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing ' + name + ' function: the argument must evaluate to a number value.'
                 );
             }
@@ -134,7 +134,7 @@ public with sharing class MathFunctions {
             if (arguments.size() > 1) {
                 Object precisionValue = evaluate(arguments.get(1));
                 if (!(precisionValue instanceof Decimal)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing ' + name + ' function: the second argument must evaluate to a number value.'
                     );
                 }
@@ -157,14 +157,14 @@ public with sharing class MathFunctions {
         public override Object call(List<Expr> arguments) {
             Object dividendValue = evaluate(arguments.get(0));
             if (!(dividendValue instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "MOD" function: the first argument must evaluate to a number value.'
                 );
             }
 
             Object divisorValue = evaluate(arguments.get(1));
             if (!(divisorValue instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "MOD" function: the second argument must evaluate to a number value.'
                 );
             }

@@ -1,7 +1,7 @@
 global without sharing class GetListPrice implements IExpressionFunction {
     global Object execute(List<Object> args) {
         if (args.isEmpty()) {
-            throw new Interpreter.InterpreterException('GetListPrice requires a record id as an argument');
+            throw new ExecutionException('GetListPrice requires a record id as an argument');
         }
 
         String productId = (String)args[0];
@@ -30,4 +30,6 @@ global without sharing class GetListPrice implements IExpressionFunction {
         }
         return productPriceByIdCache;
     }
+
+    public class ExecutionException extends Exception {}
 }

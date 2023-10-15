@@ -26,14 +26,14 @@ public with sharing class StringFunctions {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "BEGINS" function: the argument must evaluate to a string value.'
                 );
             }
 
             Object prefix = evaluate(arguments.get(1));
             if (!(prefix instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "BEGINS" function: the argument must evaluate to a string value.'
                 );
             }
@@ -50,7 +50,7 @@ public with sharing class StringFunctions {
         public override Object call(List<Expr> arguments) {
             Object firstValue = evaluate(arguments.get(0));
             if (!(firstValue instanceof String) && !(firstValue instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "CONTAINS" function: the argument must evaluate to a string or list value.'
                 );
             }
@@ -59,7 +59,7 @@ public with sharing class StringFunctions {
             if (firstValue instanceof String) {
                 Object substring = evaluate(arguments.get(1));
                 if (!(substring instanceof String)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "CONTAINS" function: the argument must evaluate to a string value.'
                     );
                 }
@@ -82,7 +82,7 @@ public with sharing class StringFunctions {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "LOWER" function: the argument must evaluate to a string value.'
                 );
             }
@@ -99,14 +99,14 @@ public with sharing class StringFunctions {
         public override Object call(List<Expr> arguments) {
             Object searchText = evaluate(arguments.get(0));
             if (!(searchText instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "FIND" function: the argument must evaluate to a string value.'
                 );
             }
 
             Object text = evaluate(arguments.get(1));
             if (!(text instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "FIND" function: the argument must evaluate to a string value.'
                 );
             }
@@ -116,7 +116,7 @@ public with sharing class StringFunctions {
             if (arguments.size() > 2) {
                 Object startIndexValue = evaluate(arguments.get(2));
                 if (!(startIndexValue instanceof Decimal)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "FIND" function: the argument must evaluate to a number value.'
                     );
                 }
@@ -135,14 +135,14 @@ public with sharing class StringFunctions {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "LEFT" function: the argument must evaluate to a string value.'
                 );
             }
 
             Object length = evaluate(arguments.get(1));
             if (!(length instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "LEFT" function: the argument must evaluate to a number value.'
                 );
             }
@@ -159,7 +159,7 @@ public with sharing class StringFunctions {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "LEN" function: the argument must evaluate to a string value.'
                 );
             }
@@ -182,14 +182,14 @@ public with sharing class StringFunctions {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing ' + name + ' function: the first argument must evaluate to a string value.'
                 );
             }
 
             Object length = evaluate(arguments.get(1));
             if (!(length instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing ' + name + ' function: the second argument must evaluate to a number value.'
                 );
             }
@@ -198,7 +198,7 @@ public with sharing class StringFunctions {
             if (arguments.size() > 2) {
                 padString = evaluate(arguments.get(2));
                 if (!(padString instanceof String)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing ' + name + ' function: the third argument must evaluate to a string value.'
                     );
                 }
@@ -221,7 +221,7 @@ public with sharing class StringFunctions {
             Object val = evaluate(arguments.get(0));
             // Must evaluate to string or list
             if (!(val instanceof String) && !(val instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "REVERSE" function: the argument must evaluate to a string or list value.'
                 );
             }
@@ -246,21 +246,21 @@ public with sharing class StringFunctions {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "MID" function: the first argument must evaluate to a string value.'
                 );
             }
 
             Object start = evaluate(arguments.get(1));
             if (!(start instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "MID" function: the second argument must evaluate to a number value.'
                 );
             }
 
             Object length = evaluate(arguments.get(2));
             if (!(length instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "MID" function: the third argument must evaluate to a number value.'
                 );
             }
@@ -277,14 +277,14 @@ public with sharing class StringFunctions {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "SUBSTRING" function: the first argument must evaluate to a string value.'
                 );
             }
 
             Object start = evaluate(arguments.get(1));
             if (!(start instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "SUBSTRING" function: the second argument must evaluate to a number value.'
                 );
             }
@@ -294,7 +294,7 @@ public with sharing class StringFunctions {
             if (arguments.size() > 2) {
                 length = evaluate(arguments.get(2));
                 if (!(length instanceof Decimal)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "SUBSTRING" function: the third argument must evaluate to a number value.'
                     );
                 }
@@ -316,14 +316,14 @@ public with sharing class StringFunctions {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "RIGHT: function: the first argument must evaluate to a string value.'
                 );
             }
 
             Object length = evaluate(arguments.get(1));
             if (!(length instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "RIGHT" function: the second argument must evaluate to a number value.'
                 );
             }
@@ -349,7 +349,7 @@ public with sharing class StringFunctions {
             if (arguments.size() > 0) {
                 Object linesToAddValue = evaluate(arguments.get(0));
                 if (!(linesToAddValue instanceof Decimal)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "BR" function: the argument must evaluate to a number value.'
                     );
                 }
@@ -375,7 +375,7 @@ public with sharing class StringFunctions {
             // Check that the first argument is a string
             Object url = evaluate(arguments.get(0));
             if (!(url instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "HYPERLINK" function: the first argument must evaluate to a string value.'
                 );
             }
@@ -383,7 +383,7 @@ public with sharing class StringFunctions {
             // Check that the second argument is a string
             Object friendlyText = evaluate(arguments.get(1));
             if (!(friendlyText instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "HYPERLINK" function: the second argument must evaluate to a string value.'
                 );
             }
@@ -393,7 +393,7 @@ public with sharing class StringFunctions {
             if (arguments.size() > 2) {
                 target = evaluate(arguments.get(2));
                 if (!(target instanceof String)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "HYPERLINK" function: the third argument must evaluate to a string value.'
                     );
                 }
@@ -419,7 +419,7 @@ public with sharing class StringFunctions {
             // Check that the first argument is a string
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "SUBSTITUTE" function: the first argument must evaluate to a string value.'
                 );
             }
@@ -427,7 +427,7 @@ public with sharing class StringFunctions {
             // Check that the second argument is a string
             Object oldText = evaluate(arguments.get(1));
             if (!(oldText instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "SUBSTITUTE" function: the second argument must evaluate to a string value.'
                 );
             }
@@ -435,7 +435,7 @@ public with sharing class StringFunctions {
             // Check that the third argument is a string
             Object newText = evaluate(arguments.get(2));
             if (!(newText instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "SUBSTITUTE" function: the third argument must evaluate to a string value.'
                 );
             }
@@ -490,7 +490,7 @@ public with sharing class StringFunctions {
             // The argument must be a string
             Object value = evaluate(arguments.get(0));
             if (!(value instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "TRIM" function: the argument must evaluate to a string value.'
                 );
             }
@@ -508,7 +508,7 @@ public with sharing class StringFunctions {
             // The argument must be a string
             Object value = evaluate(arguments.get(0));
             if (!(value instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "UPPER" function: the argument must evaluate to a string value.'
                 );
             }
@@ -526,7 +526,7 @@ public with sharing class StringFunctions {
             // The argument must be a string
             Object value = evaluate(arguments.get(0));
             if (!(value instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "VALUE" function: the argument must evaluate to a string value.'
                 );
             }
@@ -544,7 +544,7 @@ public with sharing class StringFunctions {
             // First argument must be a string
             Object value = evaluate(arguments.get(0));
             if (!(value instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "SPLIT" function: the first argument must evaluate to a string value.'
                 );
             }
@@ -552,7 +552,7 @@ public with sharing class StringFunctions {
             // Second argument must be a string
             Object delimiter = evaluate(arguments.get(1));
             if (!(delimiter instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "SPLIT" function: the second argument must evaluate to a string value.'
                 );
             }

@@ -26,4 +26,14 @@ private class ArityTest {
         Assert.isFalse(exactlyArity.isSatisfiedBy(1));
         Assert.isFalse(exactlyArity.isSatisfiedBy(3));
     }
+
+    @IsTest
+    static void canBeConvertedToString() {
+        Assert.areEqual('any number of', Arity.between(null, null).toString());
+        Assert.areEqual('at most 5', Arity.between(null, 5).toString());
+        Assert.areEqual('at least 5', Arity.atLeast(5).toString());
+        Assert.areEqual('exactly 5', Arity.exactly(5).toString());
+        Assert.areEqual('between 1 and 3', Arity.between(1, 3).toString());
+
+    }
 }

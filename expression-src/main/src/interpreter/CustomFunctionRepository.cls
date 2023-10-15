@@ -26,10 +26,12 @@ public virtual with sharing class CustomFunctionRepository {
         if (objectInstance instanceof IExpressionFunction) {
             return (IExpressionFunction) objectInstance;
         } else {
-            throw new Interpreter.InterpreterException(
+            throw new CustomFunctionException(
                 'Error executing ' + functionName + ' function: The class ' +
                     className + ' does not implement the IExpressionFunction interface.'
             );
         }
     }
+
+    public class CustomFunctionException extends Exception {}
 }

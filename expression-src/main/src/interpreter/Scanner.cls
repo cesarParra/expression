@@ -145,14 +145,6 @@ public with sharing class Scanner {
         }
     }
 
-    private Boolean match2(String str) {
-        if (isAtEnd()) return false;
-        if (!source.substring(current, current + 2).equals(str)) return false;
-
-        current += 2;
-        return true;
-    }
-
     private String advance() {
         current++;
         column++;
@@ -188,6 +180,16 @@ public with sharing class Scanner {
         if (!source.substring(current, current + 1).equals(expected)) return false;
 
         current++;
+        column++;
+        return true;
+    }
+
+    private Boolean match2(String str) {
+        if (isAtEnd()) return false;
+        if (!source.substring(current, current + 2).equals(str)) return false;
+
+        current += 2;
+        column += 2;
         return true;
     }
 

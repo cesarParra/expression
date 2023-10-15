@@ -30,12 +30,18 @@ public abstract class Expr {
     }
 
     public class FunctionCall extends Expr {
-        public final String functionName;
+        public final Token functionToken;
         public final List<Expr> arguments;
 
-        public FunctionCall(String functionName, List<Expr> arguments) {
-            this.functionName = functionName;
+        public FunctionCall(Token functionToken, List<Expr> arguments) {
+            this.functionToken = functionToken;
             this.arguments = arguments;
+        }
+
+        public String functionName {
+            get {
+                return functionToken.lexeme.toUpperCase();
+            }
         }
 
         public override Object accept(Visitor v) {
@@ -145,9 +151,11 @@ public abstract class Expr {
     }
 
     public class Spread extends Expr {
+        public final Token spreadToken;
         public final Expr expression;
 
-        public Spread(Expr expression) {
+        public Spread(Token spreadToken, Expr expression) {
+            this.spreadToken = spreadToken;
             this.expression = expression;
         }
 

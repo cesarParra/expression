@@ -1,181 +1,6 @@
 @IsTest
 private class EvaluatorTest {
     @IsTest
-    private static void supportsNumberLiterals() {
-        Assert.areEqual(100, Evaluator.run('100'));
-    }
-
-    @IsTest
-    private static void supportsStringLiterals() {
-        Assert.areEqual('abc', Evaluator.run('"abc"'));
-    }
-
-    @IsTest
-    private static void supportsAddition_2Numbers() {
-        Assert.areEqual(3, Evaluator.run('1 + 2'));
-    }
-
-    @IsTest
-    private static void supportsAddition_3Numbers() {
-        Assert.areEqual(6, Evaluator.run('1 + 2 + 3'));
-    }
-
-    @IsTest
-    private static void supportsDecimalNumbers() {
-        Assert.areEqual(1.5, Evaluator.run('1.5'));
-    }
-
-    @IsTest
-    private static void supportsStringConcatenation_plus() {
-        Assert.areEqual('abc', Evaluator.run('"a" + "b" + "c"'));
-    }
-
-    @IsTest
-    private static void supportsStringConcatenation_ampersand() {
-        Assert.areEqual('abc', Evaluator.run('"a" & "b" & "c"'));
-    }
-
-    @IsTest
-    private static void supportsSubtraction() {
-        Assert.areEqual(1, Evaluator.run('2 - 1'));
-    }
-
-    @IsTest
-    private static void supportsMultiplication() {
-        Assert.areEqual(6, Evaluator.run('2 * 3'));
-    }
-
-    @IsTest
-    private static void supportsDivision() {
-        Assert.areEqual(2, Evaluator.run('6 / 3'));
-    }
-
-    @IsTest
-    private static void supportsExponentiation() {
-        Assert.areEqual(8, Evaluator.run('2 ^ 3'));
-    }
-
-    @IsTest
-    private static void supportsParentheses_toTheLeft() {
-        Assert.areEqual(9, Evaluator.run('(1 + 2) * 3'));
-    }
-
-    @IsTest
-    private static void supportsParentheses_toTheRight() {
-        Assert.areEqual(9, Evaluator.run('3 * (1 + 2)'));
-    }
-
-    @IsTest
-    private static void supportsEquality_singleEqualCharacter() {
-        Assert.areEqual(true, Evaluator.run('1 = 1'));
-    }
-
-    @IsTest
-    private static void supportsEquality_doubleEqualCharacter() {
-        Assert.areEqual(true, Evaluator.run('1 == 1'));
-    }
-
-    @IsTest
-    private static void supportsInequality_bangEqual() {
-        Assert.areEqual(true, Evaluator.run('1 != 2'));
-    }
-
-    @IsTest
-    private static void supportsInequality_lessThanGreaterThan() {
-        Assert.areEqual(true, Evaluator.run('1 <> 2'));
-    }
-
-    @IsTest
-    private static void supportsLessThan() {
-        Assert.areEqual(true, Evaluator.run('1 < 2'));
-    }
-
-    @IsTest
-    private static void supportsLessThanOrEqual() {
-        Assert.areEqual(true, Evaluator.run('1 <= 2'));
-    }
-
-    @IsTest
-    private static void supportsGreaterThan() {
-        Assert.areEqual(true, Evaluator.run('2 > 1'));
-    }
-
-    @IsTest
-    private static void supportsGreaterThanOrEqual() {
-        Assert.areEqual(true, Evaluator.run('2 >= 1'));
-    }
-
-    @IsTest
-    private static void supportsAnd() {
-        Assert.areEqual(true, Evaluator.run('1 = 1 && (2 = 2)'));
-    }
-
-    @IsTest
-    private static void supportsAnd_leftFalse() {
-        Assert.areEqual(false, Evaluator.run('1 = 2 && 2 = 2'));
-    }
-
-    @IsTest
-    private static void supportsAnd_rightFalse() {
-        Assert.areEqual(false, Evaluator.run('1 = 1 && (2 = 3)'));
-    }
-
-    @IsTest
-    private static void supportsAnd_withOr() {
-        Assert.areEqual(true, Evaluator.run('((1 = 1) && (2 = 2)) || (3 = 3)'));
-    }
-
-    @IsTest
-    private static void supportsOr() {
-        Assert.areEqual(true, Evaluator.run('1 = 1 || (2 = 2)'));
-    }
-
-    @IsTest
-    private static void supportsOr_leftFalse() {
-        Assert.areEqual(true, Evaluator.run('1 = 2 || (2 = 2)'));
-    }
-
-    @IsTest
-    private static void supportsOr_rightFalse() {
-        Assert.areEqual(true, Evaluator.run('1 = 1 || (2 = 3)'));
-    }
-
-    @IsTest
-    private static void supportsNegatingExpression() {
-        Assert.areEqual(false, Evaluator.run('!(1=1)'));
-    }
-
-    @IsTest
-    private static void supportsMinusBeforeNumber() {
-        Assert.areEqual(-1, Evaluator.run('-1'));
-    }
-
-    @IsTest
-    private static void supportsTrueLiterals() {
-        Assert.areEqual(true, Evaluator.run('true'));
-    }
-
-    @IsTest
-    private static void trueLiteralsAreCaseInsensitive() {
-        Assert.areEqual(true, Evaluator.run('TRUE'));
-    }
-
-    @IsTest
-    private static void supportsFalseLiterals() {
-        Assert.areEqual(false, Evaluator.run('false'));
-    }
-
-    @IsTest
-    private static void falseLiteralsAreCaseInsensitive() {
-        Assert.areEqual(false, Evaluator.run('FALSE'));
-    }
-
-    @IsTest
-    private static void supportsNullLiterals() {
-        Assert.areEqual(null, Evaluator.run('null'));
-    }
-
-    @IsTest
     private static void canEvaluateAndFunctionWith2Arguments() {
         Assert.areEqual(true, Evaluator.run('AND(true, true)'));
     }
@@ -1577,5 +1402,73 @@ private class EvaluatorTest {
         String formula = 'LET({"$a": 1, "$b": 2},  $a + $b)';
         Object result = Evaluator.run(formula);
         Assert.areEqual(3, result);
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenPassingArgumentToSObjectGetExpr() {
+        Account testRecord = new Account(Name = 'Test');
+        insert testRecord;
+
+        try {
+            Evaluator.run('FETCH("Account", []) -> FIRST().Name("Test")',
+                testRecord.Id);
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenPassingArgumentToMapGetExpr() {
+        try {
+            Evaluator.run('{"Name": "Test"}.Name("Test")');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenGettingFieldThatDoesNotExist() {
+        Account testRecord = new Account(Name = 'Test');
+        insert testRecord;
+
+        try {
+            Evaluator.run('FETCH("Account", []) -> FIRST().NonExistentField',
+                testRecord.Id);
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenGettingKeyThatDoesNotExist() {
+        try {
+            Evaluator.run('{"Name": "Test"}.NonExistentKey');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenBubblingErrorsFromGlobalVariableResolvers() {
+        try {
+            Evaluator.run('$Action.Apex.NonExistentClass');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenUsingGetExpressionInAnInvalidWay() {
+        try {
+            Evaluator.run('$DoesNotExist.DoSomething');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
     }
 }

@@ -16,7 +16,7 @@ public with sharing class LogicalFunctions {
             for (Expr argument : arguments) {
                 Object evaluated = evaluate(argument);
                 if (!isBoolean(evaluated)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "AND" function: all arguments must evaluate to a boolean value.'
                     );
                 }
@@ -39,7 +39,7 @@ public with sharing class LogicalFunctions {
             // Evaluate the condition
             Object condition = evaluate(arguments.get(0));
             if (!isBoolean(condition)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "IF" function: the first argument must evaluate to a boolean value.'
                 );
             }
@@ -63,7 +63,7 @@ public with sharing class LogicalFunctions {
             // Evaluate the expression
             Object expression = evaluate(arguments.get(0));
             if (!isBoolean(expression)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "NOT" function: the argument must evaluate to a boolean value.'
                 );
             }
@@ -83,7 +83,7 @@ public with sharing class LogicalFunctions {
             for (Expr argument : arguments) {
                 Object evaluated = evaluate(argument);
                 if (!isBoolean(evaluated)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "OR" function: all arguments must evaluate to a boolean value.'
                     );
                 }
@@ -118,7 +118,7 @@ public with sharing class LogicalFunctions {
                 }
             }
 
-            throw new Interpreter.InterpreterException(
+            throw new FunctionExecutionException(
                 'Error executing "BLANKVALUE" function: the first argument must evaluate to a string value.'
             );
         }
