@@ -122,6 +122,13 @@ public with sharing class Scanner {
                 }
             }
 
+            when '#' {
+                // Ignore comments
+                while (peek() != '\n' && !isAtEnd()) {
+                    advance();
+                }
+            }
+
             when ' ', '\r', '\t', '\n' {
                 // Ignore whitespace
             }

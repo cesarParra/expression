@@ -16,7 +16,9 @@ Powerful formula-syntax evaluator for Apex and LWC.
 * Supports all the most important operators and functions available in Salesforce formulas
 * Support for lists and maps, including spread operator (`...`) support.
 * Automatically understands relationships and can extract data from child records
-* Comes with pre-built LWC component to evaluate formulas in record pages
+* Comment support
+* Pre-built LWC component to evaluate Expressions in record pages and Experience Builder sites
+* And much more!
 
 ## Installation
 
@@ -286,6 +288,14 @@ This will return the URL where the static resource is hosted.
 
 ```apex
 Object result = expression.Evaluator.run('$Resource.MyStaticResourceName');
+```
+
+## Comments
+
+You can add comments to your Expressions by prefixing them with `#`.
+
+```apex
+Object result = expression.Evaluator.run('1 + 1 # This is a comment');
 ```
 
 ## Advanced Usage
