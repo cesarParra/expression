@@ -10,7 +10,8 @@ public with sharing class PipeResolver implements Visitor {
         if (binary.operator.type == TokenType.ARROW) {
             // Check that the right side is a function call
             if (!(binary.right instanceof Expr.FunctionCall)) {
-                throw new Interpreter.InterpreterException(
+                throw new Exceptions.RuntimeException(
+                    binary.operator,
                     'Right side of pipe must be a function call'
                 );
             }

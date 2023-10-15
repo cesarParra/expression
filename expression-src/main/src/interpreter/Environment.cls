@@ -18,7 +18,7 @@ public with sharing class Environment {
     public static void addGlobalVariable(String name, Object value) {
         // Check that the name has not already been declared
         if (GLOBAL_VARIABLES.containsKey(name.toLowerCase())) {
-            throw new Interpreter.InterpreterException('Variable with name ' + name + ' already exists');
+            throw new EnvironmentException('Variable with name ' + name + ' already exists');
         }
 
         GLOBAL_VARIABLES.put(name.toLowerCase(), value);
@@ -85,7 +85,7 @@ public with sharing class Environment {
         }
 
         if (context == null) {
-            throw new Interpreter.InterpreterException('No such field: ' + field);
+            throw new EnvironmentException('No such field: ' + field);
         }
 
         if (context.getSObjectType().getDescribe().fields.getMap().keySet().contains(lowerCaseField)) {
@@ -105,7 +105,7 @@ public with sharing class Environment {
             }
         }
 
-        throw new Interpreter.InterpreterException('No such field: ' + field);
+        throw new EnvironmentException('No such field: ' + field);
     }
 
     public String getSObjectTypeName() {
@@ -115,4 +115,6 @@ public with sharing class Environment {
     public SObject getParentSObject(String fieldName) {
         return context.getSObject(fieldName);
     }
+
+    public class EnvironmentException extends Exception {}
 }

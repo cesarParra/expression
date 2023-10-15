@@ -184,7 +184,17 @@ public with sharing class Interpreter implements Visitor {
             for (Expr argument : getExpr.arguments) {
                 arguments.add(evaluate(argument));
             }
-            return ((IGlobalVariableResolver) result).get(getExpr.field.lexeme, arguments);
+
+            try {
+                return ((IGlobalVariableResolver) result).get(getExpr.field.lexeme, arguments);
+            } catch (Exceptions.RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new Exceptions.RuntimeException(
+                    getExpr.field,
+                    e.getMessage()
+                );
+            }
         } else if (result instanceof Map<Object, Object>) {
             if (!getExpr.arguments.isEmpty()) {
                 throw new Exceptions.RuntimeException(
@@ -301,10 +311,6 @@ public with sharing class Interpreter implements Visitor {
             operator,
             'Error executing ' + operator.lexeme + ' operator: operands must be numbers.'
         );
-    }
-
-    // TODO: Get rid of this
-    public class InterpreterException extends Exception {
     }
 
     public Object visit(Expr.FunctionCall function) {

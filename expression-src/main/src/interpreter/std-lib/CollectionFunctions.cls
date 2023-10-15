@@ -47,7 +47,7 @@ public with sharing class CollectionFunctions {
                 return new List<Object>();
             }
             if (!(children instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "MAP" function: the first argument must evaluate to a list.'
                 );
             }
@@ -97,7 +97,7 @@ public with sharing class CollectionFunctions {
                 return new List<Object>();
             }
             if (!(children instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "WHERE" function: the first argument must evaluate to a list.'
                 );
             }
@@ -132,7 +132,7 @@ public with sharing class CollectionFunctions {
                         result.add(child);
                     }
                 } else {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "WHERE" function: the second argument must evaluate to a boolean.'
                     );
                 }
@@ -155,7 +155,7 @@ public with sharing class CollectionFunctions {
 
             // Verify that all elements in the list are numbers
             if (!(listOfNumbers instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "AVERAGE" function: the argument must evaluate to a list of numbers.'
                 );
             }
@@ -170,7 +170,7 @@ public with sharing class CollectionFunctions {
             }
             for (Object maybeNumber : sanitizedList) {
                 if (!(maybeNumber instanceof Decimal)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "AVERAGE" function: the argument must evaluate to a list of numbers.'
                     );
                 }
@@ -195,7 +195,7 @@ public with sharing class CollectionFunctions {
             Object listOfValues = evaluate(arguments.get(0));
             // Must be a list or a map
             if (!(listOfValues instanceof List<Object>) && !(listOfValues instanceof Map<Object, Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "SIZE" function: the argument must evaluate to a list or a map.'
                 );
             }
@@ -217,7 +217,7 @@ public with sharing class CollectionFunctions {
             // The argument must either be a list or a map
             Object value = evaluate(arguments.get(0));
             if (!(value instanceof List<Object>) && !(value instanceof Map<Object, Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "ISEMPTY" function: the argument must evaluate to a list or a map.'
                 );
             }
@@ -242,7 +242,7 @@ public with sharing class CollectionFunctions {
                 listObj = new List<Object>();
             }
             if (!(listObj instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "APPEND" function: the first argument must evaluate to a list.'
                 );
             }
@@ -260,7 +260,7 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
             if (!(listObj instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "DISTINCT" function: the first argument must evaluate to a list.'
                 );
             }
@@ -283,7 +283,7 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             Object mapObj = evaluate(arguments.get(0));
             if (!(mapObj instanceof Map<Object, Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "KEYS" function: the first argument must evaluate to a map.'
                 );
             }
@@ -302,7 +302,7 @@ public with sharing class CollectionFunctions {
 
             // Should evaluate to either a map or an SObject
             if (!(mapObj instanceof Map<Object, Object>) && !(mapObj instanceof SObject)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "GET" function: the first argument must evaluate to a map or an SObject.'
                 );
             }
@@ -323,7 +323,7 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             Object mapObj = evaluate(arguments.get(0));
             if (!(mapObj instanceof Map<Object, Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "VALUES" function: the first argument must evaluate to a map.'
                 );
             }
@@ -340,7 +340,7 @@ public with sharing class CollectionFunctions {
             // First argument is a string representing the sobject type name
             Object sobjectType = evaluate(arguments.get(0));
             if (!(sobjectType instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "FETCH" function: the first argument must evaluate to a string.'
                 );
             }
@@ -348,7 +348,7 @@ public with sharing class CollectionFunctions {
             // Second argument is a list of strings representing the field names
             Object fieldNames = evaluate(arguments.get(1));
             if (!(fieldNames instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "FETCH" function: the second argument must evaluate to a list of strings.'
                 );
             }
@@ -356,7 +356,7 @@ public with sharing class CollectionFunctions {
             Q query = new Q((String) sobjectType);
             for (Object fieldName : (List<Object>) fieldNames) {
                 if (!(fieldName instanceof String)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "FETCH" function: the second argument must evaluate to a list of strings.'
                     );
                 }
@@ -376,7 +376,7 @@ public with sharing class CollectionFunctions {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
             if (!(listObj instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "SORT" function: the first argument must evaluate to a list.'
                 );
             }
@@ -395,7 +395,7 @@ public with sharing class CollectionFunctions {
                     fieldToSortBy = evaluate(fieldToSortByExpr);
                 }
                 if (!(fieldToSortBy instanceof String)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "SORT" function: the second argument must be a merge field or evaluate to a string.'
                     );
                 }
@@ -407,14 +407,14 @@ public with sharing class CollectionFunctions {
             if (arguments.size() > 2) {
                 direction = evaluate(arguments.get(2));
                 if (!(direction instanceof String)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "SORT" function: the third argument must evaluate to a string.'
                     );
                 }
 
                 // Expect the string to be either 'ASC' or 'DESC'
                 if (!((String) direction).equalsIgnoreCase('ASC') && !((String) direction).equalsIgnoreCase('DESC')) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "SORT" function: the third argument must be either "ASC" or "DESC".'
                     );
                 }
@@ -443,7 +443,7 @@ public with sharing class CollectionFunctions {
             }
 
             // Otherwise, throw an error
-            throw new Interpreter.InterpreterException(
+            throw new FunctionExecutionException(
                 'Error executing "SORT" function: the first argument must evaluate to a list of maps or sobjects.'
             );
         }
@@ -559,7 +559,7 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
             if (!(listObj instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "FIRST" function: the first argument must evaluate to a list.'
                 );
             }
@@ -579,7 +579,7 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
             if (!(listObj instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "LAST" function: the first argument must evaluate to a list.'
                 );
             }
@@ -600,7 +600,7 @@ public with sharing class CollectionFunctions {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
             if (!(listObj instanceof List<Object>)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "REDUCE" function: the first argument must evaluate to a list.'
                 );
             }

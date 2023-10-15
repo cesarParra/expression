@@ -34,14 +34,14 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object startMonth = evaluate(arguments.get(0));
             if (!(startMonth instanceof Date)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "ADDMONTHS" function: the argument must evaluate to a date value.'
                 );
             }
 
             Object monthsToAdd = evaluate(arguments.get(1));
             if (!(monthsToAdd instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "ADDMONTHS" function: the argument must evaluate to a number value.'
                 );
             }
@@ -58,19 +58,19 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object year = evaluate(arguments.get(0));
             if (!(year instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "DATE" function: the argument must evaluate to a number value.'
                 );
             }
             Object month = evaluate(arguments.get(1));
             if (!(month instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "DATE"" function: the argument must evaluate to a number value.'
                 );
             }
             Object day = evaluate(arguments.get(2));
             if (!(day instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "DATE" function: the argument must evaluate to a number value.'
                 );
             }
@@ -87,7 +87,7 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "DAY" function: the argument must evaluate to a date value.'
                 );
             }
@@ -104,7 +104,7 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "DAYOFYEAR" function: the argument must evaluate to a date value.'
                 );
             }
@@ -132,7 +132,7 @@ public with sharing class DateAndTimeFunctions {
             // Expect the expression to either be a text or a datetime
             Object expression = evaluate(arguments.get(0));
             if (!(expression instanceof String) && !(expression instanceof Datetime)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "DATEVALUE" function: the argument must evaluate to a string or datetime value.'
                 );
             }
@@ -153,7 +153,7 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object expression = evaluate(arguments.get(0));
             if (!(expression instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "DATETIMEVALUE" function: the argument must evaluate to a string value.'
                 );
             }
@@ -188,7 +188,7 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object timeValue = evaluate(arguments.get(0));
             if (!(timeValue instanceof Time)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing ' + fnName + ' function: the argument must evaluate to a time value.'
                 );
             }
@@ -213,7 +213,7 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object dateTimeOrText = evaluate(arguments.get(0));
             if (!(dateTimeOrText instanceof String) && !(dateTimeOrText instanceof Datetime)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "TIMEVALUE" function: the argument must evaluate to a string or datetime value.'
                 );
             }
@@ -222,7 +222,7 @@ public with sharing class DateAndTimeFunctions {
                 // A received string should be in the format of HH:mm:ss.SSS
                 String[] parts = ((String) dateTimeOrText).split(':');
                 if (parts.size() != 3) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "TIMEVALUE" function: the argument must evaluate to a string in the format of HH:mm:ss.SSS.'
                     );
                 }
@@ -265,7 +265,7 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "ISOWEEK" function: the argument must evaluate to a date value.'
                 );
             }
@@ -282,7 +282,7 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "ISOYEAR" function: the argument must evaluate to a date value.'
                 );
             }
@@ -299,7 +299,7 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "YEAR" function: the argument must evaluate to a date value.'
                 );
             }
@@ -316,7 +316,7 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object unixTime = evaluate(arguments.get(0));
             if (!(unixTime instanceof Decimal)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "FROMUNIXTIME" function: the argument must evaluate to a number value.'
                 );
             }
@@ -339,7 +339,7 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object dateOrDateTimeOrTime = evaluate(arguments.get(0));
             if (!(dateOrDateTimeOrTime instanceof Date) && !(dateOrDateTimeOrTime instanceof Datetime) && !(dateOrDateTimeOrTime instanceof Time)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "UNIXTIMESTAMP" function: the argument must evaluate to a date, datetime or time value.'
                 );
             }
@@ -370,7 +370,7 @@ public with sharing class DateAndTimeFunctions {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "WEEKDAY" function: the argument must evaluate to a date value.'
                 );
             }
@@ -404,7 +404,7 @@ public with sharing class DateAndTimeFunctions {
                 // Check that the second value is also a Time
                 Object endVal = evaluate(arguments.get(1));
                 if (!(endVal instanceof Time)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "FORMATDURATION" function: the second argument must evaluate to a time value.'
                     );
                 }
@@ -418,14 +418,14 @@ public with sharing class DateAndTimeFunctions {
                 // Check that the second value is also a Datetime
                 Object endVal = evaluate(arguments.get(1));
                 if (!(endVal instanceof Datetime)) {
-                    throw new Interpreter.InterpreterException(
+                    throw new FunctionExecutionException(
                         'Error executing "FORMATDURATION" function: the second argument must evaluate to a datetime value.'
                     );
                 }
 
                 endDateTime = (Datetime) endVal;
             } else {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "FORMATDURATION" function: the first argument must evaluate to a time or datetime value.'
                 );
             }
@@ -455,7 +455,7 @@ public with sharing class DateAndTimeFunctions {
             // Expect a Date
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "MONTH" function: the argument must evaluate to a date value.'
                 );
             }
@@ -473,7 +473,7 @@ public with sharing class DateAndTimeFunctions {
             // Expect a DateTime
             Object dateTimeValue = evaluate(arguments.get(0));
             if (!(dateTimeValue instanceof Datetime)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "DATETIMEFORMAT" function: the argument must evaluate to a datetime value.'
                 );
             }
@@ -481,7 +481,7 @@ public with sharing class DateAndTimeFunctions {
             // Expect a format string
             Object formatValue = evaluate(arguments.get(1));
             if (!(formatValue instanceof String)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "DATETIMEFORMAT" function: the argument must evaluate to a string value.'
                 );
             }
@@ -499,7 +499,7 @@ public with sharing class DateAndTimeFunctions {
             // Expect a Date
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
-                throw new Interpreter.InterpreterException(
+                throw new FunctionExecutionException(
                     'Error executing "DATETODATETIME" function: the argument must evaluate to a date value.'
                 );
             }

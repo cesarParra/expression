@@ -30,9 +30,12 @@ public with sharing class CustomMetadataVariableResolver {
             String query = 'SELECT ' + fieldName + ' FROM ' + cmtApiName + ' WHERE DeveloperName = \'' + recordName + '\'';
             List<SObject> records = Database.query(query);
             if (records.isEmpty()) {
-                throw new Interpreter.InterpreterException('No ' + cmtApiName + ' record found with DeveloperName = \'' + recordName + '\'');
+                throw new CustomMetadataVariableResolverException(
+                    'No ' + cmtApiName + ' record found with DeveloperName = \'' + recordName + '\'');
             }
             return records[0].get(fieldName);
         }
     }
+
+    public class CustomMetadataVariableResolverException extends Exception {}
 }

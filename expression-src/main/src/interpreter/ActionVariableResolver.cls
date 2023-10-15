@@ -5,13 +5,13 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
                 return new ApexAction();
             }
             when 'flow' {
-                throw new Interpreter.InterpreterException('Flow actions are not yet supported');
+                throw new ActionVariableResolverException('Flow actions are not yet supported');
             }
             when 'lwc' {
                 return new LwcAction();
             }
             when else {
-                throw new Interpreter.InterpreterException('Unknown action reference: ' + referenceName);
+                throw new ActionVariableResolverException('Unknown action reference: ' + referenceName);
             }
         }
     }
@@ -22,9 +22,9 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
             // Check if the class exists and it is a Callable
             Type t = Type.forName(className);
             if (t == null)  {
-                throw new Interpreter.InterpreterException('Unknown class: ' + className);
+                throw new ActionVariableResolverException('Unknown class: ' + className);
             } else if (!IExpressionFunction.class.isAssignableFrom(t)) {
-                throw new Interpreter.InterpreterException('Class ' + className + ' is not a IExpressionFunction');
+                throw new ActionVariableResolverException('Class ' + className + ' is not a IExpressionFunction');
             }
 
             return new Map<String, Object> {
@@ -48,7 +48,7 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
                     return returnMap;
                 }
                 when else {
-                    throw new Interpreter.InterpreterException('Unknown LWC action: ' + referenceName);
+                    throw new ActionVariableResolverException('Unknown LWC action: ' + referenceName);
                 }
             }
         }
@@ -58,7 +58,7 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
 
             // Must contain the "name" key
             if (!navigateArgs.containsKey('name')) {
-                throw new Interpreter.InterpreterException('Missing "name" key in navigate args');
+                throw new ActionVariableResolverException('Missing "name" key in navigate args');
             }
 
             Map<Object, Object> extraArgs = new Map<Object, Object>();
@@ -74,4 +74,6 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
             };
         }
     }
+
+    public class ActionVariableResolverException extends Exception {}
 }

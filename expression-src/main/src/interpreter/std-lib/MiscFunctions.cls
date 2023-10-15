@@ -23,17 +23,17 @@ public with sharing class MiscFunctions {
             // First argument should be a map
             Object left = evaluate(arguments.get(0));
             if (!(left instanceof Map<Object, Object>)) {
-                throw new Interpreter.InterpreterException('First argument to LET must be a map');
+                throw new FunctionExecutionException('First argument to LET must be a map');
             }
 
             for (Object key : ((Map<Object, Object>)left).keySet()) {
                 if (!(key instanceof String)) {
-                    throw new Interpreter.InterpreterException('Keys in map passed to LET must be strings');
+                    throw new FunctionExecutionException('Keys in map passed to LET must be strings');
                 }
 
                 String keyStr = (String)key;
                 if (!keyStr.startsWith('$')) {
-                    throw new Interpreter.InterpreterException('Custom variables created through LET must start with $');
+                    throw new FunctionExecutionException('Custom variables created through LET must start with $');
                 }
 
                 Environment.addGlobalVariable(keyStr, ((Map<Object, Object>)left).get(key));

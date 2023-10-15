@@ -37,4 +37,6 @@ public with sharing abstract class ExpressionFunction {
     protected Boolean isBoolean(Object single) {
         return single instanceof Boolean;
     }
+
+    public class FunctionExecutionException extends Exception {}
 }
