@@ -25,24 +25,5 @@ public with sharing class Token {
             this.line = line;
             this.column = column;
         }
-
-        public override String toString() {
-            return 'Line(' + line + ') Column(' + column + ')';
-        }
-
-        public Boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (obj instanceof Position) {
-                Position other = (Position)obj;
-                return line == other.line && column == other.column;
-            }
-            return false;
-        }
-
-        public override Integer hashCode() {
-            return String.valueOf(line).hashCode() + String.valueOf(column).hashCode();
-        }
     }
 }
