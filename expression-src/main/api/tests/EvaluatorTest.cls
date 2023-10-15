@@ -1471,4 +1471,9 @@ private class EvaluatorTest {
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
     }
+
+    @IsTest
+    private static void commentsAreIgnored() {
+        Assert.areEqual(1, Evaluator.run('1 # comment'));
+    }
 }
