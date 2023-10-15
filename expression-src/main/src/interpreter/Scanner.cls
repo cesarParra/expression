@@ -171,8 +171,6 @@ public with sharing class Scanner {
         // want the column of the first line.
         List<String> textLines = text.split('\n');
         Integer column = this.column - textLines[0].length();
-        System.debug('current col ' + this.column);
-        System.debug('text lines ' + textLines[0]);
 
         tokens.add(new Token(type, text, literal, new Token.Position(line, column)));
     }

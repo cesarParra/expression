@@ -1403,4 +1403,72 @@ private class EvaluatorTest {
         Object result = Evaluator.run(formula);
         Assert.areEqual(3, result);
     }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenPassingArgumentToSObjectGetExpr() {
+        Account testRecord = new Account(Name = 'Test');
+        insert testRecord;
+
+        try {
+            Evaluator.run('FETCH("Account", []) -> FIRST().Name("Test")',
+                testRecord.Id);
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenPassingArgumentToMapGetExpr() {
+        try {
+            Evaluator.run('{"Name": "Test"}.Name("Test")');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenGettingFieldThatDoesNotExist() {
+        Account testRecord = new Account(Name = 'Test');
+        insert testRecord;
+
+        try {
+            Evaluator.run('FETCH("Account", []) -> FIRST().NonExistentField',
+                testRecord.Id);
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenGettingKeyThatDoesNotExist() {
+        try {
+            Evaluator.run('{"Name": "Test"}.NonExistentKey');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenBubblingErrorsFromGlobalVariableResolvers() {
+        try {
+            Evaluator.run('$Action.Apex.NonExistentClass');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenUsingGetExpressionInAnInvalidWay() {
+        try {
+            Evaluator.run('$DoesNotExist.DoSomething');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
 }

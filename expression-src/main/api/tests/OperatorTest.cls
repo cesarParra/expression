@@ -116,6 +116,26 @@ private class OperatorTest {
     }
 
     @IsTest
+    private static void throwsRuntimeExceptionWhenLeftSideOfDoubleAmpIsNotBoolean() {
+        try {
+            Evaluator.run('1 && 2');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenRightSideOfDoubleAmpIsNotBoolean() {
+        try {
+            Evaluator.run('1 = 1 && 2');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
     private static void supportsAnd_leftFalse() {
         Assert.areEqual(false, Evaluator.run('1 = 2 && 2 = 2'));
     }
@@ -128,6 +148,26 @@ private class OperatorTest {
     @IsTest
     private static void supportsAnd_withOr() {
         Assert.areEqual(true, Evaluator.run('((1 = 1) && (2 = 2)) || (3 = 3)'));
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenLeftSideOfDoublePipeIsNotBoolean() {
+        try {
+            Evaluator.run('1 || 2');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void throwsRuntimeExceptionWhenRightSideOfDoublePipeIsNotBoolean() {
+        try {
+            Evaluator.run('1 != 1 || 2');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
     }
 
     @IsTest
