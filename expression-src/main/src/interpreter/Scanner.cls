@@ -145,14 +145,6 @@ public with sharing class Scanner {
         }
     }
 
-    private Boolean match2(String str) {
-        if (isAtEnd()) return false;
-        if (!source.substring(current, current + 2).equals(str)) return false;
-
-        current += 2;
-        return true;
-    }
-
     private String advance() {
         current++;
         column++;
@@ -179,6 +171,8 @@ public with sharing class Scanner {
         // want the column of the first line.
         List<String> textLines = text.split('\n');
         Integer column = this.column - textLines[0].length();
+        System.debug('current col ' + this.column);
+        System.debug('text lines ' + textLines[0]);
 
         tokens.add(new Token(type, text, literal, new Token.Position(line, column)));
     }
@@ -188,6 +182,16 @@ public with sharing class Scanner {
         if (!source.substring(current, current + 1).equals(expected)) return false;
 
         current++;
+        column++;
+        return true;
+    }
+
+    private Boolean match2(String str) {
+        if (isAtEnd()) return false;
+        if (!source.substring(current, current + 2).equals(str)) return false;
+
+        current += 2;
+        column += 2;
         return true;
     }
 

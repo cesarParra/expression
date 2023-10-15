@@ -22,9 +22,11 @@
     window.addEventListener("message", onMessage, false);
 
     function onMessage(event) {
-        console.log(JSON.stringify(event.data));
         if (event.data.name === 'initialize') {
             initialize(event.data.keywords);
+        }
+        if (event.data.name === 'evaluation_error') {
+            markError(event.data.payload);
         }
     }
 
@@ -42,7 +44,12 @@
                         }
                     }],
                     [/".*?"/, 'string'],
+                    // delimiters and operators
                     [/[{}()\[\]]/, '@brackets'],
+
+                    // numbers
+                    [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
+                    [/\d+/, 'number'],
                 ],
             },
             ignoreCase: true
@@ -71,6 +78,24 @@
                 enabled: false
             },
         });
+
+        window.editor.getModel().onDidChangeContent((event) => {
+            monaco.editor.setModelMarkers(window.editor.getModel(), "owner", []);
+        });
+    }
+
+    function markError(error) {
+        let markers = [];
+        markers.push({
+            startLineNumber: error.startLineNumber,
+            endLineNumber: error.endLineNumber,
+            startColumn: error.startColumnNumber,
+            endColumn: error.endColumnNumber,
+            message: error.summary,
+            severity: monaco.MarkerSeverity.Error
+        })
+
+        monaco.editor.setModelMarkers(window.editor.getModel(), "owner", markers);
     }
 </script>
 </body>

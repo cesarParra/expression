@@ -9,7 +9,6 @@ export default class Monaco extends LightningElement {
   result = {};
 
   async iframeLoaded() {
-    console.log('iframe loaded');
     const functionKeywords = await getFunctions();
     this.iframeWindow.postMessage({
       name: 'initialize',
@@ -23,8 +22,13 @@ export default class Monaco extends LightningElement {
     if (result.error) {
       this.result = {
         type: "error",
-        payload: result.error
+        payload: result.error.message
       }
+
+      this.iframeWindow.postMessage({
+        name: 'evaluation_error',
+        payload: result.error
+      });
     } else {
       this.result = {
         type: "success",

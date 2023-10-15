@@ -34,8 +34,8 @@ public with sharing class Interpreter implements Visitor {
                     // Concatenate strings
                     return (String) left + (String) right;
                 }
-                throw new InterpreterException(
-                    'Error executing ' + binary.operator.lexeme + ' operator: operands must be numbers or strings.'
+                throw new Exceptions.RuntimeException(
+                    binary.operator, 'Error executing ' + binary.operator.lexeme + ' operator: operands must be numbers or strings.'
                 );
             }
             when AMPERSAND {
@@ -43,8 +43,8 @@ public with sharing class Interpreter implements Visitor {
                     // Concatenate strings
                     return (String) left + (String) right;
                 }
-                throw new InterpreterException(
-                    'Error executing ' + binary.operator.lexeme + ' operator: operands must be strings.'
+                throw new Exceptions.RuntimeException(
+                    binary.operator, 'Error executing ' + binary.operator.lexeme + ' operator: operands must be strings.'
                 );
             }
             when MINUS {
@@ -61,7 +61,8 @@ public with sharing class Interpreter implements Visitor {
             }
             when EXPONENT {
                 if (!checkIsDecimal(left) || !checkIsDecimal(right)) {
-                    throw new InterpreterException(
+                    throw new Exceptions.RuntimeException(
+                        binary.operator,
                         'Error executing ' + binary.operator.lexeme + ' operator: the left operand must be a number and' +
                             ' the right operand must be an integer, but found: left' + left + ' and right ' + right
                     );
@@ -95,7 +96,8 @@ public with sharing class Interpreter implements Visitor {
             }
             when DOUBLE_AMPERSAND {
                 if (!isBoolean(left)) {
-                    throw new InterpreterException(
+                    throw new Exceptions.RuntimeException(
+                        binary.operator,
                         'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
                     );
                 }
@@ -104,7 +106,8 @@ public with sharing class Interpreter implements Visitor {
 
                 if (leftAsBoolean) {
                     if (!isBoolean(right)) {
-                        throw new InterpreterException(
+                        throw new Exceptions.RuntimeException(
+                            binary.operator,
                             'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
                         );
                     }
@@ -116,7 +119,8 @@ public with sharing class Interpreter implements Visitor {
             }
             when DOUBLE_PIPE {
                 if (!isBoolean(left)) {
-                    throw new InterpreterException(
+                    throw new Exceptions.RuntimeException(
+                        binary.operator,
                         'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
                     );
                 }
@@ -125,7 +129,8 @@ public with sharing class Interpreter implements Visitor {
 
                 if (!leftAsBoolean) {
                     if (!isBoolean(right)) {
-                        throw new InterpreterException(
+                        throw new Exceptions.RuntimeException(
+                            binary.operator,
                             'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
                         );
                     }
@@ -153,7 +158,8 @@ public with sharing class Interpreter implements Visitor {
         Object result = evaluate(getExpr.objectExpr);
         if (result instanceof SObject) {
             if (!getExpr.arguments.isEmpty()) {
-                throw new InterpreterException(
+                throw new Exceptions.RuntimeException(
+                    getExpr.field,
                     'Error executing expression. Get expressions on SObjects must not have arguments.'
                 );
             }
@@ -167,7 +173,8 @@ public with sharing class Interpreter implements Visitor {
                 return tempEnvironmentForGet.getParentSObject(getExpr.field.lexeme);
             }
 
-            throw new InterpreterException(
+            throw new Exceptions.RuntimeException(
+                getExpr.field,
                 'Error executing get expression: the SObject type ' +
                     tempEnvironmentForGet.getSObjectTypeName() +
                     ' does not contain a field with the name: ' + getExpr.field.lexeme
@@ -180,7 +187,8 @@ public with sharing class Interpreter implements Visitor {
             return ((IGlobalVariableResolver) result).get(getExpr.field.lexeme, arguments);
         } else if (result instanceof Map<Object, Object>) {
             if (!getExpr.arguments.isEmpty()) {
-                throw new InterpreterException(
+                throw new Exceptions.RuntimeException(
+                    getExpr.field,
                     'Error executing expression. Get expressions on Maps must not have arguments.'
                 );
             }
@@ -190,12 +198,14 @@ public with sharing class Interpreter implements Visitor {
                 return castMap.get(getExpr.field.lexeme);
             }
 
-            throw new InterpreterException(
+            throw new Exceptions.RuntimeException(
+                getExpr.field,
                 'Error executing get expression: the map does not contain a key with the name: ' + getExpr.field.lexeme
             );
         }
 
-        throw new InterpreterException(
+        throw new Exceptions.RuntimeException(
+            getExpr.field,
             'Error executing get expression: could not determine the value of: ' +
                 getExpr.field.lexeme + ' from ' + result
         );
@@ -203,7 +213,8 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Variable variable) {
         if (env == null) {
-            throw new InterpreterException(
+            throw new Exceptions.RuntimeException(
+                variable.name,
                 'Error executing variable expression: no context was provided.'
             );
         }
@@ -212,7 +223,8 @@ public with sharing class Interpreter implements Visitor {
             return env.get(variable.name.lexeme);
         }
 
-        throw new InterpreterException(
+        throw new Exceptions.RuntimeException(
+            variable.name,
             'Error executing variable expression: the variable ' +
                 variable.name.lexeme +
                 ' is not defined in the current context.'
@@ -221,7 +233,8 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.MergeField mergeField) {
         if (env.noRecordContext()) {
-            throw new InterpreterException(
+            throw new Exceptions.RuntimeException(
+                mergeField.name,
                 'Error executing merge field ' + mergeField.name.lexeme + ': no record context was provided.'
             );
         }
@@ -231,7 +244,8 @@ public with sharing class Interpreter implements Visitor {
                 return env.getParentSObject(mergeField.name.lexeme);
             }
 
-            throw new InterpreterException(
+            throw new Exceptions.RuntimeException(
+                mergeField.name,
                 'Error executing merge field: ' +
                     mergeField.name.lexeme +
                     ' The SObject type ' +
@@ -249,7 +263,8 @@ public with sharing class Interpreter implements Visitor {
         switch on (unary.operator.type) {
             when BANG {
                 if (!isBoolean(right)) {
-                    throw new InterpreterException(
+                    throw new Exceptions.RuntimeException(
+                        unary.operator,
                         'Error executing ' + unary.operator.lexeme + ' operator: the operand must evaluate to a boolean value.'
                     );
                 }
@@ -258,7 +273,8 @@ public with sharing class Interpreter implements Visitor {
             }
             when MINUS {
                 if (!checkIsDecimal(right)) {
-                    throw new InterpreterException(
+                    throw new Exceptions.RuntimeException(
+                        unary.operator,
                         'Error executing ' + unary.operator.lexeme + ' operator: the operand must be a number.'
                     );
                 }
@@ -281,11 +297,13 @@ public with sharing class Interpreter implements Visitor {
 
     private static void checkNumberOperand(Token operator, Object left, Object right) {
         if (left instanceof Decimal && right instanceof Decimal) return;
-        throw new InterpreterException(
+        throw new Exceptions.RuntimeException(
+            operator,
             'Error executing ' + operator.lexeme + ' operator: operands must be numbers.'
         );
     }
 
+    // TODO: Get rid of this
     public class InterpreterException extends Exception {
     }
 
@@ -295,13 +313,24 @@ public with sharing class Interpreter implements Visitor {
             ExpressionFunction fn = ExpressionFunction.FUNCTIONS.get(function.functionName);
             fn.setInterpreter(this);
             if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
-                throw new InterpreterException(
+                throw new Exceptions.RuntimeException(
+                    function.functionToken,
                     'Error executing ' + function.functionName + ' function: the function expects ' +
                         fn.getArity().toString() + ' argument(s), but ' +
                         function.arguments.size() + ' were provided.'
                 );
             }
-            return fn.call(function.arguments);
+
+            try {
+                return fn.call(function.arguments);
+            } catch (Exceptions.RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new Exceptions.RuntimeException(
+                    function.functionToken,
+                    e.getMessage()
+                );
+            }
         } else {
             // Otherwise try to get a custom function from the Expression Function custom metadata type.
             IExpressionFunction fn = CustomFunctionRepository.getInstance().getByName(function.functionName);
@@ -311,11 +340,21 @@ public with sharing class Interpreter implements Visitor {
                     arguments.add(evaluate(argument));
                 }
 
-                return fn.execute(arguments);
+                try {
+                    return fn.execute(arguments);
+                } catch (Exceptions.RuntimeException e) {
+                    throw e;
+                } catch (Exception e) {
+                    throw new Exceptions.RuntimeException(
+                        function.functionToken,
+                        e.getMessage()
+                    );
+                }
             }
         }
 
-        throw new InterpreterException(
+        throw new Exceptions.RuntimeException(
+            function.functionToken,
             'Error executing ' + function.functionName + ' function: the function is not supported.'
         );
     }
@@ -337,7 +376,8 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Spread spread) {
         if (!inListLiteral && !isInMapLiteral) {
-            throw new InterpreterException(
+            throw new Exceptions.RuntimeException(
+                spread.spreadToken,
                 'Error executing spread operator: the spread operator can only be used in a list or map literal.'
             );
         }
@@ -345,7 +385,8 @@ public with sharing class Interpreter implements Visitor {
         if (inListLiteral) {
             Object result = evaluate(spread.expression);
             if (!(result instanceof List<Object>)) {
-                throw new InterpreterException(
+                throw new Exceptions.RuntimeException(
+                    spread.spreadToken,
                     'Error executing spread operator: the expression must evaluate to a list.'
                 );
             }
@@ -355,7 +396,8 @@ public with sharing class Interpreter implements Visitor {
 
         Object result = evaluate(spread.expression);
         if (!(result instanceof Map<Object, Object>)) {
-            throw new InterpreterException(
+            throw new Exceptions.RuntimeException(
+                spread.spreadToken,
                 'Error executing spread operator: the expression must evaluate to a map.'
             );
         }

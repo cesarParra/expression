@@ -20,8 +20,21 @@ public with sharing class PlaygroundController {
             } else {
                 toReturn.result = Evaluator.run(expr);
             }
-        } catch (Exception e) {
-            toReturn.error = e.getMessage();
+        } catch (Exceptions.RuntimeException e) {
+            EvaluationError error = new EvaluationError();
+            error.message = e.getMessage();
+            error.summary = e.message;
+            error.startLineNumber = e.atToken.position.line;
+            error.endLineNumber = e.atToken.position.line;
+            error.startColumnNumber = e.atToken.position.column;
+            error.endColumnNumber = e.atToken.position.column + e.atToken.lexeme.length();
+            toReturn.error = error;
+        }
+        catch (Exception e) {
+            EvaluationError error = new EvaluationError();
+            error.summary = e.getMessage();
+            error.message = e.getMessage();
+            toReturn.error = error;
         }
 
         return toReturn;
@@ -29,9 +42,29 @@ public with sharing class PlaygroundController {
 
     public class Result {
         @AuraEnabled
-        public String error;
+        public EvaluationError error;
 
         @AuraEnabled
         public Object result;
+    }
+
+    public class EvaluationError {
+        @AuraEnabled
+        public String summary;
+
+        @AuraEnabled
+        public String message;
+
+        @AuraEnabled
+        public Integer startLineNumber;
+
+        @AuraEnabled
+        public Integer endLineNumber;
+
+        @AuraEnabled
+        public Integer startColumnNumber;
+
+        @AuraEnabled
+        public Integer endColumnNumber;
     }
 }
