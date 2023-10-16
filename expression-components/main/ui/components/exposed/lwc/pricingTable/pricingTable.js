@@ -32,17 +32,6 @@ export default class PricingTable extends TwElement {
     );
   }
 
-  async executeAction(e) {
-    e.preventDefault();
-    const planName = e.target.dataset.plan;
-    const action = this.computed.plans.find(p => p.name === planName).action;
-    try {
-      const result = await execute({fnReference: action.src});
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
   get loading() {
     return !this.computed && !this.error;
   }

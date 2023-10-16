@@ -24,19 +24,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgrIAE)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgrIAE)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgwIAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgwIAE)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011MgrIAE
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MgwIAE
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MgrIAE
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MgwIAE
 ```
 
 ### Direct Deployment to Salesforce
@@ -924,6 +924,16 @@ Accepts 2 arguments: the datetime to format and the format string.
 
 ```apex
 expression.Evaluator.run('DATETIMEFORMAT(DATETIMEVALUE("2020-01-01 12:00:00"), "yyyy-MM-dd")'); // "2020-01-01"
+```
+
+- `DAYSBETWEEN`
+
+Returns the number of days between two dates.
+
+Accepts 2 arguments: the first date and the second date.
+
+```apex
+expression.Evaluator.run('DAYSBETWEEN(DATE(2020, 1, 1), DATE(2020, 1, 2))'); // 1
 ```
 
 - `TODAY`
