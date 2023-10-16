@@ -46,10 +46,15 @@
                     [/".*?"/, 'string'],
                     // delimiters and operators
                     [/[{}()\[\]]/, '@brackets'],
+                    [/[,:]/, 'delimiter'],
 
                     // numbers
                     [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
                     [/\d+/, 'number'],
+
+                    // whitespace
+                    [/\s+/, 'white'],
+                    [/(^#.*$)/, 'comment'],
                 ],
             },
             ignoreCase: true

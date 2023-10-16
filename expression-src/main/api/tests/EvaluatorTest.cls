@@ -1473,6 +1473,11 @@ private class EvaluatorTest {
     }
 
     @IsTest
+    private static void commentsAreIgnored() {
+        Assert.areEqual(1, Evaluator.run('1 # comment'));
+    }
+
+    @IsTest
     private static void daysBetweenReturnsTheNumberOfDaysBetweenTwoDates() {
         String formula = 'DAYSBETWEEN(DATEVALUE("2020-01-01"), DATEVALUE("2020-01-02"))';
         Object result = Evaluator.run(formula);
