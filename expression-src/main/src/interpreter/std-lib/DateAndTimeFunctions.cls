@@ -23,7 +23,8 @@ public with sharing class DateAndTimeFunctions {
         'FORMATDURATION' => new FormatDuration(),
         'MONTH' => new MonthFn(),
         'DATETIMEFORMAT' => new DateTimeFormatFn(),
-        'DATETODATETIME' => new DateToDateTimeFn()
+        'DATETODATETIME' => new DateToDateTimeFn(),
+        'DAYSBETWEEN' => new DaysBetween()
     };
 
     private enum TimeType {
@@ -510,6 +511,31 @@ public with sharing class DateAndTimeFunctions {
         public override Arity getArity() {
             return Arity.exactly(1);
         }
+    }
 
+    private class DaysBetween extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect a Date
+            Object dateValue = evaluate(arguments.get(0));
+            if (!(dateValue instanceof Date)) {
+                throw new FunctionExecutionException(
+                    'Error executing "DAYSBETWEEN" function: the argument must evaluate to a date value.'
+                );
+            }
+
+            // Expect a Date
+            Object dateValue2 = evaluate(arguments.get(1));
+            if (!(dateValue2 instanceof Date)) {
+                throw new FunctionExecutionException(
+                    'Error executing "DAYSBETWEEN" function: the argument must evaluate to a date value.'
+                );
+            }
+
+            return ((Date) dateValue).daysBetween((Date) dateValue2);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
     }
 }

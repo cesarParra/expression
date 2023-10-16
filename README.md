@@ -916,6 +916,16 @@ Accepts 2 arguments: the datetime to format and the format string.
 expression.Evaluator.run('DATETIMEFORMAT(DATETIMEVALUE("2020-01-01 12:00:00"), "yyyy-MM-dd")'); // "2020-01-01"
 ```
 
+- `DAYSBETWEEN`
+
+Returns the number of days between two dates.
+
+Accepts 2 arguments: the first date and the second date.
+
+```apex
+expression.Evaluator.run('DAYSBETWEEN(DATE(2020, 1, 1), DATE(2020, 1, 2))'); // 1
+```
+
 - `TODAY`
 
 Returns the current date.

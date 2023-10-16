@@ -1471,4 +1471,18 @@ private class EvaluatorTest {
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
     }
+
+    @IsTest
+    private static void daysBetweenReturnsTheNumberOfDaysBetweenTwoDates() {
+        String formula = 'DAYSBETWEEN(DATEVALUE("2020-01-01"), DATEVALUE("2020-01-02"))';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual(1, result);
+    }
+
+    @IsTest
+    private static void daysBetweenReturnsTheNumberOfDaysBetweenTwoDates_higherDateAsFirstArgument_resultsInNegative() {
+        String formula = 'DAYSBETWEEN(DATEVALUE("2020-01-02"), DATEVALUE("2020-01-01"))';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual(-1, result);
+    }
 }
