@@ -237,10 +237,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>PriceComponentEvaluator</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>PriceComponentRepository</apexClass>
         <enabled>true</enabled>
     </classAccesses>
