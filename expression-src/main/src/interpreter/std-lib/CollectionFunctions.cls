@@ -21,7 +21,8 @@ public with sharing class CollectionFunctions {
         'ANY' => new AnyFn(),
         'SUM' => new SumFn(),
         'EVERY' => new EveryFn(),
-        'EXPAND' => new ExpandFn()
+        'EXPAND' => new ExpandFn(),
+        'FIRSTWHERE' => new FirstWhereFn()
     };
 
     private static Environment getEnvironmentFromObject(Object currentVal) {
@@ -875,6 +876,51 @@ public with sharing class CollectionFunctions {
             }
 
             return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class FirstWhereFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "FIRSTWHERE" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return null;
+            }
+
+            // Loop through each element in the list, evaluating the
+            // expression with the current value (as $current) being looped.
+            for (Object currentVal : listVal) {
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object result = interpreter.interpret(expr);
+                if (result instanceof Boolean) {
+                    if ((Boolean) result) {
+                        return currentVal;
+                    }
+                } else {
+                    throw new FunctionExecutionException(
+                        'Error executing "FIRSTWHERE" function: the second argument must evaluate to a boolean.'
+                    );
+                }
+            }
+
+            return null;
         }
 
         public override Arity getArity() {

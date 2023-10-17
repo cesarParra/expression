@@ -1223,6 +1223,19 @@ must return a list.
 expression.Evaluator.run('EXPAND([1, 2, 3], LIST($current, $current + 1))'); // (1, 2, 2, 3, 3, 4)
 ```
 
+- `FIRSTWHERE`
+
+Returns the first element of a list that matches the given expression or null
+if the list is empty or no element matches the expression.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('FIRSTWHERE([1, 2, 3], $current > 2)'); // 3
+```
+
 - `MAP`
 
 Maps to a list using the first argument as the context and the second argument as the expression to evaluate.

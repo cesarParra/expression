@@ -642,4 +642,39 @@ private class CollectionFunctionsTest {
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
     }
+
+    @IsTest
+    private static void firstWhereFunctionReturnsTheFirstElementThatMatchesThePredicate() {
+        Assert.areEqual(2, Evaluator.run('FIRSTWHERE([1, 2, 3], $current > 1)'));
+    }
+
+    @IsTest
+    private static void firstWhereThrowsAnExceptionIfTheFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('FIRSTWHERE(1, $current > 1)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void firstWhereThrowsAnExceptionIfThePredicateDoesNotEvaluateToABoolean() {
+        try {
+            Evaluator.run('FIRSTWHERE([1, 2, 3], $current)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void firstWhereReturnsNullIfTheListIsEmpty() {
+        Assert.isNull(Evaluator.run('FIRSTWHERE([], $current > 1)'));
+    }
+
+    @IsTest
+    private static void firstWhereReturnsNullIfNoElementMatchesThePredicate() {
+        Assert.isNull(Evaluator.run('FIRSTWHERE([1, 2, 3], $current > 3)'));
+    }
 }
