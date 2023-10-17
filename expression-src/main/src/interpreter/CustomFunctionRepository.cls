@@ -10,12 +10,7 @@ public virtual with sharing class CustomFunctionRepository {
     }
 
     public virtual IExpressionFunction getByName(String functionName) {
-        List<Expression_Function__mdt> customFunctions = [
-            SELECT
-                Apex_Class__c
-            FROM Expression_Function__mdt
-            WHERE DeveloperName = :functionName
-        ];
+        List<Expression_Function__mdt> customFunctions = queryForCustomFunctions(functionName);
 
         if (customFunctions.isEmpty()) {
             return null;
@@ -33,5 +28,13 @@ public virtual with sharing class CustomFunctionRepository {
         }
     }
 
-    public class CustomFunctionException extends Exception {}
+    private static List<Expression_Function__mdt> queryForCustomFunctions(String functionName) {
+        Q query = new Q(Expression_Function__mdt.SObjectType)
+            .selectField('Apex_Class__c')
+            .add(Q.condition('DeveloperName').equalsTo(functionName));
+        return QRunner.getInstance().run(query);
+    }
+
+    public class CustomFunctionException extends Exception {
+    }
 }

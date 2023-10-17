@@ -19,7 +19,8 @@ public with sharing class StringFunctions {
         'TRIM' => new TrimFn(),
         'UPPER' => new UpperFn(),
         'VALUE' => new ValueFn(),
-        'SPLIT' => new SplitFn()
+        'SPLIT' => new SplitFn(),
+        'INITCAP' => new InitCapFn()
     };
 
     private class Begins extends ExpressionFunction {
@@ -562,6 +563,33 @@ public with sharing class StringFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+    }
+
+    private class InitCapFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // The argument must be a string
+            Object value = evaluate(arguments.get(0));
+            if (!(value instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "INITCAP" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            String[] words = ((String) value).split(' ');
+            String result = '';
+            for (Integer i = 0; i < words.size(); i++) {
+                result += words[i].substring(0, 1).toUpperCase() + words[i].substring(1).toLowerCase();
+                if (i < words.size() - 1) {
+                    result += ' ';
+                }
+            }
+
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 }
