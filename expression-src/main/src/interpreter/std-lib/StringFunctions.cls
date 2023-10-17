@@ -20,7 +20,8 @@ public with sharing class StringFunctions {
         'UPPER' => new UpperFn(),
         'VALUE' => new ValueFn(),
         'SPLIT' => new SplitFn(),
-        'INITCAP' => new InitCapFn()
+        'INITCAP' => new InitCapFn(),
+        'URLENCODE' => new UrlEncodeFn()
     };
 
     private class Begins extends ExpressionFunction {
@@ -586,6 +587,24 @@ public with sharing class StringFunctions {
             }
 
             return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class UrlEncodeFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // The argument must be a string
+            Object value = evaluate(arguments.get(0));
+            if (!(value instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "URLENCODE" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return EncodingUtil.urlEncode((String) value, 'UTF-8');
         }
 
         public override Arity getArity() {

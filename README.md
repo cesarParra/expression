@@ -842,6 +842,17 @@ Accepts 1 argument: the text to convert.
 expression.Evaluator.run('UPPER("Hello World")'); // "HELLO WORLD"
 ```
 
+- `URLENCODE`
+
+Encodes text and merge field values for use in URLs by replacing characters that are illegal in URLs, such as blank
+spaces.
+
+Accepts 1 argument: the text to encode.
+
+```apex
+expression.Evaluator.run('URLENCODE("Hello World")'); // "Hello+World"
+```
+
 - `VALUE`
 
 Converts a text string that represents a number to a number.
