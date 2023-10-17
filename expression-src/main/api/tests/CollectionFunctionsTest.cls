@@ -809,8 +809,48 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
-    private static void skipFunctionReturnsAnEmptyListwhenTheNumberIsGreaterThanTheSizeOfTheList() {
+    private static void skipFunctionReturnsAnEmptyListWhenTheNumberIsGreaterThanTheSizeOfTheList() {
         List<Object> result = (List<Object>)Evaluator.run('SKIP([1, 2, 3, 4], 5)');
+        Assert.areEqual(0, result.size());
+    }
+
+    @IsTest
+    private static void skipWhileFunctionSkipsElementsWhileThePredicateIsTrue() {
+        List<Object> result = (List<Object>)Evaluator.run('SKIPWHILE([1, 2, 3, 4], $current < 3)');
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(3, result[0]);
+        Assert.areEqual(4, result[1]);
+    }
+
+    @IsTest
+    private static void skipWhileThrowsAnExceptionWhenTheFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('SKIPWHILE(1, $current < 3)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void skipWhileThrowsAnExceptionWhenTheSecondArgumentDoesNotEvaluateToABoolean() {
+        try {
+            Evaluator.run('SKIPWHILE([1, 2, 3, 4], $current)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void skipWhileReturnsAnEmptyListWhenTheListIsEmpty() {
+        List<Object> result = (List<Object>)Evaluator.run('SKIPWHILE([], $current < 3)');
+        Assert.areEqual(0, result.size());
+    }
+
+    @IsTest
+    private static void skipWhileReturnsAnEmptyWhenThePredicateIsNeverFalse() {
+        List<Object> result = (List<Object>)Evaluator.run('SKIPWHILE([1, 2, 3, 4], $current < 5)');
         Assert.areEqual(0, result.size());
     }
 }

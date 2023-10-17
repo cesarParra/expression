@@ -1384,6 +1384,18 @@ Accepts 2 arguments: the list to skip and the number of elements to skip.
 expression.Evaluator.run('SKIP([1, 2, 3], 2)'); // (3)
 ```
 
+- `SKIPWHILE`
+
+Skips elements of a list while the given expression evaluates to true.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('SKIPWHILE([1, 2, 3], $current < 3)'); // (3)
+```
+
 - `SUM`
 
 Returns the sum of a list of numbers.
