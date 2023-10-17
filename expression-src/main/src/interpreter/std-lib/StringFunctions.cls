@@ -454,32 +454,7 @@ public with sharing class StringFunctions {
     private class TextFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
-            if (value == null) {
-                return '';
-            }
-
-            if (value instanceof Decimal) {
-                return ((Decimal) value).format();
-            } else if (value instanceof Date) {
-                return ((Date) value).format();
-            } else if (value instanceof Datetime) {
-                return ((Datetime) value).format();
-            } else if (value instanceof Boolean) {
-                return ((Boolean) value) ? 'true' : 'false';
-            } else if (value instanceof Time) {
-                Time timeValue = (Time) value;
-                Datetime dt = Datetime.newInstance(
-                    1970,
-                    1,
-                    1,
-                    timeValue.hour(),
-                    timeValue.minute(),
-                    timeValue.second()
-                );
-                return dt.format('hh:mm:ss a').replace(dt.date().format(), '').trim();
-            } else {
-                return String.valueOf(value);
-            }
+            return StringUtils.valueOf(value);
         }
 
         public override Arity getArity() {

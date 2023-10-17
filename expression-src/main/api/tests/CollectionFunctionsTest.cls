@@ -707,4 +707,29 @@ private class CollectionFunctionsTest {
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
     }
+
+    @IsTest
+    private static void joinFunctionJoinsAListIntoAString() {
+        Assert.areEqual('1, 2, 3', Evaluator.run('JOIN([1, 2, 3], ", ")'));
+    }
+
+    @IsTest
+    private static void joinFunctionThrowsAnErrorWhenTheFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('JOIN(1, ", ")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void joinFunctionThrowsAnErrorWhenTheSecondArgumentIsNotAString() {
+        try {
+            Evaluator.run('JOIN([1, 2, 3], 1)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
 }

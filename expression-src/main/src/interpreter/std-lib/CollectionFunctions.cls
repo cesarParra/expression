@@ -23,7 +23,8 @@ public with sharing class CollectionFunctions {
         'EVERY' => new EveryFn(),
         'EXPAND' => new ExpandFn(),
         'FIRSTWHERE' => new FirstWhereFn(),
-        'FOLLOWEDBY' => new FollowedByFn()
+        'FOLLOWEDBY' => new FollowedByFn(),
+        'JOIN' => new JoinFn()
     };
 
     private static Environment getEnvironmentFromObject(Object currentVal) {
@@ -530,13 +531,15 @@ public with sharing class CollectionFunctions {
         private Integer compareToAsMaps(Map<Object, Object> mapVal, Object param1) {
             Object thisValue = mapVal.get(keyToSortBy);
             ComparableMaps other = (ComparableMaps) param1;
-            Object otherValue = ((Map<Object, Object>)other.mapOrSObjectVal).get(keyToSortBy);
+            Object otherValue = ((Map<Object, Object>) other.mapOrSObjectVal).get(keyToSortBy);
 
             if (thisValue == otherValue) {
                 return 0;
             }
 
-            List<Object> values = new List<Object>{thisValue, otherValue};
+            List<Object> values = new List<Object>{
+                thisValue, otherValue
+            };
             values.sort();
             if (values.get(0) == thisValue) {
                 return -1;
@@ -545,15 +548,17 @@ public with sharing class CollectionFunctions {
         }
 
         private Integer compareToAsSObjects(SObject sobjectVal, Object param1) {
-            Object thisValue = sobjectVal.get((String)keyToSortBy);
+            Object thisValue = sobjectVal.get((String) keyToSortBy);
             ComparableMaps other = (ComparableMaps) param1;
-            Object otherValue = ((SObject)other.mapOrSObjectVal).get((String)keyToSortBy);
+            Object otherValue = ((SObject) other.mapOrSObjectVal).get((String) keyToSortBy);
 
             if (thisValue == otherValue) {
                 return 0;
             }
 
-            List<Object> values = new List<Object>{thisValue, otherValue};
+            List<Object> values = new List<Object>{
+                thisValue, otherValue
+            };
             values.sort();
             if (values.get(0) == thisValue) {
                 return -1;
@@ -953,6 +958,38 @@ public with sharing class CollectionFunctions {
             List<Object> result = new List<Object>(listVal);
             result.addAll(listVal2);
             return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class JoinFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "JOIN" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is a string
+            Object separator = evaluate(arguments.get(1));
+            if (!(separator instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "JOIN" function: the second argument must evaluate to a string.'
+                );
+            }
+
+            List<Object> listVal = (List<Object>) listObj;
+            List<String> convertedStrings = new List<String>();
+            for (Object currentVal : listVal) {
+                convertedStrings.add(StringUtils.valueOf(currentVal));
+            }
+
+            return String.join(convertedStrings, (String) separator);
         }
 
         public override Arity getArity() {

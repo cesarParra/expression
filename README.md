@@ -1165,6 +1165,16 @@ Accepts 1 argument: the list to evaluate.
 expression.Evaluator.run('FIRST([1, 2, 3])'); // 1
 ```
 
+- `DISTINCT`
+
+Returns a list of unique values.
+
+Accepts 1 argument: the list to evaluate.
+
+```apex
+expression.Evaluator.run('DISTINCT([1, 2, 3, 1, 2, 3])'); // (1, 2, 3)
+```
+
 - `FOLLOWEDBY`
 
 Appends a list to another list.
@@ -1175,14 +1185,14 @@ Accepts 2 arguments: the list to append to and the list to append.
 expression.Evaluator.run('FOLLOWEDBY([1, 2, 3], [4, 5, 6])'); // (1, 2, 3, 4, 5, 6)
 ```
 
-- `DISTINCT`
+- `JOIN`
 
-Returns a list of unique values.
+Joins a list of values into a string using the specified delimiter.
 
-Accepts 1 argument: the list to evaluate.
+Accepts 2 arguments: the list to join and the delimiter.
 
 ```apex
-expression.Evaluator.run('DISTINCT([1, 2, 3, 1, 2, 3])'); // (1, 2, 3)
+expression.Evaluator.run('JOIN([1, 2, 3], ", ")'); // "1, 2, 3"
 ```
 
 - `LAST`
