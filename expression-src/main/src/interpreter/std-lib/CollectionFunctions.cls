@@ -25,7 +25,8 @@ public with sharing class CollectionFunctions {
         'FIRSTWHERE' => new FirstWhereFn(),
         'FOLLOWEDBY' => new FollowedByFn(),
         'JOIN' => new JoinFn(),
-        'LASTWHERE' => new LastWhereFn()
+        'LASTWHERE' => new LastWhereFn(),
+        'SKIP' => new SkipFn()
     };
 
     private static Environment getEnvironmentFromObject(Object currentVal) {
@@ -1037,6 +1038,55 @@ public with sharing class CollectionFunctions {
             }
 
             return null;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class SkipFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "SKIP" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is a number
+            Object numberObj = evaluate(arguments.get(1));
+            if (!(numberObj instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "SKIP" function: the second argument must evaluate to a number.'
+                );
+            }
+
+            List<Object> listVal = (List<Object>) listObj;
+            Decimal numberVal = (Decimal) numberObj;
+
+            // If the list is empty, return early
+            if (listVal.isEmpty()) {
+                return new List<Object>();
+            }
+
+            // If the number is negative, return early
+            if (numberVal < 0) {
+                return new List<Object>();
+            }
+
+            // If the number is greater than the size of the list, return early
+            if (numberVal >= listVal.size()) {
+                return new List<Object>();
+            }
+
+            // Return a new list with the first n elements removed
+            List<Object> result = new List<Object>();
+            for (Integer i = numberVal.intValue(); i < listVal.size(); i++) {
+                result.add(listVal.get(i));
+            }
+            return result;
         }
 
         public override Arity getArity() {

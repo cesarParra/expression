@@ -767,4 +767,50 @@ private class CollectionFunctionsTest {
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
     }
+
+    @IsTest
+    private static void skipFunctionSkipsTheFirstNElementsOfAList() {
+        List<Object> result = (List<Object>)Evaluator.run('SKIP([1, 2, 3, 4], 2)');
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(3, result[0]);
+        Assert.areEqual(4, result[1]);
+    }
+
+    @IsTest
+    private static void skipFunctionThrowsAnExceptionWhenTheFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('SKIP(1, 2)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void skipFunctionThrowsAnExceptionWhenTheSecondArgumentIsNotANumber() {
+        try {
+            Evaluator.run('SKIP([1, 2, 3, 4], "a")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void skipFunctionReturnsAnEmptyListWhenTheListIsEmpty() {
+        List<Object> result = (List<Object>)Evaluator.run('SKIP([], 2)');
+        Assert.areEqual(0, result.size());
+    }
+
+    @IsTest
+    private static void skipFunctionReturnsAnEmptyListWhenTheNumberIsNegative() {
+        List<Object> result = (List<Object>)Evaluator.run('SKIP([1, 2, 3, 4], -2)');
+        Assert.areEqual(0, result.size());
+    }
+
+    @IsTest
+    private static void skipFunctionReturnsAnEmptyListwhenTheNumberIsGreaterThanTheSizeOfTheList() {
+        List<Object> result = (List<Object>)Evaluator.run('SKIP([1, 2, 3, 4], 5)');
+        Assert.areEqual(0, result.size());
+    }
 }

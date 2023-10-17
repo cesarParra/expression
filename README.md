@@ -1374,6 +1374,16 @@ expression.Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")'); // ({"Na
 expression.Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc")', parentAccount.Id); // ({"NumberOfEmployees": 1}, {"NumberOfEmployees": 2})
 ```
 
+- `SKIP`
+
+Skips the first N elements of a list.
+
+Accepts 2 arguments: the list to skip and the number of elements to skip.
+
+```apex
+expression.Evaluator.run('SKIP([1, 2, 3], 2)'); // (3)
+```
+
 - `SUM`
 
 Returns the sum of a list of numbers.
