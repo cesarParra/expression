@@ -20,7 +20,8 @@ public with sharing class StringFunctions {
         'UPPER' => new UpperFn(),
         'VALUE' => new ValueFn(),
         'SPLIT' => new SplitFn(),
-        'INITCAP' => new InitCapFn()
+        'INITCAP' => new InitCapFn(),
+        'URLENCODE' => new UrlEncodeFn()
     };
 
     private class Begins extends ExpressionFunction {
@@ -453,32 +454,7 @@ public with sharing class StringFunctions {
     private class TextFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
-            if (value == null) {
-                return '';
-            }
-
-            if (value instanceof Decimal) {
-                return ((Decimal) value).format();
-            } else if (value instanceof Date) {
-                return ((Date) value).format();
-            } else if (value instanceof Datetime) {
-                return ((Datetime) value).format();
-            } else if (value instanceof Boolean) {
-                return ((Boolean) value) ? 'true' : 'false';
-            } else if (value instanceof Time) {
-                Time timeValue = (Time) value;
-                Datetime dt = Datetime.newInstance(
-                    1970,
-                    1,
-                    1,
-                    timeValue.hour(),
-                    timeValue.minute(),
-                    timeValue.second()
-                );
-                return dt.format('hh:mm:ss a').replace(dt.date().format(), '').trim();
-            } else {
-                return String.valueOf(value);
-            }
+            return StringUtils.valueOf(value);
         }
 
         public override Arity getArity() {
@@ -586,6 +562,24 @@ public with sharing class StringFunctions {
             }
 
             return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class UrlEncodeFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // The argument must be a string
+            Object value = evaluate(arguments.get(0));
+            if (!(value instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "URLENCODE" function: the argument must evaluate to a string value.'
+                );
+            }
+
+            return EncodingUtil.urlEncode((String) value, 'UTF-8');
         }
 
         public override Arity getArity() {

@@ -11,6 +11,26 @@ private class StringFunctionsTest {
     }
 
     @IsTest
+    private static void beginsFunctionThrowsAnExceptionWhenTheFirstArgumentIsNotAString() {
+        try {
+            Evaluator.run('BEGINS(1, "Hello")');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exceptions.RuntimeException e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void beginsFunctionThrowsAnExceptionWhenTheSecondArgumentIsNotAString() {
+        try {
+            Evaluator.run('BEGINS("Hello", 1)');
+            Assert.fail('Expected RuntimeException');
+        } catch (Exceptions.RuntimeException e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
     private static void containsFunctionReturnsTrueIfFirstArgumentContainsSecondArgument() {
         Assert.areEqual(true, Evaluator.run('CONTAINS("Hello World", "llo Wo")'));
     }
@@ -245,5 +265,23 @@ private class StringFunctionsTest {
         String formula = 'INITCAP("hELLO world")';
         Object result = Evaluator.run(formula);
         Assert.areEqual('Hello World', result);
+    }
+
+    @IsTest
+    private static void urlEncodeFunctionEncodesAString() {
+        String formula = 'URLENCODE("Hello World")';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual('Hello+World', result);
+    }
+
+    @IsTest
+    private static void urlEncodeThrowsRuntimeExceptionWhenTheValuePassedIsNotAString() {
+        String formula = 'URLENCODE(1)';
+        try {
+            Evaluator.run(formula);
+            Assert.fail('Expected RuntimeException');
+        } catch (Exceptions.RuntimeException e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
     }
 }

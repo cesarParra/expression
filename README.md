@@ -24,19 +24,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011Mh1IAE)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011Mh1IAE)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011Mh6IAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011Mh6IAE)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011Mh1IAE
+sf package install --apex-compile package --wait 20 --package 04tDm0000011Mh6IAE
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011Mh1IAE
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011Mh6IAE
 ```
 
 ### Direct Deployment to Salesforce
@@ -842,6 +842,17 @@ Accepts 1 argument: the text to convert.
 expression.Evaluator.run('UPPER("Hello World")'); // "HELLO WORLD"
 ```
 
+- `URLENCODE`
+
+Encodes text and merge field values for use in URLs by replacing characters that are illegal in URLs, such as blank
+spaces.
+
+Accepts 1 argument: the text to encode.
+
+```apex
+expression.Evaluator.run('URLENCODE("Hello World")'); // "Hello+World"
+```
+
 - `VALUE`
 
 Converts a text string that represents a number to a number.
@@ -1119,6 +1130,29 @@ Accepts 2 arguments: the list to append to and the element to append.
 expression.Evaluator.run('APPEND([1, 2, 3], 4)'); // (1, 2, 3, 4)
 ```
 
+- `ANY`
+
+Returns true if any element in the list matches the given expression.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('ANY([1, 2, 3], $current = 2)'); // true
+```
+
+- `AT`
+
+Returns the element at the specified index. If the list is empty or the
+index is out of bounds, this function will return null.
+
+Accepts 2 arguments: the list to evaluate and the index to return.
+
+```apex
+expression.Evaluator.run('AT([1, 2, 3], 1)'); // 2
+```
+
 - `FIRST`
 
 Returns the first element of a list.
@@ -1141,6 +1175,26 @@ Accepts 1 argument: the list to evaluate.
 expression.Evaluator.run('DISTINCT([1, 2, 3, 1, 2, 3])'); // (1, 2, 3)
 ```
 
+- `FOLLOWEDBY`
+
+Appends a list to another list.
+
+Accepts 2 arguments: the list to append to and the list to append.
+
+```apex
+expression.Evaluator.run('FOLLOWEDBY([1, 2, 3], [4, 5, 6])'); // (1, 2, 3, 4, 5, 6)
+```
+
+- `JOIN`
+
+Joins a list of values into a string using the specified delimiter.
+
+Accepts 2 arguments: the list to join and the delimiter.
+
+```apex
+expression.Evaluator.run('JOIN([1, 2, 3], ", ")'); // "1, 2, 3"
+```
+
 - `LAST`
 
 Returns the last element of a list.
@@ -1153,6 +1207,19 @@ Accepts 1 argument: the list to evaluate.
 expression.Evaluator.run('LAST([1, 2, 3])'); // 3
 ```
 
+- `LASTWHERE`
+
+Returns the last element of a list that matches the given expression or null
+if the list is empty or no element matches the expression.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('LASTWHERE([1, 2, 3], $current > 2)'); // 3
+```
+
 - `CONTAINS`
 
 Returns true if the list contains the given value.
@@ -1161,6 +1228,45 @@ Accepts 2 arguments: the list to evaluate and the value to check.
 
 ```apex
 expression.Evaluator.run('CONTAINS([1, 2, 3], 2)'); // true
+```
+
+- `EVERY`
+
+Returns true if every element in the list matches the given expression.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('EVERY([1, 2, 3], $current > 0)'); // true
+```
+
+- `EXPAND`
+
+Expands each element of a list into zero or more elements, resulting from the
+evaluation of the given expression.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate. The expression
+must return a list.
+
+```apex
+expression.Evaluator.run('EXPAND([1, 2, 3], LIST($current, $current + 1))'); // (1, 2, 2, 3, 3, 4)
+```
+
+- `FIRSTWHERE`
+
+Returns the first element of a list that matches the given expression or null
+if the list is empty or no element matches the expression.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('FIRSTWHERE([1, 2, 3], $current > 2)'); // 3
 ```
 
 - `MAP`
@@ -1268,6 +1374,60 @@ expression.Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")'); // ({"Na
 expression.Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc")', parentAccount.Id); // ({"NumberOfEmployees": 1}, {"NumberOfEmployees": 2})
 ```
 
+- `SKIP`
+
+Skips the first N elements of a list.
+
+Accepts 2 arguments: the list to skip and the number of elements to skip.
+
+```apex
+expression.Evaluator.run('SKIP([1, 2, 3], 2)'); // (3)
+```
+
+- `SKIPWHILE`
+
+Skips elements of a list while the given expression evaluates to true.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('SKIPWHILE([1, 2, 3], $current < 3)'); // (3)
+```
+
+- `SUM`
+
+Returns the sum of a list of numbers.
+
+Accepts 1 argument: the list of numbers to evaluate.
+
+```apex
+expression.Evaluator.run('SUM([1, 2, 3])'); // 6
+```
+
+- `TAKE`
+
+Returns the first N elements of a list.
+
+Accepts 2 arguments: the list to take from and the number of elements to take.
+
+```apex
+expression.Evaluator.run('TAKE([1, 2, 3], 2)'); // (1, 2)
+```
+
+- `TAKEWHILE`
+
+Returns elements of a list while the given expression evaluates to true.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('TAKEWHILE([1, 2, 3], $current < 3)'); // (1, 2)
+```
+
 - `WHERE`
 
 Filters a list using the first argument as the context and the second argument as the expression to evaluate.
@@ -1326,6 +1486,16 @@ Accepts 1 argument: the map to evaluate.
 
 ```apex
 expression.Evaluator.run('VALUES({ "a": 1, "b": 2, "c": 3 })'); // [1, 2, 3]
+```
+
+- `PUT`
+
+Adds a key/value pair to a map.
+
+Accepts 3 arguments: the map to add to, the key to add, and the value to add.
+
+```apex
+expression.Evaluator.run('PUT({ "a": 1, "b": 2, "c": 3 }, "d", 4)'); // { "a": 1, "b": 2, "c": 3, "d": 4 }
 ```
 
 #### Lists and Maps Functions
@@ -1478,6 +1648,28 @@ The map keys should be the variable names prefixed with `$`.
 expression.Evaluator.run('LET({ "$a": 1, "$b": 2 }, $a + $b)'); // 3
 ```
 
+#### Location Functions
+
+- `LOCATION`
+
+Returns a location object from the provided latitude and longitude.
+
+Accepts 2 arguments: the latitude and longitude.
+
+```apex
+expression.Evaluator.run('LOCATION(37.7749, 122.4194)'); // { "latitude": 37.7749, "longitude": 122.4194 }
+```
+
+- `DISTANCE`
+
+Returns the distance between two locations in the specified unit.
+
+Accepts 3 arguments: the first location, the second location, and the unit (either
+`"mi"` or `"km"`).
+
+```apex
+expression.Evaluator.run('DISTANCE(LOCATION(37.7749, 122.4194), LOCATION(40.7128, 74.0060), "mi")'); // 2565.6985207767134
+```
 ---
 
 # Expression Components

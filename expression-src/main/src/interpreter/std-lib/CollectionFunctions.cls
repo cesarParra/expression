@@ -15,8 +15,32 @@ public with sharing class CollectionFunctions {
         'FETCH' => new FetchFn(),
         'FIRST' => new FirstFn(),
         'LAST' => new LastFn(),
-        'REDUCE' => new ReduceFn()
+        'REDUCE' => new ReduceFn(),
+        'PUT' => new PutFn(),
+        'AT' => new AtFn(),
+        'ANY' => new AnyFn(),
+        'SUM' => new SumFn(),
+        'EVERY' => new EveryFn(),
+        'EXPAND' => new ExpandFn(),
+        'FIRSTWHERE' => new FirstWhereFn(),
+        'FOLLOWEDBY' => new FollowedByFn(),
+        'JOIN' => new JoinFn(),
+        'LASTWHERE' => new LastWhereFn(),
+        'SKIP' => new SkipFn(),
+        'SKIPWHILE' => new SkipWhileFn(),
+        'TAKE' => new TakeFn(),
+        'TAKEWHILE' => new TakeWhileFn()
     };
+
+    private static Environment getEnvironmentFromObject(Object currentVal) {
+        Environment env;
+        if (currentVal instanceof SObject) {
+            env = new Environment((SObject) currentVal);
+        } else {
+            env = new Environment(null);
+        }
+        return env;
+    }
 
     private class ListFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -64,13 +88,7 @@ public with sharing class CollectionFunctions {
             List<Object> result = new List<Object>();
             for (Integer i = 0; i < childrenAsList.size(); i++) {
                 Object child = childrenAsList.get(i);
-                Environment env;
-                if (child instanceof SObject) {
-                    env = new Environment((SObject)child);
-                } else {
-                    env = new Environment(null);
-                }
-
+                Environment env = getEnvironmentFromObject(child);
                 env.define('$current', child);
                 env.define('$index', i);
                 env.define('$total', childrenAsList.size());
@@ -114,12 +132,7 @@ public with sharing class CollectionFunctions {
             List<Object> result = new List<Object>();
             for (Integer i = 0; i < childrenAsList.size(); i++) {
                 Object child = childrenAsList.get(i);
-                Environment env;
-                if (child instanceof SObject) {
-                    env = new Environment((SObject)child);
-                } else {
-                    env = new Environment(null);
-                }
+                Environment env = getEnvironmentFromObject(child);
 
                 env.define('$current', child);
                 env.define('$index', i);
@@ -523,13 +536,15 @@ public with sharing class CollectionFunctions {
         private Integer compareToAsMaps(Map<Object, Object> mapVal, Object param1) {
             Object thisValue = mapVal.get(keyToSortBy);
             ComparableMaps other = (ComparableMaps) param1;
-            Object otherValue = ((Map<Object, Object>)other.mapOrSObjectVal).get(keyToSortBy);
+            Object otherValue = ((Map<Object, Object>) other.mapOrSObjectVal).get(keyToSortBy);
 
             if (thisValue == otherValue) {
                 return 0;
             }
 
-            List<Object> values = new List<Object>{thisValue, otherValue};
+            List<Object> values = new List<Object>{
+                thisValue, otherValue
+            };
             values.sort();
             if (values.get(0) == thisValue) {
                 return -1;
@@ -538,15 +553,17 @@ public with sharing class CollectionFunctions {
         }
 
         private Integer compareToAsSObjects(SObject sobjectVal, Object param1) {
-            Object thisValue = sobjectVal.get((String)keyToSortBy);
+            Object thisValue = sobjectVal.get((String) keyToSortBy);
             ComparableMaps other = (ComparableMaps) param1;
-            Object otherValue = ((SObject)other.mapOrSObjectVal).get((String)keyToSortBy);
+            Object otherValue = ((SObject) other.mapOrSObjectVal).get((String) keyToSortBy);
 
             if (thisValue == otherValue) {
                 return 0;
             }
 
-            List<Object> values = new List<Object>{thisValue, otherValue};
+            List<Object> values = new List<Object>{
+                thisValue, otherValue
+            };
             values.sort();
             if (values.get(0) == thisValue) {
                 return -1;
@@ -623,12 +640,7 @@ public with sharing class CollectionFunctions {
             // The result of the expression will be the new value.
             Object accumulator = initialValue;
             for (Object currentVal : listVal) {
-                Environment env;
-                if (currentVal instanceof SObject) {
-                    env = new Environment((SObject)currentVal);
-                } else {
-                    env = new Environment(null);
-                }
+                Environment env = getEnvironmentFromObject(currentVal);
                 env.define('$current', currentVal);
                 env.define('$accumulator', accumulator);
                 Interpreter interpreter = new Interpreter(env);
@@ -643,6 +655,586 @@ public with sharing class CollectionFunctions {
 
         public override Boolean needsChildrenResolution() {
             return true;
+        }
+    }
+
+    private class PutFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a map
+            Object mapObj = evaluate(arguments.get(0));
+            if (!(mapObj instanceof Map<Object, Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "PUT" function: the first argument must evaluate to a map.'
+                );
+            }
+
+            // Second argument is the key
+            Object key = evaluate(arguments.get(1));
+
+            // Third argument is a value
+            Object value = evaluate(arguments.get(2));
+
+            // Create a new map with the new key/value pair included
+            Map<Object, Object> mapVal = (Map<Object, Object>) mapObj;
+            Map<Object, Object> result = new Map<Object, Object>(mapVal);
+            result.put(key, value);
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(3);
+        }
+    }
+
+    private class AtFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "AT" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an index
+            Object index = evaluate(arguments.get(1));
+            if (!(index instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "AT" function: the second argument must evaluate to an number.'
+                );
+            }
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return null;
+            }
+
+            // If the index is out of bounds, return null
+            Decimal indexVal = (Decimal) index;
+            if (indexVal < 0 || indexVal >= listVal.size()) {
+                return null;
+            }
+
+            return listVal.get(indexVal.intValue());
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class AnyFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "ANY" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return false;
+            }
+
+            // Loop through each element in the list, evaluating the
+            // expression with the current value (as $current) being looped.
+            for (Object currentVal : listVal) {
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object result = interpreter.interpret(expr);
+                if (result instanceof Boolean) {
+                    if ((Boolean) result) {
+                        return true;
+                    }
+                } else {
+                    throw new FunctionExecutionException(
+                        'Error executing "ANY" function: the second argument must evaluate to a boolean.'
+                    );
+                }
+            }
+
+            return false;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class SumFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "SUM" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return 0;
+            }
+
+            Decimal sum = 0;
+            for (Object currentVal : listVal) {
+                if (!(currentVal instanceof Decimal)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "SUM" function: the first argument must evaluate to a list of numbers.'
+                    );
+                }
+                sum += (Decimal) currentVal;
+            }
+            return sum;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class EveryFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "EVERY" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return false;
+            }
+
+            // Loop through each element in the list, evaluating the
+            // expression with the current value (as $current) being looped.
+            for (Object currentVal : listVal) {
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object result = interpreter.interpret(expr);
+                if (result instanceof Boolean) {
+                    if (!(Boolean) result) {
+                        return false;
+                    }
+                } else {
+                    throw new FunctionExecutionException(
+                        'Error executing "EVERY" function: the second argument must evaluate to a boolean.'
+                    );
+                }
+            }
+
+            return true;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class ExpandFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "EXPAND" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return new List<Object>();
+            }
+
+            // Loop through each element in the list, evaluating the
+            // expression with the current value (as $current) being looped.
+            List<Object> result = new List<Object>();
+            for (Object currentVal : listVal) {
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object evaluated = interpreter.interpret(expr);
+
+                // The evaluated expression must be a list.
+                if (!(evaluated instanceof List<Object>)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "EXPAND" function: the second argument must evaluate to a list.'
+                    );
+                }
+
+                // Add the evaluated list to the result
+                result.addAll((List<Object>) evaluated);
+            }
+
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class FirstWhereFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "FIRSTWHERE" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return null;
+            }
+
+            // Loop through each element in the list, evaluating the
+            // expression with the current value (as $current) being looped.
+            for (Object currentVal : listVal) {
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object result = interpreter.interpret(expr);
+                if (result instanceof Boolean) {
+                    if ((Boolean) result) {
+                        return currentVal;
+                    }
+                } else {
+                    throw new FunctionExecutionException(
+                        'Error executing "FIRSTWHERE" function: the second argument must evaluate to a boolean.'
+                    );
+                }
+            }
+
+            return null;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class FollowedByFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "FOLLOWEDBY" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is a list
+            Object listObj2 = evaluate(arguments.get(1));
+            if (!(listObj2 instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "FOLLOWEDBY" function: the second argument must evaluate to a list.'
+                );
+            }
+
+            // Append the second list to the first list
+            List<Object> listVal = (List<Object>) listObj;
+            List<Object> listVal2 = (List<Object>) listObj2;
+            List<Object> result = new List<Object>(listVal);
+            result.addAll(listVal2);
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class JoinFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "JOIN" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is a string
+            Object separator = evaluate(arguments.get(1));
+            if (!(separator instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "JOIN" function: the second argument must evaluate to a string.'
+                );
+            }
+
+            List<Object> listVal = (List<Object>) listObj;
+            List<String> convertedStrings = new List<String>();
+            for (Object currentVal : listVal) {
+                convertedStrings.add(StringUtils.valueOf(currentVal));
+            }
+
+            return String.join(convertedStrings, (String) separator);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class LastWhereFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "LASTWHERE" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return null;
+            }
+
+            // Loop through each element in the list, evaluating the
+            // expression with the current value (as $current) being looped.
+            for (Integer i = listVal.size() - 1; i >= 0; i--) {
+                Object currentVal = listVal.get(i);
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object result = interpreter.interpret(expr);
+                if (result instanceof Boolean) {
+                    if ((Boolean) result) {
+                        return currentVal;
+                    }
+                } else {
+                    throw new FunctionExecutionException(
+                        'Error executing "LASTWHERE" function: the second argument must evaluate to a boolean.'
+                    );
+                }
+            }
+
+            return null;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class SkipFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "SKIP" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is a number
+            Object numberObj = evaluate(arguments.get(1));
+            if (!(numberObj instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "SKIP" function: the second argument must evaluate to a number.'
+                );
+            }
+
+            List<Object> listVal = (List<Object>) listObj;
+            Decimal numberVal = (Decimal) numberObj;
+
+            // If the list is empty, return early
+            if (listVal.isEmpty()) {
+                return new List<Object>();
+            }
+
+            // If the number is negative, return early
+            if (numberVal < 0) {
+                return new List<Object>();
+            }
+
+            // If the number is greater than the size of the list, return early
+            if (numberVal >= listVal.size()) {
+                return new List<Object>();
+            }
+
+            // Return a new list with the first n elements removed
+            List<Object> result = new List<Object>();
+            for (Integer i = numberVal.intValue(); i < listVal.size(); i++) {
+                result.add(listVal.get(i));
+            }
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class SkipWhileFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "SKIPWHILE" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            List<Object> listVal = (List<Object>) listObj;
+            for (Integer i = 0; i < listVal.size(); i++) {
+                Object currentVal = listVal.get(i);
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object result = interpreter.interpret(expr);
+
+                if (result instanceof Boolean) {
+                    if (!(Boolean) result) {
+                        // Return a new list with the first n elements removed
+                        List<Object> toReturn = new List<Object>();
+                        for (Integer j = i; j < listVal.size(); j++) {
+                            toReturn.add(listVal.get(j));
+                        }
+                        return toReturn;
+                    }
+                } else {
+                    throw new FunctionExecutionException(
+                        'Error executing "SKIPWHILE" function: the second argument must evaluate to a boolean.'
+                    );
+                }
+            }
+
+            // If we get here, it means that the expression evaluated to true for all elements in the list
+            return new List<Object>();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class TakeFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "TAKE" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is a number
+            Object numberObj = evaluate(arguments.get(1));
+            if (!(numberObj instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "TAKE" function: the second argument must evaluate to a number.'
+                );
+            }
+
+            List<Object> listVal = (List<Object>) listObj;
+            Decimal numberVal = (Decimal) numberObj;
+
+            // If the list is empty, return early
+            if (listVal.isEmpty()) {
+                return new List<Object>();
+            }
+
+            // If the number is negative, return early
+            if (numberVal < 0) {
+                return new List<Object>();
+            }
+
+            // If the number is greater than the size of the list, return the whole list
+            if (numberVal >= listVal.size()) {
+                return listVal;
+            }
+
+            // Return a new list with the first n elements
+            List<Object> result = new List<Object>();
+            for (Integer i = 0; i < numberVal.intValue(); i++) {
+                result.add(listVal.get(i));
+            }
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class TakeWhileFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "TAKEWHILE" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            List<Object> listVal = (List<Object>) listObj;
+            for (Integer i = 0; i < listVal.size(); i++) {
+                Object currentVal = listVal.get(i);
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object result = interpreter.interpret(expr);
+
+                if (result instanceof Boolean) {
+                    if (!(Boolean) result) {
+                        // Return a new list with the first n elements
+                        List<Object> toReturn = new List<Object>();
+                        for (Integer j = 0; j < i; j++) {
+                            toReturn.add(listVal.get(j));
+                        }
+                        return toReturn;
+                    }
+                } else {
+                    throw new FunctionExecutionException(
+                        'Error executing "TAKEWHILE" function: the second argument must evaluate to a boolean.'
+                    );
+                }
+            }
+
+            // If we get here, it means that the expression evaluated to true for all elements in the list
+            return listVal;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
         }
     }
 }

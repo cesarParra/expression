@@ -9,6 +9,7 @@ public with sharing abstract class ExpressionFunction {
         FUNCTIONS.putAll(MathFunctions.FUNCTIONS);
         FUNCTIONS.putAll(CollectionFunctions.FUNCTIONS);
         FUNCTIONS.putAll(MiscFunctions.FUNCTIONS);
+        FUNCTIONS.putAll(LocationFunctions.FUNCTIONS);
     }
 
     protected Interpreter interpreter;
