@@ -1311,6 +1311,16 @@ Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmploy
 Object result = expression.Evaluator.run('AVERAGE(MAP(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
 ```
 
+- `RANGE`
+
+Returns a list of numbers from the start to the end, inclusive.
+
+Accepts 2 arguments: the start and end numbers.
+
+```apex
+expression.Evaluator.run('RANGE(1, 3)'); // (1, 2, 3)
+```
+
 - `REDUCE`
 
 Reduces a list to a single value using the first argument as the context, the second argument as the expression to evaluate,
