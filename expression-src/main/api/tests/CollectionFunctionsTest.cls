@@ -470,4 +470,39 @@ private class CollectionFunctionsTest {
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
     }
+
+    @IsTest
+    private static void atFunctionReturnsTheValueAtTheGivenIndex() {
+        Assert.areEqual(2, Evaluator.run('AT([1, 2, 3], 1)'));
+    }
+
+    @IsTest
+    private static void atFunctionThrowsExceptionWhenFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('AT(1, 1)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void atFunctionThrowsExceptionWhenSecondArgumentIsNotANumber() {
+        try {
+            Evaluator.run('AT([1, 2, 3], "a")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void atFunctionReturnsNullIfTheListIsEmpty() {
+        Assert.isNull(Evaluator.run('AT([], 0)'));
+    }
+
+    @IsTest
+    private static void atFunctionReturnsNullIfTheIndexIsOutOfBounds() {
+        Assert.isNull(Evaluator.run('AT([1, 2, 3], 3)'));
+    }
 }

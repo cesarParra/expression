@@ -16,7 +16,8 @@ public with sharing class CollectionFunctions {
         'FIRST' => new FirstFn(),
         'LAST' => new LastFn(),
         'REDUCE' => new ReduceFn(),
-        'PUT' => new PutFn()
+        'PUT' => new PutFn(),
+        'AT' => new AtFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -672,6 +673,44 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(3);
+        }
+    }
+
+    private class AtFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "AT" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an index
+            Object index = evaluate(arguments.get(1));
+            if (!(index instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "AT" function: the second argument must evaluate to an number.'
+                );
+            }
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return null;
+            }
+
+            // If the index is out of bounds, return null
+            Decimal indexVal = (Decimal) index;
+            if (indexVal < 0 || indexVal >= listVal.size()) {
+                return null;
+            }
+
+            return listVal.get(indexVal.intValue());
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
         }
     }
 }

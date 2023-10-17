@@ -1130,6 +1130,17 @@ Accepts 2 arguments: the list to append to and the element to append.
 expression.Evaluator.run('APPEND([1, 2, 3], 4)'); // (1, 2, 3, 4)
 ```
 
+- `AT`
+
+Returns the element at the specified index. If the list is empty or the
+index is out of bounds, this function will return null.
+
+Accepts 2 arguments: the list to evaluate and the index to return.
+
+```apex
+expression.Evaluator.run('AT([1, 2, 3], 1)'); // 2
+```
+
 - `FIRST`
 
 Returns the first element of a list.
