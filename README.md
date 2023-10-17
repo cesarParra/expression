@@ -1197,6 +1197,18 @@ Accepts 2 arguments: the list to evaluate and the value to check.
 expression.Evaluator.run('CONTAINS([1, 2, 3], 2)'); // true
 ```
 
+- `EVERY`
+
+Returns true if every element in the list matches the given expression.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('EVERY([1, 2, 3], $current > 0)'); // true
+```
+
 - `MAP`
 
 Maps to a list using the first argument as the context and the second argument as the expression to evaluate.

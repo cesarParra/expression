@@ -570,4 +570,39 @@ private class CollectionFunctionsTest {
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
     }
+
+    @IsTest
+    private static void everyFunctionReturnsTrueIfEveryElementMatchesThePredicate() {
+        Assert.isTrue((Boolean)Evaluator.run('EVERY([1, 2, 3], $current > 0)'));
+    }
+
+    @IsTest
+    private static void everyFunctionReturnsFalseIfAnyElementDoesNotMatchThePredicate() {
+        Assert.isFalse((Boolean)Evaluator.run('EVERY([1, 2, 3], $current > 1)'));
+    }
+
+    @IsTest
+    private static void everyFunctionReturnsFalseIfTheListIsEmpty() {
+        Assert.isFalse((Boolean)Evaluator.run('EVERY([], $current > 3)'));
+    }
+
+    @IsTest
+    private static void everyFunctionThrowsAnExceptionIfTheFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('EVERY(1, $current > 3)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void everyFunctionThrowsAnExceptionIfThePredicateDoesNotEvaluateToABoolean() {
+        try {
+            Evaluator.run('EVERY([1, 2, 3], $current)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
 }
