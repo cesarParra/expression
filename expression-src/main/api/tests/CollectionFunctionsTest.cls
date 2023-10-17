@@ -732,4 +732,39 @@ private class CollectionFunctionsTest {
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
     }
+
+    @IsTest
+    private static void lastWhereFunctionReturnsTheLastElementThatMatchesThePredicate() {
+        Assert.areEqual(3, Evaluator.run('LASTWHERE([1, 2, 3], $current > 1)'));
+    }
+
+    @IsTest
+    private static void lastWhereReturnsNullWhenTheListIsEmpty() {
+        Assert.isNull(Evaluator.run('LASTWHERE([], $current > 1)'));
+    }
+
+    @IsTest
+    private static void lastWhereReturnsNullWhenNoElementMatchesThePredicate() {
+        Assert.isNull(Evaluator.run('LASTWHERE([1, 2, 3], $current > 3)'));
+    }
+
+    @IsTest
+    private static void lastWhereThrowsAnExceptionWhenTheFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('LASTWHERE(1, $current > 1)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void lastWhereThrowsAnExceptionWhenTheSecondArgumentDoesNotEvaluateToABoolean() {
+        try {
+            Evaluator.run('LASTWHERE([1, 2, 3], $current)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
 }

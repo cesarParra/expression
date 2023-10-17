@@ -24,7 +24,8 @@ public with sharing class CollectionFunctions {
         'EXPAND' => new ExpandFn(),
         'FIRSTWHERE' => new FirstWhereFn(),
         'FOLLOWEDBY' => new FollowedByFn(),
-        'JOIN' => new JoinFn()
+        'JOIN' => new JoinFn(),
+        'LASTWHERE' => new LastWhereFn()
     };
 
     private static Environment getEnvironmentFromObject(Object currentVal) {
@@ -990,6 +991,52 @@ public with sharing class CollectionFunctions {
             }
 
             return String.join(convertedStrings, (String) separator);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class LastWhereFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "LASTWHERE" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return null;
+            }
+
+            // Loop through each element in the list, evaluating the
+            // expression with the current value (as $current) being looped.
+            for (Integer i = listVal.size() - 1; i >= 0; i--) {
+                Object currentVal = listVal.get(i);
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object result = interpreter.interpret(expr);
+                if (result instanceof Boolean) {
+                    if ((Boolean) result) {
+                        return currentVal;
+                    }
+                } else {
+                    throw new FunctionExecutionException(
+                        'Error executing "LASTWHERE" function: the second argument must evaluate to a boolean.'
+                    );
+                }
+            }
+
+            return null;
         }
 
         public override Arity getArity() {

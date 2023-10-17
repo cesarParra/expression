@@ -1207,6 +1207,19 @@ Accepts 1 argument: the list to evaluate.
 expression.Evaluator.run('LAST([1, 2, 3])'); // 3
 ```
 
+- `LASTWHERE`
+
+Returns the last element of a list that matches the given expression or null
+if the list is empty or no element matches the expression.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('LASTWHERE([1, 2, 3], $current > 2)'); // 3
+```
+
 - `CONTAINS`
 
 Returns true if the list contains the given value.
