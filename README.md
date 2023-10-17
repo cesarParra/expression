@@ -1339,6 +1339,16 @@ Accepts 1 argument: the map to evaluate.
 expression.Evaluator.run('VALUES({ "a": 1, "b": 2, "c": 3 })'); // [1, 2, 3]
 ```
 
+- `PUT`
+
+Adds a key/value pair to a map.
+
+Accepts 3 arguments: the map to add to, the key to add, and the value to add.
+
+```apex
+expression.Evaluator.run('PUT({ "a": 1, "b": 2, "c": 3 }, "d", 4)'); // { "a": 1, "b": 2, "c": 3, "d": 4 }
+```
+
 #### Lists and Maps Functions
 
 Functions that work with both lists and maps.

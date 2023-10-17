@@ -15,7 +15,8 @@ public with sharing class CollectionFunctions {
         'FETCH' => new FetchFn(),
         'FIRST' => new FirstFn(),
         'LAST' => new LastFn(),
-        'REDUCE' => new ReduceFn()
+        'REDUCE' => new ReduceFn(),
+        'PUT' => new PutFn()
     };
 
     private class ListFn extends ExpressionFunction {
@@ -643,6 +644,34 @@ public with sharing class CollectionFunctions {
 
         public override Boolean needsChildrenResolution() {
             return true;
+        }
+    }
+
+    private class PutFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a map
+            Object mapObj = evaluate(arguments.get(0));
+            if (!(mapObj instanceof Map<Object, Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "PUT" function: the first argument must evaluate to a map.'
+                );
+            }
+
+            // Second argument is the key
+            Object key = evaluate(arguments.get(1));
+
+            // Third argument is a value
+            Object value = evaluate(arguments.get(2));
+
+            // Create a new map with the new key/value pair included
+            Map<Object, Object> mapVal = (Map<Object, Object>) mapObj;
+            Map<Object, Object> result = new Map<Object, Object>(mapVal);
+            result.put(key, value);
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(3);
         }
     }
 }
