@@ -505,4 +505,39 @@ private class CollectionFunctionsTest {
     private static void atFunctionReturnsNullIfTheIndexIsOutOfBounds() {
         Assert.isNull(Evaluator.run('AT([1, 2, 3], 3)'));
     }
+
+    @IsTest
+    private static void anyFunctionReturnsTrueIfAnyElementMatchesThePredicate() {
+        Assert.isTrue((Boolean)Evaluator.run('ANY([1, 2, 3], $current > 2)'));
+    }
+
+    @IsTest
+    private static void anyFunctionReturnsFalseIfNoElementMatchesThePredicate() {
+        Assert.isFalse((Boolean)Evaluator.run('ANY([1, 2, 3], $current > 3)'));
+    }
+
+    @IsTest
+    private static void anyFunctionReturnsFalseIfTheListIsEmpty() {
+        Assert.isFalse((Boolean)Evaluator.run('ANY([], $current > 3)'));
+    }
+
+    @IsTest
+    private static void anyFunctionThrowsAnExceptionIfTheFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('ANY(1, $current > 3)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void anyFunctionThrowsAnExceptionIfThePredicateDoesNotEvaluateToABoolean() {
+        try {
+            Evaluator.run('ANY([1, 2, 3], $current)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
 }

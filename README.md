@@ -1130,6 +1130,18 @@ Accepts 2 arguments: the list to append to and the element to append.
 expression.Evaluator.run('APPEND([1, 2, 3], 4)'); // (1, 2, 3, 4)
 ```
 
+- `ANY`
+
+Returns true if any element in the list matches the given expression.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('ANY([1, 2, 3], $current = 2)'); // true
+```
+
 - `AT`
 
 Returns the element at the specified index. If the list is empty or the

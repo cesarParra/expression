@@ -17,8 +17,19 @@ public with sharing class CollectionFunctions {
         'LAST' => new LastFn(),
         'REDUCE' => new ReduceFn(),
         'PUT' => new PutFn(),
-        'AT' => new AtFn()
+        'AT' => new AtFn(),
+        'ANY' => new AnyFn()
     };
+
+    private static Environment getEnvironmentFromObject(Object currentVal) {
+        Environment env;
+        if (currentVal instanceof SObject) {
+            env = new Environment((SObject) currentVal);
+        } else {
+            env = new Environment(null);
+        }
+        return env;
+    }
 
     private class ListFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -66,13 +77,7 @@ public with sharing class CollectionFunctions {
             List<Object> result = new List<Object>();
             for (Integer i = 0; i < childrenAsList.size(); i++) {
                 Object child = childrenAsList.get(i);
-                Environment env;
-                if (child instanceof SObject) {
-                    env = new Environment((SObject)child);
-                } else {
-                    env = new Environment(null);
-                }
-
+                Environment env = getEnvironmentFromObject(child);
                 env.define('$current', child);
                 env.define('$index', i);
                 env.define('$total', childrenAsList.size());
@@ -116,12 +121,7 @@ public with sharing class CollectionFunctions {
             List<Object> result = new List<Object>();
             for (Integer i = 0; i < childrenAsList.size(); i++) {
                 Object child = childrenAsList.get(i);
-                Environment env;
-                if (child instanceof SObject) {
-                    env = new Environment((SObject)child);
-                } else {
-                    env = new Environment(null);
-                }
+                Environment env = getEnvironmentFromObject(child);
 
                 env.define('$current', child);
                 env.define('$index', i);
@@ -625,12 +625,7 @@ public with sharing class CollectionFunctions {
             // The result of the expression will be the new value.
             Object accumulator = initialValue;
             for (Object currentVal : listVal) {
-                Environment env;
-                if (currentVal instanceof SObject) {
-                    env = new Environment((SObject)currentVal);
-                } else {
-                    env = new Environment(null);
-                }
+                Environment env = getEnvironmentFromObject(currentVal);
                 env.define('$current', currentVal);
                 env.define('$accumulator', accumulator);
                 Interpreter interpreter = new Interpreter(env);
@@ -707,6 +702,51 @@ public with sharing class CollectionFunctions {
             }
 
             return listVal.get(indexVal.intValue());
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class AnyFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "ANY" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return false;
+            }
+
+            // Loop through each element in the list, evaluating the
+            // expression with the current value (as $current) being looped.
+            for (Object currentVal : listVal) {
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object result = interpreter.interpret(expr);
+                if (result instanceof Boolean) {
+                    if ((Boolean) result) {
+                        return true;
+                    }
+                } else {
+                    throw new FunctionExecutionException(
+                        'Error executing "ANY" function: the second argument must evaluate to a boolean.'
+                    );
+                }
+            }
+
+            return false;
         }
 
         public override Arity getArity() {
