@@ -853,4 +853,54 @@ private class CollectionFunctionsTest {
         List<Object> result = (List<Object>)Evaluator.run('SKIPWHILE([1, 2, 3, 4], $current < 5)');
         Assert.areEqual(0, result.size());
     }
+
+    @IsTest
+    private static void takeFunctionTakesTheFirstNElementsOfAList() {
+        List<Object> result = (List<Object>)Evaluator.run('TAKE([1, 2, 3, 4], 2)');
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+    }
+
+    @IsTest
+    private static void takeFunctionThrowsAnExceptionWhenTheFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('TAKE(1, 2)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void takeFunctionThrowsAnExceptionWhenTheSecondArgumentIsNotANumber() {
+        try {
+            Evaluator.run('TAKE([1, 2, 3, 4], "a")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void takeFunctionReturnsAnEmptyListWhenTheListIsEmpty() {
+        List<Object> result = (List<Object>)Evaluator.run('TAKE([], 2)');
+        Assert.areEqual(0, result.size());
+    }
+
+    @IsTest
+    private static void takeFunctionReturnsAnEmptyListWhenTheNumberIsNegative() {
+        List<Object> result = (List<Object>)Evaluator.run('TAKE([1, 2, 3, 4], -2)');
+        Assert.areEqual(0, result.size());
+    }
+
+    @IsTest
+    private static void takeFunctionReturnsTheWholeListWhenTheNumberIsGreaterThanTheSizeOfTheList() {
+        List<Object> result = (List<Object>)Evaluator.run('TAKE([1, 2, 3, 4], 5)');
+        Assert.areEqual(4, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+        Assert.areEqual(4, result[3]);
+    }
 }

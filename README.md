@@ -1406,6 +1406,16 @@ Accepts 1 argument: the list of numbers to evaluate.
 expression.Evaluator.run('SUM([1, 2, 3])'); // 6
 ```
 
+- `TAKE`
+
+Returns the first N elements of a list.
+
+Accepts 2 arguments: the list to take from and the number of elements to take.
+
+```apex
+expression.Evaluator.run('TAKE([1, 2, 3], 2)'); // (1, 2)
+```
+
 - `WHERE`
 
 Filters a list using the first argument as the context and the second argument as the expression to evaluate.
