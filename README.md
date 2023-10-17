@@ -1478,6 +1478,28 @@ The map keys should be the variable names prefixed with `$`.
 expression.Evaluator.run('LET({ "$a": 1, "$b": 2 }, $a + $b)'); // 3
 ```
 
+#### Location Functions
+
+- `LOCATION`
+
+Returns a location object from the provided latitude and longitude.
+
+Accepts 2 arguments: the latitude and longitude.
+
+```apex
+expression.Evaluator.run('LOCATION(37.7749, 122.4194)'); // { "latitude": 37.7749, "longitude": 122.4194 }
+```
+
+- `DISTANCE`
+
+Returns the distance between two locations in the specified unit.
+
+Accepts 3 arguments: the first location, the second location, and the unit (either
+`"mi"` or `"km"`).
+
+```apex
+expression.Evaluator.run('DISTANCE(LOCATION(37.7749, 122.4194), LOCATION(40.7128, 74.0060), "mi")'); // 2565.6985207767134
+```
 ---
 
 # Expression Components
