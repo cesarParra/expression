@@ -18,7 +18,8 @@ public with sharing class CollectionFunctions {
         'REDUCE' => new ReduceFn(),
         'PUT' => new PutFn(),
         'AT' => new AtFn(),
-        'ANY' => new AnyFn()
+        'ANY' => new AnyFn(),
+        'SUM' => new SumFn()
     };
 
     private static Environment getEnvironmentFromObject(Object currentVal) {
@@ -751,6 +752,39 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+    }
+
+    private class SumFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "SUM" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return 0;
+            }
+
+            Decimal sum = 0;
+            for (Object currentVal : listVal) {
+                if (!(currentVal instanceof Decimal)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "SUM" function: the first argument must evaluate to a list of numbers.'
+                    );
+                }
+                sum += (Decimal) currentVal;
+            }
+            return sum;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 }

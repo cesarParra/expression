@@ -540,4 +540,34 @@ private class CollectionFunctionsTest {
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
     }
+
+    @IsTest
+    private static void sumFunctionReturnsTheSumOfTheList() {
+        Assert.areEqual(6, Evaluator.run('SUM([1, 2, 3])'));
+    }
+
+    @IsTest
+    private static void sumFunctionEvaluatesToZeroWhenTheListIsEmpty() {
+        Assert.areEqual(0, Evaluator.run('SUM([])'));
+    }
+
+    @IsTest
+    private static void sumFunctionThrowsAnExceptionIfAListIsNotReceived() {
+        try {
+            Evaluator.run('SUM(1)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void sumFunctionThrowsAnExceptionIfAnyOfTheElementsInTheListIsNotANumber() {
+        try {
+            Evaluator.run('SUM([1, 2, "a"])');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
 }

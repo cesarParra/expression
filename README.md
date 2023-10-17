@@ -1302,6 +1302,16 @@ expression.Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")'); // ({"Na
 expression.Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc")', parentAccount.Id); // ({"NumberOfEmployees": 1}, {"NumberOfEmployees": 2})
 ```
 
+- `SUM`
+
+Returns the sum of a list of numbers.
+
+Accepts 1 argument: the list of numbers to evaluate.
+
+```apex
+expression.Evaluator.run('SUM([1, 2, 3])'); // 6
+```
+
 - `WHERE`
 
 Filters a list using the first argument as the context and the second argument as the expression to evaluate.
