@@ -605,4 +605,41 @@ private class CollectionFunctionsTest {
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
     }
+
+    @IsTest
+    private static void expandFunctionExpandsEachElementOfTheListIntoTheResolvedExpression() {
+        String formula = 'EXPAND([1, 3, 0, 2], [{"value": $current}])';
+        List<Object> result = (List<Object>)Evaluator.run(formula);
+        Assert.areEqual(4, result.size());
+        Assert.areEqual(1, ((Map<Object, Object>)result[0]).get('value'));
+        Assert.areEqual(3, ((Map<Object, Object>)result[1]).get('value'));
+        Assert.areEqual(0, ((Map<Object, Object>)result[2]).get('value'));
+        Assert.areEqual(2, ((Map<Object, Object>)result[3]).get('value'));
+    }
+
+    @IsTest
+    private static void expandFunctionThrowsAnExceptionIfTheFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('EXPAND(1, [{"value": $current}])');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void expandFunctionReturnsAnEmptyListIfAnEmptyListIsReceived() {
+        List<Object> result = (List<Object>)Evaluator.run('EXPAND([], [{"value": $current}])');
+        Assert.areEqual(0, result.size());
+    }
+
+    @IsTest
+    private static void expandFunctionThrowsAnExceptionIfTheSecondArgumentDoesNotEvaluateToAList() {
+        try {
+            Evaluator.run('EXPAND([1, 2, 3], 1)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
 }

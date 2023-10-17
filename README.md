@@ -1209,6 +1209,20 @@ Accepts 2 arguments: the list to evaluate and the expression to evaluate.
 expression.Evaluator.run('EVERY([1, 2, 3], $current > 0)'); // true
 ```
 
+- `EXPAND`
+
+Expands each element of a list into zero or more elements, resulting from the
+evaluation of the given expression.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate. The expression
+must return a list.
+
+```apex
+expression.Evaluator.run('EXPAND([1, 2, 3], LIST($current, $current + 1))'); // (1, 2, 2, 3, 3, 4)
+```
+
 - `MAP`
 
 Maps to a list using the first argument as the context and the second argument as the expression to evaluate.

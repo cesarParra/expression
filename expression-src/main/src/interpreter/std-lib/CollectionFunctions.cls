@@ -20,7 +20,8 @@ public with sharing class CollectionFunctions {
         'AT' => new AtFn(),
         'ANY' => new AnyFn(),
         'SUM' => new SumFn(),
-        'EVERY' => new EveryFn()
+        'EVERY' => new EveryFn(),
+        'EXPAND' => new ExpandFn()
     };
 
     private static Environment getEnvironmentFromObject(Object currentVal) {
@@ -827,6 +828,53 @@ public with sharing class CollectionFunctions {
             }
 
             return true;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class ExpandFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "EXPAND" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            // If the list is empty, return early
+            List<Object> listVal = (List<Object>) listObj;
+            if (listVal.isEmpty()) {
+                return new List<Object>();
+            }
+
+            // Loop through each element in the list, evaluating the
+            // expression with the current value (as $current) being looped.
+            List<Object> result = new List<Object>();
+            for (Object currentVal : listVal) {
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object evaluated = interpreter.interpret(expr);
+
+                // The evaluated expression must be a list.
+                if (!(evaluated instanceof List<Object>)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "EXPAND" function: the second argument must evaluate to a list.'
+                    );
+                }
+
+                // Add the evaluated list to the result
+                result.addAll((List<Object>) evaluated);
+            }
+
+            return result;
         }
 
         public override Arity getArity() {
