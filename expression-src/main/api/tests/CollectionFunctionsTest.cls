@@ -903,4 +903,48 @@ private class CollectionFunctionsTest {
         Assert.areEqual(3, result[2]);
         Assert.areEqual(4, result[3]);
     }
+
+    @IsTest
+    private static void takeWhileFunctionTakesElementsWhileThePredicateIsTrue() {
+        List<Object> result = (List<Object>)Evaluator.run('TAKEWHILE([1, 2, 3, 4], $current < 3)');
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+    }
+
+    @IsTest
+    private static void takeWhileThrowsAnExceptionWhenTheFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('TAKEWHILE(1, $current < 3)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void takeWhileThrowsAnExceptionWhenTheSecondArgumentDoesNotEvaluateToABoolean() {
+        try {
+            Evaluator.run('TAKEWHILE([1, 2, 3, 4], $current)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void takeWhileReturnsAnEmptyListWhenTheListIsEmpty() {
+        List<Object> result = (List<Object>)Evaluator.run('TAKEWHILE([], $current < 3)');
+        Assert.areEqual(0, result.size());
+    }
+
+    @IsTest
+    private static void takeWhileReturnsTheWholeListWhenThePredicateIsNeverFalse() {
+        List<Object> result = (List<Object>)Evaluator.run('TAKEWHILE([1, 2, 3, 4], $current < 5)');
+        Assert.areEqual(4, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+        Assert.areEqual(4, result[3]);
+    }
 }

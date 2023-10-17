@@ -1416,6 +1416,18 @@ Accepts 2 arguments: the list to take from and the number of elements to take.
 expression.Evaluator.run('TAKE([1, 2, 3], 2)'); // (1, 2)
 ```
 
+- `TAKEWHILE`
+
+Returns elements of a list while the given expression evaluates to true.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+
+```apex
+expression.Evaluator.run('TAKEWHILE([1, 2, 3], $current < 3)'); // (1, 2)
+```
+
 - `WHERE`
 
 Filters a list using the first argument as the context and the second argument as the expression to evaluate.

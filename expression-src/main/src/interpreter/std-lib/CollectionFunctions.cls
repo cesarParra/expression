@@ -28,7 +28,8 @@ public with sharing class CollectionFunctions {
         'LASTWHERE' => new LastWhereFn(),
         'SKIP' => new SkipFn(),
         'SKIPWHILE' => new SkipWhileFn(),
-        'TAKE' => new TakeFn()
+        'TAKE' => new TakeFn(),
+        'TAKEWHILE' => new TakeWhileFn()
     };
 
     private static Environment getEnvironmentFromObject(Object currentVal) {
@@ -1184,6 +1185,52 @@ public with sharing class CollectionFunctions {
                 result.add(listVal.get(i));
             }
             return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class TakeWhileFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "TAKEWHILE" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is an expression
+            Expr expr = arguments.get(1);
+
+            List<Object> listVal = (List<Object>) listObj;
+            for (Integer i = 0; i < listVal.size(); i++) {
+                Object currentVal = listVal.get(i);
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object result = interpreter.interpret(expr);
+
+                if (result instanceof Boolean) {
+                    if (!(Boolean) result) {
+                        // Return a new list with the first n elements
+                        List<Object> toReturn = new List<Object>();
+                        for (Integer j = 0; j < i; j++) {
+                            toReturn.add(listVal.get(j));
+                        }
+                        return toReturn;
+                    }
+                } else {
+                    throw new FunctionExecutionException(
+                        'Error executing "TAKEWHILE" function: the second argument must evaluate to a boolean.'
+                    );
+                }
+            }
+
+            // If we get here, it means that the expression evaluated to true for all elements in the list
+            return listVal;
         }
 
         public override Arity getArity() {
