@@ -677,4 +677,34 @@ private class CollectionFunctionsTest {
     private static void firstWhereReturnsNullIfNoElementMatchesThePredicate() {
         Assert.isNull(Evaluator.run('FIRSTWHERE([1, 2, 3], $current > 3)'));
     }
+
+    @IsTest
+    private static void followedByAppendsAListToAnother() {
+        List<Object> result = (List<Object>)Evaluator.run('[1, 2] -> FOLLOWEDBY([3, 4])');
+        Assert.areEqual(4, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+        Assert.areEqual(4, result[3]);
+    }
+
+    @IsTest
+    private static void followedByThrowsAnErrorWhenTheFirstArgumentIsNotAList() {
+        try {
+            Evaluator.run('1 -> FOLLOWEDBY([3, 4])');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void followedByThrowsAnErrorWhenTheSecondArgumentIsNotAList() {
+        try {
+            Evaluator.run('[1, 2] -> FOLLOWEDBY(1)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
 }

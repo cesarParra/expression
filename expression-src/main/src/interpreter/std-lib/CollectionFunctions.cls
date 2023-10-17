@@ -22,7 +22,8 @@ public with sharing class CollectionFunctions {
         'SUM' => new SumFn(),
         'EVERY' => new EveryFn(),
         'EXPAND' => new ExpandFn(),
-        'FIRSTWHERE' => new FirstWhereFn()
+        'FIRSTWHERE' => new FirstWhereFn(),
+        'FOLLOWEDBY' => new FollowedByFn()
     };
 
     private static Environment getEnvironmentFromObject(Object currentVal) {
@@ -921,6 +922,37 @@ public with sharing class CollectionFunctions {
             }
 
             return null;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class FollowedByFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a list
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "FOLLOWEDBY" function: the first argument must evaluate to a list.'
+                );
+            }
+
+            // Second argument is a list
+            Object listObj2 = evaluate(arguments.get(1));
+            if (!(listObj2 instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "FOLLOWEDBY" function: the second argument must evaluate to a list.'
+                );
+            }
+
+            // Append the second list to the first list
+            List<Object> listVal = (List<Object>) listObj;
+            List<Object> listVal2 = (List<Object>) listObj2;
+            List<Object> result = new List<Object>(listVal);
+            result.addAll(listVal2);
+            return result;
         }
 
         public override Arity getArity() {
