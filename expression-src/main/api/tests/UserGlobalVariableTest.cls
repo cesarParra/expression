@@ -98,7 +98,7 @@ private class UserGlobalVariableTest {
     static void canReferenceTheUsersId() {
         User toRunAs = getUserToRunAs();
         System.runAs(toRunAs) {
-            String formula = '$User.Email';
+            String formula = '$User.Id';
             Object result = Evaluator.run(formula);
             Assert.isNotNull(result);
         }
@@ -108,9 +108,9 @@ private class UserGlobalVariableTest {
     static void canReferenceTheUsersType() {
         User toRunAs = getUserToRunAs();
         System.runAs(toRunAs) {
-            String formula = '$User.Email';
+            String formula = '$User.Type';
             Object result = Evaluator.run(formula);
-            Assert.areEqual('standarduser@testorg.com', result);
+            Assert.areEqual('Standard', result);
         }
     }
 
