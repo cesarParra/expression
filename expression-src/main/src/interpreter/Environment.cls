@@ -9,6 +9,7 @@ public with sharing class Environment {
         GLOBAL_VARIABLES.put('$custommetadata', new CustomMetadataVariableResolver.CmtApiName());
         GLOBAL_VARIABLES.put('$resource', new StaticResourceVariableResolver());
         GLOBAL_VARIABLES.put('$action', new ActionVariableResolver());
+        GLOBAL_VARIABLES.put('$user', new UserVariableResolver());
 
         // Placeholder value for whatever the called Action returned. Not used by language,
         // but can be used by the caller to get the return value of the Action.

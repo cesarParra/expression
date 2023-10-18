@@ -29,7 +29,8 @@ public with sharing class CollectionFunctions {
         'SKIP' => new SkipFn(),
         'SKIPWHILE' => new SkipWhileFn(),
         'TAKE' => new TakeFn(),
-        'TAKEWHILE' => new TakeWhileFn()
+        'TAKEWHILE' => new TakeWhileFn(),
+        'RANGE' => new RangeFn()
     };
 
     private static Environment getEnvironmentFromObject(Object currentVal) {
@@ -1231,6 +1232,38 @@ public with sharing class CollectionFunctions {
 
             // If we get here, it means that the expression evaluated to true for all elements in the list
             return listVal;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class RangeFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a number
+            Object numberObj = evaluate(arguments.get(0));
+            if (!(numberObj instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "RANGE" function: the first argument must evaluate to a number.'
+                );
+            }
+
+            // Second argument is a number
+            Object numberObj2 = evaluate(arguments.get(1));
+            if (!(numberObj2 instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "RANGE" function: the second argument must evaluate to a number.'
+                );
+            }
+
+            Decimal numberVal = (Decimal) numberObj;
+            Decimal numberVal2 = (Decimal) numberObj2;
+            List<Decimal> result = new List<Decimal>();
+            for (Decimal i = numberVal; i <= numberVal2; i++) {
+                result.add(i);
+            }
+            return result;
         }
 
         public override Arity getArity() {

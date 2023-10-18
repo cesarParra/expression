@@ -947,4 +947,39 @@ private class CollectionFunctionsTest {
         Assert.areEqual(3, result[2]);
         Assert.areEqual(4, result[3]);
     }
+
+    @IsTest
+    private static void rangeFunctionReturnsAListOfNumbers() {
+        List<Object> result = (List<Object>)Evaluator.run('RANGE(1, 3)');
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+    }
+
+    @IsTest
+    private static void rangeThrowsAnExceptionWhenTheFirstArgumentIsNotANumber() {
+        try {
+            Evaluator.run('RANGE("a", 3)');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void rangeThrowsAnExceptionWhenTheSecondArgumentIsNotANumber() {
+        try {
+            Evaluator.run('RANGE(1, "a")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    private static void rangeReturnsAnEmptyListWhenTheFirstArgumentIsGreaterThanTheSecond() {
+        List<Object> result = (List<Object>)Evaluator.run('RANGE(3, 1)');
+        Assert.areEqual(0, result.size());
+    }
 }

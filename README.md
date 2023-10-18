@@ -24,19 +24,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011Mh6IAE)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011Mh6IAE)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MhGIAU)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MhGIAU)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011Mh6IAE
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MhGIAU
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011Mh6IAE
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MhGIAU
 ```
 
 ### Direct Deployment to Salesforce
@@ -288,6 +288,24 @@ This will return the URL where the static resource is hosted.
 
 ```apex
 Object result = expression.Evaluator.run('$Resource.MyStaticResourceName');
+```
+
+### Current User
+
+You can reference information about the current user through the `$User` global variable.
+
+Available references are:
+* `DefaultCurrency`
+* `FirstName`
+* `Language`
+* `LastName`
+* `Locale`
+* `Name`
+* `TimeZone`
+* `Email`
+
+```apex
+Object result = expression.Evaluator.run('$User.FirstName');
 ```
 
 ## Comments
@@ -1309,6 +1327,16 @@ of child records.
 ```apex
 Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
 Object result = expression.Evaluator.run('AVERAGE(MAP(ChildAccounts, NumberOfEmployees))', parentAccountWithChildren); // 10
+```
+
+- `RANGE`
+
+Returns a list of numbers from the start to the end, inclusive.
+
+Accepts 2 arguments: the start and end numbers.
+
+```apex
+expression.Evaluator.run('RANGE(1, 3)'); // (1, 2, 3)
 ```
 
 - `REDUCE`
