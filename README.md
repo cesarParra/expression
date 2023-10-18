@@ -290,6 +290,24 @@ This will return the URL where the static resource is hosted.
 Object result = expression.Evaluator.run('$Resource.MyStaticResourceName');
 ```
 
+### Current User
+
+You can reference information about the current user through the `$User` global variable.
+
+Available references are:
+* `DefaultCurrency`
+* `FirstName`
+* `Language`
+* `LastName`
+* `Locale`
+* `Name`
+* `TimeZone`
+* `Email`
+
+```apex
+Object result = expression.Evaluator.run('$User.FirstName');
+```
+
 ## Comments
 
 You can add comments to your Expressions by prefixing them with `#`.
