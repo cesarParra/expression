@@ -25,7 +25,7 @@ public with sharing class PlaygroundController {
             error.message = e.getMessage();
             error.summary = e.message;
             error.startLineNumber = e.position.lineStart;
-            error.endLineNumber = e.position.lineStart;
+            error.endLineNumber = e.position.lineEnd;
             error.startColumnNumber = e.position.columnStart;
             error.endColumnNumber = e.position.columnEnd;
             toReturn.error = error;

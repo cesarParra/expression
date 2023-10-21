@@ -46,7 +46,11 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.StringLiteral literal) {
-        // TODO: Call resolve on all expressions once we have interpolation
+        for (Object obj : literal.stringsAndInterpolations) {
+            if (obj instanceof Expr) {
+                resolve((Expr) obj);
+            }
+        }
         return null;
     }
 

@@ -157,7 +157,12 @@ public with sharing class Interpreter implements Visitor {
     public Object visit(Expr.StringLiteral literal) {
         String stringValue = '';
         for (Object current : literal.stringsAndInterpolations) {
-            stringValue += (String)current;
+            if (current instanceof String) {
+                stringValue += (String) current;
+            } else if (current instanceof Expr) {
+                Object result = evaluate((Expr) current);
+                stringValue += StringUtils.valueOf(result);
+            }
         }
         return stringValue;
     }

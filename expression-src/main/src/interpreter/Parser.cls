@@ -142,8 +142,16 @@ public with sharing class Parser {
             // Grab all characters until we reach the STRING_LITERAL_END
             List<Object> strings = new List<Object>();
             if (!check(TokenType.STRING_LITERAL_END)) {
-                while (match(TokenType.STRING_LITERAL)) {
-                    strings.add(previous().literal);
+                while (peek().type != TokenType.STRING_LITERAL_END) {
+                    if (match(TokenType.STRING_INTERPOLATION_START)) {
+                        Expr expr = expression();
+                        strings.add(expr);
+                        consume(TokenType.STRING_INTERPOLATION_END, 'Expect "}" after expression.');
+                    } else if (match(TokenType.CHARACTER)) {
+                        strings.add(previous().literal);
+                    } else {
+                        throw error(peek(), 'Expect string interpolation or character.');
+                    }
                 }
             }
             consume(TokenType.STRING_LITERAL_END, 'Expect ".');

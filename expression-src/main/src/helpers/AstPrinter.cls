@@ -25,10 +25,13 @@ public with sharing class AstPrinter implements Visitor {
     }
 
     public Object visit(Expr.StringLiteral literal) {
-        // TODO: Improve once we implement interpolation
         String stringValue = '';
         for (Object current : literal.stringsAndInterpolations) {
-            stringValue += (String)current;
+            if (current instanceof String) {
+                stringValue += (String) current;
+            } else if (current instanceof Expr) {
+                stringValue += '${' + objToString(((Expr) current).accept(this)) + '}';
+            }
         }
         return stringValue;
     }

@@ -172,28 +172,17 @@ public with sharing class Scanner {
     }
 
     private void addToken(TokenType type, Object literal, SourcePosition position) {
-        System.debug('Adding token: ' + type + ' literal: ' + literal + ' position: ' + position);
-        String text;
-        if (literal != null) {
-            text = String.valueOf(literal);
-        } else {
-            text = source.substring(start, current);
-        }
-        System.debug('text: ' + text);
-//
-//        // Count how many \n characters are in the text
-//        Integer line = this.line - text.countMatches('\n');
-//
-//        // The column is wherever the text started, so subtract the length of the text
-//        // from the current column. If the text spans multiple lines we only
-//        // want the column of the first line.
-//        List<String> textLines = text.split('\n');
-//        System.debug('textLines: ' + textLines);
+        System.debug('Adding token: ' + type + ' ' + literal);
+        String text = source.substring(start, current);
+        System.debug('Start: ' + start);
+        System.debug('Current: ' + current);
+        System.debug('Text: ' + text);
+
         Integer column = this.column - text.length();
-//        System.debug('column: ' + column);
 
         SourcePosition pos = position != null ? position : new SourcePosition(line, column, column + text.length());
         tokens.add(new Token(type, text, literal, pos));
+        System.debug('--------------');
     }
 
     private Boolean match(String expected) {
@@ -227,26 +216,40 @@ public with sharing class Scanner {
     private void stringLiteral() {
         addToken(TokenType.STRING_LITERAL_START);
 
-        Integer startingColumn = column;
-        Integer startingLine = line;
-
-        String currentString = '';
         while (peek() != '"' && !isAtEnd()) {
-            currentString += advance();
+            if (peek() == '$' && peekNext() == '{') {
+                // Consume the $ and {
+                start = current;
+                advance();
+                advance();
+                addToken(TokenType.STRING_INTERPOLATION_START);
+
+                // We've found string interpolation
+                while (peek() != '}' && !isAtEnd()) {
+                    start = current;
+                    scanToken();
+                }
+
+                if (isAtEnd()) {
+                    throw new Exceptions.ParsingException(
+                        new SourcePosition(line, column, column + 1),
+                        'Unterminated string');
+                }
+
+                // The closing }
+                start = current;
+                advance();
+                addToken(TokenType.STRING_INTERPOLATION_END);
+            } else {
+                start = current;
+                addToken(TokenType.CHARACTER, advance());
+            }
         }
 
         if (isAtEnd()) {
             throw new Exceptions.ParsingException(
                 new SourcePosition(line, column, column + 1),
                 'Unterminated string');
-        }
-
-        Integer endingColumn = column;
-        Integer endingLine = line;
-
-        if (currentString.length() > 0) {
-            SourcePosition pos = new SourcePosition(startingLine, endingLine, startingColumn, endingColumn);
-            addToken(TokenType.STRING_LITERAL, currentString, pos);
         }
 
         // The closing "
@@ -301,7 +304,6 @@ public with sharing class Scanner {
         // Any alphanumeric character, and underscores
         Pattern p = Pattern.compile('^[a-zA-Z0-9_]+$');
         Matcher m = p.matcher(identifier);
-        System.debug('Identifier: ' + identifier + ' is valid: ' + m.matches());
         return m.matches();
     }
 
