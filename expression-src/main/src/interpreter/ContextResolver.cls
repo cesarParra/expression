@@ -45,6 +45,11 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.StringLiteral literal) {
+        // TODO: Call resolve on all expressions once we have interpolation
+        return null;
+    }
+
     public Object visit(Expr.Unary unary) {
         resolve(unary.right);
         return null;

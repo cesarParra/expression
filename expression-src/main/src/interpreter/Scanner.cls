@@ -25,7 +25,7 @@ public with sharing class Scanner {
             scanToken();
         }
 
-        tokens.add(new Token(TokenType.EOF, '', null, new Token.Position(line, column)));
+        tokens.add(new Token(TokenType.EOF, '', null, new SourcePosition(line, column, column)));
         return tokens;
     }
 
@@ -116,8 +116,8 @@ public with sharing class Scanner {
                     addToken(TokenType.DOUBLE_PIPE);
                 } else {
                     Integer column = this.column - 1;
-                    throw new ScannerException(
-                        'Line ' + line + ', column ' + column + ': ' +
+                    throw new Exceptions.ParsingException(
+                        new SourcePosition(line, column, column + 1),
                         'Unexpected character' + next + ' Expected another | for an OR operator');
                 }
             }
@@ -144,8 +144,8 @@ public with sharing class Scanner {
                     identifierLiteral();
                 } else {
                     Integer column = this.column - 1;
-                    throw new ScannerException(
-                        'Line ' + line + ', column ' + column + ': ' +
+                    throw new Exceptions.ParsingException(
+                        new SourcePosition(line, column, column + 1),
                         'Unexpected character: ' + character);
                 }
             }
@@ -164,22 +164,36 @@ public with sharing class Scanner {
     }
 
     private void addToken(TokenType type) {
-        addToken(type, null);
+        addToken(type, null, null);
     }
 
     private void addToken(TokenType type, Object literal) {
-        String text = source.substring(start, current);
+        addToken(type, literal, null);
+    }
 
-        // Count how many \n characters are in the text
-        Integer line = this.line - text.countMatches('\n');
+    private void addToken(TokenType type, Object literal, SourcePosition position) {
+        System.debug('Adding token: ' + type + ' literal: ' + literal + ' position: ' + position);
+        String text;
+        if (literal != null) {
+            text = String.valueOf(literal);
+        } else {
+            text = source.substring(start, current);
+        }
+        System.debug('text: ' + text);
+//
+//        // Count how many \n characters are in the text
+//        Integer line = this.line - text.countMatches('\n');
+//
+//        // The column is wherever the text started, so subtract the length of the text
+//        // from the current column. If the text spans multiple lines we only
+//        // want the column of the first line.
+//        List<String> textLines = text.split('\n');
+//        System.debug('textLines: ' + textLines);
+        Integer column = this.column - text.length();
+//        System.debug('column: ' + column);
 
-        // The column is wherever the text started, so subtract the length of the text
-        // from the current column. If the text spans multiple lines we only
-        // want the column of the first line.
-        List<String> textLines = text.split('\n');
-        Integer column = this.column - textLines[0].length();
-
-        tokens.add(new Token(type, text, literal, new Token.Position(line, column)));
+        SourcePosition pos = position != null ? position : new SourcePosition(line, column, column + text.length());
+        tokens.add(new Token(type, text, literal, pos));
     }
 
     private Boolean match(String expected) {
@@ -211,20 +225,34 @@ public with sharing class Scanner {
     }
 
     private void stringLiteral() {
+        addToken(TokenType.STRING_LITERAL_START);
+
+        Integer startingColumn = column;
+        Integer startingLine = line;
+
+        String currentString = '';
         while (peek() != '"' && !isAtEnd()) {
-            advance();
+            currentString += advance();
         }
 
         if (isAtEnd()) {
-            throw new ScannerException('Unterminated string');
+            throw new Exceptions.ParsingException(
+                new SourcePosition(line, column, column + 1),
+                'Unterminated string');
+        }
+
+        Integer endingColumn = column;
+        Integer endingLine = line;
+
+        if (currentString.length() > 0) {
+            SourcePosition pos = new SourcePosition(startingLine, endingLine, startingColumn, endingColumn);
+            addToken(TokenType.STRING_LITERAL, currentString, pos);
         }
 
         // The closing "
+        start = current;
         advance();
-
-        // Trim the surrounding quotes
-        String value = source.substring(start + 1, current - 1);
-        addToken(TokenType.STRING_LITERAL, value);
+        addToken(TokenType.STRING_LITERAL_END);
     }
 
     private void numberLiteral() {
@@ -250,7 +278,7 @@ public with sharing class Scanner {
             advance();
         }
 
-        TokenType type = TokenType.VARIABLE;
+        TokenType type = TokenType.DOLLAR;
         addToken(type);
     }
 
@@ -273,13 +301,11 @@ public with sharing class Scanner {
         // Any alphanumeric character, and underscores
         Pattern p = Pattern.compile('^[a-zA-Z0-9_]+$');
         Matcher m = p.matcher(identifier);
+        System.debug('Identifier: ' + identifier + ' is valid: ' + m.matches());
         return m.matches();
     }
 
     private Boolean isAtEnd() {
         return current >= source.length();
-    }
-
-    public class ScannerException extends Exception {
     }
 }

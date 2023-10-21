@@ -138,11 +138,23 @@ public with sharing class Parser {
             return new Expr.Literal(null);
         }
 
-        if (match2(TokenType.NUMBER_LITERAL, TokenType.STRING_LITERAL)) {
+        if (match(TokenType.STRING_LITERAL_START)) {
+            // Grab all characters until we reach the STRING_LITERAL_END
+            List<Object> strings = new List<Object>();
+            if (!check(TokenType.STRING_LITERAL_END)) {
+                while (match(TokenType.STRING_LITERAL)) {
+                    strings.add(previous().literal);
+                }
+            }
+            consume(TokenType.STRING_LITERAL_END, 'Expect ".');
+            return new Expr.StringLiteral(strings);
+        }
+
+        if (match(TokenType.NUMBER_LITERAL)) {
             return new Expr.Literal(previous().literal);
         }
 
-        if (match(TokenType.VARIABLE)) {
+        if (match(TokenType.DOLLAR)) {
             return new Expr.Variable(previous());
         }
 
@@ -272,12 +284,10 @@ public with sharing class Parser {
         throw error(peek(), message);
     }
 
-    private static ParseException error(Token token, String message) {
-        throw new ParseException(
-            'Error at token ' + token.toString() + ': ' + message
+    private static Exceptions.ParsingException error(Token token, String message) {
+        throw new Exceptions.ParsingException(
+            token,
+            message
         );
-    }
-
-    public class ParseException extends Exception {
     }
 }
