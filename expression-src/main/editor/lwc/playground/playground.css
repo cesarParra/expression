@@ -1,3 +1,6 @@
+.host {
+    --slds-c-card-body-spacing-block-end: 0;
+}
 .lgc-bg {
     background-color: rgb(242 242 242);
 }

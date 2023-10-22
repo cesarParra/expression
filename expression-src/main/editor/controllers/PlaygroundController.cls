@@ -14,6 +14,8 @@ public with sharing class PlaygroundController {
     @AuraEnabled(Cacheable=true)
     public static List<Functions> getFunctions() {
         List<Functions> toReturn = new List<Functions>();
+
+        // Functions from the standard library
         for (FunctionProvider provider : ExpressionFunction.FUNCTION_PROVIDERS) {
             Functions forProvider = new Functions();
             forProvider.name = provider.getCategory();
@@ -32,6 +34,22 @@ public with sharing class PlaygroundController {
             forProvider.functions = functions;
             toReturn.add(forProvider);
         }
+
+        // Custom functions
+        List<Expression_Function__mdt> customFunctions = Expression_Function__mdt.getAll().values();
+        Functions customCategory = new Functions();
+        customCategory.name = 'Custom';
+        customCategory.icon = 'utility:apex_plugin';
+
+        List<Function> functions = new List<Function>();
+        for (Expression_Function__mdt customFunctionRecord : customFunctions) {
+            Function customFunction = new Function();
+            customFunction.name = customFunctionRecord.DeveloperName;
+            customFunction.autoCompleteValue = customFunctionRecord.DeveloperName + '(';
+            functions.add(customFunction);
+        }
+        customCategory.functions = functions;
+        toReturn.add(customCategory);
 
         return toReturn;
     }

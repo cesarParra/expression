@@ -41,6 +41,13 @@ export default class Monaco extends LightningElement {
     this.recordId = event.detail.value;
   }
 
+  handleFunctionFromLibrarySelected(event) {
+    this.iframeWindow.postMessage({
+      name: 'append',
+      payload: event.detail
+    });
+  }
+
   get iframeWindow() {
     return this.template.querySelector('iframe').contentWindow;
   }

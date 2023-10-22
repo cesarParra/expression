@@ -77,6 +77,14 @@ public with sharing class CollectionFunctions {
         public override Arity getArity() {
             return Arity.atLeast(1);
         }
+
+        public override String getDescription() {
+            return 'Creates a list of values.';
+        }
+
+        public override String getExample() {
+            return 'LIST(1, 2, 3, ...LIST(4, 5, 6))';
+        }
     }
 
     private class MapFn extends ExpressionFunction {
@@ -120,6 +128,15 @@ public with sharing class CollectionFunctions {
 
         public override Boolean needsChildrenResolution() {
             return true;
+        }
+
+        public override String getDescription() {
+            return 'Maps to a list using the first argument as the context and the second argument as the expression to evaluate. ' +
+                'Accepts 2 arguments: List of objects and an expression to evaluate.';
+        }
+
+        public override String getExample() {
+            return 'MAP(["a", "b", "c"], UPPER($current))';
         }
     }
 
