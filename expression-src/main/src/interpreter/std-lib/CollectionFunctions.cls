@@ -1,5 +1,5 @@
 public with sharing class CollectionFunctions {
-    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'LIST' => new ListFn(),
         'MAP' => new MapFn(),
         'WHERE' => new WhereFn(),
@@ -32,6 +32,20 @@ public with sharing class CollectionFunctions {
         'TAKEWHILE' => new TakeWhileFn(),
         'RANGE' => new RangeFn()
     };
+
+    public class CollectionFunctionsProvider implements FunctionProvider {
+        public String getCategory() {
+            return 'Collection';
+        }
+
+        public Map<String, ExpressionFunction> getFunctions() {
+            return FUNCTIONS;
+        }
+
+        public String getIcon() {
+            return 'utility:justify_text';
+        }
+    }
 
     private static Environment getEnvironmentFromObject(Object currentVal) {
         Environment env;

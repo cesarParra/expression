@@ -1,8 +1,22 @@
 public with sharing class LocationFunctions {
-    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'LOCATION' => new LocationFn(),
         'DISTANCE' => new DistanceFn()
     };
+
+    public class LocationFunctionsProvider implements FunctionProvider {
+        public String getCategory() {
+            return 'Location';
+        }
+
+        public Map<String, ExpressionFunction> getFunctions() {
+            return FUNCTIONS;
+        }
+
+        public String getIcon() {
+            return 'utility:pin';
+        }
+    }
 
     private class LocationFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {

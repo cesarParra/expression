@@ -1,5 +1,5 @@
 public with sharing class LogicalFunctions {
-    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'AND' => new LogicalFunctions.AndFn(),
         'IF' => new LogicalFunctions.IfFn(),
         'NOT' => new LogicalFunctions.NotFn(),
@@ -9,6 +9,20 @@ public with sharing class LogicalFunctions {
         'ISNUMBER' => new LogicalFunctions.IsNumber(),
         'CASE' => new LogicalFunctions.CaseFn()
     };
+
+    public class LogicalFunctionsProvider implements FunctionProvider {
+        public String getCategory() {
+            return 'Logical';
+        }
+
+        public Map<String, ExpressionFunction> getFunctions() {
+            return FUNCTIONS;
+        }
+
+        public String getIcon() {
+            return 'utility:check';
+        }
+    }
 
     private class AndFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {

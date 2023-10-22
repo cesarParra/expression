@@ -1663,7 +1663,7 @@ expression.Evaluator.run('TRUNC(1.5)'); // 1
 expression.Evaluator.run('TRUNC(1.5, 1)'); // 1.5
 ```
 
-#### Misc Functions
+#### Data Functions
 
 - `TRANSFORM`
 

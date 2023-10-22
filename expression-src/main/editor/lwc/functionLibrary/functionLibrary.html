@@ -3,12 +3,12 @@
     <template lwc:if={functionWithOpenDocumentation}>
       <div style="position: absolute; z-index: 999; right: -330px; top: -0.10rem" class="slds-p-around_medium slds-popover">
         <div class="slds-text-heading_small slds-m-bottom_x-small">{functionWithOpenDocumentation.name}</div>
-        <p>{functionWithOpenDocumentation.description}</p>
-        <div class="slds-m-vertical_x-small">
+        <p if:true={functionWithOpenDocumentation.description}>{functionWithOpenDocumentation.description}</p>
+        <div if:true={functionWithOpenDocumentation.syntax} class="slds-m-vertical_x-small">
           <div><strong>Syntax</strong></div>
           {functionWithOpenDocumentation.syntax}
         </div>
-        <div class="slds-m-vertical_x-small">
+        <div if:true={functionWithOpenDocumentation.examples} class="slds-m-vertical_x-small">
           <div><strong>Examples</strong></div>
           <pre>
               <template for:each={functionWithOpenDocumentation.examples} for:item="example">
@@ -21,7 +21,7 @@
       </div>
     </template>
     <template for:each={availableFormulaFunctionsAndOperators} for:item="formulaFunction">
-      <div key={formulaFunction.category} class="slds-text-heading_small">{formulaFunction.category}</div>
+      <div key={formulaFunction.category} class="slds-text-heading_small slds-p-top_x-small">{formulaFunction.category}</div>
       <ul key={formulaFunction.category}>
         <template for:each={formulaFunction.values} for:item="value">
           <li key={value.name}>

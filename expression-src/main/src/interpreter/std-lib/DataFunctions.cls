@@ -1,8 +1,22 @@
-public with sharing class MiscFunctions {
-    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+public with sharing class DataFunctions {
+    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'TRANSFORM' => new TransformFn(),
         'LET' => new LET()
     };
+
+    public class DataFunctionsProvider implements FunctionProvider {
+        public String getCategory() {
+            return 'Data';
+        }
+
+        public Map<String, ExpressionFunction> getFunctions() {
+            return FUNCTIONS;
+        }
+
+        public String getIcon() {
+            return 'utility:data_mapping';
+        }
+    }
 
     private class TransformFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {

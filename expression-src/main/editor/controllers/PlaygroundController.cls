@@ -1,7 +1,7 @@
 public with sharing class PlaygroundController {
     @AuraEnabled(Cacheable=true)
-    public static List<String> getFunctions() {
-        Set<String> builtInFunctionNames = ExpressionFunction.FUNCTIONS.keySet();
+    public static List<String> getFunctionNames() {
+        Set<String> builtInFunctionNames = ExpressionFunction.getStandardFunctionNames();
         Set<String> customFunctionNames = Expression_Function__mdt.getAll().keySet();
         Set<String> functionNames = new Set<String>();
         functionNames.addAll(builtInFunctionNames);
@@ -9,6 +9,31 @@ public with sharing class PlaygroundController {
         return new List<String>(
             functionNames
         );
+    }
+
+    @AuraEnabled(Cacheable=true)
+    public static List<Functions> getFunctions() {
+        List<Functions> toReturn = new List<Functions>();
+        for (FunctionProvider provider : ExpressionFunction.FUNCTION_PROVIDERS) {
+            Functions forProvider = new Functions();
+            forProvider.name = provider.getCategory();
+            forProvider.icon = provider.getIcon();
+            List<Function> functions = new List<Function>();
+            for (String functionName : provider.getFunctions().keySet()) {
+                ExpressionFunction fn = provider.getFunctions().get(functionName);
+
+                Function toAdd = new Function();
+                toAdd.name = functionName;
+                toAdd.autoCompleteValue = functionName + '(';
+                toAdd.description = fn.getDescription();
+                toAdd.example = fn.getExample();
+                functions.add(toAdd);
+            }
+            forProvider.functions = functions;
+            toReturn.add(forProvider);
+        }
+
+        return toReturn;
     }
 
     @AuraEnabled
@@ -46,6 +71,31 @@ public with sharing class PlaygroundController {
 
         @AuraEnabled
         public Object result;
+    }
+
+    public class Functions {
+        @AuraEnabled
+        public String name;
+
+        @AuraEnabled
+        public String icon;
+
+        @AuraEnabled
+        public List<Function> functions;
+    }
+
+    public class Function {
+        @AuraEnabled
+        public String name;
+
+        @AuraEnabled
+        public String autoCompleteValue;
+
+        @AuraEnabled
+        public String description;
+
+        @AuraEnabled
+        public String example;
     }
 
     public class EvaluationError {

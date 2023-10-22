@@ -60,7 +60,7 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.FunctionCall function) {
-        ExpressionFunction fn = ExpressionFunction.FUNCTIONS.get(function.functionName);
+        ExpressionFunction fn = ExpressionFunction.getByName(function.functionName);
         if (fn == null) {
             return null;
         }

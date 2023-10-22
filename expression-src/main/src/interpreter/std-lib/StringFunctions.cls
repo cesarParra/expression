@@ -1,5 +1,5 @@
 public with sharing class StringFunctions {
-    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'BEGINS' => new StringFunctions.Begins(),
         'CONTAINS' => new StringFunctions.Contains(),
         'LOWER' => new StringFunctions.Lower(),
@@ -23,6 +23,20 @@ public with sharing class StringFunctions {
         'INITCAP' => new InitCapFn(),
         'URLENCODE' => new UrlEncodeFn()
     };
+
+    public class StringFunctionsProvider implements FunctionProvider {
+        public String getCategory() {
+            return 'String';
+        }
+
+        public Map<String, ExpressionFunction> getFunctions() {
+            return FUNCTIONS;
+        }
+
+        public String getIcon() {
+            return 'utility:text';
+        }
+    }
 
     private class Begins extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {

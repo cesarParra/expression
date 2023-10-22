@@ -1,5 +1,5 @@
 public with sharing class MathFunctions {
-    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'ABS' => new AbsFn(),
         'CEILING' => new CeilingFn(),
         'FLOOR' => new FloorFn(),
@@ -9,6 +9,20 @@ public with sharing class MathFunctions {
         'TRUNC' => new RoundAndTruncFns('TRUNC'),
         'MOD' => new ModFn()
     };
+
+    public class MathFunctionsProvider implements FunctionProvider {
+        public String getCategory() {
+            return 'Math';
+        }
+
+        public Map<String, ExpressionFunction> getFunctions() {
+            return FUNCTIONS;
+        }
+
+        public String getIcon() {
+            return 'utility:advanced_function';
+        }
+    }
 
     private class AbsFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {

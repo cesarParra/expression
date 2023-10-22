@@ -1,5 +1,5 @@
 public with sharing class DateAndTimeFunctions {
-    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'ADDMONTHS' => new DateAndTimeFunctions.AddMonthsFn(),
         'DATE' => new DateAndTimeFunctions.DateFn(),
         'DAY' => new DateAndTimeFunctions.DayFn(),
@@ -26,6 +26,20 @@ public with sharing class DateAndTimeFunctions {
         'DATETODATETIME' => new DateToDateTimeFn(),
         'DAYSBETWEEN' => new DaysBetween()
     };
+
+    public class DateAndTimeFunctionsProvider implements FunctionProvider {
+        public String getCategory() {
+            return 'Date and Time';
+        }
+
+        public Map<String, ExpressionFunction> getFunctions() {
+            return FUNCTIONS;
+        }
+
+        public String getIcon() {
+            return 'utility:date_input';
+        }
+    }
 
     private enum TimeType {
         MILLISECOND, MINUTE, SECOND, HOUR_FN
