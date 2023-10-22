@@ -172,17 +172,10 @@ public with sharing class Scanner {
     }
 
     private void addToken(TokenType type, Object literal, SourcePosition position) {
-        System.debug('Adding token: ' + type + ' ' + literal);
         String text = source.substring(start, current);
-        System.debug('Start: ' + start);
-        System.debug('Current: ' + current);
-        System.debug('Text: ' + text);
-
         Integer column = this.column - text.length();
-
         SourcePosition pos = position != null ? position : new SourcePosition(line, column, column + text.length());
         tokens.add(new Token(type, text, literal, pos));
-        System.debug('--------------');
     }
 
     private Boolean match(String expected) {

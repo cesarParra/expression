@@ -17,6 +17,7 @@ Powerful formula-syntax evaluator for Apex and LWC.
 * Support for lists and maps, including spread operator (`...`) support.
 * Automatically understands relationships and can extract data from child records
 * Comment support
+* String interpolations
 * Pre-built LWC component to evaluate Expressions in record pages and Experience Builder sites
 * And much more!
 
@@ -64,7 +65,7 @@ With it, you can quickly test and validate expressions, and see the results
 in real-time. You can also use it to learn about the different operators and
 functions available.
 
-To provide a context for the expression you can also specify a record Id (optional).
+To provide a context for the expression, you can also specify a record Id (optional).
 
 ## Usage
 
@@ -145,9 +146,9 @@ To change this behavior, use configuration settings used by the evaluator by pas
 
 ### Limitations
 
-- `MAP` only supports one level of relationship, so the second argument cannot contain
-references to children of the child record being mapped.
-- When extracting data out of child records through the MAP function, any null
+- When referencing child records, `MAP` only supports one level of relationship, 
+so the second argument cannot contain references to children of the child record being mapped.
+- When extracting data out of child records through the `MAP` function, any null
 value is skipped. Take this into account when computing information using list
 functions.
 
@@ -228,6 +229,18 @@ Evaluator.run(
     '-> MAP(Name)', 
     recordId);
 ```
+
+## String Interpolation
+
+You can access the value of an expression inside a string by using ${expression}. This is useful
+when you want to build complex strings that include the result of an expression or when concatenating
+multiple strings together without having to use the `&` or `+` operators.
+
+```apex
+String expression = 'LET({"$greeting": "World"}, "${ $greeting } World!")';
+expressionEvaluator.run(expression); // "World World!"
+````
+
 ## Fetching Data from the Database
 
 A special function, `FETCH`, is provided which allows you to query data from the database. This is useful

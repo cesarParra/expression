@@ -37,13 +37,17 @@
             keywords,
             tokenizer: {
                 root: [
+                    [/[{}]/, 'delimiter.bracket'],
+                    { include: 'common' },
+                ],
+                common: [
                     // identifiers and keywords
                     [/[a-zA-Z_$][\w$]*/, {
                         cases: {
                             '@keywords': 'keyword',
                         }
                     }],
-                    [/".*?"/, 'string'],
+                    [/"/, 'string', '@string'],
                     // delimiters and operators
                     [/[{}()\[\]]/, '@brackets'],
                     [/[,:]/, 'delimiter'],
@@ -55,6 +59,17 @@
                     // whitespace
                     [/\s+/, 'white'],
                     [/(^#.*$)/, 'comment'],
+                ],
+                string: [
+                    [/\$\{/, { token: 'delimiter.bracket', next: '@bracketCounting' }],
+                    [/[^\\"]+/, 'string'],
+                    [/"/, 'string', '@pop']
+                ],
+
+                bracketCounting: [
+                    [/\{/, 'delimiter.bracket', '@bracketCounting'],
+                    [/\}/, 'delimiter.bracket', '@pop'],
+                    { include: 'common' },
                 ],
             },
             ignoreCase: true
