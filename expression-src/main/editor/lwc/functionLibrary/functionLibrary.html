@@ -1,0 +1,42 @@
+<template>
+  <div class="slds-p-top_small slds-p-left_small">
+    <template lwc:if={functionWithOpenDocumentation}>
+      <div style="position: absolute; z-index: 999; right: -330px; top: -0.10rem" class="slds-p-around_medium slds-popover">
+        <div class="slds-text-heading_small slds-m-bottom_x-small">{functionWithOpenDocumentation.name}</div>
+        <p>{functionWithOpenDocumentation.description}</p>
+        <div class="slds-m-vertical_x-small">
+          <div><strong>Syntax</strong></div>
+          {functionWithOpenDocumentation.syntax}
+        </div>
+        <div class="slds-m-vertical_x-small">
+          <div><strong>Examples</strong></div>
+          <pre>
+              <template for:each={functionWithOpenDocumentation.examples} for:item="example">
+                <div key={example}>
+                  {example}
+                </div>
+              </template>
+            </pre>
+        </div>
+      </div>
+    </template>
+    <template for:each={availableFormulaFunctionsAndOperators} for:item="formulaFunction">
+      <div key={formulaFunction.category} class="slds-text-heading_small">{formulaFunction.category}</div>
+      <ul key={formulaFunction.category}>
+        <template for:each={formulaFunction.values} for:item="value">
+          <li key={value.name}>
+            <a href="#" data-item={value.name}
+               onmouseover={handleDisplayFunctionDocumentation}
+               onmouseleave={handleHideFunctionDocumentation}
+               onclick={handleFunctionClick} class="slds-p-around_x-small display-block">
+              <lightning-icon icon-name={value.icon} alternative-text={value.name}
+                              size="xx-small"
+                              title={value.name} class="slds-m-right_xx-small"></lightning-icon>
+              {value.name}
+            </a>
+          </li>
+        </template>
+      </ul>
+    </template>
+  </div>
+</template>

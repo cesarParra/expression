@@ -6,3 +6,11 @@
     top: 20px;
     right: 40px;
 }
+.overflow-hidden {
+    overflow: hidden;
+}
+.container-bound {
+    height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
