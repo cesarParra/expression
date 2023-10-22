@@ -42,14 +42,6 @@ public with sharing abstract class ExpressionFunction {
 
     abstract public Arity getArity();
 
-    virtual public String getDescription() {
-        return '';
-    }
-
-    virtual public String getExample() {
-        return '';
-    }
-
     /**
      * @description Indicate if we are dealing with function where children values can be referenced, and thus
      *              the arguments need to be resolved as a subquery.

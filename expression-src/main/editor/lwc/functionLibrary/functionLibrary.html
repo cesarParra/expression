@@ -3,7 +3,9 @@
     <template lwc:if={functionWithOpenDocumentation}>
       <div style="position: absolute; z-index: 999; right: -330px; top: -0.10rem" class="slds-p-around_medium slds-popover">
         <div class="slds-text-heading_small slds-m-bottom_x-small">{functionWithOpenDocumentation.name}</div>
-        <p if:true={functionWithOpenDocumentation.description}>{functionWithOpenDocumentation.description}</p>
+        <p if:true={functionWithOpenDocumentation.description}>
+          <lightning-formatted-rich-text value={functionWithOpenDocumentation.description}></lightning-formatted-rich-text>
+        </p>
         <div if:true={functionWithOpenDocumentation.syntax} class="slds-m-vertical_x-small">
           <div><strong>Syntax</strong></div>
           {functionWithOpenDocumentation.syntax}

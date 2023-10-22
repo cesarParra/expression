@@ -1,5 +1,6 @@
 public with sharing class DataFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+        'FETCH' => new FetchFn(),
         'TRANSFORM' => new TransformFn(),
         'LET' => new LET()
     };
@@ -15,6 +16,42 @@ public with sharing class DataFunctions {
 
         public String getIcon() {
             return 'utility:data_mapping';
+        }
+    }
+
+    private with sharing class FetchFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a string representing the sobject type name
+            Object sobjectType = evaluate(arguments.get(0));
+            if (!(sobjectType instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "FETCH" function: the first argument must evaluate to a string.'
+                );
+            }
+
+            // Second argument is a list of strings representing the field names
+            Object fieldNames = evaluate(arguments.get(1));
+            if (!(fieldNames instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "FETCH" function: the second argument must evaluate to a list of strings.'
+                );
+            }
+
+            Q query = new Q((String) sobjectType);
+            for (Object fieldName : (List<Object>) fieldNames) {
+                if (!(fieldName instanceof String)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "FETCH" function: the second argument must evaluate to a list of strings.'
+                    );
+                }
+                query.selectField((String) fieldName);
+            }
+
+            return QRunner.getInstance().run(query);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
         }
     }
 

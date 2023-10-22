@@ -1,6 +1,7 @@
 import { LightningElement, wire } from 'lwc';
-import getFunctions from '@salesforce/apex/PlaygroundController.getFunctions';
+import getFunctions from '@salesforce/apex/PlaygroundController.getCustomFunctions';
 import { operators } from './operators';
+import { data } from './functions';
 
 export default class FunctionLibrary extends LightningElement {
   _categories;
@@ -30,7 +31,7 @@ export default class FunctionLibrary extends LightningElement {
   }
 
   get availableFormulaFunctionsAndOperators() {
-    let availableFunctionsAndOperators = operators;
+    let availableFunctionsAndOperators = [...operators, ...data];
     if (this._categories) {
       availableFunctionsAndOperators = [...availableFunctionsAndOperators, ...this._categories];
     }

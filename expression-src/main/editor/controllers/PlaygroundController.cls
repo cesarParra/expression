@@ -12,30 +12,9 @@ public with sharing class PlaygroundController {
     }
 
     @AuraEnabled(Cacheable=true)
-    public static List<Functions> getFunctions() {
+    public static List<Functions> getCustomFunctions() {
         List<Functions> toReturn = new List<Functions>();
 
-        // Functions from the standard library
-        for (FunctionProvider provider : ExpressionFunction.FUNCTION_PROVIDERS) {
-            Functions forProvider = new Functions();
-            forProvider.name = provider.getCategory();
-            forProvider.icon = provider.getIcon();
-            List<Function> functions = new List<Function>();
-            for (String functionName : provider.getFunctions().keySet()) {
-                ExpressionFunction fn = provider.getFunctions().get(functionName);
-
-                Function toAdd = new Function();
-                toAdd.name = functionName;
-                toAdd.autoCompleteValue = functionName + '(';
-                toAdd.description = fn.getDescription();
-                toAdd.example = fn.getExample();
-                functions.add(toAdd);
-            }
-            forProvider.functions = functions;
-            toReturn.add(forProvider);
-        }
-
-        // Custom functions
         List<Expression_Function__mdt> customFunctions = Expression_Function__mdt.getAll().values();
         Functions customCategory = new Functions();
         customCategory.name = 'Custom';
@@ -60,7 +39,7 @@ public with sharing class PlaygroundController {
         Evaluator.Config config = new Evaluator.Config();
         config.withDiagnostics = true;
         try {
-            if (recordId != null) {
+            if (String.isNotBlank(recordId)) {
                 toReturn.result = Evaluator.run(expr, recordId, config);
             } else {
                 toReturn.result = Evaluator.run(expr, config);

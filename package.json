@@ -11,6 +11,7 @@
     "start:dev:example:conf": "npm run start:dev:components && sfdx force:source:deploy -p unpackaged/examples/expression-conf/main && sf data import -p unpackaged/examples/expression-conf/data/data-plan.json",
     "package:create:expression": "sf package version create -x -c -p 0HoDm000000XZKSKA4 -w 30",
     "package:create:expression:components": "sf package version create -x -c -p 0HoDm000000XZKhKAO -w 30",
+    "generate:library:docs": "node scripts/generate-library-docs.mjs",
     "docs:init": "docsify init docs",
     "docs:serve": "docsify serve docs",
     "docs:generate": "apexdocs-generate -s force-app -t docs --scope public global -g docsify",
@@ -28,6 +29,7 @@
   },
   "homepage": "https://github.com/cesarParra/formula-evaluator#readme",
   "devDependencies": {
+    "@cparra/apex-reflection": "^2.4.1",
     "@cparra/apexdocs": "^2.17.0",
     "@tailwindcss/forms": "^0.5.6",
     "docsify": "^4.11.4",

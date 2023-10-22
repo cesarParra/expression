@@ -1,3 +1,9 @@
+/**
+ * @description Repository of functions that can be used in expressions.
+ * @group Collection
+ * @function-repository true
+ * @display-icon utility:justify_text
+ */
 public with sharing class CollectionFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'LIST' => new ListFn(),
@@ -12,7 +18,6 @@ public with sharing class CollectionFunctions {
         'KEYS' => new KeysFn(),
         'GET' => new GetFn(),
         'VALUES' => new ValuesFn(),
-        'FETCH' => new FetchFn(),
         'FIRST' => new FirstFn(),
         'LAST' => new LastFn(),
         'REDUCE' => new ReduceFn(),
@@ -57,6 +62,12 @@ public with sharing class CollectionFunctions {
         return env;
     }
 
+    /**
+     * @description Creates a list using the received arguments as the values.
+     * @function LIST
+     * @example
+     * LIST(1, 2, 3, ...LIST(4, 5, 6))
+     */
     private class ListFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             interpreter.setIsInListLiteral(true);
@@ -77,16 +88,15 @@ public with sharing class CollectionFunctions {
         public override Arity getArity() {
             return Arity.atLeast(1);
         }
-
-        public override String getDescription() {
-            return 'Creates a list of values.';
-        }
-
-        public override String getExample() {
-            return 'LIST(1, 2, 3, ...LIST(4, 5, 6))';
-        }
     }
 
+    /**
+     * @description Maps to a list using the first argument as the context and the second argument as the expression to evaluate.
+     * Accepts 2 arguments: List of objects and an expression to evaluate.
+     * @function MAP
+     * @example
+     * MAP(["a", "b", "c"], UPPER($current))
+     */
     private class MapFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object children = evaluate(arguments.get(0));
@@ -129,17 +139,16 @@ public with sharing class CollectionFunctions {
         public override Boolean needsChildrenResolution() {
             return true;
         }
-
-        public override String getDescription() {
-            return 'Maps to a list using the first argument as the context and the second argument as the expression to evaluate. ' +
-                'Accepts 2 arguments: List of objects and an expression to evaluate.';
-        }
-
-        public override String getExample() {
-            return 'MAP(["a", "b", "c"], UPPER($current))';
-        }
     }
 
+    /**
+     * @description
+     * Filters a list using the first argument as the context and the second argument as the expression to evaluate.
+     * Accepts 2 arguments: List of objects and an expression to evaluate.
+     * @function WHERE
+     * @example
+     * WHERE([1, 2, 3], $current > 1)
+     */
     private class WhereFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object children = evaluate(arguments.get(0));
@@ -194,6 +203,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns the average given a list of numbers.
+     * Accepts 1 argument: the list of numbers to evaluate.
+     * @function AVERAGE
+     * @example
+     * AVERAGE(LIST(1, 2, 3))
+     */
     private class AverageFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object listOfNumbers = evaluate(arguments.get(0));
@@ -235,6 +251,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns the number of elements in a list or map.
+     * Accepts 1 argument: the list or map to evaluate.
+     * @function SIZE
+     * @example
+     * SIZE(LIST(1, 2, 3)) // 3
+     */
     private class SizeFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object listOfValues = evaluate(arguments.get(0));
@@ -257,6 +280,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns true if the list or map is empty.
+     * Accepts 1 argument: the list or map to evaluate.
+     * @function ISEMPTY
+     * @example
+     * ISEMPTY(LIST(1, 2, 3)) // false
+     */
     private class IsEmptyFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must either be a list or a map
@@ -279,6 +309,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Appends an item to a list.
+     * Accepts 2 arguments: the list and the item to append.
+     * @function APPEND
+     * @example
+     * APPEND(LIST(1, 2, 3), 4) // [1, 2, 3, 4]
+     */
     private class AppendFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
@@ -301,6 +338,12 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns a list of unique values.
+     * @function DISTINCT
+     * @example
+     * DISTINCT(LIST(1, 2, 3, 1, 2, 3)) // [1, 2, 3]
+     */
     private class DistinctFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
@@ -324,6 +367,12 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns a list of keys in a map.
+     * @function KEYS
+     * @example
+     * KEYS(MAP('a' => 1, 'b' => 2, 'c' => 3)) // ['a', 'b', 'c']
+     */
     private class KeysFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object mapObj = evaluate(arguments.get(0));
@@ -340,6 +389,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns the value of a key in a map or the field in an SObject.
+     * Accepts 2 arguments: the map or SObject to evaluate and the key to get.
+     * @function GET
+     * @example
+     * GET(MAP('a' => 1, 'b' => 2, 'c' => 3), 'a') // 1
+     */
     private class GetFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object mapObj = evaluate(arguments.get(0));
@@ -364,6 +420,12 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns a list of values in a map.
+     * @function VALUES
+     * @example
+     * VALUES(MAP('a' => 1, 'b' => 2, 'c' => 3)) // [1, 2, 3]
+     */
     private class ValuesFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object mapObj = evaluate(arguments.get(0));
@@ -380,42 +442,22 @@ public with sharing class CollectionFunctions {
         }
     }
 
-    private with sharing class FetchFn extends ExpressionFunction {
-        public override Object call(List<Expr> arguments) {
-            // First argument is a string representing the sobject type name
-            Object sobjectType = evaluate(arguments.get(0));
-            if (!(sobjectType instanceof String)) {
-                throw new FunctionExecutionException(
-                    'Error executing "FETCH" function: the first argument must evaluate to a string.'
-                );
-            }
-
-            // Second argument is a list of strings representing the field names
-            Object fieldNames = evaluate(arguments.get(1));
-            if (!(fieldNames instanceof List<Object>)) {
-                throw new FunctionExecutionException(
-                    'Error executing "FETCH" function: the second argument must evaluate to a list of strings.'
-                );
-            }
-
-            Q query = new Q((String) sobjectType);
-            for (Object fieldName : (List<Object>) fieldNames) {
-                if (!(fieldName instanceof String)) {
-                    throw new FunctionExecutionException(
-                        'Error executing "FETCH" function: the second argument must evaluate to a list of strings.'
-                    );
-                }
-                query.selectField((String) fieldName);
-            }
-
-            return QRunner.getInstance().run(query);
-        }
-
-        public override Arity getArity() {
-            return Arity.exactly(2);
-        }
-    }
-
+    /**
+     * @description Sorts a list.
+     * Accepts at least one argument: the list to sort.
+     * When sorting a list of Maps or a list of SObjects,
+     * two additional arguments can be provided: the field to sort by and the sort direction.
+     *
+     * The field to sort can either be a field name as a merge field (field name without quotes), or an expression that evaluates to a string
+     * representing the field name. Merge fields are only supported when sorting SObjects and are useful to get the framework to automatically
+     * query the field for you.
+     *
+     * Note: The merge field must be a field on the SObject being sorted itself, not a relationship field.
+     *
+     * The sort direction can either be the literal string (requires quotes) `ASC` or `DESC`.
+     * @function SORT
+     * @example
+      * SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a", "DESC") // [{ "a": 3 }, { "a": 2 }, { "a": 1 }]   */
     private class SortFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -604,6 +646,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns the first element in a list.
+     * Accepts 1 argument: the list to evaluate.
+     * @function FIRST
+     * @example
+     * FIRST(LIST(1, 2, 3)) // 1
+     */
     private class FirstFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
@@ -624,6 +673,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns the last element in a list.
+     * Accepts 1 argument: the list to evaluate.
+     * @function LAST
+     * @example
+     * LAST(LIST(1, 2, 3)) // 3
+     */
     private class LastFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
@@ -644,6 +700,14 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Reduces a list to a single value using the first argument as the context, the second argument as the expression to evaluate,
+     * and the third argument as the initial value.
+     * Accepts 3 arguments: List of objects, an expression to evaluate, and the initial value.
+     * @function REDUCE
+     * @example
+     * REDUCE([1, 2, 3], $accumulator + $current, 0) // 6
+     */
     private class ReduceFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -690,6 +754,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Adds a key/value pair to a map.
+     * Accepts 3 arguments: the map to add to, the key to add, and the value to add.
+     * @function PUT
+     * @example
+     * PUT({ "a": 1, "b": 2, "c": 3 }, "d", 4) // { "a": 1, "b": 2, "c": 3, "d": 4 }
+     */
     private class PutFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a map
@@ -718,6 +789,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns the element at the specified index. If the list is empty or the
+     * index is out of bounds, this function will return null.
+     * Accepts 2 arguments: the list to evaluate and the index to return.
+     * @function AT
+     * @example AT([1, 2, 3], 1) // 2
+     */
     private class AtFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -756,6 +834,14 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns true if any element in the list matches the given expression.
+     * Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+     * Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+     * @function ANY
+     * @example
+     * ANY([1, 2, 3], $current = 2) // true
+     */
     private class AnyFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -801,6 +887,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns the sum of a list of numbers.
+     * Accepts 1 argument: the list of numbers to evaluate.
+     * @function SUM
+     * @example
+     * SUM([1, 2, 3]) // 6
+     */
     private class SumFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -834,6 +927,14 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns true if every element in the list matches the given expression.
+     * Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+     * Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+     * @function EVERY
+     * @example
+     * EVERY([1, 2, 3], $current > 0) // true
+     */
     private class EveryFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -879,6 +980,16 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Expands each element of a list into zero or more elements, resulting from the
+     * evaluation of the given expression.
+     * Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+     * Accepts 2 arguments: the list to evaluate and the expression to evaluate. The expression
+     * must return a list.
+     * @function EXPAND
+     * @example
+     * EXPAND([1, 2, 3], LIST($current, $current + 1)) // [1, 2, 2, 3, 3, 4]
+     */
     private class ExpandFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
