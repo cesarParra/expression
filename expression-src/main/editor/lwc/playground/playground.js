@@ -7,6 +7,7 @@ export default class Monaco extends LightningElement {
   recordId;
   iframeUrl = `${monaco}/main.html`;
   result = {};
+  diagnostics = {};
 
   async iframeLoaded() {
     const functionKeywords = await getFunctions();
@@ -35,6 +36,8 @@ export default class Monaco extends LightningElement {
         payload: JSON.stringify(result.result, null, 2)
       }
     }
+
+    this.diagnostics = result.diagnostics;
   }
 
   handleInputChange(event) {

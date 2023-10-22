@@ -48,7 +48,7 @@ global with sharing class Evaluator {
      */
     global static Object run(String formula, SObject context, Config config) {
         Expr pipedExpression = parseExpression(formula, config);
-        return interpretWithContext(context, pipedExpression);
+        return interpretWithContext(context, pipedExpression, config);
     }
 
     /**
@@ -76,7 +76,7 @@ global with sharing class Evaluator {
     global static Object run(String formula, Id recordId, Config config) {
         Expr pipedExpression = parseExpression(formula, config);
         SObject record = getRecord(recordId, pipedExpression);
-        return interpretWithContext(record, pipedExpression);
+        return interpretWithContext(record, pipedExpression, config);
     }
 
     private static Expr parseExpression(String formula, Config config) {
@@ -102,9 +102,9 @@ global with sharing class Evaluator {
         return ctxInterpreter.build(pipedExpression);
     }
 
-    private static Object interpretWithContext(SObject record, Expr pipedExpression) {
+    private static Object interpretWithContext(SObject record, Expr pipedExpression, Config config) {
         Environment env = new Environment(record);
-        Interpreter interpreter = new Interpreter(env);
+        IInterpreter interpreter = getInterpreter(env, config);
         return interpreter.interpret(pipedExpression);
     }
 
@@ -116,5 +116,15 @@ global with sharing class Evaluator {
     global class Config {
         global SharingMode sharing = SharingMode.WITH;
         global Boolean printAst = false;
+        public Boolean withDiagnostics = false;
+    }
+
+    private static IInterpreter getInterpreter(Environment env, Config config) {
+        IInterpreter mainInterpreter = new Interpreter(env);
+        if (config.withDiagnostics) {
+            return new DiagnosticsDecorator(mainInterpreter);
+        } else {
+            return mainInterpreter;
+        }
     }
 }

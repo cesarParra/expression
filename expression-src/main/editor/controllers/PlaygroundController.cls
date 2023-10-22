@@ -57,11 +57,13 @@ public with sharing class PlaygroundController {
     @AuraEnabled
     public static Result validate(String expr, Id recordId) {
         Result toReturn = new Result();
+        Evaluator.Config config = new Evaluator.Config();
+        config.withDiagnostics = true;
         try {
             if (recordId != null) {
-                toReturn.result = Evaluator.run(expr, recordId);
+                toReturn.result = Evaluator.run(expr, recordId, config);
             } else {
-                toReturn.result = Evaluator.run(expr);
+                toReturn.result = Evaluator.run(expr, config);
             }
         } catch (Exceptions.PositionAwareException e) {
             EvaluationError error = new EvaluationError();
@@ -80,6 +82,8 @@ public with sharing class PlaygroundController {
             toReturn.error = error;
         }
 
+        toReturn.diagnostics = new Diagnostics(DiagnosticsDecorator.result);
+
         return toReturn;
     }
 
@@ -89,6 +93,30 @@ public with sharing class PlaygroundController {
 
         @AuraEnabled
         public Object result;
+
+        @AuraEnabled
+        public Diagnostics diagnostics;
+    }
+
+    public class Diagnostics {
+        @AuraEnabled
+        public Integer cpuTime;
+
+        @AuraEnabled
+        public Integer dmlStatements;
+
+        @AuraEnabled
+        public Integer queries;
+
+        @AuraEnabled
+        public Integer queryRows;
+
+        public Diagnostics(DiagnosticsDecorator.DiagnosticsResult result) {
+            this.cpuTime = result?.cpuTime;
+            this.dmlStatements = result?.dmlStatements;
+            this.queries = result?.queries;
+            this.queryRows = result?.queryRows;
+        }
     }
 
     public class Functions {

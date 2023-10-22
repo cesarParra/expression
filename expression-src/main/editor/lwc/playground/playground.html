@@ -20,15 +20,27 @@
             ></iframe>
             <div class="top-right">
                 <lightning-button
-                  icon-name="utility:play"
-                  variant="brand" label="Validate" onclick={getExpression}>
+                    icon-name="utility:play"
+                    variant="brand" label="Validate" onclick={getExpression}>
                 </lightning-button>
             </div>
         </div>
         <div class="slds-col slds-size_4-of-12">
-            <lightning-card title="Result" icon-name="custom:custom14">
+            <lightning-card label="Output" hide-header="true">
                 <div class="slds-p-horizontal_small">
-                    <pre class={resultColor}>{result.payload}</pre>
+                    <lightning-tabset>
+                        <lightning-tab label="Result">
+                            <pre class={resultColor}>{result.payload}</pre>
+                        </lightning-tab>
+                        <lightning-tab label="Diagnostics">
+                            <ul>
+                                <li><strong>CPU Time:</strong> {diagnostics.cpuTime}ms</li>
+                                <li><strong>DML Statements:</strong> {diagnostics.dmlStatements}</li>
+                                <li><strong>Queries:</strong> {diagnostics.queries}</li>
+                                <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>
+                            </ul>
+                        </lightning-tab>
+                    </lightning-tabset>
                 </div>
             </lightning-card>
         </div>
