@@ -849,14 +849,4 @@ private class EvaluatorTest {
             return 'Test';
         }
     }
-
-    // TODO: String interpolation unit tests:
-    // Without interpolation
-    // Only with interpolation
-    // With mix of interpolation and not interpolation
-    // With multiple interpolations
-    // Interpolations that reference an SObject field
-    // Interpolations that reference a global variable
-    // Interpolation that references a variable created through LET
-    // Interpolations inside of other interpolations: '"Number: ${"${"1"}"}"'
 }
