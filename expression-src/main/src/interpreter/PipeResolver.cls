@@ -45,6 +45,10 @@ public with sharing class PipeResolver implements Visitor {
         return literal;
     }
 
+    public Object visit(Expr.StringLiteral literal) {
+        return literal;
+    }
+
     public Object visit(Expr.Unary unary) {
         Expr.Unary newUnary = new Expr.Unary(
             unary.operator,

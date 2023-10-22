@@ -20,14 +20,14 @@ public with sharing class PlaygroundController {
             } else {
                 toReturn.result = Evaluator.run(expr);
             }
-        } catch (Exceptions.RuntimeException e) {
+        } catch (Exceptions.PositionAwareException e) {
             EvaluationError error = new EvaluationError();
             error.message = e.getMessage();
             error.summary = e.message;
-            error.startLineNumber = e.atToken.position.line;
-            error.endLineNumber = e.atToken.position.line;
-            error.startColumnNumber = e.atToken.position.column;
-            error.endColumnNumber = e.atToken.position.column + e.atToken.lexeme.length();
+            error.startLineNumber = e.position.lineStart;
+            error.endLineNumber = e.position.lineEnd;
+            error.startColumnNumber = e.position.columnStart;
+            error.endColumnNumber = e.position.columnEnd;
             toReturn.error = error;
         }
         catch (Exception e) {

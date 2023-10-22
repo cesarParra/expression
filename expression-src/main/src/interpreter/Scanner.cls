@@ -25,7 +25,7 @@ public with sharing class Scanner {
             scanToken();
         }
 
-        tokens.add(new Token(TokenType.EOF, '', null, new Token.Position(line, column)));
+        tokens.add(new Token(TokenType.EOF, '', null, new SourcePosition(line, column, column)));
         return tokens;
     }
 
@@ -116,8 +116,8 @@ public with sharing class Scanner {
                     addToken(TokenType.DOUBLE_PIPE);
                 } else {
                     Integer column = this.column - 1;
-                    throw new ScannerException(
-                        'Line ' + line + ', column ' + column + ': ' +
+                    throw new Exceptions.ParsingException(
+                        new SourcePosition(line, column, column + 1),
                         'Unexpected character' + next + ' Expected another | for an OR operator');
                 }
             }
@@ -144,8 +144,8 @@ public with sharing class Scanner {
                     identifierLiteral();
                 } else {
                     Integer column = this.column - 1;
-                    throw new ScannerException(
-                        'Line ' + line + ', column ' + column + ': ' +
+                    throw new Exceptions.ParsingException(
+                        new SourcePosition(line, column, column + 1),
                         'Unexpected character: ' + character);
                 }
             }
@@ -164,22 +164,18 @@ public with sharing class Scanner {
     }
 
     private void addToken(TokenType type) {
-        addToken(type, null);
+        addToken(type, null, null);
     }
 
     private void addToken(TokenType type, Object literal) {
+        addToken(type, literal, null);
+    }
+
+    private void addToken(TokenType type, Object literal, SourcePosition position) {
         String text = source.substring(start, current);
-
-        // Count how many \n characters are in the text
-        Integer line = this.line - text.countMatches('\n');
-
-        // The column is wherever the text started, so subtract the length of the text
-        // from the current column. If the text spans multiple lines we only
-        // want the column of the first line.
-        List<String> textLines = text.split('\n');
-        Integer column = this.column - textLines[0].length();
-
-        tokens.add(new Token(type, text, literal, new Token.Position(line, column)));
+        Integer column = this.column - text.length();
+        SourcePosition pos = position != null ? position : new SourcePosition(line, column, column + text.length());
+        tokens.add(new Token(type, text, literal, pos));
     }
 
     private Boolean match(String expected) {
@@ -211,20 +207,48 @@ public with sharing class Scanner {
     }
 
     private void stringLiteral() {
+        addToken(TokenType.STRING_LITERAL_START);
+
         while (peek() != '"' && !isAtEnd()) {
-            advance();
+            if (peek() == '$' && peekNext() == '{') {
+                // Consume the $ and {
+                start = current;
+                advance();
+                advance();
+                addToken(TokenType.STRING_INTERPOLATION_START);
+
+                // We've found string interpolation
+                while (peek() != '}' && !isAtEnd()) {
+                    start = current;
+                    scanToken();
+                }
+
+                if (isAtEnd()) {
+                    throw new Exceptions.ParsingException(
+                        new SourcePosition(line, column, column + 1),
+                        'Unterminated string');
+                }
+
+                // The closing }
+                start = current;
+                advance();
+                addToken(TokenType.STRING_INTERPOLATION_END);
+            } else {
+                start = current;
+                addToken(TokenType.CHARACTER, advance());
+            }
         }
 
         if (isAtEnd()) {
-            throw new ScannerException('Unterminated string');
+            throw new Exceptions.ParsingException(
+                new SourcePosition(line, column, column + 1),
+                'Unterminated string');
         }
 
         // The closing "
+        start = current;
         advance();
-
-        // Trim the surrounding quotes
-        String value = source.substring(start + 1, current - 1);
-        addToken(TokenType.STRING_LITERAL, value);
+        addToken(TokenType.STRING_LITERAL_END);
     }
 
     private void numberLiteral() {
@@ -250,7 +274,7 @@ public with sharing class Scanner {
             advance();
         }
 
-        TokenType type = TokenType.VARIABLE;
+        TokenType type = TokenType.DOLLAR;
         addToken(type);
     }
 
@@ -278,8 +302,5 @@ public with sharing class Scanner {
 
     private Boolean isAtEnd() {
         return current >= source.length();
-    }
-
-    public class ScannerException extends Exception {
     }
 }

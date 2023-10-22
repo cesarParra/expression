@@ -61,6 +61,20 @@ public abstract class Expr {
         }
     }
 
+    public class StringLiteral extends Expr {
+        // The objects will always either be a string or an inner expression when
+        // dealing with a string interpolation.
+        public final List<Object> stringsAndInterpolations;
+
+        public StringLiteral(List<Object> stringsAndInterpolations) {
+            this.stringsAndInterpolations = stringsAndInterpolations;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
+
     public class Variable extends Expr {
         public final Token name;
 

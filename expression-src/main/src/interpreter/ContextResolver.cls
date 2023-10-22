@@ -45,6 +45,15 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.StringLiteral literal) {
+        for (Object obj : literal.stringsAndInterpolations) {
+            if (obj instanceof Expr) {
+                resolve((Expr) obj);
+            }
+        }
+        return null;
+    }
+
     public Object visit(Expr.Unary unary) {
         resolve(unary.right);
         return null;

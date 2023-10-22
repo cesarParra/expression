@@ -138,11 +138,31 @@ public with sharing class Parser {
             return new Expr.Literal(null);
         }
 
-        if (match2(TokenType.NUMBER_LITERAL, TokenType.STRING_LITERAL)) {
+        if (match(TokenType.STRING_LITERAL_START)) {
+            // Grab all characters until we reach the STRING_LITERAL_END
+            List<Object> strings = new List<Object>();
+            if (!check(TokenType.STRING_LITERAL_END)) {
+                while (peek().type != TokenType.STRING_LITERAL_END) {
+                    if (match(TokenType.STRING_INTERPOLATION_START)) {
+                        Expr expr = expression();
+                        strings.add(expr);
+                        consume(TokenType.STRING_INTERPOLATION_END, 'Expect "}" after expression.');
+                    } else if (match(TokenType.CHARACTER)) {
+                        strings.add(previous().literal);
+                    } else {
+                        throw error(peek(), 'Expect string interpolation or character.');
+                    }
+                }
+            }
+            consume(TokenType.STRING_LITERAL_END, 'Expect ".');
+            return new Expr.StringLiteral(strings);
+        }
+
+        if (match(TokenType.NUMBER_LITERAL)) {
             return new Expr.Literal(previous().literal);
         }
 
-        if (match(TokenType.VARIABLE)) {
+        if (match(TokenType.DOLLAR)) {
             return new Expr.Variable(previous());
         }
 
@@ -272,12 +292,10 @@ public with sharing class Parser {
         throw error(peek(), message);
     }
 
-    private static ParseException error(Token token, String message) {
-        throw new ParseException(
-            'Error at token ' + token.toString() + ': ' + message
+    private static Exceptions.ParsingException error(Token token, String message) {
+        throw new Exceptions.ParsingException(
+            token,
+            message
         );
-    }
-
-    public class ParseException extends Exception {
     }
 }

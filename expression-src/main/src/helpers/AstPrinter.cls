@@ -24,6 +24,18 @@ public with sharing class AstPrinter implements Visitor {
         return literal.value;
     }
 
+    public Object visit(Expr.StringLiteral literal) {
+        String stringValue = '';
+        for (Object current : literal.stringsAndInterpolations) {
+            if (current instanceof String) {
+                stringValue += (String) current;
+            } else if (current instanceof Expr) {
+                stringValue += '${' + objToString(((Expr) current).accept(this)) + '}';
+            }
+        }
+        return stringValue;
+    }
+
     public Object visit(Expr.Variable variable) {
         return 'Variable(' + variable.name.lexeme + ')';
     }
