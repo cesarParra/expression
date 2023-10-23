@@ -1,48 +1,52 @@
 <template>
-    <div class="slds-p-around_medium slds-m-bottom_small lgc-bg">
-        <lightning-input type="text"
-                         value={recordId}
-                         onchange={handleInputChange}
-                         label="Record Id (Optional Context)"></lightning-input>
-    </div>
-    <div class="slds-grid slds-gutters slds-gutters_x-small overflow-hidden">
-        <div class="slds-col slds-size_2-of-12">
-            <lightning-card variant="narrow" label="Function Library" hide-header="true">
-                <div class="container-bound">
-                    <c-function-library onselected={handleFunctionFromLibrarySelected}></c-function-library>
-                </div>
-            </lightning-card>
+    <div class="flex">
+        <div class="slds-p-around_medium slds-m-bottom_small lgc-bg grow-0">
+            <lightning-input type="text"
+                             value={recordId}
+                             onchange={handleInputChange}
+                             label="Record Id (Optional Context)"></lightning-input>
         </div>
-        <div class="slds-col slds-size_6-of-12 slds-is-relative">
-            <iframe src={iframeUrl}
-                    scrolling="no" style="width: 100%; height: 500px; overflow: hidden; border: none"
-                    onload={iframeLoaded}
-            ></iframe>
-            <div class="top-right">
-                <lightning-button
-                    icon-name="utility:play"
-                    variant="brand" label="Validate" onclick={getExpression}>
-                </lightning-button>
+        <div class="grow slds-grid slds-gutters slds-gutters_x-small overflow-hidden">
+            <div class="slds-col slds-size_2-of-12">
+                <lightning-card variant="narrow" label="Function Library" hide-header="true">
+                    <div class="container-bound">
+                        <c-function-library onselected={handleFunctionFromLibrarySelected}></c-function-library>
+                    </div>
+                </lightning-card>
             </div>
-        </div>
-        <div class="slds-col slds-size_4-of-12">
-            <lightning-card label="Output" hide-header="true">
-                <div class="slds-p-horizontal_small">
-                    <lightning-tabset>
-                        <lightning-tab label="Result">
-                            <pre class={resultColor}>{result.payload}</pre>
-                        </lightning-tab>
-                        <lightning-tab label="Diagnostics">
-                            <ul>
-                                <li><strong>CPU Time:</strong> {diagnostics.cpuTime}<span if:true={diagnostics.cpuTime}>ms</span></li>
-                                <li><strong>DML Statements:</strong> {diagnostics.dmlStatements}</li>
-                                <li><strong>Queries:</strong> {diagnostics.queries}</li>
-                                <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>
-                            </ul>
-                        </lightning-tab>
-                    </lightning-tabset>
+            <div class="slds-col slds-size_6-of-12 slds-is-relative">
+                <iframe src={iframeUrl}
+                        scrolling="no" style="width: 100%; height: 100vh; overflow: hidden; border: none"
+                        onload={iframeLoaded}
+                ></iframe>
+                <div class="top-right">
+                    <lightning-button
+                        icon-name="utility:play"
+                        variant="brand" label="Validate" onclick={getExpression}>
+                    </lightning-button>
                 </div>
-            </lightning-card>
+            </div>
+            <div class="slds-col slds-size_4-of-12 slds-scrollable">
+                <lightning-card label="Output" hide-header="true" variant="narrow">
+                    <div class="slds-p-horizontal_small">
+                        <lightning-tabset>
+                            <lightning-tab label="Result">
+                                <div class="">
+                                    <pre class={resultColor}>{result.payload}</pre>
+                                </div>
+                            </lightning-tab>
+                            <lightning-tab label="Diagnostics">
+                                <ul>
+                                    <li><strong>CPU Time:</strong> {diagnostics.cpuTime}<span if:true={diagnostics.cpuTime}>ms</span></li>
+                                    <li><strong>DML Statements:</strong> {diagnostics.dmlStatements}</li>
+                                    <li><strong>Queries:</strong> {diagnostics.queries}</li>
+                                    <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>
+                                </ul>
+                            </lightning-tab>
+                        </lightning-tabset>
+                    </div>
+                </lightning-card>
+            </div>
         </div>
     </div>
 </template>

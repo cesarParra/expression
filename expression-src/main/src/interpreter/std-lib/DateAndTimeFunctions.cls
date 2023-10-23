@@ -1,3 +1,9 @@
+/**
+ * @description Repository of functions that can be used in expressions.
+ * @group Date and Time
+ * @function-repository true
+ * @display-icon utility:date_input
+ */
 public with sharing class DateAndTimeFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'ADDMONTHS' => new DateAndTimeFunctions.AddMonthsFn(),
@@ -45,6 +51,14 @@ public with sharing class DateAndTimeFunctions {
         MILLISECOND, MINUTE, SECOND, HOUR_FN
     }
 
+    /**
+     * @description Returns a date that is a specified number of months before or after a given date.
+     *
+     * Accepts 2 arguments: the date and the number of months to add.
+     * @function ADDMONTHS
+     * @example
+     * ADDMONTHS(DATE(2020, 1, 1), 1) // 2020-02-01
+     */
     private class AddMonthsFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object startMonth = evaluate(arguments.get(0));

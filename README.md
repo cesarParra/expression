@@ -913,7 +913,7 @@ Returns a date that is a specified number of months before or after a given date
 Accepts 2 arguments: the date and the number of months to add.
 
 ```apex
-expression.Evaluator.run('ADDMONTHS(DATE(2020, 1, 1), 1)'); // 2020-02-01 00:00:00
+expression.Evaluator.run('ADDMONTHS(DATE(2020, 1, 1), 1)'); // 2020-02-01
 ```
 
 - `DAY`

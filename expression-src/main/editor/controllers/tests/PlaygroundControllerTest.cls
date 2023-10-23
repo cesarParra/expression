@@ -7,6 +7,12 @@ private class PlaygroundControllerTest {
     }
 
     @IsTest
+    static void getCustomFunctions() {
+        List<PlaygroundController.FunctionCategory> functionNames = PlaygroundController.getCustomFunctions();
+        Assert.isFalse(functionNames.isEmpty());
+    }
+
+    @IsTest
     static void validatesAValidExpressionWithoutAnId() {
         PlaygroundController.Result result = PlaygroundController.validate(
             '1 + 1',

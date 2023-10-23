@@ -1,5 +1,6 @@
-.host {
-    --slds-c-card-body-spacing-block-end: 0;
+:host {
+    --slds-c-card-spacing-block-start: 0rem;
+    --slds-c-card-body-spacing-block-end: 0rem;
 }
 .lgc-bg {
     background-color: rgb(242 242 242);
@@ -13,7 +14,22 @@
     overflow: hidden;
 }
 .container-bound {
-    height: 500px;
+    height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
+}
+.result-container {
+    height: 600px;
+    overflow: auto;
+}
+.flex {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+.grow-0 {
+    flex-grow: 0;
+}
+.grow {
+    flex-grow: 1;
 }

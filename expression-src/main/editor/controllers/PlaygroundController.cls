@@ -12,11 +12,11 @@ public with sharing class PlaygroundController {
     }
 
     @AuraEnabled(Cacheable=true)
-    public static List<Functions> getCustomFunctions() {
-        List<Functions> toReturn = new List<Functions>();
+    public static List<FunctionCategory> getCustomFunctions() {
+        List<FunctionCategory> toReturn = new List<FunctionCategory>();
 
         List<Expression_Function__mdt> customFunctions = Expression_Function__mdt.getAll().values();
-        Functions customCategory = new Functions();
+        FunctionCategory customCategory = new FunctionCategory();
         customCategory.name = 'Custom';
         customCategory.icon = 'utility:apex_plugin';
 
@@ -53,8 +53,7 @@ public with sharing class PlaygroundController {
             error.startColumnNumber = e.position.columnStart;
             error.endColumnNumber = e.position.columnEnd;
             toReturn.error = error;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             EvaluationError error = new EvaluationError();
             error.summary = e.getMessage();
             error.message = e.getMessage();
@@ -98,7 +97,7 @@ public with sharing class PlaygroundController {
         }
     }
 
-    public class Functions {
+    public class FunctionCategory {
         @AuraEnabled
         public String name;
 
