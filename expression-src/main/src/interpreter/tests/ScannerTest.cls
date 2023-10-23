@@ -169,12 +169,7 @@ private class ScannerTest {
         String expression = '"Hi ${name}"';
         List<Token> result = new Scanner(expression).scanTokens();
 
-        for (Token token : result) {
-            System.debug(token);
-        }
-
         Assert.areEqual(9, result.size());
-
         Assert.areEqual(TokenType.STRING_LITERAL_START, result[0].type);
         Assert.areEqual(TokenType.CHARACTER, result[1].type);
         Assert.areEqual('H', result[1].literal);

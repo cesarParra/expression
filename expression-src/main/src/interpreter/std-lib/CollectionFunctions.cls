@@ -39,16 +39,8 @@ public with sharing class CollectionFunctions {
     };
 
     public class CollectionFunctionsProvider implements FunctionProvider {
-        public String getCategory() {
-            return 'Collection';
-        }
-
         public Map<String, ExpressionFunction> getFunctions() {
             return FUNCTIONS;
-        }
-
-        public String getIcon() {
-            return 'utility:justify_text';
         }
     }
 

@@ -11,16 +11,8 @@ public with sharing class LocationFunctions {
     };
 
     public class LocationFunctionsProvider implements FunctionProvider {
-        public String getCategory() {
-            return 'Location';
-        }
-
         public Map<String, ExpressionFunction> getFunctions() {
             return FUNCTIONS;
-        }
-
-        public String getIcon() {
-            return 'utility:pin';
         }
     }
 

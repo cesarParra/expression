@@ -34,16 +34,8 @@ public with sharing class DateAndTimeFunctions {
     };
 
     public class DateAndTimeFunctionsProvider implements FunctionProvider {
-        public String getCategory() {
-            return 'Date and Time';
-        }
-
         public Map<String, ExpressionFunction> getFunctions() {
             return FUNCTIONS;
-        }
-
-        public String getIcon() {
-            return 'utility:date_input';
         }
     }
 

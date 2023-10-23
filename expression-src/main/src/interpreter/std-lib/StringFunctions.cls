@@ -31,16 +31,8 @@ public with sharing class StringFunctions {
     };
 
     public class StringFunctionsProvider implements FunctionProvider {
-        public String getCategory() {
-            return 'String';
-        }
-
         public Map<String, ExpressionFunction> getFunctions() {
             return FUNCTIONS;
-        }
-
-        public String getIcon() {
-            return 'utility:text';
         }
     }
 

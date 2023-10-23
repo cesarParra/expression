@@ -17,16 +17,8 @@ public with sharing class LogicalFunctions {
     };
 
     public class LogicalFunctionsProvider implements FunctionProvider {
-        public String getCategory() {
-            return 'Logical';
-        }
-
         public Map<String, ExpressionFunction> getFunctions() {
             return FUNCTIONS;
-        }
-
-        public String getIcon() {
-            return 'utility:check';
         }
     }
 

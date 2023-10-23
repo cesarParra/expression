@@ -17,16 +17,8 @@ public with sharing class MathFunctions {
     };
 
     public class MathFunctionsProvider implements FunctionProvider {
-        public String getCategory() {
-            return 'Math';
-        }
-
         public Map<String, ExpressionFunction> getFunctions() {
             return FUNCTIONS;
-        }
-
-        public String getIcon() {
-            return 'utility:advanced_function';
         }
     }
 

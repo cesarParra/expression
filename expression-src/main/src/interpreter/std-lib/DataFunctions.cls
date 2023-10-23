@@ -12,16 +12,8 @@ public with sharing class DataFunctions {
     };
 
     public class DataFunctionsProvider implements FunctionProvider {
-        public String getCategory() {
-            return 'Data';
-        }
-
         public Map<String, ExpressionFunction> getFunctions() {
             return FUNCTIONS;
-        }
-
-        public String getIcon() {
-            return 'utility:data_mapping';
         }
     }
 
