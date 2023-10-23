@@ -280,7 +280,7 @@ export const data = [
       {
         "name": "FETCH",
         "autoCompleteValue": "FETCH(",
-        "description": "Allows you to query data from the database. This is useful<br/>when the data you want to use is not provided as part of the context.<br/>TTakes 2 arguments: a string with the `SObjectName` you wish to extract data from,<br/>and a list of strings with the fields you wish to extract. This will query all the records of the given<br/>type and return a list of `SObjects` with the data.<br/>Note that when using this function, the automatic context resolution is not performed, so you need to<br/>explicitly specify all fields you wish to reference in the formula.",
+        "description": "Allows you to query data from the database. This is useful<br/>when the data you want to use is not provided as part of the context.<br/>Takes 2 arguments: a string with the `SObjectName` you wish to extract data from,<br/>and a list of strings with the fields you wish to extract. This will query all the records of the given<br/>type and return a list of `SObjects` with the data.<br/>Note that when using this function, the automatic context resolution is not performed, so you need to<br/>explicitly specify all fields you wish to reference in the formula.",
         "examples": [
           "FETCH(\"Account\", [\"Id\", \"Name\"])"
         ],
@@ -533,6 +533,386 @@ export const data = [
           "YEAR(DATE(2020, 1, 1)) // 2020"
         ],
         "icon": "utility:date_input"
+      }
+    ]
+  },
+  {
+    "category": "Location",
+    "values": [
+      {
+        "name": "DISTANCE",
+        "autoCompleteValue": "DISTANCE(",
+        "description": "Returns the distance between two locations in the specified unit.<br/>Accepts 3 arguments: the first location, the second location, and the unit (either<br/>`\"mi\"` or `\"km\"`).",
+        "examples": [
+          "DISTANCE(LOCATION(37.7749, 122.4194), LOCATION(40.7128, 74.0060), \"mi\") // 2565.6985207767134"
+        ],
+        "icon": "utility:pin"
+      },
+      {
+        "name": "LOCATION",
+        "autoCompleteValue": "LOCATION(",
+        "description": "Returns a location object from the provided latitude and longitude.<br/>Accepts 2 arguments: the latitude and longitude.",
+        "examples": [
+          "LOCATION(37.7749, 122.4194) // { \"latitude\": 37.7749, \"longitude\": 122.4194 }"
+        ],
+        "icon": "utility:pin"
+      }
+    ]
+  },
+  {
+    "category": "Logical",
+    "values": [
+      {
+        "name": "AND",
+        "autoCompleteValue": "AND(",
+        "description": "Returns a TRUE response if all values are true; returns a FALSE response if one or more values are false.<br/>Accepts multiple arguments, but must have at least 2.",
+        "examples": [
+          "AND(true, false, true) // false"
+        ],
+        "icon": "utility:check"
+      },
+      {
+        "name": "BLANKVALUE",
+        "autoCompleteValue": "BLANKVALUE(",
+        "description": "Returns a specified value if the expression is blank (null value or empty string); otherwise, returns the result of the<br/>expression.<br/>Accepts 2 arguments: the expression and the value to return if the expression is blank.",
+        "examples": [
+          "BLANKVALUE(null, \"Hello\") // \"Hello\""
+        ],
+        "icon": "utility:check"
+      },
+      {
+        "name": "CASE",
+        "autoCompleteValue": "CASE(",
+        "description": "Compares a given expression to a set of values. If the expression matches a value, the corresponding value is returned,<br/>otherwise the default value is returned.<br/>Accepts any number of arguments where the first is the expression to evaluate, the last is the \"else\" case<br/>and in between each pair of arguments is a value to compare against and the value to return if the expression matches.<br/>Format: `CASE(expression,value1, result1, value2, result2,..., else_result)`",
+        "examples": [
+          "CASE(Rating, \"Hot\", \"🔥\", \"Cold\", \"🧊\", \"🤷\") // \"🔥\", \"🧊\", or \"🤷\""
+        ],
+        "icon": "utility:check"
+      },
+      {
+        "name": "IF",
+        "autoCompleteValue": "IF(",
+        "description": "Returns one value if a condition is true and another value if it's false.<br/>Accepts 3 arguments: the condition, the value if true, and the value if false.",
+        "examples": [
+          "IF(true, \"Hello\", \"World\") // \"Hello\"\nIF(false, \"Hello\", \"World\") // \"World\""
+        ],
+        "icon": "utility:check"
+      },
+      {
+        "name": "ISBLANK",
+        "autoCompleteValue": "ISBLANK(",
+        "description": "Returns TRUE if the expression is blank (null value or empty string); otherwise, returns FALSE.<br/>Accepts 1 argument: the expression to check.",
+        "examples": [
+          "ISBLANK(null) // true\nISBLANK(\"\") // true\nISBLANK(\"Hello\") // false"
+        ],
+        "icon": "utility:check"
+      },
+      {
+        "name": "ISNUMBER",
+        "autoCompleteValue": "ISNUMBER(",
+        "description": "Returns TRUE if the expression is a number; otherwise, returns FALSE.<br/>Accepts 1 argument: the expression to check.",
+        "examples": [
+          "ISNUMBER(1) // true\nISNUMBER(\"Hello\") // false"
+        ],
+        "icon": "utility:check"
+      },
+      {
+        "name": "NOT",
+        "autoCompleteValue": "NOT(",
+        "description": "Reverses the logical value of its argument.<br/>Accepts 1 argument.",
+        "examples": [
+          "NOT(true) // false"
+        ],
+        "icon": "utility:check"
+      },
+      {
+        "name": "OR",
+        "autoCompleteValue": "OR(",
+        "description": "Returns a TRUE response if any value is true; returns a FALSE response if all values are false.<br/>Accepts any number of arguments.",
+        "examples": [
+          "OR(true, false, true) // true\nOR(false, false, false) // false"
+        ],
+        "icon": "utility:check"
+      }
+    ]
+  },
+  {
+    "category": "Math",
+    "values": [
+      {
+        "name": "ABS",
+        "autoCompleteValue": "ABS(",
+        "description": "Returns the absolute value of a number.<br/>Accepts 1 argument: the number to evaluate.",
+        "examples": [
+          "ABS(-1) // 1"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "CEILING",
+        "autoCompleteValue": "CEILING(",
+        "description": "Returns the smallest integer greater than or equal to the specified number.<br/>Accepts 1 argument: the number to evaluate.",
+        "examples": [
+          "CEILING(1.5) // 2"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "FLOOR",
+        "autoCompleteValue": "FLOOR(",
+        "description": "Returns the largest integer less than or equal to the specified number.<br/>Accepts 1 argument: the number to evaluate.",
+        "examples": [
+          "FLOOR(1.5) // 1"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "MAX",
+        "autoCompleteValue": "MAX(",
+        "description": "Returns the largest value in a list of numbers.<br/>Accepts either a list of numbers as a single argument, or multiple numerical arguments.",
+        "examples": [
+          "MAX(1, 2, 3) // 3\nMAX([1, 2, 3]) // 3"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "MIN",
+        "autoCompleteValue": "MIN(",
+        "description": "Returns the smallest value in a list of numbers.<br/>Accepts either a list of numbers as a single argument, or multiple numerical arguments.",
+        "examples": [
+          "MIN(1, 2, 3) // 1\nMIN([1, 2, 3]) // 1"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "MOD",
+        "autoCompleteValue": "MOD(",
+        "description": "Returns the remainder of one number divided by another.<br/>Accepts 2 arguments: the dividend and the divisor.",
+        "examples": [
+          "MOD(5, 2) // 1"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "ROUND",
+        "autoCompleteValue": "ROUND(",
+        "description": "Returns a rounded number. Optionally specify the number of decimal places to round to.<br/>Accepts 1 or 2 arguments: the number to round and optionally the number of decimal places to round to.",
+        "examples": [
+          "ROUND(1.234) // 1\nROUND(1.234, 2) // 1.23"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "TRUNC",
+        "autoCompleteValue": "TRUNC(",
+        "description": "Returns a truncated number. Optionally specify the number of decimal places to truncate to.<br/>Accepts 1 or 2 arguments: the number to truncate and optionally the number of decimal places to truncate to.",
+        "examples": [
+          "TRUNC(1.234) // 1\nTRUNC(1.234, 2) // 1.23"
+        ],
+        "icon": "utility:advanced_function"
+      }
+    ]
+  },
+  {
+    "category": "String",
+    "values": [
+      {
+        "name": "BEGINS",
+        "autoCompleteValue": "BEGINS(",
+        "description": "Returns TRUE if the first character(s) in a text field match a given string.<br/>Accepts 2 arguments: the text field and the string to match.",
+        "examples": [
+          "BEGINS(\"Hello World\", \"Hello\") // TRUE"
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "BR",
+        "autoCompleteValue": "BR(",
+        "description": "Inserts a line break in a string of text.<br/>When no arguments are provided, it inserts a line break. When a number is provided, it inserts that number of line<br/>⚠️ Note that the inserted line break depends on the call context based on the<br/>[Request Quiddity](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_enum_System_Quiddity.htm). When called from<br/>an Aura/LWC or Visualforce context it will insert a `<br>` tag, otherwise it will insert a newline character.",
+        "examples": [
+          "BR() // \"<br/>\"\nBR(2) // \"<br/><br/>\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "CONTAINS",
+        "autoCompleteValue": "CONTAINS(",
+        "description": "Returns TRUE if a text field contains a given string.<br/>Accepts 2 arguments: the text field and the string to match.",
+        "examples": [
+          "CONTAINS(\"Hello World\", \"World\") // TRUE"
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "FIND",
+        "autoCompleteValue": "FIND(",
+        "description": "Returns the starting position of one text string within another text string. If the text string is not found, FIND<br/>returns a value -1.<br/>Accepts either 2 or 3 arguments: the text to find, the text to search, and optionally the starting position.",
+        "examples": [
+          "FIND(\"World\", \"Hello World\") // 7\nFIND(\"World\", \"Hello World\", 7) // -1"
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "HYPERLINK",
+        "autoCompleteValue": "HYPERLINK(",
+        "description": "Returns a text string of an HTML anchor tag that displays a hyperlink.<br/>Accepts 2 or 3 arguments: the URL and the text to display. Optionally, the third argument is the target<br/>of the link.<br/>The target should be one of `_blank`, `_parent`, `_self`, or `_top`.",
+        "examples": [
+          "HYPERLINK(\"https://www.google.com\", \"Google\") // \"<a href=\"https://www.google.com\">Google</a>\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "INITCAP",
+        "autoCompleteValue": "INITCAP(",
+        "description": "Converts the first letter of each word in a text string to uppercase and converts all other letters to lowercase.<br/>Accepts 1 argument: the text to convert.",
+        "examples": [
+          "INITCAP(\"hello world\") // \"Hello World\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "LEFT",
+        "autoCompleteValue": "LEFT(",
+        "description": "Returns the specified number of characters from the beginning of a text string.<br/>Accepts 2 arguments: the text to evaluate and the number of characters to return.",
+        "examples": [
+          "LEFT(\"Hello World\", 5) // \"Hello\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "LEN",
+        "autoCompleteValue": "LEN(",
+        "description": "Returns the number of characters in a text string.<br/>Accepts 1 argument: the text to evaluate.",
+        "examples": [
+          "LEN(\"Hello World\") // 11"
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "LOWER",
+        "autoCompleteValue": "LOWER(",
+        "description": "Converts all letters in the specified text to lowercase.<br/>Accepts 1 argument: the text to convert.",
+        "examples": [
+          "LOWER(\"Hello World\") // \"hello world\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "LPAD",
+        "autoCompleteValue": "LPAD(",
+        "description": "Returns a text value padded to the specified length with the specified set of characters.<br/>Accepts 2 or 3 arguments: the text to pad, the length to pad to, and optionally the padding character.<br/>If the padding character is not specified, it defaults to a space.",
+        "examples": [
+          "LPAD(\"Hello\", 10) // \"     Hello\"\nLPAD(\"Hello\", 10, \"*\") // \"*****Hello\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "MID",
+        "autoCompleteValue": "MID(",
+        "description": "Returns a specified number of characters from a text string starting at the position you specify up<br/>to the number of characters you specify.<br/>Note that the position is 1-based, not 0-based.<br/>Accepts 3 arguments: the text to evaluate, the starting position, and the number of characters to return.",
+        "examples": [
+          "MID(\"Hello World\", 7, 5) // \"World\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "REVERSE",
+        "autoCompleteValue": "REVERSE(",
+        "description": "Returns a text value with the order of the characters reversed.<br/>Accepts 1 argument: the text to reverse.",
+        "examples": [
+          "REVERSE(\"Hello World\") // \"dlroW olleH\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "RIGHT",
+        "autoCompleteValue": "RIGHT(",
+        "description": "Returns the specified number of characters from the end of a text string.<br/>Accepts 2 arguments: the text to evaluate and the number of characters to return.<br/>If the second argument is a negative number, it gets treated as a 0",
+        "examples": [
+          "RIGHT(\"Hello World\", 5) // \"World\"\nRIGHT(\"Hello World\", -5) // \"\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "RPAD",
+        "autoCompleteValue": "RPAD(",
+        "description": "Returns a text value padded to the specified length with the specified set of characters.<br/>Accepts 2 or 3 arguments: the text to pad, the length to pad to, and optionally the padding character.<br/>If the padding character is not specified, it defaults to a space.",
+        "examples": [
+          "RPAD(\"Hello\", 10) // \"Hello     \"\nRPAD(\"Hello\", 10, \"*\") // \"Hello*****\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "SPLIT",
+        "autoCompleteValue": "SPLIT(",
+        "description": "Returns a list that contains each substring of the String that is terminated<br/>by the provided delimiter.<br/>Accepts 2 arguments: the text to split and the delimiter.",
+        "examples": [
+          "SPLIT(\"Hello World\", \" \") // [\"Hello\", \"World\"]"
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "SUBSTITUTE",
+        "autoCompleteValue": "SUBSTITUTE(",
+        "description": "Substitutes new text for old text in a text string.<br/>Accepts 3 arguments: the text to evaluate, the text to replace, and the text to replace it with.",
+        "examples": [
+          "SUBSTITUTE(\"Hello World\", \"World\", \"Universe\") // \"Hello Universe\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "SUBSTRING",
+        "autoCompleteValue": "SUBSTRING(",
+        "description": "Returns a specified number of characters from a text string starting at the position you specify.<br/>Optionally, you can specify the number of characters to return.<br/>Note that the position is 1-based, not 0-based.<br/>Accepts 2 or 3 arguments: the text to evaluate and the starting position. Optionally, the number of characters to.",
+        "examples": [
+          "SUBSTRING(\"Hello World\", 7) // \"World\"\nSUBSTRING(\"Hello World\", 7, 5) // \"World\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "TEXT",
+        "autoCompleteValue": "TEXT(",
+        "description": "Converts a value to text.<br/>Accepts 1 argument: the value to convert.",
+        "examples": [
+          "TEXT(123) // \"123\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "TRIM",
+        "autoCompleteValue": "TRIM(",
+        "description": "Removes the spaces and tabs from the beginning and end of a text string.<br/>Accepts 1 argument: the text to trim.",
+        "examples": [
+          "TRIM(\" Hello World \") // \"Hello World\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "UPPER",
+        "autoCompleteValue": "UPPER(",
+        "description": "Converts all letters in the specified text to uppercase.<br/>Accepts 1 argument: the text to convert.",
+        "examples": [
+          "UPPER(\"Hello World\") // \"HELLO WORLD\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "URLENCODE",
+        "autoCompleteValue": "URLENCODE(",
+        "description": "Encodes text and merge field values for use in URLs by replacing characters that are illegal in URLs, such as blank<br/>spaces.<br/>Accepts 1 argument: the text to encode.",
+        "examples": [
+          "URLENCODE(\"Hello World\") // \"Hello+World\""
+        ],
+        "icon": "utility:text"
+      },
+      {
+        "name": "VALUE",
+        "autoCompleteValue": "VALUE(",
+        "description": "Converts a text string that represents a number to a number.<br/>Accepts 1 argument: the text to convert.",
+        "examples": [
+          "VALUE(\"123\") // 123"
+        ],
+        "icon": "utility:text"
       }
     ]
   }
