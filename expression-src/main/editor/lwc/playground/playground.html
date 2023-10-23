@@ -34,7 +34,7 @@
                         </lightning-tab>
                         <lightning-tab label="Diagnostics">
                             <ul>
-                                <li><strong>CPU Time:</strong> {diagnostics.cpuTime}ms</li>
+                                <li><strong>CPU Time:</strong> {diagnostics.cpuTime}<span if:true={diagnostics.cpuTime}>ms</span></li>
                                 <li><strong>DML Statements:</strong> {diagnostics.dmlStatements}</li>
                                 <li><strong>Queries:</strong> {diagnostics.queries}</li>
                                 <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>

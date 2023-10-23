@@ -1,3 +1,9 @@
+/**
+ * @description Repository of functions that can be used in expressions.
+ * @group Data
+ * @function-repository true
+ * @display-icon utility:data_mapping
+ */
 public with sharing class DataFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'FETCH' => new FetchFn(),
@@ -19,6 +25,20 @@ public with sharing class DataFunctions {
         }
     }
 
+    /**
+     * @description Allows you to query data from the database. This is useful
+     * when the data you want to use is not provided as part of the context.
+     *
+     * TTakes 2 arguments: a string with the `SObjectName` you wish to extract data from,
+     * and a list of strings with the fields you wish to extract. This will query all the records of the given
+     * type and return a list of `SObjects` with the data.
+     *
+     * Note that when using this function, the automatic context resolution is not performed, so you need to
+     * explicitly specify all fields you wish to reference in the formula.
+     * @function FETCH
+     * @example
+     * FETCH("Account", ["Id", "Name"])
+     */
     private with sharing class FetchFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a string representing the sobject type name
@@ -55,6 +75,15 @@ public with sharing class DataFunctions {
         }
     }
 
+    /**
+     * @description Transforms any input using the provided expression.
+     * Provides a special variable `$source` in the inner expression that contains the original input.
+     *
+     * Accepts 2 arguments: the input to transform and the expression to evaluate.
+     * @function TRANSFORM
+     * @example
+     * TRANSFORM("Hello World", UPPER($source)) // "HELLO WORLD"
+     */
     private class TransformFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object sourceObj = evaluate(arguments.get(0));
@@ -69,6 +98,14 @@ public with sharing class DataFunctions {
         }
     }
 
+    /**
+     * @description Allows you to define custom variables that can be used in the expression.
+     * Accepts 2 arguments: a map of variables to define and the expression to evaluate.
+     * The map keys should be the variable names prefixed with `$`.
+     * @function LET
+     * @example
+     * LET({ "$a": 1, "$b": 2 }, $a + $b) // 3
+     */
     private class LET extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument should be a map

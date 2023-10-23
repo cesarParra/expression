@@ -1037,6 +1037,15 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns the first element of a list that matches the given expression or null
+     * if the list is empty or no element matches the expression.
+     * Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+     * Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+     * @function FIRSTWHERE
+     * @example
+     * FIRSTWHERE([1, 2, 3], $current > 2) // 3
+     */
     private class FirstWhereFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -1082,6 +1091,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Appends a list to another list.
+     * Accepts 2 arguments: the list to append to and the list to append.
+     * @function FOLLOWEDBY
+     * @example
+     * FOLLOWEDBY([1, 2, 3], [4, 5, 6])
+     */
     private class FollowedByFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -1113,6 +1129,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Joins a list of values into a string using the specified delimiter.
+     * Accepts 2 arguments: the list to join and the delimiter.
+     * @function JOIN
+     * @example
+     * JOIN([1, 2, 3], ", ")
+     */
     private class JoinFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -1145,6 +1168,15 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns the last element of a list that matches the given expression or null
+     * if the list is empty or no element matches the expression.
+     * Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+     * Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+     * @function LASTWHERE
+     * @example
+     * LASTWHERE([1, 2, 3], $current > 2) // 3
+     */
     private class LastWhereFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -1191,6 +1223,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Skips the first N elements of a list.
+     * Accepts 2 arguments: the list to skip and the number of elements to skip.
+     * @function SKIP
+     * @example
+     * SKIP([1, 2, 3], 2) // [3]
+     */
     private class SkipFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -1240,6 +1279,14 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Skips elements of a list while the given expression evaluates to true.
+     * Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+     * Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+     * @function SKIPWHILE
+     * @example
+     * SKIPWHILE([1, 2, 3], $current < 3) // [3]
+     */
     private class SkipWhileFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -1286,6 +1333,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns the first N elements of a list.
+     * Accepts 2 arguments: the list to take from and the number of elements to take.
+     * @function TAKE
+     * @example
+     * TAKE([1, 2, 3], 2) // [1, 2]
+     */
     private class TakeFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -1335,6 +1389,14 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns elements of a list while the given expression evaluates to true.
+     * Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+     * Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+     * @function TAKEWHILE
+     * @example
+     * TAKEWHILE([1, 2, 3], $current < 3)
+     */
     private class TakeWhileFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
@@ -1381,6 +1443,13 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Returns a list of numbers from the start to the end, inclusive.
+     * Accepts 2 arguments: the start and end numbers.
+     * @function RANGE
+     * @example
+     * RANGE(1, 3) // [1, 2, 3]
+     */
     private class RangeFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a number

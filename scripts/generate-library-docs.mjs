@@ -43,12 +43,13 @@ function getCategory(functionRepo) {
     return {
       name: fnName,
       autoCompleteValue: `${fnName}(`,
-      description: currentClass.docComment?.descriptionLines.join('<br/><br/>'),
+      description: currentClass.docComment?.descriptionLines.join('<br/>'),
       examples: [currentClass.docComment?.exampleAnnotation.bodyLines.join('\n')],
       icon: functionRepo.docComment?.annotations.find((annotation) => annotation.name === 'display-icon')?.body
     };
   })
-    .filter((fn) => fn.name);
+    .filter((fn) => fn.name)
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return {
     category: functionRepo.docComment?.annotations.find((annotation) => annotation.name === 'group')?.body,

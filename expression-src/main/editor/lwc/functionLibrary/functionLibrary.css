@@ -26,3 +26,13 @@ pre {
 .display-block {
     display: block;
 }
+
+.pin-doc {
+    top: 0;
+    right: 10px;
+}
+
+.doc-container {
+    overflow-y: auto;
+    height: 500px;
+}

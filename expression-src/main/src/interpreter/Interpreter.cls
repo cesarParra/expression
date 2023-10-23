@@ -1,4 +1,4 @@
-public with sharing class Interpreter implements IInterpreter {
+public with sharing class Interpreter implements IInterpreter, Visitor {
     private final Environment env;
 
     private Boolean inListLiteral = false;

@@ -1,3 +1,3 @@
-public interface IInterpreter extends Visitor {
+public interface IInterpreter {
     Object interpret(Expr expr);
 }

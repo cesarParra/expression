@@ -6,6 +6,7 @@ import { data } from './functions';
 export default class FunctionLibrary extends LightningElement {
   _categories;
   functionWithOpenDocumentation;
+  isDocumentationPinned = false;
 
   @wire(getFunctions)
   handleGetPricingVariablesWire({data, error}) {
@@ -46,7 +47,21 @@ export default class FunctionLibrary extends LightningElement {
     this.functionWithOpenDocumentation = this.getFunctionByName(functionName);
   }
 
+  handlePinFunctionDocumentation(event) {
+    event.preventDefault();
+    this.isDocumentationPinned = !this.isDocumentationPinned;
+  }
+
+  handleCloseDocumentation(event) {
+    event.preventDefault();
+    this.isDocumentationPinned = false;
+    this.functionWithOpenDocumentation = undefined;
+  }
+
   handleHideFunctionDocumentation() {
+    if (this.isDocumentationPinned) {
+      return;
+    }
     this.functionWithOpenDocumentation = undefined;
   }
 
