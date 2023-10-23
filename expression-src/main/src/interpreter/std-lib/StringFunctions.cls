@@ -12,8 +12,8 @@ public with sharing class StringFunctions {
         'FIND' => new StringFunctions.FindFn(),
         'LEFT' => new StringFunctions.LeftFn(),
         'LEN' => new StringFunctions.LenFn(),
-        'LPAD' => new StringFunctions.LRPad('LPAD'),
-        'RPAD' => new StringFunctions.LRPad('RPAD'),
+        'LPAD' => new StringFunctions.LPadFn(),
+        'RPAD' => new StringFunctions.RPadFn(),
         'REVERSE' => new StringFunctions.ReverseFn(),
         'MID' => new StringFunctions.MidFn(),
         'SUBSTRING' => new StringFunctions.SubstringFn(),
@@ -50,7 +50,7 @@ public with sharing class StringFunctions {
      * Accepts 2 arguments: the text field and the string to match.
      * @function BEGINS
      * @example
-     * BEGINS("Hello World", "Hello") // Returns TRUE
+     * BEGINS("Hello World", "Hello") // TRUE
      */
     private class Begins extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -76,6 +76,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Returns TRUE if a text field contains a given string.
+     *
+     * Accepts 2 arguments: the text field and the string to match.
+     * @function CONTAINS
+     * @example
+     * CONTAINS("Hello World", "World") // TRUE
+     */
     private class Contains extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object firstValue = evaluate(arguments.get(0));
@@ -108,6 +116,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Converts all letters in the specified text to lowercase.
+     *
+     * Accepts 1 argument: the text to convert.
+     * @function LOWER
+     * @example
+     * LOWER("Hello World") // "hello world"
+     */
     private class Lower extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
@@ -125,6 +141,16 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Returns the starting position of one text string within another text string. If the text string is not found, FIND
+     * returns a value -1.
+     *
+     * Accepts either 2 or 3 arguments: the text to find, the text to search, and optionally the starting position.
+     * @function FIND
+     * @example
+     * FIND("World", "Hello World") // 7
+     * FIND("World", "Hello World", 7) // -1
+     */
     private class FindFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object searchText = evaluate(arguments.get(0));
@@ -161,6 +187,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Returns the specified number of characters from the beginning of a text string.
+     *
+     * Accepts 2 arguments: the text to evaluate and the number of characters to return.
+     * @function LEFT
+     * @example
+     * LEFT("Hello World", 5) // "Hello"
+     */
     private class LeftFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
@@ -185,6 +219,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Returns the number of characters in a text string.
+     *
+     * Accepts 1 argument: the text to evaluate.
+     * @function LEN
+     * @example
+     * LEN("Hello World") // 11
+     */
     private class LenFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
@@ -202,7 +244,7 @@ public with sharing class StringFunctions {
         }
     }
 
-    private class LRPad extends ExpressionFunction {
+    private virtual class LRPad extends ExpressionFunction {
         private final String name;
 
         public LRPad(String name) {
@@ -243,6 +285,38 @@ public with sharing class StringFunctions {
 
         public override Arity getArity() {
             return Arity.between(2, 3);
+        }
+    }
+
+    /**
+     * @description Returns a text value padded to the specified length with the specified set of characters.
+     *
+     * Accepts 2 or 3 arguments: the text to pad, the length to pad to, and optionally the padding character.
+     * If the padding character is not specified, it defaults to a space.
+     * @function LPAD
+     * @example
+     * LPAD("Hello", 10) // "     Hello"
+     * LPAD("Hello", 10, "*") // "*****Hello"
+     */
+    private class LPadFn extends LRPad {
+        public LPadFn() {
+            super('LPAD');
+        }
+    }
+
+    /**
+     * @description Returns a text value padded to the specified length with the specified set of characters.
+     *
+     * Accepts 2 or 3 arguments: the text to pad, the length to pad to, and optionally the padding character.
+     * If the padding character is not specified, it defaults to a space.
+     * @function RPAD
+     * @example
+     * RPAD("Hello", 10) // "Hello     "
+     * RPAD("Hello", 10, "*") // "Hello*****"
+     */
+    private class RPadFn extends LRPad {
+        public RPadFn() {
+            super('RPAD');
         }
     }
 

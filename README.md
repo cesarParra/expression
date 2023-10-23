@@ -665,7 +665,7 @@ Returns TRUE if a text field contains a given string.
 Accepts 2 arguments: the text field and the string to match.
 
 ```apex
-expression.Evaluator.run('CONTAINS("Hello World", "llo Wo")'); // true
+    expression.Evaluator.run('CONTAINS("Hello World", "llo Wo")'); // true
 ```
 
 - `LOWER`
@@ -746,6 +746,7 @@ expression.Evaluator.run('RPAD("Hello", 10, "*")'); // "Hello*****"
 
 - `REVERSE`
 
+``
 Returns a text value with the order of the characters reversed.
 
 Accepts 1 argument: the text to reverse.
