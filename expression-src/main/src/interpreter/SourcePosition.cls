@@ -5,10 +5,7 @@ public with sharing class SourcePosition {
     public final Integer columnEnd;
 
     public SourcePosition(Integer lineStart, Integer columnStart, Integer columnEnd) {
-        this.lineStart = lineStart;
-        this.lineEnd = lineStart;
-        this.columnStart = columnStart;
-        this.columnEnd = columnEnd;
+        this(lineStart, lineStart, columnStart, columnEnd);
     }
 
     public SourcePosition(Integer lineStart, Integer lineEnd, Integer columnStart, Integer columnEnd) {

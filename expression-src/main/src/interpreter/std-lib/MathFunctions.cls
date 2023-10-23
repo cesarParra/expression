@@ -1,15 +1,35 @@
+/**
+ * @description Repository of functions that can be used in expressions.
+ * @group Math
+ * @function-repository true
+ * @display-icon utility:advanced_function
+ */
 public with sharing class MathFunctions {
-    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'ABS' => new AbsFn(),
         'CEILING' => new CeilingFn(),
         'FLOOR' => new FloorFn(),
-        'MAX' => new MaxMixFns('MAX'),
-        'MIN' => new MaxMixFns('MIN'),
-        'ROUND' => new RoundAndTruncFns('ROUND'),
-        'TRUNC' => new RoundAndTruncFns('TRUNC'),
+        'MAX' => new MaxFn(),
+        'MIN' => new MinFn(),
+        'ROUND' => new RoundFn(),
+        'TRUNC' => new TruncFn(),
         'MOD' => new ModFn()
     };
 
+    public class MathFunctionsProvider implements FunctionProvider {
+        public Map<String, ExpressionFunction> getFunctions() {
+            return FUNCTIONS;
+        }
+    }
+
+    /**
+     * @description Returns the absolute value of a number.
+     *
+     * Accepts 1 argument: the number to evaluate.
+     * @function ABS
+     * @example
+     * ABS(-1) // 1
+     */
     private class AbsFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object numberValue = evaluate(arguments.get(0));
@@ -27,6 +47,14 @@ public with sharing class MathFunctions {
         }
     }
 
+    /**
+     * @description Returns the smallest integer greater than or equal to the specified number.
+     *
+     * Accepts 1 argument: the number to evaluate.
+     * @function CEILING
+     * @example
+     * CEILING(1.5) // 2
+     */
     private class CeilingFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object numberValue = evaluate(arguments.get(0));
@@ -44,6 +72,14 @@ public with sharing class MathFunctions {
         }
     }
 
+    /**
+     * @description Returns the largest integer less than or equal to the specified number.
+     *
+     * Accepts 1 argument: the number to evaluate.
+     * @function FLOOR
+     * @example
+     * FLOOR(1.5) // 1
+     */
     private class FloorFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object numberValue = evaluate(arguments.get(0));
@@ -61,7 +97,7 @@ public with sharing class MathFunctions {
         }
     }
 
-    private class MaxMixFns extends ExpressionFunction {
+    private virtual class MaxMixFns extends ExpressionFunction {
         private final String name;
 
         public MaxMixFns(String name) {
@@ -115,7 +151,37 @@ public with sharing class MathFunctions {
         }
     }
 
-    private class RoundAndTruncFns extends ExpressionFunction {
+    /**
+     * @description Returns the largest value in a list of numbers.
+     *
+     * Accepts either a list of numbers as a single argument, or multiple numerical arguments.
+     * @function MAX
+     * @example
+     * MAX(1, 2, 3) // 3
+     * MAX([1, 2, 3]) // 3
+     */
+    private class MaxFn extends MaxMixFns {
+        public MaxFn() {
+            super('MAX');
+        }
+    }
+
+    /**
+     * @description Returns the smallest value in a list of numbers.
+     *
+     * Accepts either a list of numbers as a single argument, or multiple numerical arguments.
+     * @function MIN
+     * @example
+     * MIN(1, 2, 3) // 1
+     * MIN([1, 2, 3]) // 1
+     */
+    private class MinFn extends MaxMixFns {
+        public MinFn() {
+            super('MIN');
+        }
+    }
+
+    private virtual class RoundAndTruncFns extends ExpressionFunction {
         private final String name;
 
         public RoundAndTruncFns(String name) {
@@ -153,6 +219,44 @@ public with sharing class MathFunctions {
         }
     }
 
+    /**
+     * @description Returns a rounded number. Optionally specify the number of decimal places to round to.
+     *
+     * Accepts 1 or 2 arguments: the number to round and optionally the number of decimal places to round to.
+     * @function ROUND
+     * @example
+     * ROUND(1.234) // 1
+     * ROUND(1.234, 2) // 1.23
+     */
+    private class RoundFn extends RoundAndTruncFns {
+        public RoundFn() {
+            super('ROUND');
+        }
+    }
+
+    /**
+     * @description Returns a truncated number. Optionally specify the number of decimal places to truncate to.
+     *
+     * Accepts 1 or 2 arguments: the number to truncate and optionally the number of decimal places to truncate to.
+     * @function TRUNC
+     * @example
+     * TRUNC(1.234) // 1
+     * TRUNC(1.234, 2) // 1.23
+     */
+    private class TruncFn extends RoundAndTruncFns {
+        public TruncFn() {
+            super('TRUNC');
+        }
+    }
+
+    /**
+     * @description Returns the remainder of one number divided by another.
+     *
+     * Accepts 2 arguments: the dividend and the divisor.
+     * @function MOD
+     * @example
+     * MOD(5, 2) // 1
+     */
     private class ModFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object dividendValue = evaluate(arguments.get(0));

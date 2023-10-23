@@ -1,29 +1,57 @@
 <template>
-    <div class="slds-p-around_medium slds-m-bottom_small lgc-bg">
-        <lightning-input type="text"
-                         value={recordId}
-                         onchange={handleInputChange}
-                         label="Record Id (Optional Context)"></lightning-input>
-    </div>
-    <div class="slds-grid slds-gutters">
-        <div class="slds-col slds-size_6-of-12 slds-is-relative">
-            <iframe src={iframeUrl}
-                    scrolling="no" style="width: 100%; height: 500px; overflow: hidden; border: none"
-                    onload={iframeLoaded}
-            ></iframe>
-            <div class="top-right">
-                <lightning-button
-                  icon-name="utility:play"
-                  variant="brand" label="Validate" onclick={getExpression}>
-                </lightning-button>
-            </div>
+    <div class="flex">
+        <div class="slds-p-around_medium slds-m-bottom_small lgc-bg grow-0">
+            <lightning-input type="text"
+                             value={recordId}
+                             onchange={handleInputChange}
+                             label="Record Id (Optional Context)"></lightning-input>
         </div>
-        <div class="slds-col slds-size_6-of-12">
-            <lightning-card title="Result" icon-name="custom:custom14">
-                <div class="slds-p-horizontal_small">
-                    <pre class={resultColor}>{result.payload}</pre>
+        <div class="grow slds-grid slds-gutters slds-gutters_x-small overflow-hidden">
+            <div class="slds-col slds-size_2-of-12">
+                <div class="slds-is-relative full-height">
+                    <article class="slds-card position-none overflow-y-auto full-height">
+                        <div class="slds-card__body slds-card__body_inner">
+                            <c-function-library onselected={handleFunctionFromLibrarySelected}></c-function-library>
+                        </div>
+                    </article>
                 </div>
-            </lightning-card>
+            </div>
+            <div class="slds-col slds-size_6-of-12 slds-is-relative">
+                <iframe src={iframeUrl}
+                        scrolling="no" style="width: 100%; height: 100%; overflow: hidden; border: none"
+                        onload={iframeLoaded}
+                ></iframe>
+                <div class="top-right">
+                    <lightning-button
+                        icon-name="utility:play"
+                        variant="brand" label="Validate" onclick={getExpression}>
+                    </lightning-button>
+                </div>
+            </div>
+            <div class="slds-col slds-size_4-of-12">
+                <article class="slds-card position-none overflow-y-auto full-height">
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="slds-p-horizontal_small slds-p-bottom_none">
+                            <lightning-tabset>
+                                <lightning-tab label="Result">
+                                    <pre class={resultColor}>
+                                        <lightning-formatted-rich-text value={result.payload}></lightning-formatted-rich-text>
+                                    </pre>
+                                </lightning-tab>
+                                <lightning-tab label="Diagnostics">
+                                    <ul>
+                                        <li><strong>CPU Time:</strong> {diagnostics.cpuTime}<span
+                                            if:true={diagnostics.cpuTime}>ms</span></li>
+                                        <li><strong>DML Statements:</strong> {diagnostics.dmlStatements}</li>
+                                        <li><strong>Queries:</strong> {diagnostics.queries}</li>
+                                        <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>
+                                    </ul>
+                                </lightning-tab>
+                            </lightning-tabset>
+                        </div>
+                    </div>
+                </article>
+            </div>
         </div>
     </div>
 </template>

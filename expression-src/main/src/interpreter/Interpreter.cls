@@ -1,4 +1,4 @@
-public with sharing class Interpreter implements Visitor {
+public with sharing class Interpreter implements IInterpreter, Visitor {
     private final Environment env;
 
     private Boolean inListLiteral = false;
@@ -328,8 +328,8 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.FunctionCall function) {
         // Check if the function is in the list of supported functions
-        if (ExpressionFunction.FUNCTIONS.containsKey(function.functionName)) {
-            ExpressionFunction fn = ExpressionFunction.FUNCTIONS.get(function.functionName);
+        if (ExpressionFunction.functionExistsInStandardLibrary(function.functionName)) {
+            ExpressionFunction fn = ExpressionFunction.getByName(function.functionName);
             fn.setInterpreter(this);
             if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
                 throw new Exceptions.RuntimeException(

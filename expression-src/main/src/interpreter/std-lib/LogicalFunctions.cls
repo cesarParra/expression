@@ -1,5 +1,11 @@
+/**
+ * @description Repository of functions that can be used in expressions.
+ * @group Logical
+ * @function-repository true
+ * @display-icon utility:check
+ */
 public with sharing class LogicalFunctions {
-    public static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'AND' => new LogicalFunctions.AndFn(),
         'IF' => new LogicalFunctions.IfFn(),
         'NOT' => new LogicalFunctions.NotFn(),
@@ -10,6 +16,20 @@ public with sharing class LogicalFunctions {
         'CASE' => new LogicalFunctions.CaseFn()
     };
 
+    public class LogicalFunctionsProvider implements FunctionProvider {
+        public Map<String, ExpressionFunction> getFunctions() {
+            return FUNCTIONS;
+        }
+    }
+
+    /**
+     * @description Returns a TRUE response if all values are true; returns a FALSE response if one or more values are false.
+     *
+     * Accepts multiple arguments, but must have at least 2.
+     * @function AND
+     * @example
+     * AND(true, false, true) // false
+     */
     private class AndFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Loop through all arguments and return false if any of them is false
@@ -34,6 +54,15 @@ public with sharing class LogicalFunctions {
         }
     }
 
+    /**
+     * @description Returns one value if a condition is true and another value if it's false.
+     *
+     * Accepts 3 arguments: the condition, the value if true, and the value if false.
+     * @function IF
+     * @example
+     * IF(true, "Hello", "World") // "Hello"
+     * IF(false, "Hello", "World") // "World"
+     */
     private class IfFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Evaluate the condition
@@ -58,6 +87,14 @@ public with sharing class LogicalFunctions {
         }
     }
 
+    /**
+     * @description Reverses the logical value of its argument.
+     *
+     * Accepts 1 argument.
+     * @function NOT
+     * @example
+     * NOT(true) // false
+     */
     private class NotFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Evaluate the expression
@@ -77,6 +114,15 @@ public with sharing class LogicalFunctions {
         }
     }
 
+    /**
+     * @description Returns a TRUE response if any value is true; returns a FALSE response if all values are false.
+     *
+     * Accepts any number of arguments.
+     * @function OR
+     * @example
+     * OR(true, false, true) // true
+     * OR(false, false, false) // false
+     */
     private class OrFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Loop through all arguments and return true if any of them is true
@@ -101,6 +147,15 @@ public with sharing class LogicalFunctions {
         }
     }
 
+    /**
+     * @description Returns a specified value if the expression is blank (null value or empty string); otherwise, returns the result of the
+     * expression.
+     *
+     * Accepts 2 arguments: the expression and the value to return if the expression is blank.
+     * @function BLANKVALUE
+     * @example
+     * BLANKVALUE(null, "Hello") // "Hello"
+     */
     private class BlankValue extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
@@ -128,6 +183,16 @@ public with sharing class LogicalFunctions {
         }
     }
 
+    /**
+     * @description Returns TRUE if the expression is blank (null value or empty string); otherwise, returns FALSE.
+     *
+     * Accepts 1 argument: the expression to check.
+     * @function ISBLANK
+     * @example
+     * ISBLANK(null) // true
+     * ISBLANK("") // true
+     * ISBLANK("Hello") // false
+     */
     private class IsBlank extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
@@ -143,6 +208,15 @@ public with sharing class LogicalFunctions {
         }
     }
 
+    /**
+     * @description Returns TRUE if the expression is a number; otherwise, returns FALSE.
+     *
+     * Accepts 1 argument: the expression to check.
+     * @function ISNUMBER
+     * @example
+     * ISNUMBER(1) // true
+     * ISNUMBER("Hello") // false
+     */
     private class IsNumber extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
@@ -154,6 +228,17 @@ public with sharing class LogicalFunctions {
         }
     }
 
+    /**
+     * @description Compares a given expression to a set of values. If the expression matches a value, the corresponding value is returned,
+     * otherwise the default value is returned.
+     *
+     * Accepts any number of arguments where the first is the expression to evaluate, the last is the "else" case
+     * and in between each pair of arguments is a value to compare against and the value to return if the expression matches.
+     * Format: `CASE(expression,value1, result1, value2, result2,..., else_result)`
+     * @function CASE
+     * @example
+     * CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷") // "🔥", "🧊", or "🤷"
+     */
     private class CaseFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // The first argument is the when expression

@@ -2,7 +2,13 @@
 private class PlaygroundControllerTest {
     @IsTest
     static void getsTheExistingFunctionList() {
-        List<String> functionNames = PlaygroundController.getFunctions();
+        List<String> functionNames = PlaygroundController.getFunctionNames();
+        Assert.isFalse(functionNames.isEmpty());
+    }
+
+    @IsTest
+    static void getCustomFunctions() {
+        List<PlaygroundController.FunctionCategory> functionNames = PlaygroundController.getCustomFunctions();
         Assert.isFalse(functionNames.isEmpty());
     }
 

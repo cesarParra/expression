@@ -201,7 +201,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>MiscFunctions</apexClass>
+        <apexClass>DataFunctions</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

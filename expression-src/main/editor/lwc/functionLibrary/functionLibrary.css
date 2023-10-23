@@ -1,0 +1,37 @@
+pre {
+    font-size: 1rem;
+    background: #eee;
+    border: 0 solid #3d7e9a;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding: 15px;
+    position: relative;
+    font-family: consolas, monaco, 'Andale Mono', monospace;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5;
+    overflow: auto;
+    direction: ltr !important;
+    text-align: left !important;
+    border-left-width: 5px !important;
+    -moz-tab-size: 4;
+    tab-size: 4;
+    -moz-hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+}
+
+.display-block {
+    display: block;
+}
+
+.pin-doc {
+    top: 0;
+    right: 10px;
+}
+.doc-container {
+    overflow-y: auto;
+    max-height: 100%;
+}

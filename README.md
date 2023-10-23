@@ -25,19 +25,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MhfIAE)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MhfIAE)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MhkIAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MhkIAE)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011MhfIAE
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MhkIAE
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MhfIAE
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MhkIAE
 ```
 
 ### Direct Deployment to Salesforce
@@ -246,7 +246,7 @@ expressionEvaluator.run(expression); // "World World!"
 A special function, `FETCH`, is provided which allows you to query data from the database. This is useful
 when the data you want to use is not provided as part of the context.
 
-The `FETCH` function takes 2 arguments: a string with the `SOjectName` you wish to extract data from,
+The `FETCH` function takes 2 arguments: a string with the `SObjectName` you wish to extract data from,
 and a list of strings with the fields you wish to extract. This will query all the records of the given
 type and return a list of `SObjects` with the data.
 
@@ -263,7 +263,7 @@ Object result = expression.Evaluator.run('MAP(WHERE(FETCH("Account", ["Id", "Nam
 Note that when using this function, the automatic context resolution is not performed, so you need to
 explicitly specify all fields you wish to reference in the formula.
 
-At this moment advanced querying capabilities like filtering, sorting, or limiting the number of records
+At this moment, advanced querying capabilities like filtering, sorting, or limiting the number of records
 are not supported. To get over these limitations, you can create a custom formula using Apex. See the
 [Advanced Usage](#advanced-usage) section for more information.
 
@@ -665,7 +665,7 @@ Returns TRUE if a text field contains a given string.
 Accepts 2 arguments: the text field and the string to match.
 
 ```apex
-expression.Evaluator.run('CONTAINS("Hello World", "llo Wo")'); // true
+    expression.Evaluator.run('CONTAINS("Hello World", "llo Wo")'); // true
 ```
 
 - `LOWER`
@@ -903,7 +903,7 @@ Returns a date value from the provided year, month, and day values.
 Accepts 3 arguments: the year, month, and day.
 
 ```apex
-expression.Evaluator.run('DATE(2020, 1, 1)'); // 2020-01-01 00:00:00
+expression.Evaluator.run('DATE(2020, 1, 1)'); // 2020-01-01
 ```
 
 - `ADDMONTHS`
@@ -913,7 +913,7 @@ Returns a date that is a specified number of months before or after a given date
 Accepts 2 arguments: the date and the number of months to add.
 
 ```apex
-expression.Evaluator.run('ADDMONTHS(DATE(2020, 1, 1), 1)'); // 2020-02-01 00:00:00
+expression.Evaluator.run('ADDMONTHS(DATE(2020, 1, 1), 1)'); // 2020-02-01
 ```
 
 - `DAY`
@@ -954,8 +954,8 @@ a datetime.
 Accepts 1 argument: the date as a string or datetime.
 
 ```apex
-expression.Evaluator.run('DATEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
-expression.Evaluator.run('DATEVALUE(NOW())'); // 2020-01-01 00:00:00
+expression.Evaluator.run('DATEVALUE("2020-01-01")'); // 2020-01-01
+expression.Evaluator.run('DATEVALUE(NOW())'); // 2020-01-01
 ```
 
 - `DATETIMEVALUE`
@@ -1069,16 +1069,6 @@ Accepts 1 argument: the time to evaluate.
 expression.Evaluator.run('MILLISECOND(TIMEVALUE("12:00:00.123"))'); // 123
 ```
 
-- `MINUTE`
-
-Returns the minute value of a provided time.
-
-Accepts 1 argument: the time to evaluate.
-
-```apex
-expression.Evaluator.run('MINUTE(TIMEVALUE("12:10:00"))'); // 10
-```
-
 - `SECOND`
 
 Returns the second value of a provided time.
@@ -1087,6 +1077,16 @@ Accepts 1 argument: the time to evaluate.
 
 ```apex
 expression.Evaluator.run('SECOND(TIMEVALUE("12:00:45"))'); //45
+```
+
+- `MINUTE`
+
+Returns the minute value of a provided time.
+
+Accepts 1 argument: the time to evaluate.
+
+```apex
+expression.Evaluator.run('MINUTE(TIMEVALUE("12:10:00"))'); // 10
 ```
 
 - `HOUR`
@@ -1121,7 +1121,7 @@ Returns the day of the week for a given date.
 Accepts 1 argument: the date to evaluate.
 
 ```apex
-expression.Evaluator.run('WEEKDAY(DATE(2020, 1, 1))'); // 4
+expression.Evaluator.run('WEEKDAY(DATE(2020, 1, 1))'); // 2
 ```
 
 - `FORMATDURATION`
@@ -1663,7 +1663,7 @@ expression.Evaluator.run('TRUNC(1.5)'); // 1
 expression.Evaluator.run('TRUNC(1.5, 1)'); // 1.5
 ```
 
-#### Misc Functions
+#### Data Functions
 
 - `TRANSFORM`
 
