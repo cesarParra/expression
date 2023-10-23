@@ -1,3 +1,9 @@
+/**
+ * @description Repository of functions that can be used in expressions.
+ * @group String
+ * @function-repository true
+ * @display-icon utility:text
+ */
 public with sharing class StringFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'BEGINS' => new StringFunctions.Begins(),
@@ -38,6 +44,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Returns TRUE if the first character(s) in a text field match a given string.
+     *
+     * Accepts 2 arguments: the text field and the string to match.
+     * @function BEGINS
+     * @example
+     * BEGINS("Hello World", "Hello") // Returns TRUE
+     */
     private class Begins extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));

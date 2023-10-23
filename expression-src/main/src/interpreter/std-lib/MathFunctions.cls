@@ -1,3 +1,9 @@
+/**
+ * @description Repository of functions that can be used in expressions.
+ * @group Math
+ * @function-repository true
+ * @display-icon utility:advanced_function
+ */
 public with sharing class MathFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'ABS' => new AbsFn(),
@@ -24,6 +30,14 @@ public with sharing class MathFunctions {
         }
     }
 
+    /**
+     * @description Returns the absolute value of a number.
+     *
+     * Accepts 1 argument: the number to evaluate.
+     * @function ABS
+     * @example
+     * ABS(-1) // 1
+     */
     private class AbsFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object numberValue = evaluate(arguments.get(0));

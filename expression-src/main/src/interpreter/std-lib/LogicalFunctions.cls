@@ -1,3 +1,9 @@
+/**
+ * @description Repository of functions that can be used in expressions.
+ * @group Logical
+ * @function-repository true
+ * @display-icon utility:check
+ */
 public with sharing class LogicalFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'AND' => new LogicalFunctions.AndFn(),
@@ -24,6 +30,14 @@ public with sharing class LogicalFunctions {
         }
     }
 
+    /**
+     * @description Returns a TRUE response if all values are true; returns a FALSE response if one or more values are false.
+     *
+     * Accepts multiple arguments, but must have at least 2.
+     * @function AND
+     * @example
+     * AND(true, false, true) // returns false
+     */
     private class AndFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Loop through all arguments and return false if any of them is false

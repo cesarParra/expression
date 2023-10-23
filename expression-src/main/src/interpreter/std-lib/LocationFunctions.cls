@@ -1,3 +1,9 @@
+/**
+ * @description Repository of functions that can be used in expressions.
+ * @group Location
+ * @function-repository true
+ * @display-icon utility:pin
+ */
 public with sharing class LocationFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'LOCATION' => new LocationFn(),
@@ -18,6 +24,14 @@ public with sharing class LocationFunctions {
         }
     }
 
+    /**
+     * @description Returns a location object from the provided latitude and longitude.
+     *
+     * Accepts 2 arguments: the latitude and longitude.
+     * @function LOCATION
+     * @example
+     * LOCATION(37.7749, 122.4194) // { "latitude": 37.7749, "longitude": 122.4194 }
+     */
     private class LocationFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Argument must be a Decimal
@@ -44,6 +58,15 @@ public with sharing class LocationFunctions {
         }
     }
 
+    /**
+     * @description Returns the distance between two locations in the specified unit.
+     *
+     * Accepts 3 arguments: the first location, the second location, and the unit (either
+     * `"mi"` or `"km"`).
+     * @function DISTANCE
+     * @example
+     * DISTANCE(LOCATION(37.7749, 122.4194), LOCATION(40.7128, 74.0060), "mi") // 2565.6985207767134
+     */
     private class DistanceFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First object must be a System.Location
