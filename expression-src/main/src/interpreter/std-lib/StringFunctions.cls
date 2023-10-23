@@ -354,6 +354,17 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Returns a specified number of characters from a text string starting at the position you specify up
+     * to the number of characters you specify.
+     *
+     * Note that the position is 1-based, not 0-based.
+     *
+     * Accepts 3 arguments: the text to evaluate, the starting position, and the number of characters to return.
+     * @function MID
+     * @example
+     * MID("Hello World", 7, 5) // "World"
+     */
     private class MidFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
@@ -385,6 +396,18 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Returns a specified number of characters from a text string starting at the position you specify.
+     * Optionally, you can specify the number of characters to return.
+     *
+     * Note that the position is 1-based, not 0-based.
+     *
+     * Accepts 2 or 3 arguments: the text to evaluate and the starting position. Optionally, the number of characters to.
+     * @function SUBSTRING
+     * @example
+     * SUBSTRING("Hello World", 7) // "World"
+     * SUBSTRING("Hello World", 7, 5) // "World"
+     */
     private class SubstringFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
@@ -424,6 +447,17 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Returns the specified number of characters from the end of a text string.
+     *
+     * Accepts 2 arguments: the text to evaluate and the number of characters to return.
+     *
+     * If the second argument is a negative number, it gets treated as a 0
+     * @function RIGHT
+     * @example
+     * RIGHT("Hello World", 5) // "World"
+     * RIGHT("Hello World", -5) // ""
+     */
     private class RightFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
@@ -454,6 +488,19 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Inserts a line break in a string of text.
+     *
+     * When no arguments are provided, it inserts a line break. When a number is provided, it inserts that number of line
+     *
+     * ⚠️ Note that the inserted line break depends on the call context based on the
+     * [Request Quiddity](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_enum_System_Quiddity.htm). When called from
+     * an Aura/LWC or Visualforce context it will insert a `<br>` tag, otherwise it will insert a newline character.
+     * @function BR
+     * @example
+     * BR() // "<br/>"
+     * BR(2) // "<br/><br/>"
+     */
     private class BrFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Integer linesToAdd = 1;
@@ -480,7 +527,15 @@ public with sharing class StringFunctions {
     }
 
     /**
-     * @description Creates a link to a URL specified that is linkable from the text specified.
+     * @description Returns a text string of an HTML anchor tag that displays a hyperlink.
+     *
+     * Accepts 2 or 3 arguments: the URL and the text to display. Optionally, the third argument is the target
+     * of the link.
+     *
+     * The target should be one of `_blank`, `_parent`, `_self`, or `_top`.
+     * @function HYPERLINK
+     * @example
+     * HYPERLINK("https://www.google.com", "Google") // "<a href="https://www.google.com">Google</a>"
      */
     private class HyperLinkFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -526,6 +581,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Substitutes new text for old text in a text string.
+     *
+     * Accepts 3 arguments: the text to evaluate, the text to replace, and the text to replace it with.
+     * @function SUBSTITUTE
+     * @example
+     * SUBSTITUTE("Hello World", "World", "Universe") // "Hello Universe"
+     */
     private class SubstituteFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Check that the first argument is a string
@@ -561,6 +624,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Converts a value to text.
+     *
+     * Accepts 1 argument: the value to convert.
+     * @function TEXT
+     * @example
+     * TEXT(123) // "123"
+     */
     private class TextFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
@@ -572,6 +643,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Removes the spaces and tabs from the beginning and end of a text string.
+     *
+     * Accepts 1 argument: the text to trim.
+     * @function TRIM
+     * @example
+     * TRIM(" Hello World ") // "Hello World"
+     */
     private class TrimFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must be a string
@@ -590,6 +669,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Converts all letters in the specified text to uppercase.
+     *
+     * Accepts 1 argument: the text to convert.
+     * @function UPPER
+     * @example
+     * UPPER("Hello World") // "HELLO WORLD"
+     */
     private class UpperFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must be a string
@@ -608,6 +695,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Converts a text string that represents a number to a number.
+     *
+     * Accepts 1 argument: the text to convert.
+     * @function VALUE
+     * @example
+     * VALUE("123") // 123
+     */
     private class ValueFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must be a string
@@ -626,6 +721,15 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Returns a list that contains each substring of the String that is terminated
+     * by the provided delimiter.
+     *
+     * Accepts 2 arguments: the text to split and the delimiter.
+     * @function SPLIT
+     * @example
+     * SPLIT("Hello World", " ") // ["Hello", "World"]
+     */
     private class SplitFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument must be a string
@@ -652,6 +756,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Converts the first letter of each word in a text string to uppercase and converts all other letters to lowercase.
+     *
+     * Accepts 1 argument: the text to convert.
+     * @function INITCAP
+     * @example
+     * INITCAP("hello world") // "Hello World"
+     */
     private class InitCapFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must be a string
@@ -679,6 +791,15 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Encodes text and merge field values for use in URLs by replacing characters that are illegal in URLs, such as blank
+     * spaces.
+     *
+     * Accepts 1 argument: the text to encode.
+     * @function URLENCODE
+     * @example
+     * URLENCODE("Hello World") // "Hello+World"
+     */
     private class UrlEncodeFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must be a string
