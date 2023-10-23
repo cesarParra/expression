@@ -13,11 +13,6 @@
 .overflow-hidden {
     overflow: hidden;
 }
-/*.container-bound {*/
-/*    height: 60vh;*/
-/*    overflow-y: auto;*/
-/*    overflow-x: hidden;*/
-/*}*/
 .flex {
     display: flex;
     height: 100%;
