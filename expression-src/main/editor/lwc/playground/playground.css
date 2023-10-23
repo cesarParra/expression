@@ -13,11 +13,11 @@
 .overflow-hidden {
     overflow: hidden;
 }
-.container-bound {
-    height: 60vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
+/*.container-bound {*/
+/*    height: 60vh;*/
+/*    overflow-y: auto;*/
+/*    overflow-x: hidden;*/
+/*}*/
 .flex {
     display: flex;
     height: 100%;
@@ -28,4 +28,13 @@
 }
 .grow {
     flex-grow: 1;
+}
+.position-none {
+    position: static;
+}
+.overflow-y-auto {
+    overflow-y: auto;
+}
+.full-height {
+    height: 100%;
 }

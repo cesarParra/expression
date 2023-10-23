@@ -8,11 +8,13 @@
         </div>
         <div class="grow slds-grid slds-gutters slds-gutters_x-small overflow-hidden">
             <div class="slds-col slds-size_2-of-12">
-                <lightning-card variant="narrow" label="Function Library" hide-header="true">
-                    <div class="container-bound">
-                        <c-function-library onselected={handleFunctionFromLibrarySelected}></c-function-library>
-                    </div>
-                </lightning-card>
+                <div class="slds-is-relative full-height">
+                    <article class="slds-card position-none overflow-y-auto full-height">
+                        <div class="slds-card__body slds-card__body_inner">
+                            <c-function-library onselected={handleFunctionFromLibrarySelected}></c-function-library>
+                        </div>
+                    </article>
+                </div>
             </div>
             <div class="slds-col slds-size_6-of-12 slds-is-relative">
                 <iframe src={iframeUrl}
@@ -35,7 +37,8 @@
                             </lightning-tab>
                             <lightning-tab label="Diagnostics">
                                 <ul>
-                                    <li><strong>CPU Time:</strong> {diagnostics.cpuTime}<span if:true={diagnostics.cpuTime}>ms</span></li>
+                                    <li><strong>CPU Time:</strong> {diagnostics.cpuTime}<span
+                                        if:true={diagnostics.cpuTime}>ms</span></li>
                                     <li><strong>DML Statements:</strong> {diagnostics.dmlStatements}</li>
                                     <li><strong>Queries:</strong> {diagnostics.queries}</li>
                                     <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>
