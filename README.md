@@ -1121,7 +1121,7 @@ Returns the day of the week for a given date.
 Accepts 1 argument: the date to evaluate.
 
 ```apex
-expression.Evaluator.run('WEEKDAY(DATE(2020, 1, 1))'); // 4
+expression.Evaluator.run('WEEKDAY(DATE(2020, 1, 1))'); // 2
 ```
 
 - `FORMATDURATION`

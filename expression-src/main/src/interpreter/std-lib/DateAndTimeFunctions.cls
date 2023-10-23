@@ -400,6 +400,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns the current time.
+     *
+     * Accepts no arguments.
+     * @function TIMENOW
+     * @example
+     * TIMENOW() // 12:00:00
+     */
     private class TimeNowFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             return Datetime.now().time();
@@ -410,7 +418,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
-    // TODO: Quede
+    /**
+     * @description Returns the ISO week number of the year for a given date.
+     *
+     * Accepts 1 argument: the date to evaluate.
+     * @function ISOWEEK
+     * @example
+     * ISOWEEK(DATE(2020, 1, 1)) // 1
+     */
     private class IsoWeek extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
@@ -428,6 +443,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns the ISO year number for a given date.
+     *
+     * Accepts 1 argument: the date to evaluate.
+     * @function ISOYEAR
+     * @example
+     * ISOYEAR(DATE(2020, 1, 1)) // 2020
+     */
     private class IsoYear extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
@@ -445,6 +468,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns the year value of a provided date.
+     *
+     * Accepts 1 argument: the date to evaluate.
+     * @function YEAR
+     * @example
+     * YEAR(DATE(2020, 1, 1)) // 2020
+     */
     private class YearFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
@@ -462,6 +493,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns the GMT Datetime from a Unix timestamp.
+     *
+     * Accepts 1 argument: the Unix timestamp to evaluate.
+     * @function FROMUNIXTIME
+     * @example
+     * FROMUNIXTIME(1577836800) // 2020-01-01 00:00:00
+     */
     private class FromUnixTimeFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object unixTime = evaluate(arguments.get(0));
@@ -484,6 +523,13 @@ public with sharing class DateAndTimeFunctions {
     /**
      * @description Returns the number of seconds since 1 Jan 1970 for the given date or datetime,
      *              or number of seconds in the day for a time.
+     *
+     * Values are returned in the GMT time zone.
+     *
+     * Accepts 1 argument: the date, datetime, or time to evaluate.
+     * @function UNIXTIMESTAMP
+     * @example
+     * UNIXTIMESTAMP(DATE(2020, 1, 1)) // 1577836800
      */
     private class UnixTimeStampFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -515,6 +561,11 @@ public with sharing class DateAndTimeFunctions {
     /**
      * @description Returns the day of the week for the given date,
      *              using 1 for Sunday, 2 for Monday, through 7 for Saturday.
+     *
+     * Accepts 1 argument: the date to evaluate.
+     * @function WEEKDAY
+     * @example
+     * WEEKDAY(DATE(2020, 1, 1)) // 2
      */
     private class WeekdayFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -542,6 +593,18 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Calculates the difference between 2 Times or 2 DateTimes
+     * and formats it as "HH:MM:SS".
+     *
+     * Accepts 2 arguments: either 2 Times or 2 DateTimes.
+     *
+     * Note that the order of the argument is not important, the
+     * function will always return a positive duration.
+     * @function FORMATDURATION
+     * @example
+     * FORMATDURATION(TIMEVALUE("12:00:00"), TIMEVALUE("12:00:01")) // 00:00:01
+     */
     private class FormatDuration extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Datetime startDateTime;
@@ -600,6 +663,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns the month, a number between 1 and 12 (December) in number format of a given date.
+     *
+     * Accepts 1 argument: the date to evaluate.
+     * @function MONTH
+     * @example
+     * MONTH(DATE(2020, 1, 1)) // 1
+     */
     private class MonthFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Expect a Date
@@ -618,6 +689,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Formats a DateTime into a string using the provided format.
+     *
+     * Accepts 2 arguments: the DateTime to format and the format string.
+     * @function DATETIMEFORMAT
+     * @example
+     * DATETIMEFORMAT(DATETIMEVALUE("2020-01-01 12:00:00"), "yyyy-MM-dd") // 2020-01-01
+     */
     private class DateTimeFormatFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Expect a DateTime
@@ -644,6 +723,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Converts a Date to a Datetime.
+     *
+     * Accepts 1 argument: the Date to convert.
+     * @function DATETODATETIME
+     * @example
+     * DATETODATETIME(DATE(2020, 1, 1)) // 2020-01-01 00:00:00
+     */
     private class DateToDateTimeFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Expect a Date
@@ -662,6 +749,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns the number of days between two dates.
+     *
+     * Accepts 2 arguments: the first date and the second date.
+     * @function DAYSBETWEEN
+     * @example
+     * DAYSBETWEEN(DATE(2020, 1, 1), DATE(2020, 1, 2)) // 1
+     */
     private class DaysBetween extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Expect a Date

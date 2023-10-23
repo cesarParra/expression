@@ -29,7 +29,7 @@ public with sharing class DataFunctions {
      * @description Allows you to query data from the database. This is useful
      * when the data you want to use is not provided as part of the context.
      *
-     * TTakes 2 arguments: a string with the `SObjectName` you wish to extract data from,
+     * Takes 2 arguments: a string with the `SObjectName` you wish to extract data from,
      * and a list of strings with the fields you wish to extract. This will query all the records of the given
      * type and return a list of `SObjects` with the data.
      *
