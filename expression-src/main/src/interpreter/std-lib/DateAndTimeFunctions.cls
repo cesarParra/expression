@@ -410,6 +410,7 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    // TODO: Quede
     private class IsoWeek extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
