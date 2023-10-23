@@ -31,9 +31,12 @@ export default class Monaco extends LightningElement {
         payload: result.error
       });
     } else {
+      // The evaluation might return null, which is a valid result but gets converted to undefined in JS,
+      // so we handle it by coercing it to null.
+      const payload = result.result ?? null;
       this.result = {
         type: "success",
-        payload: JSON.stringify(result.result, null, 2)
+        payload: this._syntaxHighlight(JSON.stringify(payload, null, 4))
       }
     }
 
@@ -57,5 +60,24 @@ export default class Monaco extends LightningElement {
 
   get resultColor() {
     return this.result.type === 'error' ? 'slds-text-color_error' : 'slds-text-color_default';
+  }
+
+  _syntaxHighlight(json) {
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+      let style = 'color: #c2410c;';
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) {
+          style = 'color: #b91c1c;';
+        } else {
+          style = 'color: #0f766e;';
+        }
+      } else if (/true|false/.test(match)) {
+        style = 'color: #4338ca;';
+      } else if (/null/.test(match)) {
+        style = 'color: #0e7490;';
+      }
+      return '<span style="' + style + '">' + match + '</span>';
+    });
   }
 }

@@ -2,34 +2,43 @@
     --slds-c-card-spacing-block-start: 0rem;
     --slds-c-card-body-spacing-block-end: 0rem;
 }
+
 .lgc-bg {
     background-color: rgb(242 242 242);
 }
+
 .top-right {
     position: absolute;
     top: 20px;
     right: 40px;
 }
+
 .overflow-hidden {
     overflow: hidden;
 }
+
 .flex {
     display: flex;
     height: 100%;
     flex-direction: column;
 }
+
 .grow-0 {
     flex-grow: 0;
 }
+
 .grow {
     flex-grow: 1;
 }
+
 .position-none {
     position: static;
 }
+
 .overflow-y-auto {
     overflow-y: auto;
 }
+
 .full-height {
     height: 100%;
 }

@@ -28,25 +28,29 @@
                     </lightning-button>
                 </div>
             </div>
-            <div class="slds-col slds-size_4-of-12 slds-scrollable">
-                <lightning-card label="Output" hide-header="true" variant="narrow">
-                    <div class="slds-p-horizontal_small">
-                        <lightning-tabset>
-                            <lightning-tab label="Result">
-                                <pre class={resultColor}>{result.payload}</pre>
-                            </lightning-tab>
-                            <lightning-tab label="Diagnostics">
-                                <ul>
-                                    <li><strong>CPU Time:</strong> {diagnostics.cpuTime}<span
-                                        if:true={diagnostics.cpuTime}>ms</span></li>
-                                    <li><strong>DML Statements:</strong> {diagnostics.dmlStatements}</li>
-                                    <li><strong>Queries:</strong> {diagnostics.queries}</li>
-                                    <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>
-                                </ul>
-                            </lightning-tab>
-                        </lightning-tabset>
+            <div class="slds-col slds-size_4-of-12">
+                <article class="slds-card position-none overflow-y-auto full-height">
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="slds-p-horizontal_small slds-p-bottom_none">
+                            <lightning-tabset>
+                                <lightning-tab label="Result">
+                                    <pre class={resultColor}>
+                                        <lightning-formatted-rich-text value={result.payload}></lightning-formatted-rich-text>
+                                    </pre>
+                                </lightning-tab>
+                                <lightning-tab label="Diagnostics">
+                                    <ul>
+                                        <li><strong>CPU Time:</strong> {diagnostics.cpuTime}<span
+                                            if:true={diagnostics.cpuTime}>ms</span></li>
+                                        <li><strong>DML Statements:</strong> {diagnostics.dmlStatements}</li>
+                                        <li><strong>Queries:</strong> {diagnostics.queries}</li>
+                                        <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>
+                                    </ul>
+                                </lightning-tab>
+                            </lightning-tabset>
+                        </div>
                     </div>
-                </lightning-card>
+                </article>
             </div>
         </div>
     </div>
