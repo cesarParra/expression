@@ -14,10 +14,10 @@ public with sharing class DateAndTimeFunctions {
         'DATEVALUE' => new DateAndTimeFunctions.DateValueFn(),
         'DATETIMEVALUE' => new DateAndTimeFunctions.DateTimeValueFn(),
         'TODAY' => new DateAndTimeFunctions.TodayFn(),
-        'MILLISECOND' => new DateAndTimeFunctions.TimeFn('MILLISECOND', TimeType.MILLISECOND),
-        'MINUTE' => new DateAndTimeFunctions.TimeFn('MINUTE', TimeType.MINUTE),
-        'SECOND' => new DateAndTimeFunctions.TimeFn('SECOND', TimeType.SECOND),
-        'HOUR' => new DateAndTimeFunctions.TimeFn('HOUR', TimeType.HOUR_FN),
+        'MILLISECOND' => new DateAndTimeFunctions.MillisecondFn(),
+        'MINUTE' => new DateAndTimeFunctions.MinuteFn(),
+        'SECOND' => new DateAndTimeFunctions.SecondFn(),
+        'HOUR' => new DateAndTimeFunctions.HourFn(),
         'TIMEVALUE' => new DateAndTimeFunctions.TimeValueFn(),
         'TIMENOW' => new DateAndTimeFunctions.TimeNowFn(),
         'ISOWEEK' => new DateAndTimeFunctions.IsoWeek(),
@@ -83,6 +83,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns a date value from the provided year, month, and day values.
+     *
+     * Accepts 3 arguments: the year, month, and day.
+     * @function DATE
+     * @example
+     * DATE(2020, 1, 1) // 2020-01-01
+     */
     private class DateFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object year = evaluate(arguments.get(0));
@@ -112,6 +120,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns the day of the month, a number from 1 to 31.
+     *
+     * Accepts 1 argument: the date to evaluate.
+     * @function DAY
+     * @example
+     * DAY(DATE(2020, 1, 1)) // 1
+     */
     private class DayFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
@@ -129,6 +145,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns the day of the year, a number from 1 to 366.
+     *
+     * Accepts 1 argument: the date to evaluate.
+     * @function DAYOFYEAR
+     * @example
+     * DAYOFYEAR(DATE(2020, 1, 1)) // 1
+     */
     private class DayOfYearFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
@@ -146,6 +170,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns the current Datetime in the GMT time zone.
+     *
+     * Accepts no arguments.
+     * @function NOW
+     * @example
+     * NOW() // 2020-01-01 00:00:00
+     */
     private class NowFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             return Datetime.now();
@@ -156,6 +188,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns a date value from a string representation of a date or a datetime.
+     *
+     * Accepts 1 argument: the date as a string or datetime.
+     * @function DATEVALUE
+     * @example
+     * DATEVALUE("2020-01-01") // 2020-01-01
+     */
     private class DateValueFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // Expect the expression to either be a text or a datetime
@@ -178,6 +218,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns a datetime value from a string representation of a date.
+     *
+     * Accepts 1 argument: the date as a string.
+     * @function DATETIMEVALUE
+     * @example
+     * DATETIMEVALUE("2020-01-01") // 2020-01-01 00:00:00
+     */
     private class DateTimeValueFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object expression = evaluate(arguments.get(0));
@@ -195,6 +243,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns the current date.
+     *
+     * Accepts no arguments.
+     * @function TODAY
+     * @example
+     * TODAY() // 2020-01-01
+     */
     private class TodayFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             return Date.today();
@@ -205,7 +261,7 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
-    private class TimeFn extends ExpressionFunction {
+    private virtual class TimeFn extends ExpressionFunction {
         private final String fnName;
         private final TimeType type;
 
@@ -238,6 +294,70 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns the millisecond value of a provided time.
+     *
+     * Accepts 1 argument: the time to evaluate.
+     * @function MILLISECOND
+     * @example
+     * MILLISECOND(TIMEVALUE("12:00:00.123")) // 123
+     */
+    private class MillisecondFn extends TimeFn {
+        private MillisecondFn() {
+            super('MILLISECOND', TimeType.MILLISECOND);
+        }
+    }
+
+    /**
+     * @description Returns the second value of a provided time.
+     *
+     * Accepts 1 argument: the time to evaluate.
+     * @function SECOND
+     * @example
+     * SECOND(TIMEVALUE("12:00:45")) // 45
+     */
+    private class SecondFn extends TimeFn {
+        private SecondFn() {
+            super('SECOND', TimeType.SECOND);
+        }
+    }
+
+    /**
+     * @description Returns the minute value of a provided time.
+     *
+     * Accepts 1 argument: the time to evaluate.
+     * @function MINUTE
+     * @example
+     * MINUTE(TIMEVALUE("12:10:00")) // 10
+     */
+    private class MinuteFn extends TimeFn {
+        private MinuteFn() {
+            super('MINUTE', TimeType.MINUTE);
+        }
+    }
+
+    /**
+     * @description Returns the hour value of a provided time.
+     *
+     * Accepts 1 argument: the time to evaluate.
+     * @function HOUR
+     * @example
+     * HOUR(TIMEVALUE("12:00:00")) // 12
+     */
+    private class HourFn extends TimeFn {
+        private HourFn() {
+            super('HOUR', TimeType.HOUR_FN);
+        }
+    }
+
+    /**
+     * @description Returns a time value from a datetime or from a string representation of a datetime.
+     *
+     * Accepts 1 argument: the datetime or string in datetime format to evaluate.
+     * @function TIMEVALUE
+     * @example
+     * TIMEVALUE(DATETIMEVALUE("2020-01-01 12:00:00")) // 12:00:00
+     */
     private class TimeValueFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object dateTimeOrText = evaluate(arguments.get(0));

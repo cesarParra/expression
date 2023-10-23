@@ -18,10 +18,6 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
-.result-container {
-    height: 600px;
-    overflow: auto;
-}
 .flex {
     display: flex;
     height: 100%;

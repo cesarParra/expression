@@ -903,7 +903,7 @@ Returns a date value from the provided year, month, and day values.
 Accepts 3 arguments: the year, month, and day.
 
 ```apex
-expression.Evaluator.run('DATE(2020, 1, 1)'); // 2020-01-01 00:00:00
+expression.Evaluator.run('DATE(2020, 1, 1)'); // 2020-01-01
 ```
 
 - `ADDMONTHS`
@@ -954,8 +954,8 @@ a datetime.
 Accepts 1 argument: the date as a string or datetime.
 
 ```apex
-expression.Evaluator.run('DATEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
-expression.Evaluator.run('DATEVALUE(NOW())'); // 2020-01-01 00:00:00
+expression.Evaluator.run('DATEVALUE("2020-01-01")'); // 2020-01-01
+expression.Evaluator.run('DATEVALUE(NOW())'); // 2020-01-01
 ```
 
 - `DATETIMEVALUE`
@@ -1069,16 +1069,6 @@ Accepts 1 argument: the time to evaluate.
 expression.Evaluator.run('MILLISECOND(TIMEVALUE("12:00:00.123"))'); // 123
 ```
 
-- `MINUTE`
-
-Returns the minute value of a provided time.
-
-Accepts 1 argument: the time to evaluate.
-
-```apex
-expression.Evaluator.run('MINUTE(TIMEVALUE("12:10:00"))'); // 10
-```
-
 - `SECOND`
 
 Returns the second value of a provided time.
@@ -1087,6 +1077,16 @@ Accepts 1 argument: the time to evaluate.
 
 ```apex
 expression.Evaluator.run('SECOND(TIMEVALUE("12:00:45"))'); //45
+```
+
+- `MINUTE`
+
+Returns the minute value of a provided time.
+
+Accepts 1 argument: the time to evaluate.
+
+```apex
+expression.Evaluator.run('MINUTE(TIMEVALUE("12:10:00"))'); // 10
 ```
 
 - `HOUR`
