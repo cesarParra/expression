@@ -320,6 +320,14 @@ public with sharing class StringFunctions {
         }
     }
 
+    /**
+     * @description Returns a text value with the order of the characters reversed.
+     *
+     * Accepts 1 argument: the text to reverse.
+     * @function REVERSE
+     * @example
+     * REVERSE("Hello World") // "dlroW olleH"
+     */
     private class ReverseFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object val = evaluate(arguments.get(0));
