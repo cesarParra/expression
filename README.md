@@ -1854,16 +1854,16 @@ in a community page.
 ```json
 {
   "logo": {
-    "name": <<String value or expression>>,
-    "url": <<String value or expression>>
+    "name": "<<String value or expression>>",
+    "url": "<<String value or expression>>"
   },
   "menuItems": [
     {
-      "label": <<String value or expression>>,
-      "url": <<String value or expression>>
+      "label": "<<String value or expression>>",
+      "url": "<<String value or expression>>"
     }
   ],
-  "callToAction": <<Expression that evaluates to a Button action>>
+  "callToAction": "<<Expression that evaluates to a Button action>>"
 }
 ```
 
@@ -2066,6 +2066,41 @@ The `Text Block` component allows you to display a block of text. It can be used
 to display any row of text.
 
 Supports being placed in a community page.
+
+
+### Features
+
+### Stats
+
+The `Features` component allows you to display a list of features. It can be used
+to display a list of features, benefits, etc.
+
+Supports being placed in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+##### Map Format
+
+- `title` Optional - The title to display.
+- `description` Optional - The description to display.
+- `features` - List of features to display. Each feature should be a map with the following format:
+    - `title` - The title of the feature.
+    - `description` - The description of the feature.
+
+```bash
+{
+  "title": <<String value or expression>>,
+  "description": <<String value or expression>>,
+  "features": [
+    {
+      "title": <<String value or expression>>,
+      "description": <<String value or expression>>
+    }
+  ]
+}
+```
 
 #### Properties
 
