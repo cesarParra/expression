@@ -368,13 +368,13 @@ in order to use this functionality.
 
 Any class that implements the `expression.IExpressionFunction` interface can be referenced in this way.
 
-```apex
+```
 $Action.Apex.ClassName
 ````
 
 To pass arguments to your Apex class, you can pass any number of expressions as arguments to the action:
 
-```apex
+```
 $Action.Apex.ClassName(expression1, expression2, ...)
 ```
 
@@ -1723,19 +1723,19 @@ by the `Expression` language.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgcIAE)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MgcIAE)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MhpIAE)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm0000011MhpIAE)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm0000011MgcIAE
+sf package install --apex-compile package --wait 20 --package 04tDm0000011MhpIAE
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MgcIAE
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm0000011MhpIAE
 ```
 
 ## Components
@@ -1854,16 +1854,16 @@ in a community page.
 ```json
 {
   "logo": {
-    "name": <<String value or expression>>,
-    "url": <<String value or expression>>
+    "name": "<<String value or expression>>",
+    "url": "<<String value or expression>>"
   },
   "menuItems": [
     {
-      "label": <<String value or expression>>,
-      "url": <<String value or expression>>
+      "label": "<<String value or expression>>",
+      "url": "<<String value or expression>>"
     }
   ],
-  "callToAction": <<Expression that evaluates to a Button action>>
+  "callToAction": "<<Expression that evaluates to a Button action>>"
 }
 ```
 
@@ -1912,11 +1912,11 @@ in a community page.
 
 ```json
 {
-  "title": <<String value or expression>>,
-  "description": <<String value or expression>>,
-  "callToAction": <<Expression that evaluates to a Button action>>,
-  "secondaryAction": <<Expression that evaluates to a Button action>>,
-  "bannerImage": <<String value or expression>>
+  "title": "<<String value or expression>>",
+  "description": "<<String value or expression>>",
+  "callToAction": "<<Expression that evaluates to a Button action>>",
+  "secondaryAction": "<<Expression that evaluates to a Button action>>",
+  "bannerImage": "<<String value or expression>>"
 }
 ```
 
@@ -1940,11 +1940,11 @@ Supports being placed in a community page.
 
 ```json
 {
-  "title": <<String value or expression>>,
+  "title": "<<String value or expression>>",
   "logos": [
     {
-      "name": <<String value or expression>>,
-      "src": <<String value or expression>>
+      "name": "<<String value or expression>>",
+      "src": "<<String value or expression>>"
     }
   ]
 }
@@ -1973,14 +1973,14 @@ Supports being placed in a community page.
 
 ```json
 {
-  "title": <<String value or expression>>,
-  "description": <<String value or expression>>,
+  "title": "<<String value or expression>>",
+  "description": "<<String value or expression>>",
   "people": [
     {
-      "name": <<String value or expression>>,
-      "title": <<String value or expression>>,
-      "imageUrl": <<String value or expression>>,
-      "about": <<String value or expression>>
+      "name": "<<String value or expression>>",
+      "title": "<<String value or expression>>",
+      "imageUrl": "<<String value or expression>>",
+      "about": "<<String value or expression>>"
     }
   ]
 }
@@ -2011,17 +2011,17 @@ Supports being placed in a community page.
 
 ```json
 {
-  "tag": <<String value or expression>>,
-  "title": <<String value or expression>>,
-  "description": <<String value or expression>>,
+  "tag": "<<String value or expression>>",
+  "title": "<<String value or expression>>",
+  "description": "<<String value or expression>>",
   "plans": [
     {
-      "name": <<String value or expression>>,
-      "price": <<String value or expression>>,
-      "action": <<Expression that evaluates to a Button action>>,
-      "description": <<String value or expression>>,
+      "name": "<<String value or expression>>",
+      "price": "<<String value or expression>>",
+      "action": "<<Expression that evaluates to a Button action>>",
+      "description": "<<String value or expression>>",
       "features": [
-        <<String value or expression>>
+        "<<String value or expression>>"
       ]
     }
   ]
@@ -2049,12 +2049,12 @@ Supports being placed in a community page.
 
 ```json
 {
-  "title": <<String value or expression>>,
-  "description": <<String value or expression>>,
+  "title": "<<String value or expression>>",
+  "description": "<<String value or expression>>",
   "stats": [
     {
-      "label": <<String value or expression>>,
-      "value": <<String value or expression>>
+      "label": "<<String value or expression>>",
+      "value": "<<String value or expression>>"
     }
   ]
 }
@@ -2067,12 +2067,47 @@ to display any row of text.
 
 Supports being placed in a community page.
 
+
+### Features
+
+### Stats
+
+The `Features` component allows you to display a list of features. It can be used
+to display a list of features, benefits, etc.
+
+Supports being placed in a community page.
+
+#### Properties
+
+- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
+
+##### Map Format
+
+- `title` Optional - The title to display.
+- `description` Optional - The description to display.
+- `features` - List of features to display. Each feature should be a map with the following format:
+    - `title` - The title of the feature.
+    - `description` - The description of the feature.
+
+```json
+{
+  "title": "<<String value or expression>>",
+  "description": "<<String value or expression>>",
+  "features": [
+    {
+      "title": "<<String value or expression>>",
+      "description": "<<String value or expression>>"
+    }
+  ]
+}
+```
+
 #### Properties
 
 - `Formula Expression` - The expression to evaluate. This expression should evaluate to a String.
 
 ```json
-<<String value or expression>>
+"<<String value or expression>>"
 ```
 
 ## Contributing

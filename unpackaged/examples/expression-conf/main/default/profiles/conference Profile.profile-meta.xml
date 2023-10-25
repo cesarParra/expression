@@ -85,10 +85,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>DebugCall</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>Environment</apexClass>
         <enabled>true</enabled>
     </classAccesses>
