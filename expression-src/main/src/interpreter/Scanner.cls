@@ -189,6 +189,8 @@ public with sharing class Scanner {
 
     private Boolean match2(String str) {
         if (isAtEnd()) return false;
+        // Check that there are enough characters remaining before trying to match
+        if (current + 1 >= source.length()) return false;
         if (!source.substring(current, current + 2).equals(str)) return false;
 
         current += 2;

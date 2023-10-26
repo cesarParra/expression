@@ -184,4 +184,14 @@ private class ScannerTest {
         Assert.areEqual(TokenType.STRING_LITERAL_END, result[7].type);
         Assert.areEqual(TokenType.EOF, result[8].type);
     }
+
+    @IsTest
+    static void match2DoesntGoBeyondEndOfInput() {
+        // Match2 tries to check if we are dealing with a ... or a single ., so since the key we
+        // are trying to access is only one character long, we need to make sure that it doesn't go
+        // beyond the end of the input.
+        String formula = '{"a": 1}.a';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual(1, result);
+    }
 }

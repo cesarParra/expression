@@ -1,41 +1,49 @@
 <template>
-  <div if:true={ready}>
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
-      <div class="mx-auto max-w-4xl sm:text-center">
-        <h2 if:true={computed.tag} class="text-base font-semibold leading-7 text-dxp-brand">{computed.tag}</h2>
-        <p if:true={computed.title} class="mt-2 text-4xl font-bold tracking-tight text-dxp-text-contrast sm:text-5xl">{computed.title}</p>
-      </div>
-      <p if:true={computed.description} class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-dxp-text-contrast-3 sm:text-center">
-        {computed.description}
-      </p>
-      <div class="mt-20 flow-root">
-        <div class={gridClasses}>
-          <template for:each={computed.plans} for:item="plan">
-            <div key={plan.name} class="pt-16 lg:px-8 lg:pt-0 xl:px-14">
-              <h3 id="tier-basic" class="text-base font-semibold leading-7 text-dxp-text-contrast">{plan.name}</h3>
-              <p class="mt-6 mb-2 flex items-baseline gap-x-1">
+    <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error}>
+        <div if:true={ready}>
+            <div class="mx-auto max-w-7xl px-6 lg:px-8">
+                <div class="mx-auto max-w-4xl sm:text-center">
+                    <h2 if:true={computed.tag} class="text-base font-semibold leading-7 text-dxp-brand">
+                        {computed.tag}</h2>
+                    <p if:true={computed.title}
+                       class="mt-2 text-4xl font-bold tracking-tight text-dxp-text-contrast sm:text-5xl">
+                        {computed.title}</p>
+                </div>
+                <p if:true={computed.description}
+                   class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-dxp-text-contrast-3 sm:text-center">
+                    {computed.description}
+                </p>
+                <div class="mt-20 flow-root">
+                    <div class={gridClasses}>
+                        <template for:each={computed.plans} for:item="plan">
+                            <div key={plan.name} class="pt-16 lg:px-8 lg:pt-0 xl:px-14">
+                                <h3 id="tier-basic" class="text-base font-semibold leading-7 text-dxp-text-contrast">
+                                    {plan.name}</h3>
+                                <p class="mt-6 mb-2 flex items-baseline gap-x-1">
                 <span class="text-5xl font-bold tracking-tight text-dxp-text-contrast">
                   <lightning-formatted-number format-style="currency" value={plan.price}></lightning-formatted-number> </span>
-              </p>
-              <c-base-button action={plan.action}></c-base-button>
-              <p class="mt-10 text-sm font-semibold leading-6 text-dxp-text-contrast">{plan.description}</p>
-              <ul role="list" class="mt-6 space-y-3 text-sm leading-6 text-gray-600">
-                <template for:each={plan.features} for:item="feature">
-                  <li key={feature} class="flex gap-x-3">
-                    <svg class="h-6 w-5 flex-none text-dxp-brand" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-                    </svg>
-                    {feature}
-                  </li>
-                </template>
-              </ul>
+                                </p>
+                                <c-base-button action={plan.action}></c-base-button>
+                                <p class="mt-10 text-sm font-semibold leading-6 text-dxp-text-contrast">
+                                    {plan.description}</p>
+                                <ul role="list" class="mt-6 space-y-3 text-sm leading-6 text-gray-600">
+                                    <template for:each={plan.features} for:item="feature">
+                                        <li key={feature} class="flex gap-x-3">
+                                            <svg class="h-6 w-5 flex-none text-dxp-brand" viewBox="0 0 20 20"
+                                                 fill="currentColor" aria-hidden="true">
+                                                <path fill-rule="evenodd"
+                                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                                      clip-rule="evenodd"/>
+                                            </svg>
+                                            {feature}
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </template>
+                    </div>
+                </div>
             </div>
-          </template>
         </div>
-      </div>
-    </div>
-  </div>
-  <div if:true={error}>
-    <c-alert title="Error parsing expression" message={error}></c-alert>
-  </div>
+    </c-expression-element-container>
 </template>

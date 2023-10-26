@@ -7,7 +7,11 @@ public with sharing class Parser {
     }
 
     public Expr parse() {
-        return expression();
+        Expr result = expression();
+        if (!isAtEnd()) {
+            throw error(peek(), 'Unexpected character after end of expression.');
+        }
+        return result;
     }
 
     private Expr equality() {

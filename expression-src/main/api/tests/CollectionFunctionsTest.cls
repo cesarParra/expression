@@ -382,7 +382,7 @@ private class CollectionFunctionsTest {
         Account account = new Account(Name = 'Test');
         insert account;
 
-        Object result = Evaluator.run('FETCH("ACCOUNT", ["Id", "Name"]) -> MAP({"Id": Id, "Name": Name})})');
+        Object result = Evaluator.run('FETCH("ACCOUNT", ["Id", "Name"]) -> MAP({"Id": Id, "Name": Name})');
 
         Assert.areEqual(1, ((List<Object>) result).size());
         Assert.areEqual(account.Id, ((Map<Object, Object>) ((List<Object>) result)[0]).get('Id'));

@@ -3,132 +3,134 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link
-            rel="stylesheet"
-            data-name="vs/editor/editor.main"
-            href="min/vs/editor/editor.main.css"
+        rel="stylesheet"
+        data-name="vs/editor/editor.main"
+        href="min/vs/editor/editor.main.css"
     />
 </head>
 <body style="margin: 0;">
 <div id="container" style="height: 100vh;"></div>
 
 <script>
-    var require = {paths: {vs: 'min/vs'}};
+  var require = {paths: {vs: 'min/vs'}};
 </script>
 <script src="min/vs/loader.js"></script>
 <script src="min/vs/editor/editor.main.nls.js"></script>
 <script src="min/vs/editor/editor.main.js"></script>
 
 <script>
-    window.addEventListener("message", onMessage, false);
+  window.addEventListener("message", onMessage, false);
 
-    function onMessage(event) {
-        if (event.data.name === 'initialize') {
-            initialize(event.data.keywords);
-        }
-        if (event.data.name === 'evaluation_error') {
-            markError(event.data.payload);
-        }
-        if (event.data.name === 'append') {
-            appendText(event.data.payload);
-        }
+  function onMessage(event) {
+    if (event.data.name === 'initialize') {
+      initialize(event.data.keywords);
     }
+    if (event.data.name === 'evaluation_error') {
+      markError(event.data.payload);
+    }
+    if (event.data.name === 'append') {
+      appendText(event.data.payload);
+    }
+  }
 
-    function initialize(functionKeywords) {
-        monaco.languages.register({id: 'expression'});
-        let keywords = functionKeywords;
-        monaco.languages.setMonarchTokensProvider('expression', {
-            keywords,
-            tokenizer: {
-                root: [
-                    [/[{}]/, 'delimiter.bracket'],
-                    { include: 'common' },
-                ],
-                common: [
-                    // identifiers and keywords
-                    [/[a-zA-Z_$][\w$]*/, {
-                        cases: {
-                            '@keywords': 'keyword',
-                        }
-                    }],
-                    [/"/, 'string', '@string'],
-                    // delimiters and operators
-                    [/[{}()\[\]]/, '@brackets'],
-                    [/[,:]/, 'delimiter'],
-
-                    // numbers
-                    [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
-                    [/\d+/, 'number'],
-
-                    // whitespace
-                    [/\s+/, 'white'],
-                    [/(^#.*$)/, 'comment'],
-                ],
-                string: [
-                    [/\$\{/, { token: 'delimiter.bracket', next: '@bracketCounting' }],
-                    [/[^\\"]+/, 'string'],
-                    [/"/, 'string', '@pop']
-                ],
-
-                bracketCounting: [
-                    [/\{/, 'delimiter.bracket', '@bracketCounting'],
-                    [/\}/, 'delimiter.bracket', '@pop'],
-                    { include: 'common' },
-                ],
-            },
-            ignoreCase: true
-        });
-        monaco.languages.registerCompletionItemProvider('expression', {
-            provideCompletionItems(model, position, context, token) {
-                const suggestions = [
-                    ...keywords.map(
-                        k => {
-                            return {
-                                label: k,
-                                kind: monaco.languages.CompletionItemKind.Keyword,
-                                insertText: k,
-                            }
-                        }
-                    )
-                ];
-                return {suggestions: suggestions};
+  function initialize(functionKeywords) {
+    monaco.languages.register({id: 'expression'});
+    let keywords = functionKeywords;
+    monaco.languages.setMonarchTokensProvider('expression', {
+      keywords,
+      tokenizer: {
+        root: [
+          [/[{}]/, 'delimiter.bracket'],
+          {include: 'common'},
+        ],
+        common: [
+          // identifiers and keywords
+          [/[a-zA-Z_$][\w$]*/, {
+            cases: {
+              '@keywords': 'keyword',
             }
-        });
+          }],
+          [/"/, 'string', '@string'],
+          // delimiters and operators
+          [/[{}()\[\]]/, '@brackets'],
+          [/[,:]/, 'delimiter'],
 
-        window.editor = monaco.editor.create(document.getElementById('container'), {
-            value: [''].join('\n'),
-            language: 'expression',
-            minimap: {
-                enabled: false
-            },
-        });
+          // numbers
+          [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
+          [/\d+/, 'number'],
 
-        window.editor.getModel().onDidChangeContent((event) => {
-            monaco.editor.setModelMarkers(window.editor.getModel(), "owner", []);
-        });
-    }
+          // whitespace
+          [/\s+/, 'white'],
+          [/(^#.*$)/, 'comment'],
+        ],
+        string: [
+          [/\$\{/, {token: 'delimiter.bracket', next: '@bracketCounting'}],
+          [/[^\\"]+/, 'string'],
+          [/"/, 'string', '@pop']
+        ],
 
-    function markError(error) {
-        let markers = [];
-        markers.push({
-            startLineNumber: error.startLineNumber,
-            endLineNumber: error.endLineNumber,
-            startColumn: error.startColumnNumber,
-            endColumn: error.endColumnNumber,
-            message: error.summary,
-            severity: monaco.MarkerSeverity.Error
-        })
+        bracketCounting: [
+          [/\{/, 'delimiter.bracket', '@bracketCounting'],
+          [/\}/, 'delimiter.bracket', '@pop'],
+          {include: 'common'},
+        ],
+      },
+      ignoreCase: true
+    });
+    monaco.languages.registerCompletionItemProvider('expression', {
+      provideCompletionItems(model, position, context, token) {
+        const suggestions = [
+          ...keywords.map(
+            k => {
+              return {
+                label: k,
+                kind: monaco.languages.CompletionItemKind.Keyword,
+                insertText: k,
+              }
+            }
+          )
+        ];
+        return {suggestions: suggestions};
+      }
+    });
 
-        monaco.editor.setModelMarkers(window.editor.getModel(), "owner", markers);
-    }
+    window.editor = monaco.editor.create(document.getElementById('container'), {
+      value: [''].join('\n'),
+      language: 'expression',
+      wordWrap: "wordWrapColumn",
+      wordWrapColumn: 100,
+      minimap: {
+        enabled: false
+      },
+    });
 
-    function appendText(text) {
-        // Append function to the end of the editor.
-        // If there is a selection, replace it with the function.
-        const selection = editor.getSelection();
-        const id = {major: 1, minor: 1};
-        const op = {identifier: id, range: selection, text: text, forceMoveMarkers: true};
-        editor.executeEdits("my-source", [op]);
-    }
+    window.editor.getModel().onDidChangeContent((event) => {
+      monaco.editor.setModelMarkers(window.editor.getModel(), "owner", []);
+    });
+  }
+
+  function markError(error) {
+    let markers = [];
+    markers.push({
+      startLineNumber: error.startLineNumber,
+      endLineNumber: error.endLineNumber,
+      startColumn: error.startColumnNumber,
+      endColumn: error.endColumnNumber,
+      message: error.summary,
+      severity: monaco.MarkerSeverity.Error
+    })
+
+    monaco.editor.setModelMarkers(window.editor.getModel(), "owner", markers);
+  }
+
+  function appendText(text) {
+    // Append function to the end of the editor.
+    // If there is a selection, replace it with the function.
+    const selection = editor.getSelection();
+    const id = {major: 1, minor: 1};
+    const op = {identifier: id, range: selection, text: text, forceMoveMarkers: true};
+    editor.executeEdits("my-source", [op]);
+  }
 </script>
 </body>
 </html>
