@@ -849,4 +849,14 @@ private class EvaluatorTest {
             return 'Test';
         }
     }
+
+    @IsTest
+    private static void throwsExceptionIfThereAreMoreTokensAfterTheEndOfACompleteExpression() {
+        try {
+            Evaluator.run('1 + 1 1');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.ParsingException.class);
+        }
+    }
 }
