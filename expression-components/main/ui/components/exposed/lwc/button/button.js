@@ -1,39 +1,13 @@
-import TwElement from "c/twElement";
-import evaluate from '@salesforce/apex/FormulaEvaluatorUiController.evaluate';
-import { api, wire } from "lwc";
+import ExpressionSiteElement from "c/expressionSiteElement";
+import { api } from "lwc";
 
-export default class Button extends TwElement {
+export default class Button extends ExpressionSiteElement {
+  @api contextUrlParam;
+  @api previewContextId;
   @api expr;
-  @api centerItems;
   @api respectSharing;
 
-  computed;
-  error;
-
-  @wire(evaluate, {recordId: '', formula: '$expr', respectSharing: '$respectSharing'})
-  evaluate({error, data}) {
-    if (error) {
-      console.error(error);
-      this.error = error.body.message;
-    } else {
-      this.computed = data;
-      this._validate();
-    }
-  }
-
-  get loading() {
-    return !this.computed && !this.error;
-  }
-
-  get hasError() {
-    return this.error;
-  }
-
-  get ready() {
-    return !this.loading && !this.hasError;
-  }
-
-  _validate() {
+  validate() {
     if (!this.computed) {
       return;
     }
