@@ -1,0 +1,12 @@
+<template>
+    <slot></slot>
+    <div if:true={cannotShowPreview}>
+        <!--        TODO: This should be a warning, not an error-->
+        <c-alert title="Unable to show preview"
+                 message="To see a preview of the component, please provide a Preview Context ID when the Context URL Parameter is set.">
+        </c-alert>
+    </div>
+    <div if:true={error}>
+        <c-alert title="Error parsing expression" message={error}></c-alert>
+    </div>
+</template>

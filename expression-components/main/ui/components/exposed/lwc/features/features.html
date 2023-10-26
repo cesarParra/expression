@@ -1,31 +1,22 @@
 <template>
-    <pre>
-        {toDelete}
-        {contextId}
-    </pre>
-    <div if:true={ready} class="mx-auto max-w-7xl">
-        <div if:true={hasText} class="mx-auto max-w-2xl lg:mx-0">
-            <h2 if:true={computed.title} class="text-3xl font-bold tracking-tight text-dxp-text-contrast sm:text-4xl">
-                {computed.title}
-            </h2>
-            <p if:true={computed.description} class="mt-6 text-lg leading-8 text-dxp-text-contrast-3">
-                {computed.description}
-            </p>
+    <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error}>
+        <div lwc:if={ready} class="mx-auto max-w-7xl">
+            <div if:true={hasText} class="mx-auto max-w-2xl lg:mx-0">
+                <h2 if:true={computed.title} class="text-3xl font-bold tracking-tight text-dxp-text-contrast sm:text-4xl">
+                    {computed.title}
+                </h2>
+                <p if:true={computed.description} class="mt-6 text-lg leading-8 text-dxp-text-contrast-3">
+                    {computed.description}
+                </p>
+            </div>
+            <dl class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 text-dxp-text-contrast leading-7 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+                <template for:each={computed.features} for:item="feature">
+                    <div key={feature.title}>
+                        <dt class="font-semibold text-gray-900">{feature.title}</dt>
+                        <dd class="mt-1 text-dxp-text-contrast-3">{feature.description}</dd>
+                    </div>
+                </template>
+            </dl>
         </div>
-        <dl class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 text-dxp-text-contrast leading-7 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-            <template for:each={computed.features} for:item="feature">
-                <div key={feature.title}>
-                    <dt class="font-semibold text-gray-900">{feature.title}</dt>
-                    <dd class="mt-1 text-dxp-text-contrast-3">{feature.description}</dd>
-                </div>
-            </template>
-        </dl>
-    </div>
-    <div if:true={cannotShowPreview}>
-<!--        TODO: This should be a warning, not an error-->
-        <c-alert title="Unable to show preview. To see a preview of the component, please provide a Preview Context ID when the Context URL Parameter is set." message={cannotShowPreview}></c-alert>
-    </div>
-    <div if:true={error}>
-        <c-alert title="Error parsing expression" message={error}></c-alert>
-    </div>
+    </c-expression-element-container>
 </template>
