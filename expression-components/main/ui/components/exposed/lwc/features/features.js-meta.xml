@@ -10,6 +10,10 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightningCommunity__Default">
+            <property name="contextUrlParam" type="String" required="false" label="Context URL Parameter"
+                      description="Optional - The name of the URL parameter that contains the context ID." />
+            <property name="previewContextId" type="String" required="false" label="Preview Context ID"
+                      description="Optional - The ID of the context record to use when previewing the component in the builder." />
             <property name="expr" type="String" placeholder="1 + 1" required="true" label="Formula Expression"
                       description="Formula expression to be evaluated." default="" />
             <property name="respectSharing" type="Boolean" default="true" label="Respect Sharing"
