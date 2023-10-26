@@ -2,8 +2,8 @@
   "name": "formula-evaluator",
   "private": true,
   "scripts": {
-    "scratch:create": "sf org create -f config/dev.json -a Expression --setdefaultusername",
-    "scratch:create:communities": "sf org create -f config/dev-communities.json -a Expression --setdefaultusername",
+    "scratch:create": "sf org create scratch -f config/dev.json -a Expression --set-default",
+    "scratch:create:communities": "sf org create scratch -f config/dev-communities.json -a Expression --set-default",
     "source:push": "sfdx force:source:push",
     "permset:assign": "sfdx force:user:permset:assign -n Expression_Admin",
     "start:dev": "npm run scratch:create && npm run source:push && npm run permset:assign",

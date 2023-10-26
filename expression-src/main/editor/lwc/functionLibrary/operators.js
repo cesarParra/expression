@@ -31,7 +31,26 @@ export const operators = [
           examples: [
             "null"
           ]
-        }
+        },
+        {
+          name: "List literal",
+          autoCompleteValue: "[]",
+          icon: "utility:list",
+          description: "Creates a list of values.",
+          examples: [
+            "[1, 2, 3]",
+            "['a', 'b', 'c']",
+          ]
+        },
+        {
+          name: "Map literal",
+          autoCompleteValue: "{}",
+          icon: "utility:merge_field",
+          description: "Creates a map of key-value pairs.",
+          examples: [
+            '{"a": 1, "b": 2, "c": 3}'
+          ]
+        },
       ]
     },
     {
