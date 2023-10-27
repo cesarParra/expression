@@ -1,5 +1,5 @@
 <template>
-    <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error}>
+    <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error} loading={loading}>
         <div lwc:if={ready} class="mx-auto max-w-7xl">
             <div if:true={hasText} class="mx-auto max-w-2xl lg:mx-0">
                 <h2 if:true={computed.title} class="text-3xl font-bold tracking-tight text-dxp-text-contrast sm:text-4xl">
