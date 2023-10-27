@@ -1,5 +1,5 @@
 <template>
-    <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error}>
+    <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error} loading={loading}>
         <div if:true={ready} class={containerClasses}>
             <span style={textStyle}>{computed}</span>
         </div>

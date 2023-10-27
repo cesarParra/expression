@@ -1,5 +1,5 @@
 <template>
-    <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error}>
+    <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error} loading={loading}>
         <div if:true={ready}>
             <c-base-button action={computed} size="lg"></c-base-button>
         </div>
