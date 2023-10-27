@@ -10,8 +10,8 @@
     {
       "path": "expression-components",
       "package": "Expression Components",
-      "versionName": "Version 1.1",
-      "versionNumber": "1.1.0.NEXT",
+      "versionName": "Version 1.2",
+      "versionNumber": "1.2.0.NEXT",
       "default": false,
       "dependencies": [
         {
@@ -35,6 +35,7 @@
     "Expression (Unlocked)@1.24.0-1": "04tDm0000011MhkIAE",
     "Expression Components@1.0.0-1": "04tDm0000011MhpIAE",
     "Expression (Unlocked)@1.25.0-2": "04tDm0000011MhzIAE",
-    "Expression Components@1.1.0-1": "04tDm0000011Mi4IAE"
+    "Expression Components@1.1.0-1": "04tDm0000011Mi4IAE",
+    "Expression Components@1.2.0-1": "04tDm0000011Mi9IAE"
   }
 }
