@@ -1740,6 +1740,9 @@ sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000001
 
 ## Components
 
+> 📓 All components supported on communities are meant be used within an LWR template. They might
+> work in Aura templates, but keep in mind they developed and tested with LWR in mind.
+
 ### Formula
 
 The `Formula` component allows you to evaluate an expression and display the result. It can be used
@@ -1773,8 +1776,19 @@ itself based on the new values when placed in a record page.
 
 ![Sample Usage](assets/sample-lwc-usage.gif)
 
+### Form
+
+The `Form` component exposes a region where you can place other Expression components inside. This
+allows you to essentially "build" a form that then be submitted through a `Button` component with a
+`submit` type.
+
+Submitted forms will pass all the information of any embedded input components within the region
+to the Apex class specified in the `src` handler of the `Button`.
+
 
 ### Button
+
+> `Form` compatible
 
 The `Button` component allows you to display a button that can be used to trigger an action or navigate to a URL. 
 It can be used in a community page.
