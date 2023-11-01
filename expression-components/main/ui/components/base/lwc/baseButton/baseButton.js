@@ -35,16 +35,16 @@ export default class BaseButton extends NavigationMixin(TwElement) {
     switch (this.variant) {
       case "primary":
         return classNames(
-          'block rounded-md bg-dxp-brand text-center text-sm font-semibold ' +
-          'leading-6 text-dxp-brand-foreground shadow-sm hover:bg-dxp-brand-1 focus-visible:outline ' +
-          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dxp-brand-3 ' +
-          'hover:no-underline',
-          {'px-3 py-2': this.size === "md"},
-          {'px-3.5 py-2.5': this.size === "lg"},
+            'block rounded-md bg-dxp-brand text-center text-sm font-semibold ' +
+            'leading-6 text-dxp-brand-foreground shadow-sm hover:bg-dxp-brand-1 focus-visible:outline ' +
+            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dxp-brand-3 ' +
+            'hover:no-underline',
+            {'px-3 py-2': this.size === "md"},
+            {'px-3.5 py-2.5': this.size === "lg"},
         );
       case "secondary":
         return classNames(
-          'text-sm font-semibold leading-6 text-dxp-brand'
+            'text-sm font-semibold leading-6 text-dxp-brand'
         );
       default:
         throw new Error(`Unknown variant: ${this.variant}`);
@@ -55,10 +55,17 @@ export default class BaseButton extends NavigationMixin(TwElement) {
     e.preventDefault();
     e.stopPropagation();
 
-    if (this.action.type === "action") {
+    if (this.action.type === 'submit') {
+      const evt = new CustomEvent('submit',
+          { bubbles : true,
+            detail: { action: execute, fnReference: this.action.src, callback: this.actionCallback },
+            composed : true
+          });
+      this.dispatchEvent(evt);
+    } else if (this.action.type === "action") {
       try {
         const result = await execute({fnReference: this.action.src});
-        this[NavigationMixin.Navigate](this._getNavigationObjectFromActionResult(result));
+        this.actionCallback(result);
       } catch (e) {
         console.error(e);
       }
@@ -81,20 +88,30 @@ export default class BaseButton extends NavigationMixin(TwElement) {
     }
   }
 
-  _getNavigationObjectFromActionResult(result) {
+  actionCallback = (result) => {
+    if (this.action.callback.type === 'reload') {
+      // Reload is not handled by the navigation mixin, so we handle it here
+      // as a special case.
+      location.reload();
+    } else {
+      this[NavigationMixin.Navigate](this._getNavigationObjectFromActionResult(result));
+    }
+  }
+
+  _getNavigationObjectFromActionResult = (result) => {
     return {
       type: this._mapApexCallbackToNavigationMixinType(this.action.callback.type),
       attributes: {
         name: this.action.callback.name,
       },
       state: Object.entries(this.action.callback.args)
-        .map(([key, value]) => {
-          return [key, value.replace("{!placeholder}", result)];
-        })
-        .reduce((acc, [key, value]) => {
-          acc[key] = value;
-          return acc;
-        }, {})
+          .map(([key, value]) => {
+            return [key, value.replace("{!placeholder}", result)];
+          })
+          .reduce((acc, [key, value]) => {
+            acc[key] = value;
+            return acc;
+          }, {})
     };
   }
 

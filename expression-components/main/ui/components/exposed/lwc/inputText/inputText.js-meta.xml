@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>58.0</apiVersion>
+    <description>Input Text</description>
+    <isExposed>true</isExposed>
+    <masterLabel>Input Text</masterLabel>
+    <targets>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="label" type="String" required="true" label="Label"
+                      description="Label to display on top of the input." />
+            <property name="name" type="String" required="true" label="Name"
+                      description="Unique name to identify the component by." />
+            <property name="required" type="Boolean" required="false" label="Required"
+                      default="false"
+                      description="Whether the user must complete this field before submission or not." />
+            <property name="errorMessage" type="String" required="false" label="Validation Error Message"
+                      description="Message to display when the field was not filled." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>
