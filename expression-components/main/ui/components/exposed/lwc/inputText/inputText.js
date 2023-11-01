@@ -13,13 +13,10 @@ export default class InputText extends TwElement {
 
   @api
   reportValidity() {
-    console.log('reportValidity', this.value);
     if (this.required && !this.value) {
-      console.log('reportValidity', this.value, 'is invalid');
       this.hasValidationError = true;
       return false;
     }
-    console.log('reportValidity', this.value, 'is valid');
     this.hasValidationError = false;
     return true;
   }

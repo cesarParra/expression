@@ -1884,6 +1884,20 @@ This action navigates to a URL. A Map expression with a "name" property must be 
 
 This action reloads the page.
 
+### Input Text
+
+> `Form` compatible
+
+The `Input Text` component allows you to display a text input. It can be used
+in a community page.
+
+#### Properties
+
+- `Label` - The label to display.
+- `Name` - Unique name for the input. This will be used as the key in the form data during submission.
+- `Required` - Whether the input is required or not.
+- `Error Message` - The error message to display when the input is required and empty.
+
 ### Nav Bar
 
 The `Nav Bar` component allows you to display a navigation bar with links to other pages. It can be used

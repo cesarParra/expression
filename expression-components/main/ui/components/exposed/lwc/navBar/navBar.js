@@ -8,6 +8,7 @@ export default class NavBar extends ExpressionSiteElement {
   @api respectSharing;
 
   isOpen = false;
+
   toggle() {
     this.isOpen = !this.isOpen;
   }
