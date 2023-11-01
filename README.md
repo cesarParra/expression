@@ -1784,13 +1784,37 @@ It can be used in a community page.
 - `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
 
 * `label` - Expression that evaluates to a String - The label to display on the button.
-* `type` - Expression that evaluates to a String - The type of button to display. Valid values are `action`, `navigation_namedPage`, `navigation_url`
+* `type` - Expression that evaluates to a String - The type of button to display. Valid values are `submit`, `action`, `navigation_namedPage`, `navigation_url`
 * `src` - Depending on the `type` specified, this can hold one of the following values:
-    * `action` - Reference to an Apex action to execute using the `$Action.Apex.ClassName` format.
+    * `submit` or `action` - Reference to an Apex action to execute using the `$Action.Apex.ClassName` format.
     * `navigation_namedPage` - The API name of the page to navigate to.
     * `navigation_url` - The URL to navigate to.
 * `callback` - Only to be used when the `action` type is specified. This should be a reference to an LWC action using the
 `$Action.LWC.ActionName` format. The special variable `$returnValue` can be used to reference the return value of the action.
+
+#### Action Types
+
+The `type` property determines how the button will behave when clicked. The following types are supported with their
+respective behaviors:
+
+* `submit`
+
+To use this type the button must be placed inside a `Form` component. When clicked, the form will be submitted (the
+Apex action referenced in the `src` property will be executed) receiving the form data as a Map.
+
+* `action`
+
+When clicked, the Apex action referenced in the `src` property will be executed.
+
+* `navigation_namedPage`
+
+When clicked, the user will be navigated to the page referenced in the `src` property. The `src` property should
+evaluate to a String containing the API name of the page to navigate to.
+
+* `navigation_url`
+
+When clicked, the user will be navigated to the URL referenced in the `src` property. The `src` property should
+evaluate to a String containing the URL to navigate to.
 
 **Example**
 
@@ -1841,6 +1865,10 @@ This action navigates to a URL. A Map expression with a "name" property must be 
   "name": "pageApiName"
 }
 ```
+
+* `Reload`
+
+This action reloads the page.
 
 ### Nav Bar
 

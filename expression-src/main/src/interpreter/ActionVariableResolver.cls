@@ -47,6 +47,11 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
                     returnMap.put('type', 'navigate__url');
                     return returnMap;
                 }
+                when 'reload' {
+                    return new Map<String, Object> {
+                        'type' => 'reload'
+                    };
+                }
                 when else {
                     throw new ActionVariableResolverException('Unknown LWC action: ' + referenceName);
                 }

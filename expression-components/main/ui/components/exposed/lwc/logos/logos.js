@@ -6,10 +6,6 @@ export default class Logos extends ExpressionSiteElement {
   @api previewContextId;
   @api expr;
   @api respectSharing;
-
-  computed;
-  error;
-
   validate() {
     if (!this.computed) {
       return;
