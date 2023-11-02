@@ -1,7 +1,13 @@
 <template>
-  <a href="#" class={btnClasses}
-     onclick={executeAction}
-  >
-    {action.label}
-  </a>
+    <a lwc:if={displayAsAnchor} href="#" class={btnClasses}
+       onclick={executeAction}
+    >
+        {action.label}
+    </a>
+    <button lwc:if={displayAsButton} class={btnClasses}
+            onclick={executeAction}
+            disabled={disabled}
+    >
+        {action.label}
+    </button>
 </template>

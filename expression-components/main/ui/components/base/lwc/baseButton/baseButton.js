@@ -1,8 +1,8 @@
-import { api } from 'lwc';
+import {api} from 'lwc';
 import TwElement from "c/twElement";
-import { NavigationMixin } from "lightning/navigation";
+import {NavigationMixin} from "lightning/navigation";
 import execute from '@salesforce/apex/FormulaEvaluatorUiController.execute';
-import { classNames } from 'c/utils';
+import {classNames} from 'c/utils';
 
 export default class BaseButton extends NavigationMixin(TwElement) {
   /**
@@ -31,20 +31,21 @@ export default class BaseButton extends NavigationMixin(TwElement) {
 
   @api variant = "primary";
 
+  disabled = false;
   get btnClasses() {
     switch (this.variant) {
       case "primary":
         return classNames(
-            'block rounded-md bg-dxp-brand text-center text-sm font-semibold ' +
-            'leading-6 text-dxp-brand-foreground shadow-sm hover:bg-dxp-brand-1 focus-visible:outline ' +
-            'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dxp-brand-3 ' +
-            'hover:no-underline',
-            {'px-3 py-2': this.size === "md"},
-            {'px-3.5 py-2.5': this.size === "lg"},
+          'block rounded-md bg-dxp-brand text-center text-sm font-semibold w-full ' +
+          'leading-6 text-dxp-brand-foreground shadow-sm hover:bg-dxp-brand-1 focus-visible:outline ' +
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dxp-brand-3 ' +
+          'hover:no-underline disabled:opacity-50 disabled:cursor-not-allowed',
+          {'px-3 py-2': this.size === "md"},
+          {'px-3.5 py-2.5': this.size === "lg"},
         );
       case "secondary":
         return classNames(
-            'text-sm font-semibold leading-6 text-dxp-brand'
+          'text-sm font-semibold leading-6 text-dxp-brand'
         );
       default:
         throw new Error(`Unknown variant: ${this.variant}`);
@@ -55,12 +56,15 @@ export default class BaseButton extends NavigationMixin(TwElement) {
     e.preventDefault();
     e.stopPropagation();
 
+    this.disabled = true;
+
     if (this.action.type === 'submit') {
       const evt = new CustomEvent('submit',
-          { bubbles : true,
-            detail: { action: execute, fnReference: this.action.src, callback: this.actionCallback },
-            composed : true
-          });
+        {
+          bubbles: true,
+          detail: {action: execute, fnReference: this.action.src, callback: this.actionCallback},
+          composed: true
+        });
       this.dispatchEvent(evt);
     } else if (this.action.type === "action") {
       try {
@@ -88,6 +92,13 @@ export default class BaseButton extends NavigationMixin(TwElement) {
     }
   }
 
+  get displayAsAnchor() {
+    return this.action.type === "navigation_namedPage" || this.action.type === "navigation_url";
+  }
+
+  get displayAsButton() {
+    return this.action.type === "submit" || this.action.type === "action";
+  }
   actionCallback = (result) => {
     if (this.action.callback.type === 'reload') {
       // Reload is not handled by the navigation mixin, so we handle it here
@@ -105,13 +116,13 @@ export default class BaseButton extends NavigationMixin(TwElement) {
         name: this.action.callback.name,
       },
       state: Object.entries(this.action.callback.args)
-          .map(([key, value]) => {
-            return [key, value.replace("{!placeholder}", result)];
-          })
-          .reduce((acc, [key, value]) => {
-            acc[key] = value;
-            return acc;
-          }, {})
+        .map(([key, value]) => {
+          return [key, value.replace("{!placeholder}", result)];
+        })
+        .reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {})
     };
   }
 
