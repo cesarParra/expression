@@ -1,156 +1,166 @@
 public with sharing class AstPrinter implements Visitor {
     public void printAst(Expr expr) {
         Object toPrint = expr.accept(this);
-        System.debug(toPrint);
+        System.debug(JSON.serializePretty(toPrint));
     }
 
     public Object visit(Expr.Binary binary) {
-        return parenthesize(
-            binary.operator.lexeme,
-            new List<Expr>{
-                binary.left,
-                binary.right
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'Binary',
+            'body' => new Map<String, Object> {
+                'left' => binary.left.accept(this),
+                'operator' => binary.operator.lexeme,
+                'right' => binary.right.accept(this)
             }
-        );
+        };
+        return toPrint;
     }
 
     public Object visit(Expr.Grouping grouping) {
-        return parenthesize('group', new List<Expr>{
-            grouping.expression
-        });
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'Grouping',
+            'body' => new Map<String, Object> {
+                'expression' => grouping.expression.accept(this)
+            }
+        };
+        return toPrint;
     }
 
     public Object visit(Expr.Literal literal) {
-        return literal.value;
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'Literal',
+            'body' => new Map<String, Object> {
+                'value' => literal.value
+            }
+        };
+        return toPrint;
     }
 
     public Object visit(Expr.StringLiteral literal) {
-        String stringValue = '';
+        List<Object> stringsAndInterpolations = new List<Object>();
         for (Object current : literal.stringsAndInterpolations) {
             if (current instanceof String) {
-                stringValue += (String) current;
+                stringsAndInterpolations.add(current);
             } else if (current instanceof Expr) {
-                stringValue += '${' + objToString(((Expr) current).accept(this)) + '}';
+                stringsAndInterpolations.add(((Expr) current).accept(this));
             }
         }
-        return stringValue;
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'StringLiteral',
+            'body' => new Map<String, Object> {
+                'value' => stringsAndInterpolations
+            }
+        };
+        return toPrint;
     }
 
     public Object visit(Expr.Variable variable) {
-        return 'Variable(' + variable.name.lexeme + ')';
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'Variable',
+            'body' => new Map<String, Object> {
+                'name' => variable.name.lexeme
+            }
+        };
+        return toPrint;
     }
 
     public Object visit(Expr.MergeField mergeField) {
-        return 'MergeField(' + mergeField.name.lexeme + ')';
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'MergeField',
+            'body' => new Map<String, Object> {
+                'name' => mergeField.name.lexeme
+            }
+        };
+        return toPrint;
     }
 
     public Object visit(Expr.Unary unary) {
-        return parenthesize(
-            unary.operator.lexeme,
-            new List<Expr>{
-                unary.right
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'Unary',
+            'body' => new Map<String, Object> {
+                'operator' => unary.operator.lexeme,
+                'right' => unary.right.accept(this)
             }
-        );
+        };
+        return toPrint;
     }
 
     public Object visit(Expr.GetExpr getExpr) {
-        return parenthesize(
-            'GET:' + getExpr.field.lexeme,
-            new List<Expr>{
-                getExpr.objectExpr
+        List<Object> arguments = new List<Object>();
+        for (Expr expr : getExpr.arguments) {
+            arguments.add(expr.accept(this));
+        }
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'GetExpr',
+            'body' => new Map<String, Object> {
+                'object' => getExpr.objectExpr.accept(this),
+                'field' => getExpr.field.lexeme,
+                'arguments' => arguments
             }
-        );
+        };
+        return toPrint;
     }
 
     public Object visit(Expr.FunctionCall function) {
-        return parenthesize(
-            'FN:' + function.functionName,
-            function.arguments
-        );
+        List<Object> arguments = new List<Object>();
+        for (Expr expr : function.arguments) {
+            arguments.add(expr.accept(this));
+        }
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'FunctionCall',
+            'body' => new Map<String, Object> {
+                'name' => function.functionName,
+                'arguments' => arguments
+            }
+        };
+        return toPrint;
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
-        StringBuilder builder = new StringBuilder();
-        builder.add('(').add('[');
+        List<Object> elements = new List<Object>();
         for (Expr expr : listLiteral.elements) {
-            builder.add(' ');
-            builder.add(objToString(expr.accept(this)));
+            elements.add(expr.accept(this));
         }
-        builder.add(']').add(')');
-        return builder.toString();
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'ListLiteral',
+            'body' => new Map<String, Object> {
+                'elements' => elements
+            }
+        };
+        return toPrint;
     }
 
     public Object visit(Expr.MapLiteral mapLiteral) {
-        StringBuilder builder = new StringBuilder();
-        builder.add('(').add('{');
-        for (Object element: mapLiteral.elements) {
-            builder.add(' ');
-            if (element instanceof Expr.Spread) {
-                builder.add(objToString(((Expr.Spread) element).accept(this)));
-                continue;
+        List<Object> elements = new List<Object>();
+        for (Object current : mapLiteral.elements) {
+            if (current instanceof Expr.KeyValue) {
+                Object key = ((Expr.KeyValue) current).key.accept(this);
+                Object value = ((Expr.KeyValue) current).value.accept(this);
+                Map<String, Object> keyValue = new Map<String, Object>{
+                    'key' => key,
+                    'value' => value
+                };
+                elements.add(keyValue);
+            } else if (current instanceof Expr.Spread) {
+                elements.add(((Expr.Spread) current).accept(this));
             }
-
-            Expr.KeyValue keyValue = (Expr.KeyValue) element;
-            builder.add(objToString(keyValue.key.accept(this)));
-            builder.add(': ');
-            builder.add(objToString(keyValue.value.accept(this)));
         }
-        builder.add('}').add(')');
-        return builder.toString();
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'MapLiteral',
+            'body' => new Map<String, Object> {
+                'elements' => elements
+            }
+        };
+        return toPrint;
     }
 
     public Object visit(Expr.Spread spread) {
-        return parenthesize(
-            'SPREAD',
-            new List<Expr>{
-                spread.expression
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'Spread',
+            'body' => new Map<String, Object> {
+                'expression' => spread.expression.accept(this)
             }
-        );
-    }
-
-    private String parenthesize(String str, List<Expr> exprs) {
-        StringBuilder builder = new StringBuilder();
-        builder.add('(').add(str);
-        for (Expr expr : exprs) {
-            builder.add(' ');
-            builder.add(objToString(expr.accept(this)));
-        }
-        builder.add(')');
-        return builder.toString();
-    }
-
-    private static String objToString(Object obj) {
-        if (obj == null) {
-            return 'null';
-        }
-
-        if (obj instanceof Decimal) {
-            // There seems to be an Apex bug that throws a Javalang exception
-            // when trying to cast a generic Decimal object to a string, so if we encounter
-            // a Decimal, we cast it first to a Decimal, then to a string.
-            return String.valueOf((Decimal) obj);
-        }
-
-        return String.valueOf(obj.toString());
-    }
-
-    private with sharing class StringBuilder {
-        private String str;
-        private Integer index;
-
-        public StringBuilder() {
-            str = '';
-            index = 0;
-        }
-
-        public StringBuilder add(String s) {
-            str += s;
-            index += s.length();
-            return this;
-        }
-
-        public override String toString() {
-            return str;
-        }
+        };
+        return toPrint;
     }
 }
