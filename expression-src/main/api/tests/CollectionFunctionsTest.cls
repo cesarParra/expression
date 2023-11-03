@@ -360,6 +360,21 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void combiningWhereAndMap_withRelationshipsBetweenDifferentSObjectTypes() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Contact childContact = new Contact(LastName = 'Child', AccountId = parentAccount.Id);
+        insert childContact;
+
+        String expr = 'MAP(WHERE(Contacts, BEGINS(LastName, "C")), Name)';
+        List<Object> result = (List<Object>) Evaluator.run(expr, parentAccount.Id);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual('Child', result[0]);
+    }
+
+    @IsTest
     private static void nestingWheres() {
         Account parentAccount = new Account(Name = 'Parent');
         insert parentAccount;

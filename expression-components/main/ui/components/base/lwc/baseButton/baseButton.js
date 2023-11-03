@@ -1,6 +1,8 @@
 import {api} from 'lwc';
 import TwElement from "c/twElement";
 import {NavigationMixin} from "lightning/navigation";
+import { RefreshEvent } from "lightning/refresh";
+// TODO: next let's dispatch the event
 import execute from '@salesforce/apex/FormulaEvaluatorUiController.execute';
 import {classNames} from 'c/utils';
 

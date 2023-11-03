@@ -8,7 +8,7 @@
         <option name="defaultSourceRootUrl" value="file://$MODULE_DIR$/force-app" />
         <option name="moduleContents">
           <ModuleContents>
-            <option name="contentSelectionType" value="SELECTED" />
+            <option name="contentSelectionType" value="LOCAL_FILES" />
           </ModuleContents>
         </option>
       </configuration>

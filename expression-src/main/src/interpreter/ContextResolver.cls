@@ -189,13 +189,14 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
-    private Set<String> cachedFields;
+    private final Map<SObjectType, Set<String>> cachedFieldsBySObjectType = new Map<SObjectType, Set<String>>();
     private Set<String> getFields() {
-        if (cachedFields == null) {
-            cachedFields = new Set<String>();
-            cachedFields = this.queryContext.objectType.getDescribe().fields.getMap().keySet();
+        if (cachedFieldsBySObjectType.containsKey(this.queryContext.objectType)) {
+            return cachedFieldsBySObjectType.get(this.queryContext.objectType);
         }
 
+        Set<String> cachedFields = this.queryContext.objectType.getDescribe().fields.getMap().keySet();
+        cachedFieldsBySObjectType.put(this.queryContext.objectType, cachedFields);
         return cachedFields;
     }
 
