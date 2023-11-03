@@ -58,15 +58,18 @@ export default class BaseButton extends NavigationMixin(TwElement) {
     e.preventDefault();
     e.stopPropagation();
 
-    // TODO: This needs to be more robust because it doesn't work for refresh
-    // and also doesn't work if the validation fails on a submit.
     this.disabled = true;
 
     if (this.action.type === 'submit') {
       const evt = new CustomEvent('submit',
         {
           bubbles: true,
-          detail: {action: execute, fnReference: this.action.src, callback: this.actionCallback},
+          detail: {
+            action: execute, fnReference: this.action.src, callback: () => {
+              this.actionCallback();
+              this.disabled = false;
+            }
+          },
           composed: true
         });
       this.dispatchEvent(evt);
@@ -74,6 +77,7 @@ export default class BaseButton extends NavigationMixin(TwElement) {
       try {
         const result = await execute({fnReference: this.action.src});
         this.actionCallback(result);
+        this.disabled = false;
       } catch (e) {
         console.error(e);
       }
