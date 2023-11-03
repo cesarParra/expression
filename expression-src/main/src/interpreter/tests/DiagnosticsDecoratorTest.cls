@@ -3,7 +3,7 @@ private class DiagnosticsDecoratorTest {
     @IsTest
     static void populatesDiagnosticsWhenRun() {
         String expression = '1 + 2';
-        Evaluator.Config configWithDiagnostics = new Evaluator.Config();
+        Configuration configWithDiagnostics = new Configuration();
         configWithDiagnostics.withDiagnostics = true;
 
         Object result = Evaluator.run(expression, configWithDiagnostics);

@@ -36,13 +36,12 @@ public with sharing class PlaygroundController {
     @AuraEnabled
     public static Result validate(String expr, Id recordId) {
         Result toReturn = new Result();
-        Evaluator.Config config = new Evaluator.Config();
-        config.withDiagnostics = true;
+        Configuration configWithDiagnostics = new Configuration().withDiagnostics();
         try {
             if (String.isNotBlank(recordId)) {
-                toReturn.result = Evaluator.run(expr, recordId, config);
+                toReturn.result = Evaluator.run(expr, recordId, configWithDiagnostics);
             } else {
-                toReturn.result = Evaluator.run(expr, config);
+                toReturn.result = Evaluator.run(expr, configWithDiagnostics);
             }
         } catch (Exceptions.PositionAwareException e) {
             EvaluationError error = new EvaluationError();

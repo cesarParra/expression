@@ -1,16 +1,14 @@
 /**
  * @description Evaluates a formula and returns the result.
  */
-global with sharing class Evaluator {
-    public static SharingMode evaluationSharingMode;
-
+global with sharing abstract class Evaluator {
     /**
      * @description Evaluates a formula and returns the result.
      * @param formula The formula to evaluate.
      * @return The result of the formula.
      */
     global static Object run(String formula) {
-        return run(formula, new Config());
+        return run(formula, new Configuration());
     }
 
     /**
@@ -20,7 +18,7 @@ global with sharing class Evaluator {
      *        the evaluation.
      * @return The result of the formula.
      */
-    global static Object run(String formula, Config config) {
+    global static Object run(String formula, Configuration config) {
         return run(formula, (SObject) null, config);
     }
 
@@ -33,7 +31,7 @@ global with sharing class Evaluator {
      * @return The result of the formula.
      */
     global static Object run(String formula, SObject context) {
-        return run(formula, context, new Config());
+        return run(formula, context, new Configuration());
     }
 
     /**
@@ -46,9 +44,8 @@ global with sharing class Evaluator {
      *        the evaluation.
      * @return The result of the formula.
      */
-    global static Object run(String formula, SObject context, Config config) {
-        Expr pipedExpression = parseExpression(formula, config);
-        return interpretWithContext(context, pipedExpression, config);
+    global static Object run(String formula, SObject context, Configuration config) {
+        return EvaluatorResolver.forRecord(context).evaluate(formula, config);
     }
 
     /**
@@ -60,7 +57,7 @@ global with sharing class Evaluator {
      * @return The result of the formula.
      */
     global static Object run(String formula, Id recordId) {
-        return run(formula, recordId, new Config());
+        return run(formula, recordId, new Configuration());
     }
 
     /**
@@ -73,58 +70,9 @@ global with sharing class Evaluator {
      *        the evaluation.
      * @return The result of the formula.
      */
-    global static Object run(String formula, Id recordId, Config config) {
-        Expr pipedExpression = parseExpression(formula, config);
-        SObject record = getRecord(recordId, pipedExpression);
-        return interpretWithContext(record, pipedExpression, config);
+    global static Object run(String formula, Id recordId, Configuration config) {
+        return EvaluatorResolver.forId(recordId).evaluate(formula, config);
     }
 
-    private static Expr parseExpression(String formula, Config config) {
-        evaluationSharingMode = config.sharing;
-        Scanner scanner = new Scanner(formula);
-        List<Token> tokens = scanner.scanTokens();
 
-        Parser parser = new Parser(tokens);
-        Expr expression = parser.parse();
-
-        if (config.printAst) {
-            AstPrinter printer = new AstPrinter();
-            printer.printAst(expression);
-        }
-
-        PipeResolver pipeInterpreter = new PipeResolver();
-        Expr pipedExpression = pipeInterpreter.resolve(expression);
-        return pipedExpression;
-    }
-
-    private static SObject getRecord(Id recordId, Expr pipedExpression) {
-        ContextResolver ctxInterpreter = new ContextResolver(recordId);
-        return ctxInterpreter.build(pipedExpression);
-    }
-
-    private static Object interpretWithContext(SObject record, Expr pipedExpression, Config config) {
-        Environment env = new Environment(record);
-        IInterpreter interpreter = getInterpreter(env, config);
-        return interpreter.interpret(pipedExpression);
-    }
-
-    global enum SharingMode {
-        WITH,
-        WITHOUT
-    }
-
-    global class Config {
-        global SharingMode sharing = SharingMode.WITH;
-        global Boolean printAst = false;
-        public Boolean withDiagnostics = false;
-    }
-
-    private static IInterpreter getInterpreter(Environment env, Config config) {
-        IInterpreter mainInterpreter = new Interpreter(env);
-        if (config.withDiagnostics) {
-            return new DiagnosticsDecorator(mainInterpreter);
-        } else {
-            return mainInterpreter;
-        }
-    }
 }
