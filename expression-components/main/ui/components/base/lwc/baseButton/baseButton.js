@@ -1,8 +1,7 @@
 import {api} from 'lwc';
 import TwElement from "c/twElement";
 import {NavigationMixin} from "lightning/navigation";
-import { RefreshEvent } from "lightning/refresh";
-// TODO: next let's dispatch the event
+import {RefreshEvent} from "lightning/refresh";
 import execute from '@salesforce/apex/FormulaEvaluatorUiController.execute';
 import {classNames} from 'c/utils';
 
@@ -15,7 +14,7 @@ export default class BaseButton extends NavigationMixin(TwElement) {
 
   /**
    * @typedef ApexFunctionCallback
-   * @property { "navigate__namedPage" | "navigate__url" } type
+   * @property { "navigate__namedPage" | "navigate__url", "reload", "refresh" } type
    * @property { string } name
    * @property { Object } args
    */
@@ -23,7 +22,7 @@ export default class BaseButton extends NavigationMixin(TwElement) {
   /**
    * The action to execute when the button is clicked
    * @property {string} label
-   * @property {"action" | "navigation_namedPage" | "navigation_url" } type
+   * @property {"action", "submit" | "navigation_namedPage" | "navigation_url" } type
    * @property {string | ApexFunction} src
    * @property {ApexFunctionCallback} callback
    */
@@ -34,6 +33,7 @@ export default class BaseButton extends NavigationMixin(TwElement) {
   @api variant = "primary";
 
   disabled = false;
+
   get btnClasses() {
     switch (this.variant) {
       case "primary":
@@ -58,6 +58,8 @@ export default class BaseButton extends NavigationMixin(TwElement) {
     e.preventDefault();
     e.stopPropagation();
 
+    // TODO: This needs to be more robust because it doesn't work for refresh
+    // and also doesn't work if the validation fails on a submit.
     this.disabled = true;
 
     if (this.action.type === 'submit') {
@@ -101,14 +103,26 @@ export default class BaseButton extends NavigationMixin(TwElement) {
   get displayAsButton() {
     return this.action.type === "submit" || this.action.type === "action";
   }
+
   actionCallback = (result) => {
-    if (this.action.callback.type === 'reload') {
-      // Reload is not handled by the navigation mixin, so we handle it here
-      // as a special case.
-      location.reload();
-    } else {
-      this[NavigationMixin.Navigate](this._getNavigationObjectFromActionResult(result));
+    switch (this.action.callback.type) {
+      case "reload":
+        this.dispatchEvent(new RefreshEvent());
+        break;
+      case "refresh":
+        this.dispatchEvent(new CustomEvent('expression_refresh', {bubbles: true, composed: true}));
+        break;
+      case "navigate__namedPage":
+      case "navigate__url":
+        this._navigate(result);
+        break;
+      default:
+        throw new Error(`Unknown callback type: ${this.action.callback.type}`);
     }
+  }
+
+  _navigate(result) {
+    this[NavigationMixin.Navigate](this._getNavigationObjectFromActionResult(result));
   }
 
   _getNavigationObjectFromActionResult = (result) => {
