@@ -52,6 +52,11 @@ public with sharing class ActionVariableResolver implements IGlobalVariableResol
                         'type' => 'reload'
                     };
                 }
+                when 'refresh' {
+                    return new Map<String, Object> {
+                        'type' => 'refresh'
+                    };
+                }
                 when else {
                     throw new ActionVariableResolverException('Unknown LWC action: ' + referenceName);
                 }

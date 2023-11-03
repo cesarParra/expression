@@ -1,7 +1,8 @@
 import TwElement from "c/twElement";
+import {refreshApex} from '@salesforce/apex';
 import evaluate from '@salesforce/apex/FormulaEvaluatorUiController.evaluate';
-import { CurrentPageReference } from "lightning/navigation";
-import { wire } from "lwc";
+import {CurrentPageReference} from "lightning/navigation";
+import {wire} from "lwc";
 
 export default class ExpressionSiteElement extends TwElement {
   // These 4 need to be set by the extending class as `@api` properties.
@@ -14,6 +15,15 @@ export default class ExpressionSiteElement extends TwElement {
   computed;
   error;
   contextId = null
+  evaluatedWire;
+
+  connectedCallback() {
+    window.addEventListener('expression_refresh', this.refreshHandler);
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('expression_refresh', this.refreshHandler);
+  }
 
   @wire(CurrentPageReference)
   setCurrentPageReference(currentPageReference) {
@@ -24,7 +34,9 @@ export default class ExpressionSiteElement extends TwElement {
   }
 
   @wire(evaluate, {recordId: '$contextId', formula: '$expr', respectSharing: '$respectSharing'})
-  evaluate({error, data}) {
+  evaluate(evaluatedWire) {
+    this.evaluatedWire = evaluatedWire;
+    const {error, data} = evaluatedWire;
     if (error) {
       console.error(error);
       this.error = error.body.message;
@@ -32,6 +44,10 @@ export default class ExpressionSiteElement extends TwElement {
       this.computed = data;
       this.validate();
     }
+  }
+
+  refreshHandler = () => {
+    return refreshApex(this.evaluatedWire);
   }
 
   get loading() {
@@ -64,5 +80,6 @@ export default class ExpressionSiteElement extends TwElement {
     return false;
   }
 
-  validate() {}
+  validate() {
+  }
 }
