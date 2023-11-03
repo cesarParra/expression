@@ -1,8 +1,8 @@
 import TwElement from "c/twElement";
-import { refreshApex } from '@salesforce/apex';
+import {refreshApex} from '@salesforce/apex';
 import evaluate from '@salesforce/apex/FormulaEvaluatorUiController.evaluate';
-import { CurrentPageReference } from "lightning/navigation";
-import { wire } from "lwc";
+import {CurrentPageReference} from "lightning/navigation";
+import {wire} from "lwc";
 
 export default class ExpressionSiteElement extends TwElement {
   // These 4 need to be set by the extending class as `@api` properties.
@@ -16,6 +16,7 @@ export default class ExpressionSiteElement extends TwElement {
   error;
   contextId = null
   evaluatedWire;
+
   connectedCallback() {
     window.addEventListener('expression_refresh', this.refreshHandler);
   }
@@ -46,7 +47,6 @@ export default class ExpressionSiteElement extends TwElement {
   }
 
   refreshHandler = () => {
-    console.log('refreshHandler');
     return refreshApex(this.evaluatedWire);
   }
 
@@ -80,5 +80,6 @@ export default class ExpressionSiteElement extends TwElement {
     return false;
   }
 
-  validate() {}
+  validate() {
+  }
 }
