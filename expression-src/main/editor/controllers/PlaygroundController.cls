@@ -34,7 +34,7 @@ public with sharing class PlaygroundController {
     }
 
     @AuraEnabled
-    public static Result validate(String expr, Id recordId) {
+    public static Result validate(String expr, String recordId) {
         Result toReturn = new Result();
         Configuration config = new Configuration().withDiagnostics().printAst();
         try {
