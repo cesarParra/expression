@@ -4,8 +4,6 @@ public with sharing class EvaluationDiagnosticsListener implements EvaluatorEven
     Integer startQueries;
     Integer startQueryRows;
 
-    public static DiagnosticsResult result { get; private set; }
-
     public class DiagnosticsResult {
         public final Integer cpuTime;
         public final Integer dmlStatements;
@@ -20,32 +18,37 @@ public with sharing class EvaluationDiagnosticsListener implements EvaluatorEven
         }
     }
 
-    public void handle(EvaluatorEvent event) {
-        if (event instanceof OnEvaluationStartEvent) {
-            this.onEvaluationStart((OnEvaluationStartEvent)event);
-        } else if (event instanceof OnEvaluationEndEvent) {
-            this.onEvaluationEnd((OnEvaluationEndEvent)event);
+    public Map<String, Object> handle(EvaluatorEvent event) {
+        if (event.getType() == OnEvaluationStartEvent.class) {
+            this.onEvaluationStart();
+        } else if (event.getType() == OnEvaluationEndEvent.class) {
+            return this.onEvaluationEnd();
         }
+        return null;
     }
 
-    private void onEvaluationStart(OnEvaluationStartEvent onEvaluationStartEvent) {
+    private void onEvaluationStart() {
         startCpuTime = Limits.getCpuTime();
         startDmlStatements = Limits.getDmlStatements();
         startQueries = Limits.getQueries();
         startQueryRows = Limits.getQueryRows();
     }
 
-    private void onEvaluationEnd(OnEvaluationEndEvent onEvaluationFinishEvent) {
+    private Map<String, Object> onEvaluationEnd() {
         Integer endCpuTime = Limits.getCpuTime();
         Integer endDmlStatements = Limits.getDmlStatements();
         Integer endQueries = Limits.getQueries();
         Integer endQueryRows = Limits.getQueryRows();
 
-        result = new DiagnosticsResult(
+        DiagnosticsResult result = new DiagnosticsResult(
             endCpuTime - startCpuTime,
             endDmlStatements - startDmlStatements,
             endQueries - startQueries,
             endQueryRows - startQueryRows
         );
+
+        return new Map<String, Object> {
+            'diagnostics' => result
+        };
     }
 }

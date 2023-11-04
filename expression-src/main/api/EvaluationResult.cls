@@ -1,9 +1,10 @@
 global with sharing class EvaluationResult {
     global Object result { get; private set; }
 
-    public Map<String, Object> additionalData = new Map<String, Object>();
+    public Map<String, Object> additionalData { get; private set; }
 
-    public void setResult(Object result) {
+    public EvaluationResult(Object result, Map<String, Object> additionalData) {
         this.result = result;
+        this.additionalData = additionalData;
     }
 }

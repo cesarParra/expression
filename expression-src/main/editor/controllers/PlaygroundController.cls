@@ -38,14 +38,16 @@ public with sharing class PlaygroundController {
         Result toReturn = new Result();
         Configuration configWithDiagnostics = new Configuration().withDiagnostics();
         try {
-            // TODO: Here we can call the EvaluatorResolver directly
-            // since that will now brings back AST and Diagnostic info
-            // in the additional data map.
+            EvaluationResult evalResult;
             if (String.isNotBlank(recordId)) {
-                toReturn.result = Evaluator.run(expr, recordId, configWithDiagnostics);
+                evalResult = EvaluatorResolver.forId(recordId).evaluate(expr, configWithDiagnostics);
             } else {
-                toReturn.result = Evaluator.run(expr, configWithDiagnostics);
+                evalResult = EvaluatorResolver.withoutContext().evaluate(expr, configWithDiagnostics);
             }
+            toReturn.result = evalResult.result;
+            EvaluationDiagnosticsListener.DiagnosticsResult diagnosticsResult =
+                (EvaluationDiagnosticsListener.DiagnosticsResult)evalResult.additionalData.get('diagnostics');
+            toReturn.diagnostics = new Diagnostics(diagnosticsResult);
         } catch (Exceptions.PositionAwareException e) {
             EvaluationError error = new EvaluationError();
             error.message = e.getMessage();
@@ -61,8 +63,6 @@ public with sharing class PlaygroundController {
             error.message = e.getMessage();
             toReturn.error = error;
         }
-
-        toReturn.diagnostics = new Diagnostics(EvaluationDiagnosticsListener.result);
 
         return toReturn;
     }

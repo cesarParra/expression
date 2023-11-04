@@ -1,10 +1,9 @@
 public with sharing abstract class EvaluatorResolver {
-    private final EvaluationResult evalResult;
+    private final Map<String, Object> additionalResultData = new Map<String, Object>();
     private final EvaluatorEventNotifier eventNotifier;
 
     public EvaluatorResolver() {
-        this.evalResult = new EvaluationResult();
-        this.eventNotifier = new EvaluatorEventNotifier();
+        this.eventNotifier = new EvaluatorEventNotifier(additionalResultData);
     }
 
     public static EvaluatorResolver forId(Id recordId) {
@@ -13,6 +12,10 @@ public with sharing abstract class EvaluatorResolver {
 
     public static EvaluatorResolver forRecord(SObject record) {
         return new BaseEvaluator(record);
+    }
+
+    public static EvaluatorResolver withoutContext() {
+        return new BaseEvaluator(null);
     }
 
     public EvaluationResult evaluate(String input, Configuration config) {
@@ -33,8 +36,7 @@ public with sharing abstract class EvaluatorResolver {
 
         eventNotifier.notify(new OnEvaluationEndEvent());
 
-        this.evalResult.setResult(result);
-        return this.evalResult;
+        return new EvaluationResult(result, additionalResultData);
     }
 
     private List<Token> scan(String expression) {

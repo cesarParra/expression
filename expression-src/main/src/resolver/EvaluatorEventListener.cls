@@ -1,3 +1,3 @@
 public interface EvaluatorEventListener {
-    void handle(EvaluatorEvent event);
+    Map<String, Object> handle(EvaluatorEvent event);
 }

@@ -2,6 +2,13 @@ public with sharing class EvaluatorEventNotifier {
     final Map<Type, List<EvaluatorEventListener>> listeners =
         new Map<Type, List<EvaluatorEventListener>>();
 
+    // Holds any data received from the event handler.
+    final Map<String, Object> listenerData;
+
+    public EvaluatorEventNotifier(Map<String, Object> listenerData) {
+        this.listenerData = listenerData;
+    }
+
     public void subscribe(Type eventType, EvaluatorEventListener listener) {
         List<EvaluatorEventListener> users = listeners.get(eventType);
         if (users == null) {
@@ -16,7 +23,10 @@ public with sharing class EvaluatorEventNotifier {
         List<EvaluatorEventListener> users = listeners.get(eventType);
         if (users != null) {
             for (EvaluatorEventListener listener : users) {
-                listener.handle(event);
+                Map<String, Object> handlerResult = listener.handle(event);
+                if (handlerResult != null) {
+                    listenerData.putAll(handlerResult);
+                }
             }
         }
     }
