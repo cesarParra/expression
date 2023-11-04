@@ -62,7 +62,7 @@ public with sharing class PlaygroundController {
             toReturn.error = error;
         }
 
-        toReturn.diagnostics = new Diagnostics(DiagnosticsDecorator.result);
+        toReturn.diagnostics = new Diagnostics(EvaluationDiagnosticsListener.result);
 
         return toReturn;
     }
@@ -91,7 +91,7 @@ public with sharing class PlaygroundController {
         @AuraEnabled
         public Integer queryRows;
 
-        public Diagnostics(DiagnosticsDecorator.DiagnosticsResult result) {
+        public Diagnostics(EvaluationDiagnosticsListener.DiagnosticsResult result) {
             this.cpuTime = result?.cpuTime;
             this.dmlStatements = result?.dmlStatements;
             this.queries = result?.queries;

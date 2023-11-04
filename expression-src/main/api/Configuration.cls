@@ -29,5 +29,15 @@ global with sharing class Configuration {
         // Always subscribe to the event that sets the sharing mode
         // at the beginning of the evaluation regardless of configuration.
         notifier.subscribe(OnEvaluationStartEvent.class, new EvaluationSharingModeSetter());
+
+        if (this.printAst) {
+            notifier.subscribe(OnAfterParseEvent.class, new AstPrinter());
+        }
+
+        if (this.withDiagnostics) {
+            EvaluationDiagnosticsListener diagnosticsListener = new EvaluationDiagnosticsListener();
+            notifier.subscribe(OnEvaluationStartEvent.class, diagnosticsListener);
+            notifier.subscribe(OnEvaluationEndEvent.class, diagnosticsListener);
+        }
     }
 }

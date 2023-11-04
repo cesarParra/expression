@@ -1,3 +1,4 @@
+// TODO: Rename and move to a more appropriate location
 @IsTest
 private class DiagnosticsDecoratorTest {
     @IsTest
@@ -9,9 +10,9 @@ private class DiagnosticsDecoratorTest {
         Object result = Evaluator.run(expression, configWithDiagnostics);
 
         Assert.areEqual(3, result);
-        Assert.isNotNull(DiagnosticsDecorator.result.cpuTime);
-        Assert.isNotNull(DiagnosticsDecorator.result.dmlStatements);
-        Assert.isNotNull(DiagnosticsDecorator.result.queries);
-        Assert.isNotNull(DiagnosticsDecorator.result.queryRows);
+        Assert.isNotNull(EvaluationDiagnosticsListener.result.cpuTime);
+        Assert.isNotNull(EvaluationDiagnosticsListener.result.dmlStatements);
+        Assert.isNotNull(EvaluationDiagnosticsListener.result.queries);
+        Assert.isNotNull(EvaluationDiagnosticsListener.result.queryRows);
     }
 }

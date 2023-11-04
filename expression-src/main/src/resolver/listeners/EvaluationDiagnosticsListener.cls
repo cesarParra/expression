@@ -1,5 +1,8 @@
-public with sharing class DiagnosticsDecorator implements IInterpreter {
-    private final IInterpreter decorated;
+public with sharing class EvaluationDiagnosticsListener implements EvaluatorEventListener {
+    Integer startCpuTime;
+    Integer startDmlStatements;
+    Integer startQueries;
+    Integer startQueryRows;
 
     public static DiagnosticsResult result { get; private set; }
 
@@ -17,18 +20,22 @@ public with sharing class DiagnosticsDecorator implements IInterpreter {
         }
     }
 
-    public DiagnosticsDecorator(IInterpreter decorated) {
-        this.decorated = decorated;
+    public void handle(EvaluatorEvent event) {
+        if (event instanceof OnEvaluationStartEvent) {
+            this.onEvaluationStart((OnEvaluationStartEvent)event);
+        } else if (event instanceof OnEvaluationEndEvent) {
+            this.onEvaluationEnd((OnEvaluationEndEvent)event);
+        }
     }
 
-    public Object interpret(Expr expr) {
-        Integer startCpuTime = Limits.getCpuTime();
-        Integer startDmlStatements = Limits.getDmlStatements();
-        Integer startQueries = Limits.getQueries();
-        Integer startQueryRows = Limits.getQueryRows();
+    private void onEvaluationStart(OnEvaluationStartEvent onEvaluationStartEvent) {
+        startCpuTime = Limits.getCpuTime();
+        startDmlStatements = Limits.getDmlStatements();
+        startQueries = Limits.getQueries();
+        startQueryRows = Limits.getQueryRows();
+    }
 
-        Object toReturn = this.decorated.interpret(expr);
-
+    private void onEvaluationEnd(OnEvaluationEndEvent onEvaluationFinishEvent) {
         Integer endCpuTime = Limits.getCpuTime();
         Integer endDmlStatements = Limits.getDmlStatements();
         Integer endQueries = Limits.getQueries();
@@ -40,7 +47,5 @@ public with sharing class DiagnosticsDecorator implements IInterpreter {
             endQueries - startQueries,
             endQueryRows - startQueryRows
         );
-
-        return toReturn;
     }
 }

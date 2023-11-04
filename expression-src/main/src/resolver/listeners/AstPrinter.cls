@@ -1,6 +1,7 @@
-public with sharing class AstPrinter implements Visitor {
-    public void printAst(Expr expr) {
-        Object toPrint = expr.accept(this);
+public with sharing class AstPrinter implements Visitor, EvaluatorEventListener {
+    public void handle(EvaluatorEvent event) {
+        OnAfterParseEvent parseEvent = (OnAfterParseEvent)event;
+        Object toPrint = parseEvent.expression.accept(this);
         System.debug(JSON.serializePretty(toPrint));
     }
 

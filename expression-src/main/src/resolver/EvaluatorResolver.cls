@@ -22,10 +22,17 @@ public with sharing abstract class EvaluatorResolver {
 
         List<Token> tokens = this.scan(input);
         Expr parsedExpression = this.parse(tokens);
-        this.onAfterParse(parsedExpression);
+
+        eventNotifier.notify(new OnAfterParseEvent(parsedExpression));
+
         Expr pipedExpression = this.desugarPipe(parsedExpression);
         Environment anEnvironment = this.prepareEnvironment(pipedExpression);
-        Object result = getInterpreter(anEnvironment, config).interpret(pipedExpression);
+
+        IInterpreter theInterpreter = new Interpreter(anEnvironment);
+        Object result = theInterpreter.interpret(pipedExpression);
+
+        eventNotifier.notify(new OnEvaluationEndEvent());
+
         this.evalResult.setResult(result);
         return this.evalResult;
     }
@@ -73,15 +80,6 @@ public with sharing abstract class EvaluatorResolver {
         }
         public override Environment prepareEnvironment(Expr pipedExpression) {
             return new Environment(record);
-        }
-    }
-
-    private static IInterpreter getInterpreter(Environment env, Configuration config) {
-        IInterpreter mainInterpreter = new Interpreter(env);
-        if (config.withDiagnostics) {
-            return new DiagnosticsDecorator(mainInterpreter);
-        } else {
-            return mainInterpreter;
         }
     }
 }
