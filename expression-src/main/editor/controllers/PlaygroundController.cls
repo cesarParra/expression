@@ -46,10 +46,16 @@ public with sharing class PlaygroundController {
             }
 
             toReturn.result = evalResult.result;
-            EvaluationDiagnosticsListener.DiagnosticsResult diagnosticsResult =
-                (EvaluationDiagnosticsListener.DiagnosticsResult)evalResult.additionalData.get('diagnostics');
-            toReturn.diagnostics = new Diagnostics(diagnosticsResult);
-            toReturn.ast = evalResult.additionalData.get('ast');
+
+            if (evalResult.additionalData.containsKey('diagnostics')) {
+                EvaluationDiagnosticsListener.DiagnosticsResult diagnosticsResult =
+                    (EvaluationDiagnosticsListener.DiagnosticsResult)evalResult.additionalData.get('diagnostics');
+                toReturn.diagnostics = new Diagnostics(diagnosticsResult);
+            }
+
+            if (evalResult.additionalData.containsKey('ast')) {
+                toReturn.ast = evalResult.additionalData.get('ast');
+            }
         } catch (Exceptions.PositionAwareException e) {
             EvaluationError error = new EvaluationError();
             error.message = e.getMessage();

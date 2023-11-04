@@ -7,8 +7,13 @@ export default class Monaco extends LightningElement {
   recordId;
   iframeUrl = `${monaco}/main.html`;
   result = {};
-  diagnostics = {};
-  ast = {};
+  diagnostics = {
+    cpuTime: "Unavailable",
+    dmlStatements: "Unavailable",
+    queries: "Unavailable",
+    queryRows: "Unavailable",
+  };
+  ast = "";
 
   async iframeLoaded() {
     const functionKeywords = await getFunctions();
@@ -41,8 +46,22 @@ export default class Monaco extends LightningElement {
       }
     }
 
-    this.diagnostics = result.diagnostics;
-    this.ast = this._syntaxHighlight(JSON.stringify(result.ast, null, 4));
+    this._setDiagnostics(result);
+    this.ast = result.ast ?
+      this._syntaxHighlight(JSON.stringify(result.ast, null, 4)) :
+      "";
+  }
+
+  _setDiagnostics(result) {
+    this.diagnostics = Object.keys(result.diagnostics).reduce((acc, key) => {
+      acc[key] = result.diagnostics[key] ?? "Unavailable";
+      return acc;
+    }, {
+      cpuTime: "Unavailable",
+      dmlStatements: "Unavailable",
+      queries: "Unavailable",
+      queryRows: "Unavailable",
+    });
   }
 
   handleInputChange(event) {
