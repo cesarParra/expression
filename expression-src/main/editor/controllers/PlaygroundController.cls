@@ -33,6 +33,8 @@ public with sharing class PlaygroundController {
         return toReturn;
     }
 
+    // Record Id is of type String because we could receive an empty String
+    // from the front-end, so we can't use Id as the type in that case.
     @AuraEnabled
     public static Result validate(String expr, String recordId) {
         Result toReturn = new Result();
