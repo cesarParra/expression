@@ -38,6 +38,9 @@ public with sharing class PlaygroundController {
         Result toReturn = new Result();
         Configuration configWithDiagnostics = new Configuration().withDiagnostics();
         try {
+            // TODO: Here we can call the EvaluatorResolver directly
+            // since that will now brings back AST and Diagnostic info
+            // in the additional data map.
             if (String.isNotBlank(recordId)) {
                 toReturn.result = Evaluator.run(expr, recordId, configWithDiagnostics);
             } else {

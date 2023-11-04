@@ -45,7 +45,7 @@ global with sharing abstract class Evaluator {
      * @return The result of the formula.
      */
     global static Object run(String formula, SObject context, Configuration config) {
-        return EvaluatorResolver.forRecord(context).evaluate(formula, config);
+        return EvaluatorResolver.forRecord(context).evaluate(formula, config).result;
     }
 
     /**
@@ -71,8 +71,6 @@ global with sharing abstract class Evaluator {
      * @return The result of the formula.
      */
     global static Object run(String formula, Id recordId, Configuration config) {
-        return EvaluatorResolver.forId(recordId).evaluate(formula, config);
+        return EvaluatorResolver.forId(recordId).evaluate(formula, config).result;
     }
-
-
 }

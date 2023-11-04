@@ -24,4 +24,10 @@ global with sharing class Configuration {
         withDiagnostics = true;
         return this;
     }
+
+    public void subscribe(EvaluatorEventNotifier notifier) {
+        // Always subscribe to the event that sets the sharing mode
+        // at the beginning of the evaluation regardless of configuration.
+        notifier.subscribe(OnEvaluationStartEvent.class, new EvaluationSharingModeSetter());
+    }
 }
