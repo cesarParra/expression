@@ -47,6 +47,12 @@
                                         <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>
                                     </ul>
                                 </lightning-tab>
+                                <lightning-tab label="AST">
+                                    <pre class={resultColor}>
+                                        <lightning-formatted-rich-text
+                                                value={ast}></lightning-formatted-rich-text>
+                                    </pre>
+                                </lightning-tab>
                             </lightning-tabset>
                         </div>
                     </div>

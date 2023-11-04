@@ -36,18 +36,20 @@ public with sharing class PlaygroundController {
     @AuraEnabled
     public static Result validate(String expr, Id recordId) {
         Result toReturn = new Result();
-        Configuration configWithDiagnostics = new Configuration().withDiagnostics();
+        Configuration config = new Configuration().withDiagnostics().printAst();
         try {
             EvaluationResult evalResult;
             if (String.isNotBlank(recordId)) {
-                evalResult = EvaluatorResolver.forId(recordId).evaluate(expr, configWithDiagnostics);
+                evalResult = EvaluatorResolver.forId(recordId).evaluate(expr, config);
             } else {
-                evalResult = EvaluatorResolver.withoutContext().evaluate(expr, configWithDiagnostics);
+                evalResult = EvaluatorResolver.withoutContext().evaluate(expr, config);
             }
+
             toReturn.result = evalResult.result;
             EvaluationDiagnosticsListener.DiagnosticsResult diagnosticsResult =
                 (EvaluationDiagnosticsListener.DiagnosticsResult)evalResult.additionalData.get('diagnostics');
             toReturn.diagnostics = new Diagnostics(diagnosticsResult);
+            toReturn.ast = evalResult.additionalData.get('ast');
         } catch (Exceptions.PositionAwareException e) {
             EvaluationError error = new EvaluationError();
             error.message = e.getMessage();
@@ -76,6 +78,9 @@ public with sharing class PlaygroundController {
 
         @AuraEnabled
         public Diagnostics diagnostics;
+
+        @AuraEnabled
+        public Object ast;
     }
 
     public class Diagnostics {
