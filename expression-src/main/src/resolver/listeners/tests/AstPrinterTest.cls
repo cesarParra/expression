@@ -64,4 +64,16 @@ private class AstPrinterTest {
         String expressionFormula = '!true';
         buildsCorrectExpression(expressionFormula, 'Unary');
     }
+
+    @IsTest
+    static void buildGetExpressions() {
+        String expressionFormula = '$User.Id';
+        buildsCorrectExpression(expressionFormula, 'Get');
+    }
+
+    @IsTest
+    static void buildFunctionExpressions() {
+        String expressionFormula = 'BR()';
+        buildsCorrectExpression(expressionFormula, 'FunctionCall');
+    }
 }
