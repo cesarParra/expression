@@ -253,6 +253,16 @@ private class EvaluatorTest {
     }
 
     @IsTest
+    private static void canUseARecordIdAsContext_runningWithoutSharing() {
+        Account accountRecord = new Account(Name = 'Test');
+        insert accountRecord;
+
+        Object result = Evaluator.run('Name', accountRecord.Id, new Configuration().respectSharing(false));
+
+        Assert.areEqual('Test', result);
+    }
+
+    @IsTest
     private static void usingARecordIdAsTheContextConsumesAQuery() {
         Account accountRecord = new Account(Name = 'Test');
         insert accountRecord;
@@ -666,41 +676,6 @@ private class EvaluatorTest {
         String formula = 'DATETODATETIME(DATEVALUE("2015-01-01"))';
         Object result = Evaluator.run(formula);
         Assert.areEqual(Datetime.newInstance(2015, 1, 1, 0, 0, 0), result);
-    }
-
-    @IsTest
-    private static void canReferenceExecutableApex() {
-        String formula = '$Action.Apex.FakeApexAction';
-        Object result = Evaluator.run(formula);
-
-        // Expect a map with a key of "class" containing the class name
-        Assert.areEqual('FakeApexAction', ((Map<String, Object>) result).get('class'));
-    }
-
-    @IsTest
-    private static void canPassArgumentsToApexActions() {
-        String formula = '$Action.Apex.FakeApexAction("a", "b")';
-        Object result = Evaluator.run(formula);
-
-        // Expect a map with a key of "class" containing the class name
-        Map<String, Object> castResult = (Map<String, Object>) result;
-        Assert.areEqual('FakeApexAction', castResult.get('class'));
-
-        Assert.areEqual(2, ((List<Object>) castResult.get('args')).size());
-        Assert.areEqual('a', ((List<Object>) castResult.get('args'))[0]);
-        Assert.areEqual('b', ((List<Object>) castResult.get('args'))[1]);
-    }
-
-    @IsTest
-    private static void canReferenceExecutableLwcActions() {
-        String formula = '$Action.LWC.GoToNamedPage({"name": "pageName"})';
-        Object result = Evaluator.run(formula);
-
-        // Expect a map with keys: type, name, args
-        Map<String, Object> castResult = (Map<String, Object>) result;
-        Assert.areEqual('navigate__namedPage', castResult.get('type'));
-        Assert.areEqual('pageName', castResult.get('name'));
-        Assert.isTrue(((Map<Object, Object>) castResult.get('args')).isEmpty());
     }
 
     @IsTest

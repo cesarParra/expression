@@ -1,4 +1,5 @@
 public inherited sharing abstract class QRunner {
+    public static Configuration.SharingMode evaluationSharingMode;
     public abstract List<SObject> run(Q query);
 
     @TestVisible private static QRunner mockRunner;
@@ -7,7 +8,7 @@ public inherited sharing abstract class QRunner {
             return mockRunner;
         }
 
-        if (Configuration.evaluationSharingMode == Configuration.SharingMode.WITH) {
+        if (evaluationSharingMode == Configuration.SharingMode.WITH) {
             return new WithSharingRunner();
         } else {
             return new WithoutSharingRunner();

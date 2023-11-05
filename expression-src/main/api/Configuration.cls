@@ -1,6 +1,4 @@
 global with sharing class Configuration {
-    public static Configuration.SharingMode evaluationSharingMode;
-
     global enum SharingMode {
         WITH,
         WITHOUT

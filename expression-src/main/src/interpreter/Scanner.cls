@@ -174,7 +174,9 @@ public with sharing class Scanner {
     private void addToken(TokenType type, Object literal, SourcePosition position) {
         String text = source.substring(start, current);
         Integer column = this.column - text.length();
-        SourcePosition pos = position != null ? position : new SourcePosition(line, column, column + text.length());
+        SourcePosition pos = position != null ?
+            position :
+            new SourcePosition(line, column, column + text.length());
         tokens.add(new Token(type, text, literal, pos));
     }
 

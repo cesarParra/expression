@@ -95,7 +95,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
             arguments.add(expr.accept(this));
         }
         Map<String, Object> toPrint = new Map<String, Object>{
-            'type' => 'GetExpr',
+            'type' => 'Get',
             'body' => new Map<String, Object> {
                 'object' => getExpr.objectExpr.accept(this),
                 'field' => getExpr.field.lexeme,
