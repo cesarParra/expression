@@ -2199,12 +2199,11 @@ The source code includes a `Visitor` implementation
 whose sole purpose is to do this, `AstPrinter`. When enabled, it will
 print the AST to the logs.
 
-You can enable it by passing an `expression.Evaluator.Config` option to the `run` 
+You can enable it by passing an `expression.Configuration` option to the `run` 
 method with the `printAst` option enabled :
 
 ```apex
-expression.Evaluator.Config config = new expression.Evaluator.Config();
-config.printAst = true;
+expression.Configuration config = new expression.Configuration().printAst();
 Object value = expression.Evaluator.run('AND(true, false, 1=1)', config);
 // Outputs to the logs:
 // (AND true false (= 1 1))

@@ -14,8 +14,7 @@ public with sharing class SalesOrderLinePricingService {
 
         System.debug('salesOrderLine: ' + salesOrderLine);
 
-        Evaluator.Config config = new Evaluator.Config();
-        config.sharing = Evaluator.SharingMode.WITHOUT;
+        Configuration config = new Configuration().respectSharing(false);
         // Surcharges
         for (PriceComponent surcharge : components.getSurcharges()) {
             Boolean shouldInclude = (Boolean)Evaluator.run(surcharge.expression, config);

@@ -7,7 +7,7 @@ public inherited sharing abstract class QRunner {
             return mockRunner;
         }
 
-        if (Evaluator.evaluationSharingMode == Evaluator.SharingMode.WITH) {
+        if (Configuration.evaluationSharingMode == Configuration.SharingMode.WITH) {
             return new WithSharingRunner();
         } else {
             return new WithoutSharingRunner();

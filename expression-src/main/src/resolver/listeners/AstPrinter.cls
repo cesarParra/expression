@@ -1,7 +1,11 @@
-public with sharing class AstPrinter implements Visitor {
-    public void printAst(Expr expr) {
-        Object toPrint = expr.accept(this);
+public with sharing class AstPrinter implements Visitor, EvaluatorEventListener {
+    public Map<String, Object> handle(EvaluatorEvent event) {
+        OnAfterParseEvent parseEvent = (OnAfterParseEvent)event;
+        Object toPrint = parseEvent.expression.accept(this);
         System.debug(JSON.serializePretty(toPrint));
+        return new Map<String, Object> {
+            'ast' => toPrint
+        };
     }
 
     public Object visit(Expr.Binary binary) {

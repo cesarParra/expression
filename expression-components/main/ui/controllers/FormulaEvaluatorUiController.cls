@@ -14,8 +14,7 @@ public with sharing class FormulaEvaluatorUiController {
     @AuraEnabled(Cacheable=true)
     public static Object evaluate(String recordId, String formula, Boolean respectSharing) {
         try {
-            Evaluator.Config config = new Evaluator.Config();
-            config.sharing = respectSharing ? Evaluator.SharingMode.WITH : Evaluator.SharingMode.WITHOUT;
+            Configuration config = new Configuration().respectSharing(respectSharing);
             if (String.isBlank(recordId)) {
                 return Evaluator.run(formula, config);
             } else {

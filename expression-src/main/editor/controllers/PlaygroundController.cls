@@ -33,16 +33,30 @@ public with sharing class PlaygroundController {
         return toReturn;
     }
 
+    // Record Id is of type String because we could receive an empty String
+    // from the front-end, so we can't use Id as the type in that case.
     @AuraEnabled
-    public static Result validate(String expr, Id recordId) {
+    public static Result validate(String expr, String recordId) {
         Result toReturn = new Result();
-        Evaluator.Config config = new Evaluator.Config();
-        config.withDiagnostics = true;
+        Configuration config = new Configuration().withDiagnostics().printAst();
         try {
+            EvaluationResult evalResult;
             if (String.isNotBlank(recordId)) {
-                toReturn.result = Evaluator.run(expr, recordId, config);
+                evalResult = EvaluatorResolver.forId(recordId).evaluate(expr, config);
             } else {
-                toReturn.result = Evaluator.run(expr, config);
+                evalResult = EvaluatorResolver.withoutContext().evaluate(expr, config);
+            }
+
+            toReturn.result = evalResult.result;
+
+            if (evalResult.additionalData.containsKey('diagnostics')) {
+                EvaluationDiagnosticsListener.DiagnosticsResult diagnosticsResult =
+                    (EvaluationDiagnosticsListener.DiagnosticsResult)evalResult.additionalData.get('diagnostics');
+                toReturn.diagnostics = new Diagnostics(diagnosticsResult);
+            }
+
+            if (evalResult.additionalData.containsKey('ast')) {
+                toReturn.ast = evalResult.additionalData.get('ast');
             }
         } catch (Exceptions.PositionAwareException e) {
             EvaluationError error = new EvaluationError();
@@ -60,8 +74,6 @@ public with sharing class PlaygroundController {
             toReturn.error = error;
         }
 
-        toReturn.diagnostics = new Diagnostics(DiagnosticsDecorator.result);
-
         return toReturn;
     }
 
@@ -74,6 +86,9 @@ public with sharing class PlaygroundController {
 
         @AuraEnabled
         public Diagnostics diagnostics;
+
+        @AuraEnabled
+        public Object ast;
     }
 
     public class Diagnostics {
@@ -89,7 +104,7 @@ public with sharing class PlaygroundController {
         @AuraEnabled
         public Integer queryRows;
 
-        public Diagnostics(DiagnosticsDecorator.DiagnosticsResult result) {
+        public Diagnostics(EvaluationDiagnosticsListener.DiagnosticsResult result) {
             this.cpuTime = result?.cpuTime;
             this.dmlStatements = result?.dmlStatements;
             this.queries = result?.queries;

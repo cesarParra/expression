@@ -40,12 +40,18 @@
                                 </lightning-tab>
                                 <lightning-tab label="Diagnostics">
                                     <ul>
-                                        <li><strong>CPU Time:</strong> {diagnostics.cpuTime}<span
-                                            if:true={diagnostics.cpuTime}>ms</span></li>
+                                        <li><strong>CPU Time (ms):</strong> {diagnostics.cpuTime}<span
+                                            if:true={diagnostics.cpuTime}></span></li>
                                         <li><strong>DML Statements:</strong> {diagnostics.dmlStatements}</li>
                                         <li><strong>Queries:</strong> {diagnostics.queries}</li>
                                         <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>
                                     </ul>
+                                </lightning-tab>
+                                <lightning-tab label="AST">
+                                    <pre class={resultColor}>
+                                        <lightning-formatted-rich-text
+                                                value={ast}></lightning-formatted-rich-text>
+                                    </pre>
                                 </lightning-tab>
                             </lightning-tabset>
                         </div>
