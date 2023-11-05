@@ -253,6 +253,16 @@ private class EvaluatorTest {
     }
 
     @IsTest
+    private static void canUseARecordIdAsContext_runningWithoutSharing() {
+        Account accountRecord = new Account(Name = 'Test');
+        insert accountRecord;
+
+        Object result = Evaluator.run('Name', accountRecord.Id, new Configuration().respectSharing(false));
+
+        Assert.areEqual('Test', result);
+    }
+
+    @IsTest
     private static void usingARecordIdAsTheContextConsumesAQuery() {
         Account accountRecord = new Account(Name = 'Test');
         insert accountRecord;

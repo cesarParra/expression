@@ -120,24 +120,8 @@ public with sharing class Q {
         }
 
         protected virtual Object formatFieldValue(Object val) {
-            if (val instanceof List<Object>) {
-                List<String> values = new List<String>();
-                for (Object value : (List<Object>) val) {
-                    if (value instanceof String) {
-                        values.add('\'' + String.escapeSingleQuotes((String) value) + '\'');
-                    } else {
-                        values.add((String) value);
-                    }
-                }
-                return String.join(values, ', ');
-            }
             if (val instanceof String) {
                 return '\'' + String.escapeSingleQuotes((String) val) + '\'';
-            } else if (val instanceof Date) {
-                String dateString = String.valueOf(val);
-                return dateString.substring(0, dateString.indexOf(' '));
-            } else if (val instanceof Datetime) {
-                return ((Datetime) val).formatGmt('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'');
             } else {
                 return val;
             }
