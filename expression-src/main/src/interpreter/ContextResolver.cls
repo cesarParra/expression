@@ -69,7 +69,7 @@ public with sharing class ContextResolver implements Visitor {
             // the second is an expression that might use fields of the child relationship.
             if (function.arguments.size() < 2) {
                 throw new ResolverException(
-                    'Error executing ' + function.functionName + ' function: the function must have exactly 2 arguments.'
+                    'Error executing ' + function.functionName + ' function: the function must have at least 2 arguments.'
                 );
             }
 
@@ -120,6 +120,7 @@ public with sharing class ContextResolver implements Visitor {
         } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
             relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
         } else {
+            System.debug('Not doing anything cause it was: ' + getExpr.objectExpr);
             // If we are doing a "get" expression on anything that is not either a merge field
             // or another inner get expression, we don't know how to resolve it, so we shouldn't
             // end up adding it to the query

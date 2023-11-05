@@ -18,6 +18,7 @@ export default class ExpressionSiteElement extends TwElement {
   evaluatedWire;
 
   connectedCallback() {
+    super.connectedCallback();
     window.addEventListener('expression_refresh', this.refreshHandler);
   }
 
@@ -29,7 +30,9 @@ export default class ExpressionSiteElement extends TwElement {
   setCurrentPageReference(currentPageReference) {
     this.currentPageReference = currentPageReference;
     if (this.contextUrlParam) {
-      this.contextId = this.isInBuilder ? this.previewContextId : this.currentPageReference.state[this.contextUrlParam];
+      this.contextId = this.isInBuilder ?
+        this.previewContextId :
+        this.currentPageReference.state[this.contextUrlParam];
     }
   }
 

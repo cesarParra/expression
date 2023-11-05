@@ -30,7 +30,7 @@ public with sharing abstract class EvaluatorResolver {
 
         Expr pipedExpression = this.desugarPipe(parsedExpression);
         Environment anEnvironment = this.prepareEnvironment(pipedExpression);
-        Object result = interpret(anEnvironment, pipedExpression);
+        Object result = this.interpret(anEnvironment, pipedExpression);
 
         eventNotifier.notify(new OnEvaluationEndEvent());
 
