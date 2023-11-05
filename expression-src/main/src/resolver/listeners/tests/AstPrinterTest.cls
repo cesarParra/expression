@@ -76,4 +76,16 @@ private class AstPrinterTest {
         String expressionFormula = 'BR()';
         buildsCorrectExpression(expressionFormula, 'FunctionCall');
     }
+
+    @IsTest
+    static void buildListExpressions() {
+        String expressionFormula = '[...[]]';
+        buildsCorrectExpression(expressionFormula, 'ListLiteral');
+    }
+
+    @IsTest
+    static void buildMapExpressions() {
+        String expressionFormula = '{}';
+        buildsCorrectExpression(expressionFormula, 'MapLiteral');
+    }
 }
