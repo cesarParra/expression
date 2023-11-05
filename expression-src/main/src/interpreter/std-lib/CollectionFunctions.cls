@@ -78,7 +78,7 @@ public with sharing class CollectionFunctions {
         }
 
         public override Arity getArity() {
-            return Arity.atLeast(1);
+            return Arity.atLeast(0);
         }
     }
 

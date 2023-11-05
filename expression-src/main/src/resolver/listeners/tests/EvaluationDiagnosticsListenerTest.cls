@@ -1,6 +1,5 @@
-// TODO: Rename and move to a more appropriate location
 @IsTest
-private class DiagnosticsDecoratorTest {
+private class EvaluationDiagnosticsListenerTest {
     @IsTest
     static void populatesDiagnosticsWhenRun() {
         String expression = '1 + 2';

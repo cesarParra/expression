@@ -2,7 +2,7 @@ public with sharing abstract class EvaluatorResolver {
     private final Map<String, Object> additionalResultData = new Map<String, Object>();
     private final EvaluatorEventNotifier eventNotifier;
 
-    public EvaluatorResolver() {
+    private EvaluatorResolver() {
         this.eventNotifier = new EvaluatorEventNotifier(additionalResultData);
     }
 
@@ -30,9 +30,7 @@ public with sharing abstract class EvaluatorResolver {
 
         Expr pipedExpression = this.desugarPipe(parsedExpression);
         Environment anEnvironment = this.prepareEnvironment(pipedExpression);
-
-        IInterpreter theInterpreter = new Interpreter(anEnvironment);
-        Object result = theInterpreter.interpret(pipedExpression);
+        Object result = interpret(anEnvironment, pipedExpression);
 
         eventNotifier.notify(new OnEvaluationEndEvent());
 
@@ -49,10 +47,6 @@ public with sharing abstract class EvaluatorResolver {
         return parser.parse();
     }
 
-    protected virtual void onAfterParse(Expr expression) {
-        // Hook for subclasses
-    }
-
     private Expr desugarPipe(Expr rawExpression) {
         PipeResolver pipeInterpreter = new PipeResolver();
         Expr pipedExpression = pipeInterpreter.resolve(rawExpression);
@@ -60,6 +54,11 @@ public with sharing abstract class EvaluatorResolver {
     }
 
     protected abstract Environment prepareEnvironment(Expr pipedExpression);
+
+    private Object interpret(Environment anEnvironment, Expr pipedExpression) {
+        Interpreter theInterpreter = new Interpreter(anEnvironment);
+        return theInterpreter.interpret(pipedExpression);
+    }
 
     private class ContextResolverEvaluator extends EvaluatorResolver {
         private final Id recordId;

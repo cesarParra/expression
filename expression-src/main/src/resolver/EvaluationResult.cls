@@ -1,5 +1,5 @@
-global with sharing class EvaluationResult {
-    global Object result { get; private set; }
+public with sharing class EvaluationResult {
+    public Object result { get; private set; }
 
     public Map<String, Object> additionalData { get; private set; }
 
