@@ -277,6 +277,58 @@ private class StringFunctionsTest {
     @IsTest
     private static void urlEncodeThrowsRuntimeExceptionWhenTheValuePassedIsNotAString() {
         String formula = 'URLENCODE(1)';
+        runExpectingRuntimeException(formula);
+    }
+
+    @IsTest
+    private static void containsThrowsRuntimeExceptionWhenTheFirstArgumentIsNotAString() {
+        String formula = 'CONTAINS(1, "Hello")';
+        runExpectingRuntimeException(formula);
+    }
+
+    @IsTest
+    private static void containsThrowsRuntimeExceptionWhenTheSecondArgumentIsNotAString() {
+        String formula = 'CONTAINS("Hello", 1)';
+        runExpectingRuntimeException(formula);
+    }
+
+    @IsTest
+    private static void lowerThrowsRuntimeExceptionWhenTheArgumentIsNotAString() {
+        String formula = 'LOWER(1)';
+        runExpectingRuntimeException(formula);
+    }
+
+    @IsTest
+    private static void findThrowsRuntimeExceptionWhenTheFirstArgumentIsNotAString() {
+        String formula = 'FIND(1, "Hello")';
+        runExpectingRuntimeException(formula);
+    }
+
+    @IsTest
+    private static void findThrowsRuntimeExceptionWhenTheSecondArgumentIsNotAString() {
+        String formula = 'FIND("Hello", 1)';
+        runExpectingRuntimeException(formula);
+    }
+
+    @IsTest
+    private static void findThrowsRuntimeExceptionWhenTheThirdArgumentIsNotNumber() {
+        String formula = 'FIND("Hello", "Hello", "a")';
+        runExpectingRuntimeException(formula);
+    }
+
+    @IsTest
+    private static void leftThrowsRuntimeExceptionWhenTheFirstArgumentIsNotAString() {
+        String formula = 'LEFT(1, 1)';
+        runExpectingRuntimeException(formula);
+    }
+
+    @IsTest
+    private static void leftThrowsRuntimeExceptionWhenTheSecondArgumentIsNotANumber() {
+        String formula = 'LEFT("Hello", "a")';
+        runExpectingRuntimeException(formula);
+    }
+
+    private static void runExpectingRuntimeException(String formula) {
         try {
             Evaluator.run(formula);
             Assert.fail('Expected RuntimeException');

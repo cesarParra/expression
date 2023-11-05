@@ -120,7 +120,6 @@ public with sharing class ContextResolver implements Visitor {
         } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
             relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
         } else {
-            System.debug('Not doing anything cause it was: ' + getExpr.objectExpr);
             // If we are doing a "get" expression on anything that is not either a merge field
             // or another inner get expression, we don't know how to resolve it, so we shouldn't
             // end up adding it to the query
