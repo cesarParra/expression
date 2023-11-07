@@ -2,7 +2,6 @@ import { api } from "lwc";
 import TwElement from "c/twElement";
 import { classNames } from 'c/utils';
 
-// TODO: Bug when there is an error the button does stays as disabled
 export default class InputText extends TwElement {
   @api label;
   @api name;

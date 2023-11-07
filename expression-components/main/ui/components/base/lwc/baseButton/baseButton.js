@@ -68,6 +68,8 @@ export default class BaseButton extends NavigationMixin(TwElement) {
             action: execute, fnReference: this.action.src, callback: () => {
               this.actionCallback();
               this.disabled = false;
+            }, onErrorCallback: () => {
+              this.disabled = false;
             }
           },
           composed: true
