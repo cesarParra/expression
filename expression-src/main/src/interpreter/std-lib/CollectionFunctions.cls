@@ -450,8 +450,6 @@ public with sharing class CollectionFunctions {
      * @function SORT
      * @example
       * SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a", "DESC") // [{ "a": 3 }, { "a": 2 }, { "a": 1 }]   */
-    // TODO: We are going to want to have 2 different sorts, one for SObjects that needs the resolution, and
-    // another one for anything else, that doesn't need context resolution
     private class SortFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
