@@ -40,6 +40,7 @@ export default class Form extends LightningElement {
           true);
 
     if (!isValid) {
+      detail.onErrorCallback();
       return;
     }
 

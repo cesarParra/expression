@@ -22,6 +22,7 @@ export default class InputText extends TwElement {
   }
 
   connectedCallback() {
+    super.connectedCallback();
     this.dispatchEvent(new CustomEvent('childregister', {bubbles: true, composed: true, detail: {}}));
   }
 

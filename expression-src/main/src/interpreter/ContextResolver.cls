@@ -64,15 +64,10 @@ public with sharing class ContextResolver implements Visitor {
         if (fn == null) {
             return null;
         }
-        if (fn.needsChildrenResolution()) {
-            // Expect at least 2 arguments, the first will be the name of the child relationship field or any other list value,
-            // the second is an expression that might use fields of the child relationship.
-            if (function.arguments.size() < 2) {
-                throw new ResolverException(
-                    'Error executing ' + function.functionName + ' function: the function must have at least 2 arguments.'
-                );
-            }
 
+        // Whenever children resolution is needed we assume that the second argument contains the expression
+        // for which to resolve, so skip this when the argument list is not long enough.
+        if (fn.needsChildrenResolution() && function.arguments.size() > 1) {
             // We want to first resolve the left side and it should resolve to a Query object
             // which we will use as the context for the right side.
 
