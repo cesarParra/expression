@@ -108,28 +108,10 @@
           [/(^#.*$)/, 'comment'],
 
           // strings
-          // [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-teminated string
-          // [/'([^'\\]|\\.)*$/, 'string.invalid'], // non-teminated string
-          // [/"/, 'string', '@string_double'],
-          // [/'/, 'string', '@string_single'],
-          [/"/, 'string', '@string_backtick']
+          [/"/, 'string', '@string_double']
         ],
 
-        // string_double: [
-        //   [/[^\\"]+/, 'string'],
-        //   [/@escapes/, 'string.escape'],
-        //   [/\\./, 'string.escape.invalid'],
-        //   [/"/, 'string', '@pop']
-        // ],
-
-        // string_single: [
-        //   [/[^\\']+/, 'string'],
-        //   [/@escapes/, 'string.escape'],
-        //   [/\\./, 'string.escape.invalid'],
-        //   [/'/, 'string', '@pop']
-        // ],
-
-        string_backtick: [
+        string_double: [
           [/\$\{/, { token: 'delimiter.bracket', next: '@bracketCounting' }],
           [/[^\\"$]+/, 'string'],
           [/@escapes/, 'string.escape'],
