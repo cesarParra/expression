@@ -12,7 +12,7 @@
 <div id="container" style="height: 100vh;"></div>
 
 <script>
-  var require = {paths: {vs: 'min/vs'}};
+  const require = {paths: {vs: 'min/vs'}};
 </script>
 <script src="min/vs/loader.js"></script>
 <script src="min/vs/editor/editor.main.nls.js"></script>
@@ -36,13 +36,57 @@
   function initialize(functionKeywords) {
     monaco.languages.register({id: 'expression'});
     let keywords = functionKeywords;
+
+    monaco.languages.setLanguageConfiguration('expression', {
+      comments: {
+        lineComment: '#',
+      },
+      brackets: [
+        ['{', '}'],
+        ['[', ']'],
+        ['(', ')'],
+      ],
+      autoClosingPairs: [
+        {open: '{', close: '}'},
+        {open: '[', close: ']'},
+        {open: '(', close: ')'},
+        {open: '"', close: '"', notIn: ['string']},
+        {open: "'", close: "'", notIn: ['string', 'comment']},
+      ],
+      surroundingPairs: [
+        {open: '{', close: '}'},
+        {open: '[', close: ']'},
+        {open: '(', close: ')'},
+        {open: '"', close: '"'},
+        {open: "'", close: "'"},
+      ],
+      folding: {
+        markers: {
+          start: new RegExp("^\\s*#region\\b"),
+          end: new RegExp("^\\s*#endregion\\b")
+        }
+      }
+    });
+
     monaco.languages.setMonarchTokensProvider('expression', {
       keywords,
+        // we include these common regular expressions
+      symbols: /[=><!~?:&|+\-*\/\^%]+/,
+      escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
+      digits: /\d+(_+\d+)*/,
+      octaldigits: /[0-7]+(_+[0-7]+)*/,
+      binarydigits: /[0-1]+(_+[0-1]+)*/,
+      hexdigits: /[[0-9a-fA-F]+(_+[0-9a-fA-F]+)*/,
+
+      regexpctl: /[(){}\[\]\$\^|\-*+?\.]/,
+      regexpesc: /\\(?:[bBdDfnrstvwWn0\\\/]|@regexpctl|c[A-Z]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4})/,
+
       tokenizer: {
         root: [
           [/[{}]/, 'delimiter.bracket'],
           {include: 'common'},
         ],
+
         common: [
           // identifiers and keywords
           [/[a-zA-Z_$][\w$]*/, {
@@ -50,7 +94,7 @@
               '@keywords': 'keyword',
             }
           }],
-          [/"/, 'string', '@string'],
+
           // delimiters and operators
           [/[{}()\[\]]/, '@brackets'],
           [/[,:]/, 'delimiter'],
@@ -62,18 +106,24 @@
           // whitespace
           [/\s+/, 'white'],
           [/(^#.*$)/, 'comment'],
+
+          // strings
+          [/"/, 'string', '@string_double']
         ],
-        string: [
-          [/\$\{/, {token: 'delimiter.bracket', next: '@bracketCounting'}],
-          [/[^\\"]+/, 'string'],
+
+        string_double: [
+          [/\$\{/, { token: 'delimiter.bracket', next: '@bracketCounting' }],
+          [/[^\\"$]+/, 'string'],
+          [/@escapes/, 'string.escape'],
+          [/\\./, 'string.escape.invalid'],
           [/"/, 'string', '@pop']
         ],
 
         bracketCounting: [
           [/\{/, 'delimiter.bracket', '@bracketCounting'],
           [/\}/, 'delimiter.bracket', '@pop'],
-          {include: 'common'},
-        ],
+          { include: 'common' }
+        ]
       },
       ignoreCase: true
     });
