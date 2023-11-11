@@ -12,7 +12,7 @@
 <div id="container" style="height: 100vh;"></div>
 
 <script>
-  const require = {paths: {vs: 'min/vs'}};
+  var require = {paths: {vs: 'min/vs'}};
 </script>
 <script src="min/vs/loader.js"></script>
 <script src="min/vs/editor/editor.main.nls.js"></script>
@@ -67,7 +67,6 @@
         }
       }
     });
-
     monaco.languages.setMonarchTokensProvider('expression', {
       keywords,
         // we include these common regular expressions
@@ -156,6 +155,11 @@
 
     window.editor.getModel().onDidChangeContent((event) => {
       monaco.editor.setModelMarkers(window.editor.getModel(), "owner", []);
+
+      parent.postMessage({
+        name: 'content_change',
+        payload: window.editor.getValue()
+      }, getParentOrigin());
     });
   }
 
@@ -180,6 +184,11 @@
     const id = {major: 1, minor: 1};
     const op = {identifier: id, range: selection, text: text, forceMoveMarkers: true};
     editor.executeEdits("my-source", [op]);
+  }
+
+  function getParentOrigin() {
+    const parentUrl = new URL(document.referrer);
+    return parentUrl.origin;
   }
 </script>
 </body>

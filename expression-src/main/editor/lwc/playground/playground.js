@@ -14,6 +14,7 @@ export default class Monaco extends LightningElement {
     queryRows: "Unavailable",
   };
   ast = "";
+  currentExpression = undefined;
 
   async iframeLoaded() {
     const functionKeywords = await getFunctions();
@@ -21,11 +22,17 @@ export default class Monaco extends LightningElement {
       name: 'initialize',
       keywords: functionKeywords
     });
+
+    window.addEventListener('message', (event) => {
+      const { name, payload } = event.data;
+      if (name === 'content_change') {
+        this.currentExpression = payload;
+      }
+    }, false);
   }
 
   async getExpression() {
-    const expr = this.iframeWindow.editor.getValue();
-    const result = await validate({expr: expr, recordId: this.recordId});
+    const result = await validate({expr: this.currentExpression, recordId: this.recordId});
     if (result.error) {
       this.result = {
         type: "error",
