@@ -75,11 +75,18 @@ public abstract class Expr {
         }
     }
 
+    public enum VariableType {
+        GLOBAL_CONTEXT,
+        LOCAL
+    }
+
     public class Variable extends Expr {
         public final Token name;
+        public final VariableType type;
 
-        public Variable(Token name) {
+        public Variable(Token name, VariableType type) {
             this.name = name;
+            this.type = type;
         }
 
         public override Object accept(Visitor v) {

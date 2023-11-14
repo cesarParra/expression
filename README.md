@@ -141,8 +141,8 @@ the query is performed `with sharing` by default, so any records that the user d
 will not be returned or taken into account in the operation.
   
 To change this behavior, use configuration settings used by the evaluator by passing 
-  an `expression.Evaluator.Config` object to the `run` method with a `sharing` property set to 
-  `expression.Evalutor.SharingMode.WITHOUT`.
+  an `expression.Configuration` object to the `run` method with a `sharing` property set to 
+  `expression.Configuration.SharingMode.WITHOUT`.
 
 ### Limitations
 
@@ -151,6 +151,18 @@ so the second argument cannot contain references to children of the child record
 - When extracting data out of child records through the `MAP` function, any null
 value is skipped. Take this into account when computing information using list
 functions.
+
+### The Configuration Object
+
+All endpoints also accept a configuration (`expression.Configuration`) object as the last argument. This object
+allows you to provide the following to the evaluator:
+
+* `sharing` - The sharing mode to use when querying data. See [Considerations](#considerations) for more information.
+* `printAst` - Whether to print the AST (Abstract Syntax Tree) of the expression being evaluated. Useful for debugging.
+* `customContext` - A map of custom variables to be used in the expression.
+  Anything provided through here will prefixed with an `@` symbol and will be available globally in the expression.
+  Notice this is different from using the `LET` function to define variables,
+  as those are only available within the expression they are defined in.
 
 ## List Support
 

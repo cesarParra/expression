@@ -1,30 +1,37 @@
 public enum TokenType {
-    // Single-character
+    // --------------- Single-character ---------------
     PLUS, MINUS, STAR, SLASH, EXPONENT, LEFT_PAREN, RIGHT_PAREN, COMMA,
     LEFT_BRACKET, RIGHT_BRACKET, LEFT_BRACE, RIGHT_BRACE, COLON, HASH,
 
-    // One or two character
+    // --------------- One or two character ---------------
     LESS, LESS_GREATER, LESS_EQUAL,
     BANG, BANG_EQUAL,
     GREATER, GREATER_EQUAL,
     AMPERSAND, DOUBLE_AMPERSAND,
-    EQUAL, EQUAL_EQUAL, ARROW,
+    EQUAL, EQUAL_EQUAL,
 
-    // One or more character
+    // ->. Use for piping.
+    ARROW,
+
+    // ---------------- One or more character ---------------
     DOT, DOT_DOT_DOT,
 
-    // Two character
+    // ----------------- Two character -----------------
     DOUBLE_PIPE,
 
-    // Literals
+    // ----------------- Literals -----------------
     IDENTIFIER, STRING_LITERAL_START,
+    // ${} is used for string interpolation.
     STRING_INTERPOLATION_START, STRING_INTERPOLATION_END,
-    STRING_LITERAL_END, CHARACTER, NUMBER_LITERAL, DOLLAR,
-    DOLLAR_LEFT_BRACKET,
+    STRING_LITERAL_END, CHARACTER, NUMBER_LITERAL,
+    // $. Used for custom variables and context aware variables
+    DOLLAR,
+    // @. Used for global context variables
+    AT,
 
-    // Keywords
+    // ----------------- Keywords -----------------
     TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD,
 
-    // EOF
+    // ----------------- EOF ----------------------
     EOF
 }
