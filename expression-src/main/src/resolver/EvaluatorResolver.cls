@@ -84,6 +84,7 @@ public with sharing abstract class EvaluatorResolver {
             this.record = record;
         }
         public override Environment prepareEnvironment(Expr pipedExpression) {
+            Environment.addGlobalVariable('@id', record.Id);
             return new Environment(record);
         }
     }

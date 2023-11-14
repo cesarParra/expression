@@ -83,7 +83,7 @@ private class GlobalContextTest {
     }
 
     @IsTest
-    private static void theRecordIdIsAccessibleAsAContextVariable_usingResolvingFromId() {
+    private static void theRecordIdIsAccessibleAsAContextVariable_resolvingFromId() {
         String expression = '@Id';
         Account testRecord = new Account(Name = 'Test');
         insert testRecord;
@@ -93,9 +93,22 @@ private class GlobalContextTest {
         Assert.areEqual(testRecord.Id, result);
     }
 
-    // TODO: The record Id is accessible as a context variable (resolving from Id as context)
-    // TODO: The record Id is accessible as a context variable (resolving from full record as context)
-    // TODO: The record itself is accessible as a context variable
+    @IsTest
+    private static void theRecordIdIsAccessibleAsAContextVariable_resolvingFromFullRecord() {
+        String expression = '@Id';
+        Id recordId = IdGenerator.generate(Account.SObjectType);
+        Account testRecord = new Account(
+            Id = recordId,
+            Name = 'Test'
+        );
+
+        Object result = Evaluator.run(expression, testRecord);
+
+        Assert.areEqual(recordId, result);
+    }
+
+    // TODO: The record itself is accessible as a context variable (record Id as a context)
+    // TODO: The record itself is accessible as a context variable (full record as the context)
     // TODO: Can pass anything as a customn context
     // TODO: Run time exception when trying to access a field that doesn't exist
 }
