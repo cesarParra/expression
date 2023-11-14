@@ -201,5 +201,6 @@ private class ScannerTest {
         List<Token> result = new Scanner(expression).scanTokens();
         Assert.areEqual(2, result.size());
         Assert.areEqual(TokenType.AT, result[0].type);
+        Assert.areEqual('@Id', result[0].lexeme);
     }
 }

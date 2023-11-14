@@ -167,7 +167,11 @@ public with sharing class Parser {
         }
 
         if (match(TokenType.DOLLAR)) {
-            return new Expr.Variable(previous());
+            return new Expr.Variable(previous(), Expr.VariableType.LOCAL);
+        }
+
+        if (match(TokenType.AT)) {
+            return new Expr.Variable(previous(), Expr.VariableType.GLOBAL_CONTEXT);
         }
 
         if (match(TokenType.IDENTIFIER)) {

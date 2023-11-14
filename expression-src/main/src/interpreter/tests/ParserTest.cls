@@ -48,4 +48,34 @@ private class ParserTest {
         Assert.areEqual('a', ((Expr.StringLiteral)result).stringsAndInterpolations[0]);
         Assert.isInstanceOfType(((Expr.StringLiteral)result).stringsAndInterpolations[1], Expr.MergeField.class);
     }
+
+    @IsTest
+    static void parsesLocalVariables() {
+        List<Token> tokens = new List<Token> {
+            new Token(TokenType.DOLLAR, '$local', null, null),
+            new Token(TokenType.EOF, '', null, null)
+        };
+
+        Expr result = new Parser(tokens).parse();
+
+        Assert.isInstanceOfType(result, Expr.Variable.class);
+        Expr.Variable variable = (Expr.Variable)result;
+        Assert.areEqual('$local', variable.name.lexeme);
+        Assert.areEqual(Expr.VariableType.LOCAL, variable.type);
+    }
+
+    @IsTest
+    static void parsesContextualVariables() {
+        List<Token> tokens = new List<Token> {
+            new Token(TokenType.AT, '@Id', null, null),
+            new Token(TokenType.EOF, '', null, null)
+        };
+
+        Expr result = new Parser(tokens).parse();
+
+        Assert.isInstanceOfType(result, Expr.Variable.class);
+        Expr.Variable variable = (Expr.Variable)result;
+        Assert.areEqual('@Id', variable.name.lexeme);
+        Assert.areEqual(Expr.VariableType.GLOBAL_CONTEXT, variable.type);
+    }
 }
