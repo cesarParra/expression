@@ -194,4 +194,12 @@ private class ScannerTest {
         Object result = Evaluator.run(formula);
         Assert.areEqual(1, result);
     }
+
+    @IsTest
+    static void recognizesContextVariables() {
+        String expression = '@Id';
+        List<Token> result = new Scanner(expression).scanTokens();
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(TokenType.AT, result[0].type);
+    }
 }

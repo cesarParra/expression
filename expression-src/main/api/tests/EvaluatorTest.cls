@@ -460,7 +460,19 @@ private class EvaluatorTest {
         }
     }
 
-    // TODO: The record Id is accessible as a context variable
+    @IsTest
+    private static void theRecordIdIsAccessibleAsAContextVariable_usingResolvingFromId() {
+        String expression = '@Id';
+        Account testRecord = new Account(Name = 'Test');
+        insert testRecord;
+
+        Object result = Evaluator.run(expression, testRecord.Id);
+
+        Assert.areEqual(testRecord.Id, result);
+    }
+
+    // TODO: The record Id is accessible as a context variable (resolving from Id as context)
+    // TODO: The record Id is accessible as a context variable (resolving from full record as context)
     // TODO: The record itself is accessible as a context variable
     // TODO: Can pass anything as a customn context
 }
