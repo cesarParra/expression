@@ -40,7 +40,7 @@ public with sharing abstract class EvaluatorResolver {
 
     private static void addCustomContextVariablesToEnvironment(Configuration config) {
         for (String customVariableName : config.customContext.keySet()) {
-            Environment.addGlobalVariable('@' + customVariableName, config.customContext.get(customVariableName));
+            Environment.addGlobalContextVariable(customVariableName, config.customContext.get(customVariableName));
         }
     }
 
@@ -78,7 +78,7 @@ public with sharing abstract class EvaluatorResolver {
             SObject record = ctxInterpreter.build(pipedExpression);
             Environment env = new Environment(record);
 
-            Environment.addGlobalVariable('@id', recordId);
+            Environment.addGlobalContextVariable('id', recordId);
 
             return env;
         }
@@ -91,7 +91,7 @@ public with sharing abstract class EvaluatorResolver {
             this.record = record;
         }
         public override Environment prepareEnvironment(Expr pipedExpression) {
-            Environment.addGlobalVariable('@id', record?.Id);
+            Environment.addGlobalContextVariable('id', record?.Id);
             return new Environment(record);
         }
     }

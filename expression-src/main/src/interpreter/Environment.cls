@@ -25,6 +25,11 @@ public with sharing class Environment {
         GLOBAL_VARIABLES.put(name.toLowerCase(), value);
     }
 
+    public static void addGlobalContextVariable(String name, Object value) {
+        String prefixedName = '@' + name;
+        GLOBAL_VARIABLES.put(prefixedName.toLowerCase(), value);
+    }
+
     public Environment(SObject context) {
         this.context = context;
     }
