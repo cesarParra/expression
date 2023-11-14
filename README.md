@@ -1750,6 +1750,19 @@ Install with SFDX CLI:
 sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000tLLuIAM
 ```
 
+## Site Context
+
+### Query Parameters
+
+From any expression you can access query parameters for the current page using
+the global context variable prefix `@` followed by the query parameter name:
+
+```apex
+"Hello ${@name}"
+```
+
+where `name` is a query parameter in the current page.
+
 ## Components
 
 > 📓 All components supported on communities are meant be used within an LWR template. They might

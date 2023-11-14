@@ -15,6 +15,7 @@ export default class ExpressionSiteElement extends TwElement {
   computed;
   error;
   contextId = null
+  queryParams = {};
   evaluatedWire;
 
   connectedCallback() {
@@ -34,9 +35,13 @@ export default class ExpressionSiteElement extends TwElement {
         this.previewContextId :
         this.currentPageReference.state[this.contextUrlParam];
     }
+
+    for (const [key, value] of Object.entries(this.currentPageReference.state)) {
+      this.queryParams[key] = value;
+    }
   }
 
-  @wire(evaluate, {recordId: '$contextId', formula: '$expr', respectSharing: '$respectSharing'})
+  @wire(evaluate, {recordId: '$contextId', formula: '$expr', respectSharing: '$respectSharing', queryParams: '$queryParams'})
   evaluate(evaluatedWire) {
     this.evaluatedWire = evaluatedWire;
     const {error, data} = evaluatedWire;

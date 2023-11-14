@@ -9,12 +9,15 @@ public with sharing class FormulaEvaluatorUiController {
      * @param respectSharing If true, the expression will be evaluated in the
      *        context of the current user. If false, the expression will be
      *        evaluated "without sharing".
+     * @param queryParams Any query parameters to pass to the expression from the UI.
      * @return The result of the evaluation.
      */
     @AuraEnabled(Cacheable=true)
-    public static Object evaluate(String recordId, String formula, Boolean respectSharing) {
+    public static Object evaluate(String recordId, String formula, Boolean respectSharing, Map<String, String> queryParams) {
         try {
-            Configuration config = new Configuration().respectSharing(respectSharing);
+            Configuration config = new Configuration()
+                .respectSharing(respectSharing)
+                .withCustomContext(queryParams);
             if (String.isBlank(recordId)) {
                 return Evaluator.run(formula, config);
             } else {
