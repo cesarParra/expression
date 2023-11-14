@@ -6,6 +6,7 @@ global with sharing class Configuration {
 
     global SharingMode sharing = SharingMode.WITH;
     global Boolean printAst = false;
+    global Map<String, Object> customContext = new Map<String, Object>();
     public Boolean withDiagnostics = false;
 
     global Configuration respectSharing(Boolean respect) {
@@ -20,6 +21,11 @@ global with sharing class Configuration {
 
     global Configuration withDiagnostics() {
         withDiagnostics = true;
+        return this;
+    }
+
+    global Configuration withCustomContext(Map<String, Object> objectsByStrings) {
+        this.customContext = objectsByStrings;
         return this;
     }
 

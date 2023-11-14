@@ -124,6 +124,18 @@ private class GlobalContextTest {
         }
     }
 
+    @IsTest
+    private static void canPassCustomContext() {
+        String expression = '@MyCustomContext';
+        Map<String, Object> customContext = new Map<String, Object>{
+            'MyCustomContext' => 'MyCustomContextValue'
+        };
+
+        Object result = Evaluator.run(expression, new Configuration().withCustomContext(customContext));
+
+        Assert.areEqual('MyCustomContextValue', result);
+    }
+
 
     // TODO: Can pass anything as a customn context
     // TODO: Run time exception when trying to access a field that doesn't exist

@@ -30,11 +30,18 @@ public with sharing abstract class EvaluatorResolver {
 
         Expr pipedExpression = this.desugarPipe(parsedExpression);
         Environment anEnvironment = this.prepareEnvironment(pipedExpression);
+        addCustomContextVariablesToEnvironment(config);
         Object result = this.interpret(anEnvironment, pipedExpression);
 
         eventNotifier.notify(new OnEvaluationEndEvent());
 
         return new EvaluationResult(result, additionalResultData);
+    }
+
+    private static void addCustomContextVariablesToEnvironment(Configuration config) {
+        for (String customVariableName : config.customContext.keySet()) {
+            Environment.addGlobalVariable('@' + customVariableName, config.customContext.get(customVariableName));
+        }
     }
 
     private List<Token> scan(String expression) {
@@ -84,7 +91,7 @@ public with sharing abstract class EvaluatorResolver {
             this.record = record;
         }
         public override Environment prepareEnvironment(Expr pipedExpression) {
-            Environment.addGlobalVariable('@id', record.Id);
+            Environment.addGlobalVariable('@id', record?.Id);
             return new Environment(record);
         }
     }
