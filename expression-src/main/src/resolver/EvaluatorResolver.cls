@@ -69,7 +69,11 @@ public with sharing abstract class EvaluatorResolver {
         public override Environment prepareEnvironment(Expr pipedExpression) {
             ContextResolver ctxInterpreter = new ContextResolver(recordId);
             SObject record = ctxInterpreter.build(pipedExpression);
-            return new Environment(record);
+            Environment env = new Environment(record);
+
+            Environment.addGlobalVariable('@id', recordId);
+
+            return env;
         }
     }
 
