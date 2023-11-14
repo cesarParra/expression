@@ -88,6 +88,10 @@ public with sharing class Scanner {
                 variableAccess();
             }
 
+            when '@' {
+                contextAccess();
+            }
+
             when '<' {
                 String next = peek();
                 if (next == '=') {
@@ -279,6 +283,15 @@ public with sharing class Scanner {
         }
 
         TokenType type = TokenType.DOLLAR;
+        addToken(type);
+    }
+
+    private void contextAccess() {
+        while (isValidSalesforceIdentifier(peek())) {
+            advance();
+        }
+
+        TokenType type = TokenType.AT;
         addToken(type);
     }
 
