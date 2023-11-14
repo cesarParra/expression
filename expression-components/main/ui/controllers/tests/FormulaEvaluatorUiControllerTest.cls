@@ -3,20 +3,32 @@ private class FormulaEvaluatorUiControllerTest {
     @IsTest
     static void evaluateWithRecordIdReturnsEvaluatedFormula() {
         Id recordId = IdGenerator.generate(Account.SObjectType);
-        Object result = FormulaEvaluatorUiController.evaluate(recordId, '1 + 1', true);
+        Object result = FormulaEvaluatorUiController.evaluate(recordId, '1 + 1', true, new Map<String, String>());
         Assert.areEqual(2, result);
     }
 
     @IsTest
     static void evaluateWithoutRecordIdReturnsEvaluatedFormula() {
-        Object result = FormulaEvaluatorUiController.evaluate(null, '1 + 1', true);
+        Object result = FormulaEvaluatorUiController.evaluate(null, '1 + 1', true, new Map<String, String>());
         Assert.areEqual(2, result);
+    }
+
+    @IsTest
+    static void evaluatesWithQueryParameters() {
+        String expr = '@param';
+        Map<String, String> params = new Map<String, String>{
+            'param' => 'value'
+        };
+
+        Object result = FormulaEvaluatorUiController.evaluate(null, expr, true, params);
+
+        Assert.areEqual('value', result);
     }
 
     @IsTest
     static void whenAnErrorOccursDuringEvaluationAnAuraHandledExceptionIsThrown() {
         try {
-            FormulaEvaluatorUiController.evaluate(null, '1 + 1 +', true);
+            FormulaEvaluatorUiController.evaluate(null, '1 + 1 +', true, new Map<String, String>());
             Assert.fail('Expected an exception to be thrown');
         } catch (Exception e) {
             Assert.isInstanceOfType(e, AuraHandledException.class);
