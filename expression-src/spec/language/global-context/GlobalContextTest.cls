@@ -107,8 +107,24 @@ private class GlobalContextTest {
         Assert.areEqual(recordId, result);
     }
 
-    // TODO: The record itself is accessible as a context variable (record Id as a context)
-    // TODO: The record itself is accessible as a context variable (full record as the context)
+    @IsTest
+    private static void throwsARuntimeExceptionWhenReferencingAGlobalVariableThatDoesNotExist() {
+        String expression = '@DoesNotExist';
+        Id recordId = IdGenerator.generate(Account.SObjectType);
+        Account testRecord = new Account(
+            Id = recordId,
+            Name = 'Test'
+        );
+
+        try {
+            Evaluator.run(expression, testRecord);
+            System.assert(false, 'Expected a runtime exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+
     // TODO: Can pass anything as a customn context
     // TODO: Run time exception when trying to access a field that doesn't exist
 }
