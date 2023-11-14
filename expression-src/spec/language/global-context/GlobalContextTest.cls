@@ -135,8 +135,4 @@ private class GlobalContextTest {
 
         Assert.areEqual('MyCustomContextValue', result);
     }
-
-
-    // TODO: Can pass anything as a customn context
-    // TODO: Run time exception when trying to access a field that doesn't exist
 }
