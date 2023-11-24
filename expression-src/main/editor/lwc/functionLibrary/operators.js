@@ -76,6 +76,16 @@ export const operators = [
         examples: [
           "$CustomMetadata.MyCustomMetadataType__mdt.MyCustomMetadataRecordName.MyField__c"
         ]
+      },
+      {
+        name: "Static Resource",
+        autoCompleteValue: "$Resource.",
+        icon: "utility:custom_apps",
+        description: "References a static resource.",
+        syntax: "$Resource.resourceName",
+        examples: [
+          "$Resource.myResource"
+        ]
       }
     ]
   },
