@@ -726,6 +726,18 @@ Accepts 1 argument: the text to evaluate.
 expression.Evaluator.run('LEN("Hello World")'); // 11
 ```
 
+- `LIKE`
+
+Returns TRUE if a text field matches a given pattern. The pattern can include regular characters and wildcard characters. 
+The supported wildcard characters are the percent sign (%), which matches zero or more characters, and the underscore (_), 
+which matches exactly one character.
+
+Accepts 2 arguments: the text to evaluate and the pattern to match.
+
+```apex
+expression.Evaluator.run('LIKE("Hello World", "Hello%")'); // true
+```
+
 - `LPAD`
 
 Returns a text value padded to the specified length with the specified set of characters.

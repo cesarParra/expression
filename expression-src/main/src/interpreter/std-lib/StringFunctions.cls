@@ -27,7 +27,8 @@ public with sharing class StringFunctions {
         'VALUE' => new ValueFn(),
         'SPLIT' => new SplitFn(),
         'INITCAP' => new InitCapFn(),
-        'URLENCODE' => new UrlEncodeFn()
+        'URLENCODE' => new UrlEncodeFn(),
+        'LIKE' => new LikeFn()
     };
 
     public class StringFunctionsProvider implements FunctionProvider {
@@ -807,6 +808,53 @@ public with sharing class StringFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(1);
+        }
+    }
+
+    /**
+     * @description Returns TRUE if a text field matches a given pattern.
+     * The pattern can include regular characters and wildcard characters.
+     * The supported wildcard characters are the percent sign (%), which matches zero or more characters, and the underscore (_),
+     * which matches exactly one character.
+     *
+     * Accepts 2 arguments: the text field and the pattern to match.
+     * @function LIKE
+     * @example
+     * LIKE("Hello World", "Hello%") // TRUE
+     * LIKE("Hello World", "Hello_") // FALSE
+     */
+    private class LikeFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            Object pattern = evaluate(arguments.get(1));
+            if (!(text instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "LIKE" function: the first argument must evaluate to a string value.'
+                );
+            }
+            if (!(pattern instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "LIKE" function: the second argument must evaluate to a string value.'
+                );
+            }
+
+            return matchesPattern((String) text, (String) pattern);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+
+        private Boolean matchesPattern(String text, String targetPattern) {
+            // Escape special regex characters
+            targetPattern = targetPattern.replaceAll('([\\\\.\\[\\{\\(\\*\\+\\?\\^\\$\\|])', '\\\\$1');
+            // Replace SQL wildcards with regex wildcards
+            targetPattern = targetPattern.replaceAll('%', '.*').replaceAll('_', '.');
+            // Create a new Pattern object
+            Pattern regex = Pattern.compile('^' + targetPattern + '$');
+            // Test the text against the pattern
+            Matcher matcher = regex.matcher(text);
+            return matcher.matches();
         }
     }
 }
