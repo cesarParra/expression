@@ -86,6 +86,38 @@ export const operators = [
         examples: [
           "$Resource.myResource"
         ]
+      },
+      {
+        name: "Apex Actions",
+        autoCompleteValue: "$Action.Apex.",
+        icon: "utility:custom_apps",
+        description: "References an Apex action.",
+        syntax: "$Action.Apex.className.ClassName",
+        examples: [
+          "$Action.Apex.MyApexClass",
+          "$Action.Apex.ClassName(expression1, expression2, ...)"
+        ]
+      },
+      {
+        name: "LWC Actions",
+        autoCompleteValue: "$Action.LWC.",
+        icon: "utility:custom_apps",
+        description: "References an LWC action.",
+        syntax: "$Action.LWC.actionName",
+        examples: [
+          "$Action.Lwc.GoToNamedPage(\n    {\n      \"name\": \"checkout__c\",\n      \"id\": $returnValue\n    }\n  )"
+        ]
+      },
+      {
+        name: "User Data",
+        autoCompleteValue: "$User.",
+        icon: "utility:user",
+        description: "References a user's data.",
+        syntax: "$User.fieldName",
+        examples: [
+          "$User.FirstName",
+          "$User.LastName"
+        ]
       }
     ]
   },
