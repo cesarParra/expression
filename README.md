@@ -25,19 +25,19 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ### Unlocked Package (`expression` namespace)
 
-[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000tLMOIA2)
-[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000tLMOIA2)
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000tLMTIA2)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tDm000000tLMTIA2)
 
 Install with SF CLI:
 
 ```shell
-sf package install --apex-compile package --wait 20 --package 04tDm000000tLMOIA2
+sf package install --apex-compile package --wait 20 --package 04tDm000000tLMTIA2
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000tLMOIA2
+sfdx force:package:install --apexcompile package --wait 20 --package 04tDm000000tLMTIA2
 ```
 
 ## Setup
@@ -724,6 +724,18 @@ Accepts 1 argument: the text to evaluate.
 
 ```apex
 expression.Evaluator.run('LEN("Hello World")'); // 11
+```
+
+- `LIKE`
+
+Returns TRUE if a text field matches a given pattern. The pattern can include regular characters and wildcard characters. 
+The supported wildcard characters are the percent sign (%), which matches zero or more characters, and the underscore (_), 
+which matches exactly one character.
+
+Accepts 2 arguments: the text to evaluate and the pattern to match.
+
+```apex
+expression.Evaluator.run('LIKE("Hello World", "Hello%")'); // true
 ```
 
 - `LPAD`

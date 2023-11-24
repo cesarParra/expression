@@ -1,5 +1,14 @@
 @IsTest
 private class StringFunctionsTest {
+    private static void runExpectingRuntimeException(String formula) {
+        try {
+            Evaluator.run(formula);
+            Assert.fail('Expected RuntimeException');
+        } catch (Exceptions.RuntimeException e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
     @IsTest
     private static void beginsFunctionReturnsTrueIfFirstArgumentBeginsWithSecondArgument() {
         Assert.areEqual(true, Evaluator.run('BEGINS("Hello World", "Hello")'));
@@ -328,12 +337,43 @@ private class StringFunctionsTest {
         runExpectingRuntimeException(formula);
     }
 
-    private static void runExpectingRuntimeException(String formula) {
-        try {
-            Evaluator.run(formula);
-            Assert.fail('Expected RuntimeException');
-        } catch (Exceptions.RuntimeException e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
+    @IsTest
+    private static void likeFunction_startsWith_matches() {
+        Assert.areEqual(true, Evaluator.run('LIKE("Hello World", "Hello%")'));
+    }
+
+    @IsTest
+    private static void likeFunction_startsWith_doesNotMatch() {
+        Assert.areEqual(false, Evaluator.run('LIKE("Hello World", "World%")'));
+    }
+
+    @IsTest
+    private static void likeFunction_endsWith_matches() {
+        Assert.areEqual(true, Evaluator.run('LIKE("Hello World", "%World")'));
+    }
+
+    @IsTest
+    private static void likeFunction_endsWith_doesNotMatch() {
+        Assert.areEqual(false, Evaluator.run('LIKE("Hello World", "%Hello")'));
+    }
+
+    @IsTest
+    private static void likeFunction_contains_matches() {
+        Assert.areEqual(true, Evaluator.run('LIKE("Hello World", "%llo%")'));
+    }
+
+    @IsTest
+    private static void likeFunction_contains_doesNotMatch() {
+        Assert.areEqual(false, Evaluator.run('LIKE("Hello World", "%Goodbye%")'));
+    }
+
+    @IsTest
+    private static void likeFunction_singleCharacterWildcard_matches() {
+        Assert.areEqual(true, Evaluator.run('LIKE("Hello World", "H_llo%")'));
+    }
+
+    @IsTest
+    private static void likeFunction_singleCharacterWildcard_doesNotMatch() {
+        Assert.areEqual(false, Evaluator.run('LIKE("Hello World", "H_llo")'));
     }
 }

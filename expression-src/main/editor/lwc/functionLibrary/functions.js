@@ -789,6 +789,15 @@ export const data = [
         "icon": "utility:text"
       },
       {
+        "name": "LIKE",
+        "autoCompleteValue": "LIKE(",
+        "description": "Returns TRUE if a text field matches a given pattern.<br/>The pattern can include regular characters and wildcard characters.<br/>The supported wildcard characters are the percent sign (%), which matches zero or more characters, and the underscore (_),<br/>which matches exactly one character.<br/>Accepts 2 arguments: the text field and the pattern to match.",
+        "examples": [
+          "LIKE(\"Hello World\", \"Hello%\") // TRUE\nLIKE(\"Hello World\", \"Hello_\") // FALSE"
+        ],
+        "icon": "utility:text"
+      },
+      {
         "name": "LOWER",
         "autoCompleteValue": "LOWER(",
         "description": "Converts all letters in the specified text to lowercase.<br/>Accepts 1 argument: the text to convert.",
