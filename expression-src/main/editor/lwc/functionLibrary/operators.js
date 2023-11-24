@@ -66,6 +66,16 @@ export const operators = [
           "$Label.c.MyCustomLabel",
           "$Label.namespace.MyCustomLabel"
         ]
+      },
+      {
+        name: "Custom Metadata Type Record's Field",
+        autoCompleteValue: "$CustomMetadata.",
+        icon: "utility:custom_apps",
+        description: "References a custom metadata type record's field value.",
+        syntax: "$CustomMetadata.MyCustomMetadataType.MyCustomMetadataRecord.MyField__c",
+        examples: [
+          "$CustomMetadata.MyCustomMetadataType__mdt.MyCustomMetadataRecordName.MyField__c"
+        ]
       }
     ]
   },
