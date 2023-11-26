@@ -8,19 +8,10 @@ export const navigation = [
         ],
     },
     {
-        title: 'Core concepts',
+        title: 'Usage',
         links: [
-            {title: 'Understanding caching', href: '/docs/understanding-caching'},
-            {
-                title: 'Predicting user behavior',
-                href: '/docs/predicting-user-behavior',
-            },
-            {title: 'Basics of time-travel', href: '/docs/basics-of-time-travel'},
-            {
-                title: 'Introduction to string theory',
-                href: '/docs/introduction-to-string-theory',
-            },
-            {title: 'The butterfly effect', href: '/docs/the-butterfly-effect'},
+            {title: 'Evaluating Expressions', href: '/docs/usage'},
+            {title: 'Considerations', href: '/docs/considerations'},
         ],
     },
     {
