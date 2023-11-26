@@ -23,6 +23,7 @@ export const navigation = [
             {title: 'Maps', href: '/docs/maps'},
             {title: 'Piping', href: '/docs/piping'},
             {title: 'String Interpolation', href: '/docs/string-interpolation'},
+            {title: 'Fetching Record Data', href: '/docs/fetching-record-data'},
         ],
     }
 ]
