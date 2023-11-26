@@ -64,12 +64,6 @@ export default function withSearch(nextConfig = {}) {
               if (cache.get(file)?.[0] === md) {
                 sections = cache.get(file)[1]
               } else {
-                // const config = {
-                //   variables: {
-                //     packageId: '04t'
-                //   }
-                // }
-                //let ast = Markdoc.parse(md).transform(config);
                 let ast = Markdoc.parse(md);
 
                 let title =
