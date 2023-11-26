@@ -13,12 +13,12 @@ export const navigation = [
             {title: 'Evaluating Expressions', href: '/docs/usage'},
             {title: 'Considerations', href: '/docs/considerations'},
             {title: 'Limitations', href: '/docs/limitations'},
+            {title: 'Configuring the evaluation', href: '/docs/configuring-the-evaluation'},
         ],
     },
     {
         title: 'Advanced guides',
         links: [
-            {title: 'Neuralink integration', href: '/docs/neuralink-integration'},
             {title: 'Temporal paradoxes', href: '/docs/temporal-paradoxes'},
             {title: 'Testing', href: '/docs/testing'},
             {title: 'Compile-time caching', href: '/docs/compile-time-caching'},
