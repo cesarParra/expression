@@ -24,6 +24,7 @@ export const navigation = [
             {title: 'Piping', href: '/docs/piping'},
             {title: 'String Interpolation', href: '/docs/string-interpolation'},
             {title: 'Fetching Record Data', href: '/docs/fetching-record-data'},
+            {title: 'Reference Org Data', href: '/docs/referencing-org-data'},
         ],
     }
 ]
