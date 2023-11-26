@@ -12,12 +12,12 @@ export const navigation = [
         links: [
             {title: 'Evaluating Expressions', href: '/docs/usage'},
             {title: 'Considerations', href: '/docs/considerations'},
+            {title: 'Limitations', href: '/docs/limitations'},
         ],
     },
     {
         title: 'Advanced guides',
         links: [
-            {title: 'Writing plugins', href: '/docs/writing-plugins'},
             {title: 'Neuralink integration', href: '/docs/neuralink-integration'},
             {title: 'Temporal paradoxes', href: '/docs/temporal-paradoxes'},
             {title: 'Testing', href: '/docs/testing'},
