@@ -21,6 +21,7 @@ export const navigation = [
         links: [
             {title: 'Lists', href: '/docs/lists'},
             {title: 'Maps', href: '/docs/maps'},
+            {title: 'Piping', href: '/docs/piping'},
         ],
     }
 ]
