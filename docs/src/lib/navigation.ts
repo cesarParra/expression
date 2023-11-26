@@ -22,6 +22,7 @@ export const navigation = [
             {title: 'Lists', href: '/docs/lists'},
             {title: 'Maps', href: '/docs/maps'},
             {title: 'Piping', href: '/docs/piping'},
+            {title: 'String Interpolation', href: '/docs/string-interpolation'},
         ],
     }
 ]
