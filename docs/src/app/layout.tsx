@@ -8,19 +8,6 @@ import {Layout} from '@/components/Layout'
 
 import '@/styles/tailwind.css'
 
-const inter = Inter({
-    subsets: ['latin'],
-    display: 'swap',
-    variable: '--font-inter',
-})
-
-// Use local version of Lexend so that we can use OpenType features
-const lexend = localFont({
-    src: '../fonts/lexend.woff2',
-    display: 'swap',
-    variable: '--font-lexend',
-})
-
 const poppins = Poppins({weight: ["400"], subsets: ['latin'], variable: '--font-poppins'});
 
 export const metadata: Metadata = {
