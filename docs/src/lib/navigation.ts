@@ -17,9 +17,9 @@ export const navigation = [
         ],
     },
     {
-        title: 'Advanced guides',
+        title: 'Language Features',
         links: [
-            {title: 'Temporal paradoxes', href: '/docs/temporal-paradoxes'},
+            {title: 'Lists', href: '/docs/lists'},
             {title: 'Testing', href: '/docs/testing'},
             {title: 'Compile-time caching', href: '/docs/compile-time-caching'},
             {
