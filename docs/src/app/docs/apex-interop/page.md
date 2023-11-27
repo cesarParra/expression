@@ -18,7 +18,7 @@ Only top level classes without namespaces are currently supported.
 {% /callout %}
 
 {% callout %}
-This is how you can call Apex actions from [Expression Component Buttons](#Button).
+This is how you can call Apex actions from [Expression Component Buttons](https://github.com/cesarParra/expression#Button).
 {% /callout %}
 
 Any class that implements the `expression.IExpressionFunction` interface can be referenced in this way.
