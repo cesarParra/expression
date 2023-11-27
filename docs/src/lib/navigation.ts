@@ -32,6 +32,7 @@ export const navigation = [
         title: 'Advanced Usage',
         links: [
             {title: 'Custom Functions', href: '/docs/custom-functions'},
+            {title: 'Apex Interoperability', href: '/docs/apex-interop'},
         ],
     },
 ]

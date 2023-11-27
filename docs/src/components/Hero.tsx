@@ -7,15 +7,14 @@ export function Hero() {
         <div className="mx-auto grid grid-cols-1 items-center gap-x-8 gap-y-16 px-4 lg:max-w-8xl lg:px-8 xl:gap-x-16 xl:px-12">
           <div className="relative z-10 text-center">
             <div className="relative">
-              <p className="inline bg-gradient-to-r from-zinc-200 via-orange-400 to-zinc-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
+              <p className="inline bg-orange-400 bg-clip-text font-display text-5xl tracking-tight text-transparent">
                 Expression
               </p>
-              <p className="mt-3 text-2xl tracking-tight text-stone-400">
+              <p className="mt-3 text-2xl tracking-tight text-orange-100">
                 Powerful formula-syntax evaluator for Apex and LWC.
               </p>
               <div className="mt-8 flex gap-4 justify-center">
-                <Button href="/">Get started</Button>
-                <Button href="https://github.com/cesarParra/expression" variant="secondary">
+                <Button href="https://github.com/cesarParra/expression">
                   View on GitHub
                 </Button>
               </div>
