@@ -3,7 +3,7 @@ import { slugifyWithCounter } from '@sindresorhus/slugify'
 import yaml from 'js-yaml'
 
 import { DocsLayout } from '@/components/DocsLayout'
-import { Fence } from '@/components/Fence'
+import { Code } from "../components/Code";
 
 let documentSlugifyMap = new Map()
 
@@ -51,12 +51,8 @@ const nodes = {
     },
   },
   fence: {
-    render: Fence,
-    attributes: {
-      language: {
-        type: String,
-      },
-    },
+    render: Code,
+    attributes: defaultNodes.fence.attributes,
   },
 }
 

@@ -12,7 +12,7 @@ Expression can be installed in your Salesforce org through an Unlocked package.
 
 ## Install with SF CLI
 
-```shell
+```bash
 sf package install --apex-compile package --wait 20 --package 04tDm000000tLMTIA2
 ```
 
