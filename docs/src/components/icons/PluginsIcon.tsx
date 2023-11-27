@@ -8,62 +8,9 @@ export function PluginsIcon({
   color?: React.ComponentProps<typeof Gradient>['color']
 }) {
   return (
-    <>
-      <defs>
-        <Gradient
-          id={`${id}-gradient`}
-          color={color}
-          gradientTransform="matrix(0 21 -21 0 20 11)"
-        />
-        <Gradient
-          id={`${id}-gradient-dark-1`}
-          color={color}
-          gradientTransform="matrix(0 22.75 -22.75 0 16 6.25)"
-        />
-        <Gradient
-          id={`${id}-gradient-dark-2`}
-          color={color}
-          gradientTransform="matrix(0 14 -14 0 16 10)"
-        />
-      </defs>
-      <LightMode>
-        <circle cx={20} cy={20} r={12} fill={`url(#${id}-gradient)`} />
-        <g
-          fillOpacity={0.5}
-          className="fill-[var(--icon-background)] stroke-[color:var(--icon-foreground)]"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M3 9v14l12 6V15L3 9Z" />
-          <path d="M27 9v14l-12 6V15l12-6Z" />
-        </g>
-        <path
-          d="M11 4h8v2l6 3-10 6L5 9l6-3V4Z"
-          fillOpacity={0.5}
-          className="fill-[var(--icon-background)]"
-        />
-        <g
-          className="stroke-[color:var(--icon-foreground)]"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M20 5.5 27 9l-12 6L3 9l7-3.5" />
-          <path d="M20 5c0 1.105-2.239 2-5 2s-5-.895-5-2m10 0c0-1.105-2.239-2-5-2s-5 .895-5 2m10 0v3c0 1.105-2.239 2-5 2s-5-.895-5-2V5" />
-        </g>
-      </LightMode>
-      <DarkMode strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-        <path
-          d="M17.676 3.38a3.887 3.887 0 0 0-3.352 0l-9 4.288C3.907 8.342 3 9.806 3 11.416v9.168c0 1.61.907 3.073 2.324 3.748l9 4.288a3.887 3.887 0 0 0 3.352 0l9-4.288C28.093 23.657 29 22.194 29 20.584v-9.168c0-1.61-.907-3.074-2.324-3.748l-9-4.288Z"
-          stroke={`url(#${id}-gradient-dark-1)`}
-        />
-        <path
-          d="M16.406 8.087a.989.989 0 0 0-.812 0l-7 3.598A1.012 1.012 0 0 0 8 12.61v6.78c0 .4.233.762.594.925l7 3.598a.989.989 0 0 0 .812 0l7-3.598c.361-.163.594-.525.594-.925v-6.78c0-.4-.233-.762-.594-.925l-7-3.598Z"
-          fill={`url(#${id}-gradient-dark-2)`}
-          stroke={`url(#${id}-gradient-dark-2)`}
-        />
-      </DarkMode>
-    </>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-orange-600">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+      </svg>
+
   )
 }

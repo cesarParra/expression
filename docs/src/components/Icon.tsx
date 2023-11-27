@@ -61,7 +61,7 @@ const gradients = {
 }
 
 export function Gradient({
-  color = 'blue',
+  color = 'amber',
   ...props
 }: {
   color?: keyof typeof gradients

@@ -6,15 +6,13 @@ Learn how to get Expression set up in your org.
 
 {% quick-links %}
 
-{% quick-link title="Installation" icon="installation" href="/" description="Instructions on how to get the Expression package." /%}
+{% quick-link title="Installation" icon="installation" href="/docs/installation" description="Instructions on how to get the Expression package." /%}
 
-{% quick-link title="Usage" icon="plugins" href="/" description="Learn how to use the language in your projects." /%}
+{% quick-link title="Usage" icon="plugins" href="/docs/usage" description="Learn how to use the language in your projects." /%}
 
-{% quick-link title="Architecture guide" icon="presets" href="/" description="Learn how the code works and contribute." /%}
+{% quick-link title="Language Features" icon="presets" href="/docs/lists" description="Learn how the language works." /%}
 
-{% quick-link title="API reference" icon="theming" href="/" description="Learn about the endpoints exposed by the package to Apex developers." /%}
-
-{% quick-link title="Expression Components" icon="theming" href="/" description="LWC Library powered by the Expression language." /%}
+{% quick-link title="Advance Usage" icon="theming" href="/docs/custom-functions" description="Build powerful functionality with the language." /%}
 
 {% /quick-links %}
 
