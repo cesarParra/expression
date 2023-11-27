@@ -1,12 +1,12 @@
 import {type Metadata} from 'next'
-import {Inter, Poppins} from 'next/font/google'
-import localFont from 'next/font/local'
+import {Poppins} from 'next/font/google'
 import clsx from 'clsx'
 
 import {Providers} from '@/app/providers'
 import {Layout} from '@/components/Layout'
 
 import '@/styles/tailwind.css'
+import React from "react";
 
 const poppins = Poppins({weight: ["400"], subsets: ['latin'], variable: '--font-poppins'});
 

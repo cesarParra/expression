@@ -337,7 +337,7 @@ Object result = expression.Evaluator.run('1 + 1 # This is a comment');
 
 ## Advanced Usage
 
-### Custom Formula Functions
+### Custom Functions
 
 You can create your own custom formula functions by implementing the `expression.IExpressionFunction` interface.
 This interface has a single method, `Object run(List<Object> args)`, which receives the arguments passed to the

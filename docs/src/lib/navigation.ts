@@ -27,5 +27,11 @@ export const navigation = [
             {title: 'Reference Org Data', href: '/docs/referencing-org-data'},
             {title: 'Comments', href: '/docs/comments'},
         ],
-    }
+    },
+    {
+        title: 'Advanced Usage',
+        links: [
+            {title: 'Custom Functions', href: '/docs/custom-functions'},
+        ],
+    },
 ]
