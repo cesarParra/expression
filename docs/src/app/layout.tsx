@@ -30,7 +30,7 @@ export default function RootLayout({
             className={clsx('h-full antialiased', poppins.variable)}
             suppressHydrationWarning
         >
-        <body className="flex min-h-full bg-white dark:bg-slate-900">
+        <body className="flex min-h-full bg-white dark:bg-stone-900">
         <Providers>
             <Layout>{children}</Layout>
         </Providers>

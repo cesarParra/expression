@@ -26,14 +26,14 @@ function PageLink({
 }) {
   return (
     <div {...props}>
-      <dt className="font-display text-sm font-medium text-slate-900 dark:text-white">
+      <dt className="font-display text-sm font-medium text-stone-900 dark:text-white">
         {dir === 'next' ? 'Next' : 'Previous'}
       </dt>
       <dd className="mt-1">
         <Link
           href={href}
           className={clsx(
-            'flex items-center gap-x-1 text-base font-semibold text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300',
+            'flex items-center gap-x-1 text-base font-semibold text-stone-500 hover:text-stone-600 dark:text-stone-400 dark:hover:text-stone-300',
             dir === 'previous' && 'flex-row-reverse',
           )}
         >
@@ -62,7 +62,7 @@ export function PrevNextLinks() {
   }
 
   return (
-    <dl className="mt-12 flex border-t border-slate-200 pt-6 dark:border-slate-800">
+    <dl className="mt-12 flex border-t border-stone-200 pt-6 dark:border-stone-800">
       {previousPage && <PageLink dir="previous" {...previousPage} />}
       {nextPage && <PageLink className="ml-auto text-right" {...nextPage} />}
     </dl>
