@@ -14,6 +14,8 @@ Learn how to get Expression set up in your org.
 
 {% quick-link title="Advance Usage" icon="theming" href="/docs/custom-functions" description="Build powerful functionality with the language." /%}
 
+{% quick-link title="Operators" icon="operators" href="/docs/math-operators" description="Learn about the different operators available." /%}
+
 {% /quick-links %}
 
 ---
