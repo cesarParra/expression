@@ -1,9 +1,9 @@
 ---
-title: Misc Operators
+title: Data Operators
 nextjs:
   metadata:
-    title: Misc Operators
-    description: Misc operators overview.
+    title: Data Operators
+    description: Data operators overview.
 ---
 
 - `( )` Parentheses

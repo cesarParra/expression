@@ -19,8 +19,10 @@ export const navigation = [
     {
         title: 'Operators',
         links: [
-            {title: 'Math Operators', href: '/docs/math-operators'},
-            {title: 'Misc Operators', href: '/docs/misc-operators'},
+            {title: 'Math', href: '/docs/math-operators'},
+            {title: 'Data', href: '/docs/data-operators'},
+            {title: 'Logical', href: '/docs/logical-operators'},
+            {title: 'String', href: '/docs/string-operators'},
         ],
     },
     {
