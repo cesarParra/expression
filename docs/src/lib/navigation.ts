@@ -17,6 +17,13 @@ export const navigation = [
         ],
     },
     {
+        title: 'Operators',
+        links: [
+            {title: 'Math Operators', href: '/docs/math-operators'},
+            {title: 'Misc Operators', href: '/docs/misc-operators'},
+        ],
+    },
+    {
         title: 'Language Features',
         links: [
             {title: 'Lists', href: '/docs/lists'},
@@ -36,10 +43,4 @@ export const navigation = [
             {title: 'Providing More Context To Your Expressions', href: '/docs/more-context'},
         ],
     },
-    {
-        title: 'Operators',
-        links: [
-            {title: 'Math Operators', href: '/docs/math-operators'},
-        ],
-    }
 ]
