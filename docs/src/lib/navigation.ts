@@ -23,6 +23,7 @@ export const navigation = [
             {title: 'Data', href: '/docs/data-operators'},
             {title: 'Logical', href: '/docs/logical-operators'},
             {title: 'String', href: '/docs/string-operators'},
+            {title: 'List and Map', href: '/docs/list-map-operators'},
         ],
     },
     {
