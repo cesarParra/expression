@@ -1,8 +1,11 @@
 import withMarkdoc from '@markdoc/next.js'
 import withSearch from './src/markdoc/search.mjs'
 
+const isProd = process.env.NODE_ENV === 'production';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  basePath: isProd ? '/expression' : undefined,
   pageExtensions: ['js', 'jsx', 'md', 'ts', 'tsx'],
   output: "export",
 }
