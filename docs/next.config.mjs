@@ -5,7 +5,7 @@ const isProd = process.env.NODE_ENV === 'production';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: isProd ? '/expression' : undefined,
+  basePath: isProd ? '/expression' : '',
   pageExtensions: ['js', 'jsx', 'md', 'ts', 'tsx'],
   output: "export",
 }

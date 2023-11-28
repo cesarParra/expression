@@ -28,4 +28,4 @@ explicitly specify all fields you wish to reference in the formula.
 
 At this moment, advanced querying capabilities like filtering, sorting, or limiting the number of records
 are not supported. To get over these limitations, you can create a custom formula using Apex. See the
-[Advanced Usage](/docs/custom-functions) section for more information.
+[Advanced Usage](./../docs/custom-functions) section for more information.
