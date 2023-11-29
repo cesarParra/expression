@@ -32,6 +32,7 @@ export const navigation = [
         title: 'Standard Library',
         links: [
             {title: 'Operators', href: '/docs/operators'},
+            {title: 'Functions', href: '/docs/functions'},
         ],
     },
     {

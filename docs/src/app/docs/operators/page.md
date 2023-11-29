@@ -8,31 +8,31 @@ nextjs:
 
 ## Math Operators
 
-- `+` Addition
+### `+` Addition
 
 ```apex
 expression.Evaluator.run('1 + 1'); // 2
 ```
 
-- `-` Subtraction
+###`-` Subtraction
 
 ```apex
 expression.Evaluator.run('1 - 1'); // 0
 ```
 
-- `*` Multiplication
+### `*` Multiplication
 
 ```apex
 expression.Evaluator.run('2 * 2'); // 4
 ```
 
-- `/` Division
+###`/` Division
 
 ```apex
 expression.Evaluator.run('4 / 2'); // 2
 ```
 
-- `^` Exponentiation
+###`^` Exponentiation
 
 ```apex
 expression.Evaluator.run('2 ^ 2'); // 4
@@ -40,7 +40,7 @@ expression.Evaluator.run('2 ^ 2'); // 4
 
 ## Data Operators
 
-- `( )` Parentheses
+###`( )` Parentheses
 
 Groups expressions together.
 
@@ -48,7 +48,7 @@ Groups expressions together.
 expression.Evaluator.run('(1 + 1) * 2'); // 4
 ```
 
-- `->` Pipe
+###`->` Pipe
 
 Read more about piping [here]('./../piping).
 
@@ -58,7 +58,9 @@ expression.Evaluator.run('[1, 2, 3] -> MAP($current + 1)'); // (2, 3, 4)
 
 ## Logical Operators
 
-- `=` and `==` Equal
+### Equality
+
+`=` and `==`
 
 Evaluates if two values are equal. The `=` and `==` operators are equivalent.
 
@@ -66,7 +68,9 @@ Evaluates if two values are equal. The `=` and `==` operators are equivalent.
 expression.Evaluator.run('1 = 1'); // true
 ```
 
-- `<>` and `!=` Not Equal
+### Not Equal
+
+`<>` and `!=`
 
 Evaluates if two values are not equal. The `<>` and `!=` operators are equivalent.
 
@@ -74,7 +78,7 @@ Evaluates if two values are not equal. The `<>` and `!=` operators are equivalen
 expression.Evaluator.run('1 <> 2'); // true
 ```
 
-- `<` Less Than
+### `<` Less Than
 
 Evaluates if the first value is less than the second value.
 
@@ -82,7 +86,7 @@ Evaluates if the first value is less than the second value.
 expression.Evaluator.run('1 < 2'); // true
 ```
 
-- `>` Greater Than
+### `>` Greater Than
 
 Evaluates if the first value is greater than the second value.
 
@@ -90,7 +94,7 @@ Evaluates if the first value is greater than the second value.
 expression.Evaluator.run('2 > 1'); // true
 ```
 
-- `<=` Less Than or Equal
+### `<=` Less Than or Equal
 
 Evaluates if the first value is less than or equal to the second value.
 
@@ -98,7 +102,7 @@ Evaluates if the first value is less than or equal to the second value.
 expression.Evaluator.run('1 <= 1'); // true
 ```
 
-- `>=` Greater Than or Equal
+### `>=` Greater Than or Equal
 
 Evaluates if the first value is greater than or equal to the second value.
 
@@ -106,7 +110,7 @@ Evaluates if the first value is greater than or equal to the second value.
 expression.Evaluator.run('1 >= 1'); // true
 ```
 
-- `&&` Logical AND
+### `&&` Logical AND
 
 Evaluates if both values are true.
 
@@ -114,7 +118,7 @@ Evaluates if both values are true.
 expression.Evaluator.run('true && true'); // true
 ```
 
-- `||` Logical OR
+### `||` Logical OR
 
 Evaluates if either value is true.
 
@@ -124,7 +128,9 @@ expression.Evaluator.run('true || false'); // true
 
 ## String Operators
 
-- `&` and `+` Concatenation
+### Concatenation
+
+`&` and `+`
 
 Concatenates two strings together. The `&` and `+` operators are equivalent.
 
@@ -135,7 +141,7 @@ expression.Evaluator.run('"Hello" & " " & "World"'); // "Hello World"
 ## List and Map Operators
 
 
-- `...` Spread Operator
+### `...` Spread Operator
 
 When used within a list, it expands the list into its elements.
 
