@@ -12,9 +12,9 @@ Learn how to get Expression set up in your org.
 
 {% quick-link title="Language Features" icon="presets" href="/docs/lists" description="Learn how the language works." /%}
 
-{% quick-link title="Advance Usage" icon="theming" href="/docs/custom-functions" description="Build powerful functionality with the language." /%}
+{% quick-link title="Standard Library" icon="operators" href="/docs/operators" description="Learn about the standard library." /%}
 
-{% quick-link title="Operators" icon="operators" href="/docs/math-operators" description="Learn about the different operators available." /%}
+{% quick-link title="Advance Usage" icon="theming" href="/docs/custom-functions" description="Build powerful functionality with the language." /%}
 
 {% /quick-links %}
 
