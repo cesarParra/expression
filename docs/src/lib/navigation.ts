@@ -17,16 +17,6 @@ export const navigation = [
         ],
     },
     {
-        title: 'Operators',
-        links: [
-            {title: 'Math', href: '/docs/math-operators'},
-            {title: 'Data', href: '/docs/data-operators'},
-            {title: 'Logical', href: '/docs/logical-operators'},
-            {title: 'String', href: '/docs/string-operators'},
-            {title: 'List and Map', href: '/docs/list-map-operators'},
-        ],
-    },
-    {
         title: 'Language Features',
         links: [
             {title: 'Lists', href: '/docs/lists'},
@@ -36,6 +26,12 @@ export const navigation = [
             {title: 'Fetching Record Data', href: '/docs/fetching-record-data'},
             {title: 'Reference Org Data', href: '/docs/referencing-org-data'},
             {title: 'Comments', href: '/docs/comments'},
+        ],
+    },
+    {
+        title: 'Standard Library',
+        links: [
+            {title: 'Operators', href: '/docs/operators'},
         ],
     },
     {
