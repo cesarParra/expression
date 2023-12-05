@@ -1,3 +1,6 @@
+/**
+ * @description Configuration class for the evaluator.
+ */
 global with sharing class Configuration {
     global enum SharingMode {
         WITH,

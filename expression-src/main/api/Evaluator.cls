@@ -23,7 +23,7 @@ global with sharing abstract class Evaluator {
     }
 
     /**
-     * @description
+     * @description Evaluates a formula and returns the result.
      * @param formula Evaluates a formula and returns the result.
      * @param context An SObject that will act as the context for the formula.
      *        Providing this allows you to reference fields on the SObject in
