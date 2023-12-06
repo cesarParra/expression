@@ -1,5 +1,4 @@
 import {readFileSync, writeFileSync} from "fs";
-import * as path from 'path';
 import {OutputDir, TargetFile} from "@cparra/apexdocs/lib/settings";
 
 function onBeforeFileWrite(file: TargetFile): TargetFile {

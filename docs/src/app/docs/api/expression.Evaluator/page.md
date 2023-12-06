@@ -19,6 +19,12 @@ Evaluates a formula and returns the result.
 |---|---|
 |`Object`|The result of the formula.|
 
+#### Example
+```apex
+Decimal result = (String)expression.Evaluator.run('1 + 1');
+```
+
+
 ### `global static Object run(String formula, Configuration config)`
 
 Evaluates a formula and returns the result.
@@ -35,6 +41,15 @@ Evaluates a formula and returns the result.
 |Type|Description|
 |---|---|
 |`Object`|The result of the formula.|
+
+#### Example
+```apex
+Decimal result = (String)expression.Evaluator.run(
+    '1 + 1',
+    new expression.Configuration().printAst()
+);
+```
+
 
 ### `global static Object run(String formula, SObject context)`
 
@@ -53,6 +68,13 @@ Evaluates a formula and returns the result.
 |---|---|
 |`Object`|The result of the formula.|
 
+#### Example
+```apex
+Account record = new Account(Name = 'Example');
+String recordName = (String)expression.Evaluator.run('Name', record);
+```
+
+
 ### `global static Object run(String formula, SObject context, Configuration config)`
 #### Parameters
 
@@ -67,6 +89,17 @@ Evaluates a formula and returns the result.
 |Type|Description|
 |---|---|
 |`Object`|The result of the formula.|
+
+#### Example
+```apex
+Account record = new Account(Name = 'Example');
+String recordName = (String)expression.Evaluator.run(
+   'Name',
+   record,
+   new expression.Configuration().printAst()
+);
+```
+
 
 ### `global static Object run(String formula, Id recordId)`
 
@@ -85,6 +118,14 @@ Evaluates a formula and returns the result using a record Id as the context.    
 |---|---|
 |`Object`|The result of the formula.|
 
+#### Example
+```apex
+Account record = new Account(Name = 'Example');
+insert record;
+String recordName = (String)expression.Evaluator.run('Name', record.Id);
+```
+
+
 ### `global static Object run(String formula, Id recordId, Configuration config)`
 
 Evaluates a formula and returns the result using a record Id as the context.              When using this endpoint field references will automatically be resolved              and queried.
@@ -102,5 +143,17 @@ Evaluates a formula and returns the result using a record Id as the context.    
 |Type|Description|
 |---|---|
 |`Object`|The result of the formula.|
+
+#### Example
+```apex
+Account record = new Account(Name = 'Example');
+insert record;
+String recordName = (String)expression.Evaluator.run(
+  'Name',
+  record.Id,
+  new expression.Configuration().respectSharing(false)
+);
+```
+
 
 ---

@@ -6,6 +6,8 @@ global with sharing abstract class Evaluator {
      * @description Evaluates a formula and returns the result.
      * @param formula The formula to evaluate.
      * @return The result of the formula.
+     * @example
+     * Decimal result = (String)expression.Evaluator.run('1 + 1');
      */
     global static Object run(String formula) {
         return run(formula, new Configuration());
@@ -17,6 +19,11 @@ global with sharing abstract class Evaluator {
      * @param config A configuration object that allows you to set options for
      *        the evaluation.
      * @return The result of the formula.
+     * @example
+     * Decimal result = (String)expression.Evaluator.run(
+     *     '1 + 1',
+     *     new expression.Configuration().printAst()
+     * );
      */
     global static Object run(String formula, Configuration config) {
         return run(formula, (SObject) null, config);
@@ -29,6 +36,9 @@ global with sharing abstract class Evaluator {
      *        Providing this allows you to reference fields on the SObject in
      *        the formula.
      * @return The result of the formula.
+     * @example
+     * Account record = new Account(Name = 'Example');
+     * String recordName = (String)expression.Evaluator.run('Name', record);
      */
     global static Object run(String formula, SObject context) {
         return run(formula, context, new Configuration());
@@ -43,6 +53,13 @@ global with sharing abstract class Evaluator {
      * @param config A configuration object that allows you to set options for
      *        the evaluation.
      * @return The result of the formula.
+     * @example
+     * Account record = new Account(Name = 'Example');
+     * String recordName = (String)expression.Evaluator.run(
+     *    'Name',
+     *    record,
+     *    new expression.Configuration().printAst()
+     * );
      */
     global static Object run(String formula, SObject context, Configuration config) {
         return EvaluatorResolver.forRecord(context).evaluate(formula, config).result;
@@ -55,6 +72,10 @@ global with sharing abstract class Evaluator {
      * @param formula The formula to evaluate.
      * @param recordId The Id of the record to use as the context for the formula.
      * @return The result of the formula.
+     * @example
+     * Account record = new Account(Name = 'Example');
+     * insert record;
+     * String recordName = (String)expression.Evaluator.run('Name', record.Id);
      */
     global static Object run(String formula, Id recordId) {
         return run(formula, recordId, new Configuration());
@@ -69,6 +90,14 @@ global with sharing abstract class Evaluator {
      * @param config A configuration object that allows you to set options for
      *        the evaluation.
      * @return The result of the formula.
+     * @example
+     * Account record = new Account(Name = 'Example');
+     * insert record;
+     * String recordName = (String)expression.Evaluator.run(
+     *   'Name',
+     *   record.Id,
+     *   new expression.Configuration().respectSharing(false)
+     * );
      */
     global static Object run(String formula, Id recordId, Configuration config) {
         return EvaluatorResolver.forId(recordId).evaluate(formula, config).result;
