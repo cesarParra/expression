@@ -33,24 +33,26 @@ private class DataFunctionsTest {
         }
     }
 
-//    @IsTest
-//    static void canOrderByAField() {
-//        List<Account> accountsInDatabase = new List<Account>();
-//        Account zAccount = new Account(Name = 'Z Account');
-//        Account aAccount = new Account(Name = 'A Account');
-//        accountsInDatabase.add(zAccount);
-//        accountsInDatabase.add(aAccount);
-//        insert accountsInDatabase;
-//
-//        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name"))';
-//        List<Account> result = (List<Account>) Evaluator.run(expr);
-//
-//        Assert.areEqual(2, result.size());
-//        Assert.areEqual(aAccount.Id, result[0].Id);
-//        Assert.areEqual(zAccount.Id, result[1].Id);
-//    }
+    @IsTest
+    static void canOrderByAField() {
+        List<Account> accountsInDatabase = new List<Account>();
+        Account zAccount = new Account(Name = 'Z Account');
+        Account aAccount = new Account(Name = 'A Account');
+        accountsInDatabase.add(zAccount);
+        accountsInDatabase.add(aAccount);
+        insert accountsInDatabase;
+
+        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name"))';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        // Order by is ascending by default
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(aAccount.Id, result[0].Id);
+        Assert.areEqual(zAccount.Id, result[1].Id);
+    }
 
     // Order by
+    // Order by throws exception when used outside of FETCH
     // Asc
     // Desc
     // Nulls first

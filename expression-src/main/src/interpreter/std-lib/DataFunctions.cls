@@ -8,7 +8,8 @@ public with sharing class DataFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'FETCH' => new FetchFn(),
         'TRANSFORM' => new TransformFn(),
-        'LET' => new LET()
+        'LET' => new LET(),
+        'ORDERBY' => new OrderByFn()
     };
 
     public class DataFunctionsProvider implements FunctionProvider {
@@ -28,8 +29,7 @@ public with sharing class DataFunctions {
      * Note that when using this function, the automatic context resolution is not performed, so you need to
      * explicitly specify all fields you wish to reference in the formula.
      * @function FETCH
-     * @example
-     * FETCH("Account", ["Id", "Name"])
+     * @example FETCH("Account", ["Id", "Name"])
      */
     private with sharing class FetchFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -78,13 +78,73 @@ public with sharing class DataFunctions {
     }
 
     /**
+     * @description Allows you to specify the order in which the results of a FETCH function are returned.
+     * Note that this function can only be used within a FETCH function.
+     *
+     * Takes 2 arguments: a string with the field name to order by and a string with the order direction.
+     * The order direction can be either `ASC` or `DESC`.
+     * The order of direction is optional and defaults to `ASC`.
+     *
+     * @function ORDER BY
+     * @example FETCH("Account", ["Id", "Name"], ORDERBY("Name", "DESC"))
+     */
+    private with sharing class OrderByFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // First argument is a string representing the field name
+            Object fieldName = evaluate(arguments.get(0));
+            if (!(fieldName instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "ORDER BY" function: the first argument must evaluate to a string.'
+                );
+            }
+
+            // The second argument is optional and represents the order direction
+            if (arguments.size() > 1) {
+                Object orderDirection = evaluate(arguments.get(1));
+                if (!(orderDirection instanceof String)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "ORDER BY" function: the second argument must evaluate to a string.'
+                    );
+                }
+
+                if (!orderDirection.equals('ASC') && !orderDirection.equals('DESC')) {
+                    throw new FunctionExecutionException(
+                        'Error executing "ORDER BY" function: the second argument must be either "ASC" or "DESC".'
+                    );
+                }
+
+                switch on ((String) orderDirection) {
+                    when 'ASC' {
+                        return new QOrder((String) fieldName).ascending();
+                    }
+
+                    when 'DESC' {
+                        return new QOrder((String) fieldName).descending();
+                    }
+
+                    when else {
+                        throw new FunctionExecutionException(
+                            'Error executing "ORDER BY" function: the second argument must be either "ASC" or "DESC".'
+                        );
+                    }
+                }
+            }
+
+            return new QOrder((String) fieldName);
+        }
+
+        public override Arity getArity() {
+            return Arity.atLeast(1);
+        }
+    }
+
+    /**
      * @description Transforms any input using the provided expression.
      * Provides a special variable `$source` in the inner expression that contains the original input.
      *
      * Accepts 2 arguments: the input to transform and the expression to evaluate.
      * @function TRANSFORM
-     * @example
-     * TRANSFORM("Hello World", UPPER($source)) // "HELLO WORLD"
+     * @example TRANSFORM("Hello World", UPPER($source)) // "HELLO WORLD"
      */
     private class TransformFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -105,8 +165,7 @@ public with sharing class DataFunctions {
      * Accepts 2 arguments: a map of variables to define and the expression to evaluate.
      * The map keys should be the variable names prefixed with `$`.
      * @function LET
-     * @example
-     * LET({ "$a": 1, "$b": 2 }, $a + $b) // 3
+     * @example LET({ "$a": 1, "$b": 2 }, $a + $b) // 3
      */
     private class LET extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -116,17 +175,17 @@ public with sharing class DataFunctions {
                 throw new FunctionExecutionException('First argument to LET must be a map');
             }
 
-            for (Object key : ((Map<Object, Object>)left).keySet()) {
+            for (Object key : ((Map<Object, Object>) left).keySet()) {
                 if (!(key instanceof String)) {
                     throw new FunctionExecutionException('Keys in map passed to LET must be strings');
                 }
 
-                String keyStr = (String)key;
+                String keyStr = (String) key;
                 if (!keyStr.startsWith('$')) {
                     throw new FunctionExecutionException('Custom variables created through LET must start with $');
                 }
 
-                Environment.addGlobalVariable(keyStr, ((Map<Object, Object>)left).get(key));
+                Environment.addGlobalVariable(keyStr, ((Map<Object, Object>) left).get(key));
             }
 
             // Second argument is any expression

@@ -1,8 +1,8 @@
 /**
-* QConditionGroup is an abstract class extended by QAandGroup and QOrGroup to build parenthetical groupings 
-* @author  Fred Hays
-* @since   2020-02-04
-*/
+ * @description QConditionGroup is an abstract class extended by QAandGroup and QOrGroup to build parenthetical groupings
+ * @author Fred Hays
+ * @since 2020-02-04
+ */
 public abstract class QConditionGroup implements QICondition {
 
     protected List<QICondition> conditions { get; set; }
