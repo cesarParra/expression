@@ -27,17 +27,11 @@ public class Q {
 		return cond;
 	}
 
-	/**
-	 * Add an OrderBy statement
-	 */
 	public Q add(QOrder ob) {
 		this.orders.add(ob);
 		return this;
 	}
 
-	/**
-	 * Add a Condition statement
-	 */
 	public Q add(QICondition cnd) {
 		this.conditions.add(cnd);
 		return this;
