@@ -59,11 +59,21 @@ public with sharing class DataFunctions {
                 query.selectField((String) fieldName);
             }
 
+            if (arguments.size() > 2) {
+                Object orderBy = evaluate(arguments.get(2));
+                if (!(orderBy instanceof QOrder)) {
+                    throw new FunctionExecutionException(
+                        'Invalid function used within a FETCH function: the third argument must be an ORDER BY clause.'
+                    );
+                }
+                query.add((QOrder) orderBy);
+            }
+
             return QRunner.getInstance().run(query);
         }
 
         public override Arity getArity() {
-            return Arity.exactly(2);
+            return Arity.atLeast(2);
         }
     }
 

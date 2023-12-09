@@ -32,4 +32,34 @@ private class DataFunctionsTest {
             Assert.areEqual(accounts[i].Name, result[i].Name);
         }
     }
+
+//    @IsTest
+//    static void canOrderByAField() {
+//        List<Account> accountsInDatabase = new List<Account>();
+//        Account zAccount = new Account(Name = 'Z Account');
+//        Account aAccount = new Account(Name = 'A Account');
+//        accountsInDatabase.add(zAccount);
+//        accountsInDatabase.add(aAccount);
+//        insert accountsInDatabase;
+//
+//        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name"))';
+//        List<Account> result = (List<Account>) Evaluator.run(expr);
+//
+//        Assert.areEqual(2, result.size());
+//        Assert.areEqual(aAccount.Id, result[0].Id);
+//        Assert.areEqual(zAccount.Id, result[1].Id);
+//    }
+
+    // Order by
+    // Asc
+    // Desc
+    // Nulls first
+    // Nulls Last
+    // One condition
+    // Multiple conditions
+    // And support
+    // Or support
+    // Limits
+    // Offset
+    // Subquery
 }
