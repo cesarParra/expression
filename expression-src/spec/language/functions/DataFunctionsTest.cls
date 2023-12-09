@@ -12,4 +12,21 @@ private class DataFunctionsTest {
         List<SObject> result = (List<SObject>) Evaluator.run(expr);
         Assert.areEqual(accounts.size(), result.size());
     }
+
+    @IsTest
+    static void canQuerySpecificFieldsWhenQuerying() {
+        List<Account> accounts = new List<Account>();
+        for (Integer i = 0; i < 10; i++) {
+            accounts.add(new Account(Name = 'Test ' + i));
+        }
+        insert accounts;
+
+        String expr = 'FETCH("Account", ["Id", "Name"])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+        Assert.areEqual(accounts.size(), result.size());
+        for (Integer i = 0; i < accounts.size(); i++) {
+            Assert.areEqual(accounts[i].Id, result[i].Id);
+            Assert.areEqual(accounts[i].Name, result[i].Name);
+        }
+    }
 }
