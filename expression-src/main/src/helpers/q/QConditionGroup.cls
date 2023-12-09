@@ -9,12 +9,6 @@ public abstract class QConditionGroup implements QICondition {
 
     protected String operator;
 
-    public Boolean hasConditions {
-        get {
-            return (this.conditions != null && !this.conditions.isEmpty());
-        }
-    }
-
     public QConditionGroup(String operator) {
         this(new List<QICondition>(), operator);
     }

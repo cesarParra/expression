@@ -22,9 +22,6 @@ public class Q {
 		return od;
 	}
 
-	/**
-	 * Instantiate a Condition object
-	 */
 	public static QCondition condition(String fieldName) {
 		QCondition cond = new QCondition(fieldName);
 		return cond;
