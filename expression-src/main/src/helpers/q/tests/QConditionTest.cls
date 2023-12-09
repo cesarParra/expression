@@ -23,7 +23,7 @@ private class QConditionTest {
 		System.assertEquals('Name != \'Jean-Philippe Monette\'', segment, 'It should output a not equal condition.');
 	}
 
-	@isTest
+	@IsTest
 	static void testIsLessThan() {
 		String segment = new QCondition('Age').isLessThan(5).build();
 		System.assertEquals('Age < 5', segment, 'It should output a less than condition.');
@@ -53,7 +53,7 @@ private class QConditionTest {
 		System.assertEquals('Name LIKE \'%Acme%\'', segment, 'It should output a LIKE condition.');
 	}
 
-	@isTest
+	@IsTest
 	static void testIsIn() {
 		List<String> names = new List<String>{'John', 'Jane'};
 		String segment = new QCondition('Name').isIn(names).build();
@@ -74,7 +74,7 @@ private class QConditionTest {
 		System.assertEquals('Market INCLUDES (\'APAC\', \'EMEA\')', segment, 'It should output an INCLUDES condition.');
 	}
 
-	@isTest
+	@IsTest
 	static void testExcludes() {
 		List<String> markets = new List<String>{'APAC', 'EMEA'};
 		String segment = new QCondition('Market').excludes(markets).build();

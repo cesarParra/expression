@@ -37,9 +37,6 @@ public class Q {
 		return this;
 	}
 
-	/**
-	 * Add an SELECT sub-query
-	 */
 	public Q addSubquery(Q qb) {
 		this.subQueries.add(qb);
 		return this;
