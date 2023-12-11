@@ -96,6 +96,28 @@ private class DataFunctionsTest {
         }
     }
 
+    @IsTest
+    static void usingOrderbyOutsideOfFetchThrowsAnException_topCall() {
+        String expr = 'ORDERBY("Name")';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    static void usingOrderbyOutsideOfFetchThrowsAnException_subCall() {
+        String expr = 'TRANSFORM(ORDERBY("Name", "DESC"))';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
 
     // Order by throws exception when used outside of FETCH
     // Asc

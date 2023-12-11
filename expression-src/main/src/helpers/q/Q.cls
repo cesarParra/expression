@@ -47,9 +47,6 @@ public class Q {
 		return this;
 	}
 
-	/**
-	 * Add fields to the SELECT statement from Set of Strings
-	 */
 	public Q selectFields(Set<String> fields) {
 		for(String field : fields) {
 			this.fieldList.add(field);
@@ -57,9 +54,6 @@ public class Q {
 		return this;
 	}
 
-	/**
-	 * Add a LIMIT statement
-	 */
 	public Q addLimit(Integer i) {
 		this.numberOfRows = i;
 		return this;

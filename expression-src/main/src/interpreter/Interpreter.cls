@@ -341,7 +341,10 @@ public with sharing class Interpreter implements Visitor {
             }
 
             try {
-                return fn.call(function.arguments);
+                CallStack.instance.push(function.functionName);
+                Object result = fn.call(function.arguments);
+                CallStack.instance.pop();
+                return result;
             } catch (Exceptions.PositionAwareException e) {
                 throw e;
             } catch (Exception e) {

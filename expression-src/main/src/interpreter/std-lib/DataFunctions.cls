@@ -90,6 +90,18 @@ public with sharing class DataFunctions {
      */
     private with sharing class OrderByFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
+            // This can only be called from within a FETCH function.
+            // The call stack will include the current function, so if it is only 1 element long
+            // it means that the current function is the only one in the stack.
+            // If the second element is not FETCH, it means that the current function is not being called
+            // from within a FETCH function.
+            if (CallStack.instance.size()  == 1 || CallStack.instance.peekN(2).toUpperCase() != 'FETCH') {
+                System.debug(CallStack.instance.toString());
+                throw new FunctionExecutionException(
+                    'Error executing "ORDER BY" function: this function can only be used within a FETCH function.'
+                );
+            }
+
             // First argument is a string representing the field name
             Object fieldName = evaluate(arguments.get(0));
             if (!(fieldName instanceof String)) {
