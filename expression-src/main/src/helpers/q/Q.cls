@@ -59,33 +59,21 @@ public class Q {
 		return this;
 	}
 
-	/**
-	 * Add an OFFSET statement
-	 */
 	public Q addOffset(Integer i) {
 		this.numberOfRowsToSkip = i;
 		return this;
 	}
 
-	/**
-     * Instantiate a parenthetical OR condition group
-     */
     public static QConditionGroup orGroup() {
         QOrGroup orGroup = new QOrGroup();
         return orGroup;
     }
 
-    /**
-     * Instantiate a parenthetical AND condition group
-     */
     public static QConditionGroup andGroup() {
         QAndGroup andGroup = new QAndGroup();
         return andGroup;
     }
 
-	/**
-	 * Build the SELECT statement
-	 */
 	public String buildSelect() {
 		for (Q qb : this.subQueries) {
 			this.fieldList.add('(' + qb.build() + ')');
@@ -98,9 +86,6 @@ public class Q {
 		}
 	}
 
-	/**
-	 * Build the WHERE statement
-	 */
 	public String buildConditions() {
 		List<String> condList = new List<String>();
 
@@ -115,9 +100,6 @@ public class Q {
 		}
 	}
 
-	/**
-	 * Build the ORDER BY statement
-	 */
 	public String buildOrderBy() {
 		List<String> orderList = new List<String>();
 
@@ -133,9 +115,6 @@ public class Q {
 
 	}
 
-	/**
-	 * Build the SOQL query
-	 */
 	public String build() {
 		List<String> queryParts = new List<String>();
 

@@ -1,5 +1,5 @@
 public with sharing class CallStack {
-    private List<String> stack = new List<String>();
+    private final List<String> stack = new List<String>();
     private CallStack() {}
 
     public static CallStack instance {

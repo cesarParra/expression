@@ -118,14 +118,8 @@ private class DataFunctionsTest {
         }
     }
 
-
-    // Order by throws exception when used outside of FETCH
-    // Asc
-    // Desc
-    // Nulls first
-    // Nulls Last
-    // One condition
-    // Multiple conditions
+    // WHERE: One condition
+    // WHERE: Multiple conditions
     // And support
     // Or support
     // Limits
