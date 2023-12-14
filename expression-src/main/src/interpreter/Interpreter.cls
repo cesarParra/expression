@@ -469,6 +469,10 @@ public with sharing class Interpreter implements Visitor {
             querier = querier.selectField(field);
         }
 
+        if (query.orderBy != null) {
+            querier = querier.add(Q.orderBy(query.orderBy));
+        }
+
         return QRunner.getInstance().run(querier);
     }
 }

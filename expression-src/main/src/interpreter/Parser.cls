@@ -147,11 +147,34 @@ public with sharing class Parser {
             if (match(TokenType.IDENTIFIER)) {
                 Token sObjectType = previous();
                 List<String> fields = new List<String>();
+                String orderby;
+
+                if (match(TokenType.LEFT_PAREN)) {
+                    if (match(TokenType.IDENTIFIER)) {
+                        String qClause = previous().lexeme.toLowerCase();
+                        consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
+                        if (qClause == 'orderby') {
+                            if (match(TokenType.IDENTIFIER)) {
+                                orderby = previous().lexeme;
+                            } else {
+                                throw error(previous(), 'Expect field name after \'orderBy:\'.');
+                            }
+                        } else {
+                            throw error(previous(), 'Expect \'orderBy\' after \'(\'.');
+                        }
+                    }
+
+                    consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query arguments.');
+                }
 
                 if (match(TokenType.LEFT_BRACE)) {
                     do {
                         String field = consume(TokenType.IDENTIFIER, 'Expect field name.').lexeme;
                         if (peek().type == TokenType.DOT) {
+                            // Accounting for parent relationships. When in a Query context
+                            // we assume that the token types in a "get" expression are
+                            // always identifiers, as no complex expressions that need to
+                            // be interpreted are allowed here.
                             while (match(TokenType.DOT)) {
                                 field += '.' + consume(TokenType.IDENTIFIER, 'Expect field name.').lexeme;
                             }
@@ -162,7 +185,7 @@ public with sharing class Parser {
                 }
 
                 consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query name.');
-                return new Expr.Query(sObjectType, fields);
+                return new Expr.Query(sObjectType, fields, orderBy);
             } else {
                 throw error(peek(), 'Expect object name.');
             }

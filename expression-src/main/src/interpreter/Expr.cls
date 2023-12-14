@@ -188,10 +188,12 @@ public abstract class Expr {
     public class Query extends Expr {
         public final Token sObjectType;
         public final List<String> fields;
+        public final String orderBy;
 
-        public Query(Token sObjectType, List<String> fields) {
+        public Query(Token sObjectType, List<String> fields, String orderBy) {
             this.sObjectType = sObjectType;
             this.fields = fields;
+            this.orderBy = orderBy;
         }
 
         public override Object accept(Visitor v) {
