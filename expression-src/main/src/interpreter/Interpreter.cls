@@ -462,4 +462,9 @@ public with sharing class Interpreter implements Visitor {
         isInMapLiteral = false;
         return resultMap;
     }
+
+    public Object visit(Expr.Query query) {
+        Q querier = new Q(query.sObjectType.lexeme);
+        return QRunner.getInstance().run(querier);
+    }
 }

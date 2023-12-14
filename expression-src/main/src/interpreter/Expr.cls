@@ -184,4 +184,16 @@ public abstract class Expr {
             return v.visit(this);
         }
     }
+
+    public class Query extends Expr {
+        public final Token sObjectType;
+
+        public Query(Token sObjectType) {
+            this.sObjectType = sObjectType;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
 }

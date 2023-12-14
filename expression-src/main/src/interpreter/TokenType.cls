@@ -30,7 +30,7 @@ public enum TokenType {
     AT,
 
     // ----------------- Keywords -----------------
-    TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD,
+    TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD, QUERY_KEYWORD,
 
     // ----------------- EOF ----------------------
     EOF

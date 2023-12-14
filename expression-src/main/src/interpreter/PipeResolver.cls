@@ -129,4 +129,9 @@ public with sharing class PipeResolver implements Visitor {
         Expr.Spread newSpread = new Expr.Spread(spread.spreadToken, resolve(spread.expression));
         return newSpread;
     }
+
+    public Object visit(Expr.Query query) {
+        // TODO: Once we allow for expressions, then we will want to resolve
+        return query;
+    }
 }

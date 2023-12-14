@@ -167,4 +167,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         };
         return toPrint;
     }
+
+    public Object visit(Expr.Query query) {
+        // TODO
+        return new Map<String, Object>();
+    }
 }

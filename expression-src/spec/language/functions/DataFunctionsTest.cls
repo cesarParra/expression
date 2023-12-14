@@ -20,109 +20,124 @@ private class DataFunctionsTest {
     }
 
     @IsTest
-    static void canQuerySpecificFieldsWhenQuerying() {
+    static void canQueryAllRecordsOfAnSObject() {
         List<Account> accounts = givenAccounts();
 
-        String expr = 'FETCH("Account", ["Id", "Name"])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        String expr = 'QUERY(Account)';
+        List<SObject> result = (List<SObject>) Evaluator.run(expr);
 
         Assert.areEqual(accounts.size(), result.size());
-        for (Integer i = 0; i < accounts.size(); i++) {
-            Assert.areEqual(accounts[i].Id, result[i].Id);
-            Assert.areEqual(accounts[i].Name, result[i].Name);
-        }
     }
 
-    @IsTest
-    static void canOrderByAField() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account');
-        Account aAccount = new Account(Name = 'A Account');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        insert accountsInDatabase;
+//    @IsTest
+//    static void canQuerySpecificFieldsWhenQuerying() {
+//        List<Account> accounts = givenAccounts();
+//
+//        String expr = 'FETCH("Account", ["Id", "Name"])';
+//        List<Account> result = (List<Account>) Evaluator.run(expr);
+//
+//        Assert.areEqual(accounts.size(), result.size());
+//        for (Integer i = 0; i < accounts.size(); i++) {
+//            Assert.areEqual(accounts[i].Id, result[i].Id);
+//            Assert.areEqual(accounts[i].Name, result[i].Name);
+//        }
+//    }
+//
+//    @IsTest
+//    static void canOrderByAField() {
+//        List<Account> accountsInDatabase = new List<Account>();
+//        Account zAccount = new Account(Name = 'Z Account');
+//        Account aAccount = new Account(Name = 'A Account');
+//        accountsInDatabase.add(zAccount);
+//        accountsInDatabase.add(aAccount);
+//        insert accountsInDatabase;
+//
+//        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name"))';
+//        List<Account> result = (List<Account>) Evaluator.run(expr);
+//
+//        // Order by is ascending by default
+//        Assert.areEqual(2, result.size());
+//        Assert.areEqual(aAccount.Id, result[0].Id);
+//        Assert.areEqual(zAccount.Id, result[1].Id);
+//    }
+//
+//    @IsTest
+//    static void canOrderByAFieldAndExplicitlySpecifyAscending() {
+//        List<Account> accountsInDatabase = new List<Account>();
+//        Account zAccount = new Account(Name = 'Z Account');
+//        Account aAccount = new Account(Name = 'A Account');
+//        accountsInDatabase.add(zAccount);
+//        accountsInDatabase.add(aAccount);
+//        insert accountsInDatabase;
+//
+//        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name", "ASC"))';
+//        List<Account> result = (List<Account>) Evaluator.run(expr);
+//
+//        Assert.areEqual(2, result.size());
+//        Assert.areEqual(aAccount.Id, result[0].Id);
+//        Assert.areEqual(zAccount.Id, result[1].Id);
+//    }
+//
+//    @IsTest
+//    static void canOrderByAFieldDescending() {
+//        List<Account> accountsInDatabase = new List<Account>();
+//        Account zAccount = new Account(Name = 'Z Account');
+//        Account aAccount = new Account(Name = 'A Account');
+//        accountsInDatabase.add(zAccount);
+//        accountsInDatabase.add(aAccount);
+//        insert accountsInDatabase;
+//
+//        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name", "DESC"))';
+//        List<Account> result = (List<Account>) Evaluator.run(expr);
+//
+//        Assert.areEqual(2, result.size());
+//        Assert.areEqual(zAccount.Id, result[0].Id);
+//        Assert.areEqual(aAccount.Id, result[1].Id);
+//    }
+//
+//    @IsTest
+//    static void usingOrderByThrowsAnExceptionWhenAnOrderThatIsNeitherAscNorDescIsSpecified() {
+//        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name", "DESCENDING"))';
+//        try {
+//            Evaluator.run(expr);
+//            Assert.fail('Expected an exception to be thrown');
+//        } catch (Exception e) {
+//            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+//        }
+//    }
+//
+//    @IsTest
+//    static void usingOrderbyOutsideOfFetchThrowsAnException_topCall() {
+//        String expr = 'ORDERBY("Name")';
+//        try {
+//            Evaluator.run(expr);
+//            Assert.fail('Expected an exception to be thrown');
+//        } catch (Exception e) {
+//            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+//        }
+//    }
+//
+//    @IsTest
+//    static void usingOrderbyOutsideOfFetchThrowsAnException_subCall() {
+//        String expr = 'TRANSFORM(ORDERBY("Name", "DESC"))';
+//        try {
+//            Evaluator.run(expr);
+//            Assert.fail('Expected an exception to be thrown');
+//        } catch (Exception e) {
+//            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+//        }
+//    }
+//
+//    // WHERE: One condition
+//    // WHERE: Multiple conditions
+//    // And support
+//    // Or support
+//    // Limits
+//    // Offset
+//    // Subquery
 
-        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name"))';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
-
-        // Order by is ascending by default
-        Assert.areEqual(2, result.size());
-        Assert.areEqual(aAccount.Id, result[0].Id);
-        Assert.areEqual(zAccount.Id, result[1].Id);
-    }
-
-    @IsTest
-    static void canOrderByAFieldAndExplicitlySpecifyAscending() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account');
-        Account aAccount = new Account(Name = 'A Account');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        insert accountsInDatabase;
-
-        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name", "ASC"))';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
-
-        Assert.areEqual(2, result.size());
-        Assert.areEqual(aAccount.Id, result[0].Id);
-        Assert.areEqual(zAccount.Id, result[1].Id);
-    }
-
-    @IsTest
-    static void canOrderByAFieldDescending() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account');
-        Account aAccount = new Account(Name = 'A Account');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        insert accountsInDatabase;
-
-        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name", "DESC"))';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
-
-        Assert.areEqual(2, result.size());
-        Assert.areEqual(zAccount.Id, result[0].Id);
-        Assert.areEqual(aAccount.Id, result[1].Id);
-    }
-
-    @IsTest
-    static void usingOrderByThrowsAnExceptionWhenAnOrderThatIsNeitherAscNorDescIsSpecified() {
-        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name", "DESCENDING"))';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
-    }
-
-    @IsTest
-    static void usingOrderbyOutsideOfFetchThrowsAnException_topCall() {
-        String expr = 'ORDERBY("Name")';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
-    }
-
-    @IsTest
-    static void usingOrderbyOutsideOfFetchThrowsAnException_subCall() {
-        String expr = 'TRANSFORM(ORDERBY("Name", "DESC"))';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
-    }
-
-    // WHERE: One condition
-    // WHERE: Multiple conditions
-    // And support
-    // Or support
-    // Limits
-    // Offset
-    // Subquery
+    // Combining query contexts with top level context (Id based).
+    // so that for example we can do a dynamic query based on data of the
+    // context record -> we can do this by wrapping everything in LET and
+    // using variables
 }

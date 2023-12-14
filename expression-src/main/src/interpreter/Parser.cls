@@ -142,6 +142,17 @@ public with sharing class Parser {
             return new Expr.Literal(null);
         }
 
+        if (match(TokenType.QUERY_KEYWORD)) {
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after \'query\'.');
+            if (match(TokenType.IDENTIFIER)) {
+                Token sObjectType = previous();
+                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query name.');
+                return new Expr.Query(sObjectType);
+            } else {
+                throw error(peek(), 'Expect object name.');
+            }
+        }
+
         if (match(TokenType.STRING_LITERAL_START)) {
             // Grab all characters until we reach the STRING_LITERAL_END
             List<Object> strings = new List<Object>();
