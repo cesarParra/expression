@@ -187,9 +187,11 @@ public abstract class Expr {
 
     public class Query extends Expr {
         public final Token sObjectType;
+        public final List<Token> fields;
 
-        public Query(Token sObjectType) {
+        public Query(Token sObjectType, List<Token> fields) {
             this.sObjectType = sObjectType;
+            this.fields = fields;
         }
 
         public override Object accept(Visitor v) {

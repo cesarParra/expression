@@ -146,8 +146,17 @@ public with sharing class Parser {
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after \'query\'.');
             if (match(TokenType.IDENTIFIER)) {
                 Token sObjectType = previous();
+                List<Token> fields = new List<Token>();
+
+                if (match(TokenType.LEFT_BRACE)) {
+                    do {
+                        fields.add(consume(TokenType.IDENTIFIER, 'Expect field name.'));
+                    } while (match(TokenType.COMMA));
+                    consume(TokenType.RIGHT_BRACE, 'Expect \'}\' after fields.');
+                }
+
                 consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query name.');
-                return new Expr.Query(sObjectType);
+                return new Expr.Query(sObjectType, fields);
             } else {
                 throw error(peek(), 'Expect object name.');
             }
