@@ -245,11 +245,7 @@ public with sharing class Parser {
                 String qClause = previous().lexeme.toLowerCase();
                 consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
                 if (qClause == 'orderby') {
-                    if (match(TokenType.IDENTIFIER)) {
-                        orderBy = previous().lexeme;
-                    } else {
-                        throw error(previous(), 'Expect field name after \'orderBy:\'.');
-                    }
+                    orderBy = extractFieldFromIdentifierOrDot();
                 } else {
                     throw error(previous(), 'Expect \'orderBy\' after \'(\'.');
                 }

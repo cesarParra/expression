@@ -10,16 +10,6 @@ private class DataFunctionsTest {
     }
 
     @IsTest
-    static void canFetchAllRecordsOfAnSObject() {
-        List<Account> accounts = givenAccounts();
-
-        String expr = 'FETCH("Account", ["Id"])';
-        List<SObject> result = (List<SObject>) Evaluator.run(expr);
-
-        Assert.areEqual(accounts.size(), result.size());
-    }
-
-    @IsTest
     static void canQueryAllRecordsOfAnSObject() {
         List<Account> accounts = givenAccounts();
 
@@ -27,20 +17,6 @@ private class DataFunctionsTest {
         List<SObject> result = (List<SObject>) Evaluator.run(expr);
 
         Assert.areEqual(accounts.size(), result.size());
-    }
-
-    @IsTest
-    static void canGetSpecificFieldsWhenFetching() {
-        List<Account> accounts = givenAccounts();
-
-        String expr = 'FETCH("Account", ["Id", "Name"])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
-
-        Assert.areEqual(accounts.size(), result.size());
-        for (Integer i = 0; i < accounts.size(); i++) {
-            Assert.areEqual(accounts[i].Id, result[i].Id);
-            Assert.areEqual(accounts[i].Name, result[i].Name);
-        }
     }
 
     @IsTest
@@ -73,24 +49,6 @@ private class DataFunctionsTest {
     }
 
     @IsTest
-    static void canOrderByAFieldWhenFetching() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account');
-        Account aAccount = new Account(Name = 'A Account');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        insert accountsInDatabase;
-
-        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name"))';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
-
-        // Order by is ascending by default
-        Assert.areEqual(2, result.size());
-        Assert.areEqual(aAccount.Id, result[0].Id);
-        Assert.areEqual(zAccount.Id, result[1].Id);
-    }
-
-    @IsTest
     static void canOrderByAFieldWhenQuerying() {
         List<Account> accountsInDatabase = new List<Account>();
         Account zAccount = new Account(Name = 'Z Account');
@@ -106,6 +64,28 @@ private class DataFunctionsTest {
         Assert.areEqual(2, result.size());
         Assert.areEqual(aAccount.Id, result[0].Id);
         Assert.areEqual(zAccount.Id, result[1].Id);
+    }
+
+    @IsTest
+    static void canOrderByRelationshipField() {
+        Account account1 = new Account(Name = 'ZTest');
+        Account account2 = new Account(Name = 'ATest');
+        insert new List<Account>{
+            account1, account2
+        };
+
+        Contact zContact = new Contact(AccountId = account1.Id, LastName = 'ZTest');
+        Contact aContact = new Contact(AccountId = account2.Id, LastName = 'ATest');
+        insert new List<Contact>{
+            zContact, aContact
+        };
+
+        String expr = 'QUERY(Contact(orderBy: Account.Name) {Id, Account.Name})';
+        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(aContact.Id, result[0].Id);
+        Assert.areEqual(zContact.Id, result[1].Id);
     }
 
     // TODO: Can orderby parent field relationship
