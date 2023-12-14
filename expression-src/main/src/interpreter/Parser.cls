@@ -146,11 +146,17 @@ public with sharing class Parser {
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after \'query\'.');
             if (match(TokenType.IDENTIFIER)) {
                 Token sObjectType = previous();
-                List<Token> fields = new List<Token>();
+                List<String> fields = new List<String>();
 
                 if (match(TokenType.LEFT_BRACE)) {
                     do {
-                        fields.add(consume(TokenType.IDENTIFIER, 'Expect field name.'));
+                        String field = consume(TokenType.IDENTIFIER, 'Expect field name.').lexeme;
+                        if (peek().type == TokenType.DOT) {
+                            while (match(TokenType.DOT)) {
+                                field += '.' + consume(TokenType.IDENTIFIER, 'Expect field name.').lexeme;
+                            }
+                        }
+                        fields.add(field);
                     } while (match(TokenType.COMMA));
                     consume(TokenType.RIGHT_BRACE, 'Expect \'}\' after fields.');
                 }

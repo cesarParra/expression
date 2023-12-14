@@ -56,9 +56,24 @@ private class DataFunctionsTest {
             Assert.areEqual(accounts[i].Name, result[i].Name);
         }
     }
-//
+
+    @IsTest
+    static void canQueryForRelationshipFields() {
+        Account account = new Account(Name = 'Test');
+        insert account;
+
+        Contact contact = new Contact(AccountId = account.Id, LastName = 'Test');
+        insert contact;
+
+        String expr = 'QUERY(Contact {Id, Account.Name})';
+        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(account.Name, result[0].Account.Name);
+    }
+
 //    @IsTest
-//    static void canOrderByAField() {
+//    static void canOrderByAFieldWhenFetching() {
 //        List<Account> accountsInDatabase = new List<Account>();
 //        Account zAccount = new Account(Name = 'Z Account');
 //        Account aAccount = new Account(Name = 'A Account');
@@ -74,6 +89,25 @@ private class DataFunctionsTest {
 //        Assert.areEqual(aAccount.Id, result[0].Id);
 //        Assert.areEqual(zAccount.Id, result[1].Id);
 //    }
+//
+//    @IsTest
+//    static void canOrderByAFieldWhenQuerying() {
+//        List<Account> accountsInDatabase = new List<Account>();
+//        Account zAccount = new Account(Name = 'Z Account');
+//        Account aAccount = new Account(Name = 'A Account');
+//        accountsInDatabase.add(zAccount);
+//        accountsInDatabase.add(aAccount);
+//        insert accountsInDatabase;
+//
+//        String expr = 'QUERY(Account(orderBy: Name) {Id, Name})';
+//        List<Account> result = (List<Account>) Evaluator.run(expr);
+//
+//        // Order by is ascending by default
+//        Assert.areEqual(2, result.size());
+//        Assert.areEqual(aAccount.Id, result[0].Id);
+//        Assert.areEqual(zAccount.Id, result[1].Id);
+//    }
+
 //
 //    @IsTest
 //    static void canOrderByAFieldAndExplicitlySpecifyAscending() {
@@ -154,4 +188,8 @@ private class DataFunctionsTest {
     // so that for example we can do a dynamic query based on data of the
     // context record -> we can do this by wrapping everything in LET and
     // using variables
+
+    // Can use pipes for the named parameter expressions
+
+    // Can query for parent fields (__r)
 }

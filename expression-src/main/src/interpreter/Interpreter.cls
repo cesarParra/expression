@@ -465,8 +465,8 @@ public with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.Query query) {
         Q querier = new Q(query.sObjectType.lexeme);
-        for (Token field : query.fields) {
-            querier = querier.selectField(field.lexeme);
+        for (String field : query.fields) {
+            querier = querier.selectField(field);
         }
 
         return QRunner.getInstance().run(querier);
