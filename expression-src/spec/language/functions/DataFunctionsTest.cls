@@ -129,26 +129,26 @@ private class DataFunctionsTest {
         Assert.areEqual(zAccount.Id, result[1].Id);
     }
 
+    @IsTest
+    static void canOrderByAFieldAndExplicitlySpecifyDescending() {
+        List<Account> accountsInDatabase = new List<Account>();
+        Account zAccount = new Account(Name = 'Z Account');
+        Account aAccount = new Account(Name = 'A Account');
+        accountsInDatabase.add(zAccount);
+        accountsInDatabase.add(aAccount);
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(orderBy: Name DESC) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(zAccount.Id, result[0].Id);
+        Assert.areEqual(aAccount.Id, result[1].Id);
+    }
+
     // TODO: Can order by multiple fields
     // TODO: Can order by multiple fields with specifics
 
-//
-//    @IsTest
-//    static void canOrderByAFieldAndExplicitlySpecifyAscending() {
-//        List<Account> accountsInDatabase = new List<Account>();
-//        Account zAccount = new Account(Name = 'Z Account');
-//        Account aAccount = new Account(Name = 'A Account');
-//        accountsInDatabase.add(zAccount);
-//        accountsInDatabase.add(aAccount);
-//        insert accountsInDatabase;
-//
-//        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name", "ASC"))';
-//        List<Account> result = (List<Account>) Evaluator.run(expr);
-//
-//        Assert.areEqual(2, result.size());
-//        Assert.areEqual(aAccount.Id, result[0].Id);
-//        Assert.areEqual(zAccount.Id, result[1].Id);
-//    }
 //
 //    @IsTest
 //    static void canOrderByAFieldDescending() {
