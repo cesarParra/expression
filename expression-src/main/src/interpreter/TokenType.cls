@@ -31,6 +31,7 @@ public enum TokenType {
 
     // ----------------- Keywords -----------------
     TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD, QUERY_KEYWORD,
+    ASC_KEYWORD, DESC_KEYWORD,
 
     // ----------------- EOF ----------------------
     EOF

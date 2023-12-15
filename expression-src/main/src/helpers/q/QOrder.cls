@@ -17,6 +17,11 @@ public class QOrder {
 		this.sortValue = SortOrder.ASCENDING;
 	}
 
+	public QOrder withDirection(SortOrder direction) {
+		this.sortValue = direction;
+		return this;
+	}
+
 	public QOrder ascending() {
 		this.sortValue = SortOrder.ASCENDING;
 		return this;

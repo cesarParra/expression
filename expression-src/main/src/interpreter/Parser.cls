@@ -246,7 +246,18 @@ public with sharing class Parser {
                 String qClause = previous().lexeme.toLowerCase();
                 consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
                 if (qClause == 'orderby') {
-                    orderBy = expression();
+                    Expr orderByExpr = expression();
+
+                    // The expression might be followed by (optionally) the ASC or DESC keyword
+                    if (match(new List<TokenType>{
+                        TokenType.ASC_KEYWORD, TokenType.DESC_KEYWORD
+                    })) {
+                        QOrder.SortOrder qSortOrder = previous().lexeme == 'ASC' ? QOrder.SortOrder.ASCENDING : QOrder.SortOrder.DESCENDING;
+                        orderBy = new Expr.Binary(orderByExpr, null, new Expr.Literal(qSortOrder));
+                    } else {
+                        // Default to ASC
+                        orderBy = new Expr.Binary(orderByExpr, null, new Expr.Literal(QOrder.SortOrder.ASCENDING));
+                    }
                 } else {
                     throw error(previous(), 'Expect \'orderBy\' after \'(\'.');
                 }
