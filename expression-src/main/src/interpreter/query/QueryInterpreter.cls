@@ -65,7 +65,8 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         Set<TokenType> supportedQueryOperations = new Set<TokenType> {
             TokenType.EQUAL,
             TokenType.EQUAL_EQUAL,
-            TokenType.GREATER
+            TokenType.GREATER,
+            TokenType.GREATER_EQUAL
         };
 
         if (!supportedQueryOperations.contains(binary.operator.type)) {
@@ -81,6 +82,9 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             }
             when GREATER {
                 return Q.condition((String) left).isGreaterThan(right);
+            }
+            when GREATER_EQUAL {
+                return Q.condition((String) left).isGreaterOrEquals(right);
             }
             when else {
                 throw new Exceptions.RuntimeException(binary.operator,

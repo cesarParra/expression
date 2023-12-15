@@ -62,7 +62,7 @@ public class QCondition implements QICondition {
 		return this;
 	}
 
-	public QCondition isLessOrEquals(Object value) { // TODO
+	public QCondition isLessOrEquals(Object value) {
 		this.operatorValue = ComparisonOperator.LESS_OR_EQUAL;
 		this.fieldValue = value;
 		return this;
