@@ -464,15 +464,6 @@ public with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.Query query) {
-        Q querier = new Q(query.sObjectType.lexeme);
-        for (String field : query.fields) {
-            querier = querier.selectField(field);
-        }
-
-        if (query.orderBy != null) {
-            querier = querier.add(Q.orderBy(query.orderBy));
-        }
-
-        return QRunner.getInstance().run(querier);
+        return new QueryInterPreter().evaluate(query);
     }
 }

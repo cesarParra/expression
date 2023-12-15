@@ -188,9 +188,9 @@ public abstract class Expr {
     public class Query extends Expr {
         public final Token sObjectType;
         public final List<String> fields;
-        public final String orderBy;
+        public final Expr orderBy;
 
-        public Query(Token sObjectType, List<String> fields, String orderBy) {
+        public Query(Token sObjectType, List<String> fields, Expr orderBy) {
             this.sObjectType = sObjectType;
             this.fields = fields;
             this.orderBy = orderBy;

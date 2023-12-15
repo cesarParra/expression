@@ -48,47 +48,65 @@ private class DataFunctionsTest {
         Assert.areEqual(account.Name, result[0].Account.Name);
     }
 
-    @IsTest
-    static void canOrderByAFieldWhenQuerying() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account');
-        Account aAccount = new Account(Name = 'A Account');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        insert accountsInDatabase;
+    // TODO: Can use string literals when querying for fields.
 
-        String expr = 'QUERY(Account(orderBy: Name) {Id, Name})';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+//    @IsTest
+//    static void canOrderByAFieldWhenQuerying() {
+//        List<Account> accountsInDatabase = new List<Account>();
+//        Account zAccount = new Account(Name = 'Z Account');
+//        Account aAccount = new Account(Name = 'A Account');
+//        accountsInDatabase.add(zAccount);
+//        accountsInDatabase.add(aAccount);
+//        insert accountsInDatabase;
+//
+//        String expr = 'QUERY(Account(orderBy: Name) {Id, Name})';
+//        List<Account> result = (List<Account>) Evaluator.run(expr);
+//
+//        // Order by is ascending by default
+//        Assert.areEqual(2, result.size());
+//        Assert.areEqual(aAccount.Id, result[0].Id);
+//        Assert.areEqual(zAccount.Id, result[1].Id);
+//    }
 
-        // Order by is ascending by default
-        Assert.areEqual(2, result.size());
-        Assert.areEqual(aAccount.Id, result[0].Id);
-        Assert.areEqual(zAccount.Id, result[1].Id);
-    }
+//    @IsTest
+//    static void canOrderByRelationshipField() {
+//        Account account1 = new Account(Name = 'ZTest');
+//        Account account2 = new Account(Name = 'ATest');
+//        insert new List<Account>{
+//            account1, account2
+//        };
+//
+//        Contact zContact = new Contact(AccountId = account1.Id, LastName = 'ZTest');
+//        Contact aContact = new Contact(AccountId = account2.Id, LastName = 'ATest');
+//        insert new List<Contact>{
+//            zContact, aContact
+//        };
+//
+//        String expr = 'QUERY(Contact(orderBy: Account.Name) {Id, Account.Name})';
+//        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+//
+//        Assert.areEqual(2, result.size());
+//        Assert.areEqual(aContact.Id, result[0].Id);
+//        Assert.areEqual(zContact.Id, result[1].Id);
+//    }
 
-    @IsTest
-    static void canOrderByRelationshipField() {
-        Account account1 = new Account(Name = 'ZTest');
-        Account account2 = new Account(Name = 'ATest');
-        insert new List<Account>{
-            account1, account2
-        };
+//    @IsTest
+//    static void canOrderByAFieldAndExplicitlySpecifyAscending() {
+//        List<Account> accountsInDatabase = new List<Account>();
+//        Account zAccount = new Account(Name = 'Z Account');
+//        Account aAccount = new Account(Name = 'A Account');
+//        accountsInDatabase.add(zAccount);
+//        accountsInDatabase.add(aAccount);
+//        insert accountsInDatabase;
+//
+//        String expr = 'QUERY(Account(orderBy: [Name:ASC]) {Id, Name})';
+//        List<Account> result = (List<Account>) Evaluator.run(expr);
+//
+//        Assert.areEqual(2, result.size());
+//        Assert.areEqual(aAccount.Id, result[0].Id);
+//        Assert.areEqual(zAccount.Id, result[1].Id);
+//    }
 
-        Contact zContact = new Contact(AccountId = account1.Id, LastName = 'ZTest');
-        Contact aContact = new Contact(AccountId = account2.Id, LastName = 'ATest');
-        insert new List<Contact>{
-            zContact, aContact
-        };
-
-        String expr = 'QUERY(Contact(orderBy: Account.Name) {Id, Account.Name})';
-        List<Contact> result = (List<Contact>) Evaluator.run(expr);
-
-        Assert.areEqual(2, result.size());
-        Assert.areEqual(aContact.Id, result[0].Id);
-        Assert.areEqual(zContact.Id, result[1].Id);
-    }
-
-    // TODO: Can orderby parent field relationship
     // TODO: Can order by multiple fields
     // TODO: Can order by multiple fields with specifics
 

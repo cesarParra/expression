@@ -238,14 +238,20 @@ public with sharing class Parser {
 
         Token sObjectType = previous();
         List<String> fields = new List<String>();
-        String orderBy;
+        Expr orderBy;
 
         if (match(TokenType.LEFT_PAREN)) {
             if (match(TokenType.IDENTIFIER)) {
                 String qClause = previous().lexeme.toLowerCase();
                 consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
                 if (qClause == 'orderby') {
-                    orderBy = extractFieldFromIdentifierOrDot();
+                    // TODO: We have some failing tets cause the expression is now being evaluated.
+                    // The question is if we really want this stuff to be expressions. In reality
+                    // We want SOQL to be the one doing any kind of interpretation, not our
+                    // interpreter, so it might be better to just not interpret, and try to pass raw stuff
+                    // OR, create a custom interpreter when within a Query context --> Which is what I think I will need to do (at least for where clauses) because we do want to
+                    // interpret things like OR and AND when building the where clause
+                    orderBy = expression();
                 } else {
                     throw error(previous(), 'Expect \'orderBy\' after \'(\'.');
                 }
