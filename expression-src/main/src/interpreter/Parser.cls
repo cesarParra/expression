@@ -238,25 +238,19 @@ public with sharing class Parser {
 
         Token sObjectType = previous();
         Expr fieldsExpression;
+        Expr orderBy;
 
         // Optional named parameters section that define the "extra" parts of the query (order by, where, limit, etc.).
         if (match(TokenType.LEFT_PAREN)) {
-            System.debug('found a left paren');
-//            if (match(TokenType.IDENTIFIER)) {
-//                String qClause = previous().lexeme.toLowerCase();
-//                consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
-//                if (qClause == 'orderby') {
-//                    // TODO: We have some failing tets cause the expression is now being evaluated.
-//                    // The question is if we really want this stuff to be expressions. In reality
-//                    // We want SOQL to be the one doing any kind of interpretation, not our
-//                    // interpreter, so it might be better to just not interpret, and try to pass raw stuff
-//                    // OR, create a custom interpreter when within a Query context --> Which is what I think I will need to do (at least for where clauses) because we do want to
-//                    // interpret things like OR and AND when building the where clause
-//                    orderBy = expression();
-//                } else {
-//                    throw error(previous(), 'Expect \'orderBy\' after \'(\'.');
-//                }
-//            }
+            if (match(TokenType.IDENTIFIER)) {
+                String qClause = previous().lexeme.toLowerCase();
+                consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
+                if (qClause == 'orderby') {
+                    orderBy = expression();
+                } else {
+                    throw error(previous(), 'Expect \'orderBy\' after \'(\'.');
+                }
+            }
 
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query arguments.');
         }
@@ -267,7 +261,7 @@ public with sharing class Parser {
         }
 
         consume(TokenType.RIGHT_PAREN, 'Expect \')\' to close the query.');
-        return new Expr.Query(sObjectType, fieldsExpression);
+        return new Expr.Query(sObjectType, fieldsExpression, orderBy);
     }
 
 //    private String extractFieldFromIdentifierOrDot() {

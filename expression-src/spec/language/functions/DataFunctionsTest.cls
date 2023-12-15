@@ -72,25 +72,23 @@ private class DataFunctionsTest {
         Assert.areEqual(account.Name, result[0].Account.Name);
     }
 
-    // TODO: Can use string literals when querying for fields.
+    @IsTest
+    static void canOrderByASingleFieldWhenQuerying() {
+        List<Account> accountsInDatabase = new List<Account>();
+        Account zAccount = new Account(Name = 'Z Account');
+        Account aAccount = new Account(Name = 'A Account');
+        accountsInDatabase.add(zAccount);
+        accountsInDatabase.add(aAccount);
+        insert accountsInDatabase;
 
-//    @IsTest
-//    static void canOrderByAFieldWhenQuerying() {
-//        List<Account> accountsInDatabase = new List<Account>();
-//        Account zAccount = new Account(Name = 'Z Account');
-//        Account aAccount = new Account(Name = 'A Account');
-//        accountsInDatabase.add(zAccount);
-//        accountsInDatabase.add(aAccount);
-//        insert accountsInDatabase;
-//
-//        String expr = 'QUERY(Account(orderBy: Name) {Id, Name})';
-//        List<Account> result = (List<Account>) Evaluator.run(expr);
-//
-//        // Order by is ascending by default
-//        Assert.areEqual(2, result.size());
-//        Assert.areEqual(aAccount.Id, result[0].Id);
-//        Assert.areEqual(zAccount.Id, result[1].Id);
-//    }
+        String expr = 'QUERY(Account(OrderBy: Name) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        // Order by is ascending by default
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(aAccount.Id, result[0].Id);
+        Assert.areEqual(zAccount.Id, result[1].Id);
+    }
 
 //    @IsTest
 //    static void canOrderByRelationshipField() {
