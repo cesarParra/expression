@@ -260,6 +260,24 @@ private class DataFunctionsTest {
         Assert.areEqual('Test 5', result[0].Name);
     }
 
+    @IsTest
+    static void canHaveAWhereCondition_greaterThan() {
+        List<Account> accountsInDatabase = new List<Account>();
+        for (Integer i = 0; i < 10; i++) {
+            accountsInDatabase.add(new Account(Name = 'Test ' + i, NumberOfEmployees = i));
+        }
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(where: NumberOfEmployees > 5) [Id, Name, NumberOfEmployees])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(4, result.size());
+        Assert.areEqual('Test 6', result[0].Name);
+        Assert.areEqual('Test 7', result[1].Name);
+        Assert.areEqual('Test 8', result[2].Name);
+        Assert.areEqual('Test 9', result[3].Name);
+    }
+
 //
 //    // WHERE: One condition
 //    // WHERE: Multiple conditions

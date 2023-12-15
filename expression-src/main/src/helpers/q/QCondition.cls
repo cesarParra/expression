@@ -50,19 +50,19 @@ public class QCondition implements QICondition {
 		return this;
 	}
 
-	public QCondition notEqualsTo(Object value) {
+	public QCondition notEqualsTo(Object value) { // TODO
 		this.operatorValue = ComparisonOperator.NOT_EQUALS;
 		this.fieldValue = value;
 		return this;
 	}
 
-	public QCondition isLessThan(Object value) {
+	public QCondition isLessThan(Object value) { // TODO
 		this.operatorValue = ComparisonOperator.LESS_THAN;
 		this.fieldValue = value;
 		return this;
 	}
 
-	public QCondition isLessOrEquals(Object value) {
+	public QCondition isLessOrEquals(Object value) { // TODO
 		this.operatorValue = ComparisonOperator.LESS_OR_EQUAL;
 		this.fieldValue = value;
 		return this;
@@ -74,49 +74,49 @@ public class QCondition implements QICondition {
 		return this;
 	}
 
-	public QCondition isGreaterOrEquals(Object value) {
+	public QCondition isGreaterOrEquals(Object value) { // TODO
 		this.operatorValue = ComparisonOperator.GREATER_OR_EQUAL;
 		this.fieldValue = value;
 		return this;
 	}
 
-	public QCondition isLike(String value) {
+	public QCondition isLike(String value) { // TODO
 		this.operatorValue = ComparisonOperator.IS_LIKE;
 		this.fieldValue = value;
 		return this;
 	}
 
-	public QCondition isIn(List<Object> values) {
+	public QCondition isIn(List<Object> values) { // TODO
 		this.operatorValue = ComparisonOperator.IS_IN;
 		this.fieldValue = values;
 		return this;
 	}
 
-	public QCondition isNotIn(List<Object> values) {
+	public QCondition isNotIn(List<Object> values) { // TODO
 		this.operatorValue = ComparisonOperator.NOT_IN;
 		this.fieldValue = values;
 		return this;
 	}
 
-	public QCondition includes(List<Object> values) {
+	public QCondition includes(List<Object> values) { // TODO
 		this.operatorValue = ComparisonOperator.INCLUDES;
 		this.fieldValue = values;
 		return this;
 	}
 
-	public QCondition excludes(List<Object> values) {
+	public QCondition excludes(List<Object> values) { // TODO
 		this.operatorValue = ComparisonOperator.EXCLUDES;
 		this.fieldValue = values;
 		return this;
 	}
 
-	public QCondition isNull() {
+	public QCondition isNull() { // TODO
 		this.operatorValue = ComparisonOperator.EQUALS;
 		this.fieldValue = null;
 		return this;
 	}
 
-	public QCondition isNotNull() {
+	public QCondition isNotNull() { // TODO
 		this.operatorValue = ComparisonOperator.NOT_EQUALS;
 		this.fieldValue = null;
 		return this;

@@ -64,7 +64,8 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
     public override Object visit(Expr.Binary binary) {
         Set<TokenType> supportedQueryOperations = new Set<TokenType> {
             TokenType.EQUAL,
-            TokenType.EQUAL_EQUAL
+            TokenType.EQUAL_EQUAL,
+            TokenType.GREATER
         };
 
         if (!supportedQueryOperations.contains(binary.operator.type)) {
@@ -77,6 +78,9 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         switch on binary.operator.type {
             when EQUAL, EQUAL_EQUAL {
                 return Q.condition((String) left).equalsTo(right);
+            }
+            when GREATER {
+                return Q.condition((String) left).isGreaterThan(right);
             }
             when else {
                 throw new Exceptions.RuntimeException(binary.operator,
@@ -93,4 +97,8 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         String field = getExpr.field.lexeme;
         return evaluate(getExpr.objectExpr) + '.' + field;
     }
+
+    // TODO: For functions we are just going to pick a few that we support
+    // and throw an exception for the rest. If people want to use the rest
+    // of the language, do it through variables
 }
