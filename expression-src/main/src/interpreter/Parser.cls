@@ -238,7 +238,7 @@ public with sharing class Parser {
 
         Token sObjectType = previous();
         Expr fieldsExpression;
-        Expr orderBy;
+        List<Expr> orderBys = new List<Expr>();
 
         // Optional named parameters section that define the "extra" parts of the query (order by, where, limit, etc.).
         if (match(TokenType.LEFT_PAREN)) {
@@ -246,18 +246,7 @@ public with sharing class Parser {
                 String qClause = previous().lexeme.toLowerCase();
                 consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
                 if (qClause == 'orderby') {
-                    Expr orderByExpr = expression();
-
-                    // The expression might be followed by (optionally) the ASC or DESC keyword
-                    if (match(new List<TokenType>{
-                        TokenType.ASC_KEYWORD, TokenType.DESC_KEYWORD
-                    })) {
-                        QOrder.SortOrder qSortOrder = previous().lexeme == 'ASC' ? QOrder.SortOrder.ASCENDING : QOrder.SortOrder.DESCENDING;
-                        orderBy = new Expr.Binary(orderByExpr, null, new Expr.Literal(qSortOrder));
-                    } else {
-                        // Default to ASC
-                        orderBy = new Expr.Binary(orderByExpr, null, new Expr.Literal(QOrder.SortOrder.ASCENDING));
-                    }
+                    orderBys = getOrderBys();
                 } else {
                     throw error(previous(), 'Expect \'orderBy\' after \'(\'.');
                 }
@@ -272,22 +261,40 @@ public with sharing class Parser {
         }
 
         consume(TokenType.RIGHT_PAREN, 'Expect \')\' to close the query.');
-        return new Expr.Query(sObjectType, fieldsExpression, orderBy);
+        return new Expr.Query(sObjectType, fieldsExpression, orderBys);
     }
 
-//    private String extractFieldFromIdentifierOrDot() {
-//        String field = consume(TokenType.IDENTIFIER, 'Expect field name.').lexeme;
-//        if (peek().type == TokenType.DOT) {
-//            // Accounting for parent relationships. When in a Query context
-//            // we assume that the token types in a "get" expression are
-//            // always identifiers, as no complex expressions that need to
-//            // be interpreted are allowed here.
-//            while (match(TokenType.DOT)) {
-//                field += '.' + consume(TokenType.IDENTIFIER, 'Expect field name.').lexeme;
-//            }
-//        }
-//        return field;
-//    }
+    private List<Expr> getOrderBys() {
+        List<Expr> orderBys = new List<Expr>();
+        // Check if the next one is a LEFT_BRACKET
+        if (match(TokenType.LEFT_BRACKET)) {
+            do {
+                Expr orderBy = extractOrderby();
+                orderBys.add(orderBy);
+            } while (match(TokenType.COMMA));
+            consume(TokenType.RIGHT_BRACKET, 'Expect \']\' to close list of order by references.');
+        } else {
+            // Assume we have a single field reference
+            Expr orderBy = extractOrderby();
+            orderBys.add(orderBy);
+        }
+
+        return orderBys;
+    }
+
+    private Expr extractOrderby() {
+        Expr orderByExpr = expression();
+        // The expression might be followed by (optionally) the ASC or DESC keyword
+        if (match(new List<TokenType>{
+            TokenType.ASC_KEYWORD, TokenType.DESC_KEYWORD
+        })) {
+            QOrder.SortOrder qSortOrder = previous().lexeme == 'ASC' ? QOrder.SortOrder.ASCENDING : QOrder.SortOrder.DESCENDING;
+            return new Expr.Binary(orderByExpr, null, new Expr.Literal(qSortOrder));
+        } else {
+            // Default to ASC
+            return new Expr.Binary(orderByExpr, null, new Expr.Literal(QOrder.SortOrder.ASCENDING));
+        }
+    }
 
     private List<Expr> getParameters() {
         consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');

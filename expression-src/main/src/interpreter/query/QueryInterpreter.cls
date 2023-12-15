@@ -23,11 +23,11 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             }
         }
 
-        if (query.orderBy != null) {
-            // Order by (if it exists) will be a binary expression, containing
+        for (Expr orderByExpr : query.orderBy) {
+            // Each Order by will be a binary expression, containing
             // an expression that evaluates to the field name to order by
             // and the QOrder.SortOrder for the direction.
-            Expr.Binary orderBy = (Expr.Binary)query.orderBy;
+            Expr.Binary orderBy = (Expr.Binary)orderByExpr;
             Object orderByResult = evaluate(orderBy.left);
             QOrder.SortOrder sortOrder = (QOrder.SortOrder)evaluate(orderBy.right);
 

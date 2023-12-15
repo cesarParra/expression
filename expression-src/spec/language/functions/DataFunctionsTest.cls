@@ -146,8 +146,25 @@ private class DataFunctionsTest {
         Assert.areEqual(aAccount.Id, result[1].Id);
     }
 
-    // TODO: Can order by multiple fields
-    // TODO: Can order by multiple fields with specifics
+    @IsTest
+    static void canOrderByMultipleFields() {
+        List<Account> accountsInDatabase = new List<Account>();
+        Account zAccount = new Account(Name = 'Z Account', BillingCity = 'Z City');
+        Account aAccount = new Account(Name = 'A Account', BillingCity = 'A City');
+        Account aAccount2 = new Account(Name = 'A Account', BillingCity = 'Z City');
+        accountsInDatabase.add(zAccount);
+        accountsInDatabase.add(aAccount);
+        accountsInDatabase.add(aAccount2);
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(orderBy: [Name, BillingCity]) [Id, Name, BillingCity])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(aAccount.Id, result[0].Id);
+        Assert.areEqual(aAccount2.Id, result[1].Id);
+        Assert.areEqual(zAccount.Id, result[2].Id);
+    }
 
 //
 //    @IsTest
