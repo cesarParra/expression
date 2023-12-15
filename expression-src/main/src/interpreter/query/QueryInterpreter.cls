@@ -63,7 +63,8 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
 
     public override Object visit(Expr.Binary binary) {
         Set<TokenType> supportedQueryOperations = new Set<TokenType> {
-            TokenType.EQUAL
+            TokenType.EQUAL,
+            TokenType.EQUAL_EQUAL
         };
 
         if (!supportedQueryOperations.contains(binary.operator.type)) {
@@ -74,7 +75,7 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         Object right = evaluate(binary.right);
 
         switch on binary.operator.type {
-            when EQUAL {
+            when EQUAL, EQUAL_EQUAL {
                 return Q.condition((String) left).equalsTo(right);
             }
             when else {
