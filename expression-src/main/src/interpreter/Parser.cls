@@ -243,16 +243,18 @@ public with sharing class Parser {
 
         // Optional named parameters section that define the "extra" parts of the query (order by, where, limit, etc.).
         if (match(TokenType.LEFT_PAREN)) {
-            if (match(TokenType.IDENTIFIER)) {
-                String qClause = previous().lexeme.toLowerCase();
-                consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
-                if (qClause == 'orderby') {
-                    orderBys = getOrderBys();
-                } else if(qClause == 'limit') {
-                    limitExpr = expression();
-                } else {
-                    throw error(previous(), 'Expect \'orderby\' or \'limit\' after \'where\'.');
-                }
+            if (peek().type == TokenType.IDENTIFIER) {
+                do {
+                    String qClause = consume(TokenType.IDENTIFIER, 'Expect query clause name.').lexeme;
+                    consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
+                    if (qClause == 'orderby') {
+                        orderBys = getOrderBys();
+                    } else if(qClause == 'limit') {
+                        limitExpr = expression();
+                    } else {
+                        throw error(previous(), 'Expect \'orderby\' or \'limit\' after \'where\'.');
+                    }
+                } while (match(TokenType.COMMA));
             }
 
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query arguments.');

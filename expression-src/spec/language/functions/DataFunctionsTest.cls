@@ -210,6 +210,26 @@ private class DataFunctionsTest {
 
         Assert.areEqual(5, result.size());
     }
+
+    @IsTest
+    static void canHaveBothAnOrderByAndALimit() {
+        List<Account> accountsInDatabase = new List<Account>();
+        for (Integer i = 0; i < 10; i++) {
+            accountsInDatabase.add(new Account(Name = 'Test ' + i));
+        }
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(orderBy: Name DESC, limit: 5) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(5, result.size());
+        Assert.areEqual('Test 9', result[0].Name);
+        Assert.areEqual('Test 8', result[1].Name);
+        Assert.areEqual('Test 7', result[2].Name);
+        Assert.areEqual('Test 6', result[3].Name);
+        Assert.areEqual('Test 5', result[4].Name);
+    }
+
 //
 //    // WHERE: One condition
 //    // WHERE: Multiple conditions
