@@ -1,9 +1,21 @@
-public with sharing class QueryInterpreter {
-    public List<SObject> evaluate(Expr.Query query) {
+public with sharing class QueryInterpreter extends Interpreter implements Visitor {
+
+    public QueryInterpreter(Environment environment) {
+        super(environment);
+    }
+
+    public List<SObject> evaluateToQuery(Expr.Query query) {
         Q querier = new Q(query.sObjectType.lexeme);
 
-        for (String field : query.fields) {
-            querier = querier.selectField(field);
+        if (query.fieldsExpression != null) {
+            Object evaluatedFieldsExpression = evaluate(query.fieldsExpression);
+            if (!(evaluatedFieldsExpression instanceof List<Object>)) {
+                throw new Exceptions.RuntimeException(query.sObjectType, 'Expected a list of fields or an expression that evaluates to a list of fields.');
+            }
+
+            for (Object field : (List<Object>) evaluatedFieldsExpression) {
+                querier.selectField((String) field);
+            }
         }
 
 //        if (query.orderBy != null) {
@@ -14,5 +26,9 @@ public with sharing class QueryInterpreter {
 //        }
 
         return QRunner.getInstance().run(querier);
+    }
+
+    public override Object visit(Expr.MergeField mergeField) {
+        return mergeField.name.lexeme;
     }
 }

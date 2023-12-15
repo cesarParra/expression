@@ -237,53 +237,51 @@ public with sharing class Parser {
         }
 
         Token sObjectType = previous();
-        List<String> fields = new List<String>();
-        Expr orderBy;
+        Expr fieldsExpression;
 
-        if (match(TokenType.LEFT_PAREN)) {
-            if (match(TokenType.IDENTIFIER)) {
-                String qClause = previous().lexeme.toLowerCase();
-                consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
-                if (qClause == 'orderby') {
-                    // TODO: We have some failing tets cause the expression is now being evaluated.
-                    // The question is if we really want this stuff to be expressions. In reality
-                    // We want SOQL to be the one doing any kind of interpretation, not our
-                    // interpreter, so it might be better to just not interpret, and try to pass raw stuff
-                    // OR, create a custom interpreter when within a Query context --> Which is what I think I will need to do (at least for where clauses) because we do want to
-                    // interpret things like OR and AND when building the where clause
-                    orderBy = expression();
-                } else {
-                    throw error(previous(), 'Expect \'orderBy\' after \'(\'.');
-                }
-            }
+        if (peek().type != TokenType.RIGHT_PAREN) {
+            //Expr orderBy;
 
-            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query arguments.');
+//        if (match(TokenType.LEFT_PAREN)) {
+//            if (match(TokenType.IDENTIFIER)) {
+//                String qClause = previous().lexeme.toLowerCase();
+//                consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
+//                if (qClause == 'orderby') {
+//                    // TODO: We have some failing tets cause the expression is now being evaluated.
+//                    // The question is if we really want this stuff to be expressions. In reality
+//                    // We want SOQL to be the one doing any kind of interpretation, not our
+//                    // interpreter, so it might be better to just not interpret, and try to pass raw stuff
+//                    // OR, create a custom interpreter when within a Query context --> Which is what I think I will need to do (at least for where clauses) because we do want to
+//                    // interpret things like OR and AND when building the where clause
+//                    orderBy = expression();
+//                } else {
+//                    throw error(previous(), 'Expect \'orderBy\' after \'(\'.');
+//                }
+//            }
+//
+//            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query arguments.');
+//        }
+
+            fieldsExpression = expression();
         }
 
-        if (match(TokenType.LEFT_BRACE)) {
-            do {
-                fields.add(extractFieldFromIdentifierOrDot());
-            } while (match(TokenType.COMMA));
-            consume(TokenType.RIGHT_BRACE, 'Expect \'}\' after fields.');
-        }
-
-        consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query name.');
-        return new Expr.Query(sObjectType, fields, orderBy);
+        consume(TokenType.RIGHT_PAREN, 'Expect \')\' to close the query.');
+        return new Expr.Query(sObjectType, fieldsExpression);
     }
 
-    private String extractFieldFromIdentifierOrDot() {
-        String field = consume(TokenType.IDENTIFIER, 'Expect field name.').lexeme;
-        if (peek().type == TokenType.DOT) {
-            // Accounting for parent relationships. When in a Query context
-            // we assume that the token types in a "get" expression are
-            // always identifiers, as no complex expressions that need to
-            // be interpreted are allowed here.
-            while (match(TokenType.DOT)) {
-                field += '.' + consume(TokenType.IDENTIFIER, 'Expect field name.').lexeme;
-            }
-        }
-        return field;
-    }
+//    private String extractFieldFromIdentifierOrDot() {
+//        String field = consume(TokenType.IDENTIFIER, 'Expect field name.').lexeme;
+//        if (peek().type == TokenType.DOT) {
+//            // Accounting for parent relationships. When in a Query context
+//            // we assume that the token types in a "get" expression are
+//            // always identifiers, as no complex expressions that need to
+//            // be interpreted are allowed here.
+//            while (match(TokenType.DOT)) {
+//                field += '.' + consume(TokenType.IDENTIFIER, 'Expect field name.').lexeme;
+//            }
+//        }
+//        return field;
+//    }
 
     private List<Expr> getParameters() {
         consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');

@@ -187,13 +187,12 @@ public abstract class Expr {
 
     public class Query extends Expr {
         public final Token sObjectType;
-        public final List<String> fields;
-        public final Expr orderBy;
+        // Fields is an expression that must evaluate to a list
+        public final Expr fieldsExpression;
 
-        public Query(Token sObjectType, List<String> fields, Expr orderBy) {
+        public Query(Token sObjectType, Expr fieldsExpression) {
             this.sObjectType = sObjectType;
-            this.fields = fields;
-            this.orderBy = orderBy;
+            this.fieldsExpression = fieldsExpression;
         }
 
         public override Object accept(Visitor v) {

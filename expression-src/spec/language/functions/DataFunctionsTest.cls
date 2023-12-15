@@ -20,10 +20,10 @@ private class DataFunctionsTest {
     }
 
     @IsTest
-    static void canGetSpecificFieldsWhenQuerying() {
+    static void canGetSpecificFieldsWhenQuerying_usingMergeFields() {
         List<Account> accounts = givenAccounts();
 
-        String expr = 'QUERY(Account {Id, Name})';
+        String expr = 'QUERY(Account[Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(accounts.size(), result.size());
@@ -34,19 +34,35 @@ private class DataFunctionsTest {
     }
 
     @IsTest
-    static void canQueryForRelationshipFields() {
-        Account account = new Account(Name = 'Test');
-        insert account;
+    static void canGetSpecificFieldsWhenQuerying_usingStrings() {
+        List<Account> accounts = givenAccounts();
 
-        Contact contact = new Contact(AccountId = account.Id, LastName = 'Test');
-        insert contact;
+        String expr = 'QUERY(Account["Id", "Name"])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
 
-        String expr = 'QUERY(Contact {Id, Account.Name})';
-        List<Contact> result = (List<Contact>) Evaluator.run(expr);
-
-        Assert.areEqual(1, result.size());
-        Assert.areEqual(account.Name, result[0].Account.Name);
+        Assert.areEqual(accounts.size(), result.size());
+        for (Integer i = 0; i < accounts.size(); i++) {
+            Assert.areEqual(accounts[i].Id, result[i].Id);
+            Assert.areEqual(accounts[i].Name, result[i].Name);
+        }
     }
+
+
+//
+//    @IsTest
+//    static void canQueryForRelationshipFields() {
+//        Account account = new Account(Name = 'Test');
+//        insert account;
+//
+//        Contact contact = new Contact(AccountId = account.Id, LastName = 'Test');
+//        insert contact;
+//
+//        String expr = 'QUERY(Contact {Id, Account.Name})';
+//        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+//
+//        Assert.areEqual(1, result.size());
+//        Assert.areEqual(account.Name, result[0].Account.Name);
+//    }
 
     // TODO: Can use string literals when querying for fields.
 

@@ -1,4 +1,4 @@
-public with sharing class Interpreter implements Visitor {
+public virtual with sharing class Interpreter implements Visitor {
     private final Environment env;
 
     private Boolean inListLiteral = false;
@@ -16,7 +16,7 @@ public with sharing class Interpreter implements Visitor {
         return evaluate(expression);
     }
 
-    private Object evaluate(Expr expr) {
+    protected Object evaluate(Expr expr) {
         return expr.accept(this);
     }
 
@@ -254,7 +254,7 @@ public with sharing class Interpreter implements Visitor {
         );
     }
 
-    public Object visit(Expr.MergeField mergeField) {
+    public virtual Object visit(Expr.MergeField mergeField) {
         if (env.noRecordContext()) {
             throw new Exceptions.RuntimeException(
                 mergeField.name,
@@ -464,6 +464,6 @@ public with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.Query query) {
-        return new QueryInterPreter().evaluate(query);
+        return new QueryInterpreter(this.env).evaluateToQuery(query);
     }
 }
