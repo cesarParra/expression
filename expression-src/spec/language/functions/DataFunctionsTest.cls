@@ -20,6 +20,16 @@ private class DataFunctionsTest {
     }
 
     @IsTest
+    static void canQueryWithAnEmptySetOfNamedParameters() {
+        List<Account> accounts = givenAccounts();
+
+        String expr = 'QUERY(Account())';
+        List<SObject> result = (List<SObject>) Evaluator.run(expr);
+
+        Assert.areEqual(accounts.size(), result.size());
+    }
+
+    @IsTest
     static void canGetSpecificFieldsWhenQuerying_usingMergeFields() {
         List<Account> accounts = givenAccounts();
 

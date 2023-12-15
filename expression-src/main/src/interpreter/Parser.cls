@@ -239,10 +239,9 @@ public with sharing class Parser {
         Token sObjectType = previous();
         Expr fieldsExpression;
 
-        if (peek().type != TokenType.RIGHT_PAREN) {
-            //Expr orderBy;
-
-//        if (match(TokenType.LEFT_PAREN)) {
+        // Optional named parameters section that define the "extra" parts of the query (order by, where, limit, etc.).
+        if (match(TokenType.LEFT_PAREN)) {
+            System.debug('found a left paren');
 //            if (match(TokenType.IDENTIFIER)) {
 //                String qClause = previous().lexeme.toLowerCase();
 //                consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
@@ -258,10 +257,12 @@ public with sharing class Parser {
 //                    throw error(previous(), 'Expect \'orderBy\' after \'(\'.');
 //                }
 //            }
-//
-//            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query arguments.');
-//        }
 
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query arguments.');
+        }
+
+        // Optional expression that defines the fields to be returned in the query.
+        if (peek().type != TokenType.RIGHT_PAREN) {
             fieldsExpression = expression();
         }
 
