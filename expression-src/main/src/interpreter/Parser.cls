@@ -240,6 +240,7 @@ public with sharing class Parser {
         Expr fieldsExpression;
         List<Expr> orderBys = new List<Expr>();
         Expr limitExpr;
+        Expr whereExpr;
 
         // Optional named parameters section that define the "extra" parts of the query (order by, where, limit, etc.).
         if (match(TokenType.LEFT_PAREN)) {
@@ -251,7 +252,10 @@ public with sharing class Parser {
                         orderBys = getOrderBys();
                     } else if(qClause == 'limit') {
                         limitExpr = expression();
-                    } else {
+                    } else if (qClause == 'where') {
+                        whereExpr = expression();
+                    }
+                    else {
                         throw error(previous(), 'Expect \'orderby\' or \'limit\' after \'where\'.');
                     }
                 } while (match(TokenType.COMMA));
@@ -266,7 +270,7 @@ public with sharing class Parser {
         }
 
         consume(TokenType.RIGHT_PAREN, 'Expect \')\' to close the query.');
-        return new Expr.Query(sObjectType, fieldsExpression, orderBys, limitExpr);
+        return new Expr.Query(sObjectType, fieldsExpression, orderBys, limitExpr, whereExpr);
     }
 
     private List<Expr> getOrderBys() {

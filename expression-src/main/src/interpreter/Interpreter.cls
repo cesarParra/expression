@@ -20,7 +20,7 @@ public virtual with sharing class Interpreter implements Visitor {
         return expr.accept(this);
     }
 
-    public Object visit(Expr.Binary binary) {
+    public virtual Object visit(Expr.Binary binary) {
         Object left = evaluate(binary.left);
         Object right = evaluate(binary.right);
 

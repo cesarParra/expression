@@ -230,6 +230,21 @@ private class DataFunctionsTest {
         Assert.areEqual('Test 5', result[4].Name);
     }
 
+    @IsTest
+    static void canHaveAWhereCondition_singleEquals() {
+        List<Account> accountsInDatabase = new List<Account>();
+        for (Integer i = 0; i < 10; i++) {
+            accountsInDatabase.add(new Account(Name = 'Test ' + i));
+        }
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(where: Name = "Test 5") [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual('Test 5', result[0].Name);
+    }
+
 //
 //    // WHERE: One condition
 //    // WHERE: Multiple conditions

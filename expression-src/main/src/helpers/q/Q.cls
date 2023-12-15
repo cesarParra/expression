@@ -139,5 +139,4 @@ public class Q {
 
 		return String.join(queryParts, ' ');
 	}
-
 }

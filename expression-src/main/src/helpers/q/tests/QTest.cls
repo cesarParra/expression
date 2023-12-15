@@ -157,5 +157,4 @@ private class QTest {
         System.assertEquals(expected2, query, 'It should output a query with a condition group.');
         Database.query(query);
     }
-
 }

@@ -49,7 +49,39 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             querier.addLimit(((Decimal) limitResult).intValue());
         }
 
+        if (query.whereExpr != null) {
+            Object whereResult = evaluate(query.whereExpr);
+            if (!(whereResult instanceof QCondition)) {
+                throw new Exceptions.RuntimeException(query.sObjectType,
+                    'Expected a condition or an expression that evaluates to a condition for the where clause.');
+            }
+            querier.add((QCondition) whereResult);
+        }
+
         return QRunner.getInstance().run(querier);
+    }
+
+    public override Object visit(Expr.Binary binary) {
+        Set<TokenType> supportedQueryOperations = new Set<TokenType> {
+            TokenType.EQUAL
+        };
+
+        if (!supportedQueryOperations.contains(binary.operator.type)) {
+            return super.visit(binary);
+        }
+
+        Object left = evaluate(binary.left);
+        Object right = evaluate(binary.right);
+
+        switch on binary.operator.type {
+            when EQUAL {
+                return Q.condition((String) left).equalsTo(right);
+            }
+            when else {
+                throw new Exceptions.RuntimeException(binary.operator,
+                    'Unsupported query operation.');
+            }
+        }
     }
 
     public override Object visit(Expr.MergeField mergeField) {

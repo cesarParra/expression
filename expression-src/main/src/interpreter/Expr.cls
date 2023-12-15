@@ -191,8 +191,9 @@ public abstract class Expr {
         public final Expr fieldsExpression;
         public final List<Expr> orderBy;
         public final Expr limitExpr;
+        public final Expr whereExpr;
 
-        public Query(Token sObjectType, Expr fieldsExpression, List<Expr> orderBy, Expr limitExpr) {
+        public Query(Token sObjectType, Expr fieldsExpression, List<Expr> orderBy, Expr limitExpr, Expr whereExpr) {
             this.sObjectType = sObjectType;
             this.fieldsExpression = fieldsExpression;
             if (orderBy != null) {
@@ -201,6 +202,7 @@ public abstract class Expr {
                 this.orderBy = new List<Expr>();
             }
             this.limitExpr = limitExpr;
+            this.whereExpr = whereExpr;
         }
 
         public override Object accept(Visitor v) {
