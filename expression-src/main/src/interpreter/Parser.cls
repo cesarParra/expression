@@ -239,6 +239,7 @@ public with sharing class Parser {
         Token sObjectType = previous();
         Expr fieldsExpression;
         List<Expr> orderBys = new List<Expr>();
+        Expr limitExpr;
 
         // Optional named parameters section that define the "extra" parts of the query (order by, where, limit, etc.).
         if (match(TokenType.LEFT_PAREN)) {
@@ -247,8 +248,10 @@ public with sharing class Parser {
                 consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
                 if (qClause == 'orderby') {
                     orderBys = getOrderBys();
+                } else if(qClause == 'limit') {
+                    limitExpr = expression();
                 } else {
-                    throw error(previous(), 'Expect \'orderBy\' after \'(\'.');
+                    throw error(previous(), 'Expect \'orderby\' or \'limit\' after \'where\'.');
                 }
             }
 
@@ -261,7 +264,7 @@ public with sharing class Parser {
         }
 
         consume(TokenType.RIGHT_PAREN, 'Expect \')\' to close the query.');
-        return new Expr.Query(sObjectType, fieldsExpression, orderBys);
+        return new Expr.Query(sObjectType, fieldsExpression, orderBys, limitExpr);
     }
 
     private List<Expr> getOrderBys() {

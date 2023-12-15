@@ -40,6 +40,15 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             querier.add(Q.orderBy((String) orderByResult).withDirection(sortOrder));
         }
 
+        if (query.limitExpr != null) {
+            Object limitResult = evaluate(query.limitExpr);
+            if (!(limitResult instanceof Decimal)) {
+                throw new Exceptions.RuntimeException(query.sObjectType,
+                    'Expected an integer or an expression that evaluates to an number for the limit clause.');
+            }
+            querier.addLimit(((Decimal) limitResult).intValue());
+        }
+
         return QRunner.getInstance().run(querier);
     }
 

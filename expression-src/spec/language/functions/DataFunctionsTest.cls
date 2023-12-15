@@ -186,62 +186,35 @@ private class DataFunctionsTest {
         Assert.areEqual(zAccount.Id, result[2].Id);
     }
 
-//
-//    @IsTest
-//    static void canOrderByAFieldDescending() {
-//        List<Account> accountsInDatabase = new List<Account>();
-//        Account zAccount = new Account(Name = 'Z Account');
-//        Account aAccount = new Account(Name = 'A Account');
-//        accountsInDatabase.add(zAccount);
-//        accountsInDatabase.add(aAccount);
-//        insert accountsInDatabase;
-//
-//        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name", "DESC"))';
-//        List<Account> result = (List<Account>) Evaluator.run(expr);
-//
-//        Assert.areEqual(2, result.size());
-//        Assert.areEqual(zAccount.Id, result[0].Id);
-//        Assert.areEqual(aAccount.Id, result[1].Id);
-//    }
-//
-//    @IsTest
-//    static void usingOrderByThrowsAnExceptionWhenAnOrderThatIsNeitherAscNorDescIsSpecified() {
-//        String expr = 'FETCH("Account", ["Id", "Name"], ORDERBY("Name", "DESCENDING"))';
-//        try {
-//            Evaluator.run(expr);
-//            Assert.fail('Expected an exception to be thrown');
-//        } catch (Exception e) {
-//            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-//        }
-//    }
-//
-//    @IsTest
-//    static void usingOrderbyOutsideOfFetchThrowsAnException_topCall() {
-//        String expr = 'ORDERBY("Name")';
-//        try {
-//            Evaluator.run(expr);
-//            Assert.fail('Expected an exception to be thrown');
-//        } catch (Exception e) {
-//            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-//        }
-//    }
-//
-//    @IsTest
-//    static void usingOrderbyOutsideOfFetchThrowsAnException_subCall() {
-//        String expr = 'TRANSFORM(ORDERBY("Name", "DESC"))';
-//        try {
-//            Evaluator.run(expr);
-//            Assert.fail('Expected an exception to be thrown');
-//        } catch (Exception e) {
-//            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-//        }
-//    }
+    @IsTest
+    static void usingOrderByThrowsAnExceptionWhenAnOrderThatIsNeitherAscNorDescIsSpecified() {
+        String expr = 'QUERY(Account(orderBy: Name ASCENDING) [Id, Name])';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.ParsingException.class);
+        }
+    }
+
+    @IsTest
+    static void canLimitTheNumberOfRecordsReturned() {
+        List<Account> accountsInDatabase = new List<Account>();
+        for (Integer i = 0; i < 10; i++) {
+            accountsInDatabase.add(new Account(Name = 'Test ' + i));
+        }
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(limit: 5) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(5, result.size());
+    }
 //
 //    // WHERE: One condition
 //    // WHERE: Multiple conditions
 //    // And support
 //    // Or support
-//    // Limits
 //    // Offset
 //    // Subquery
 

@@ -190,8 +190,9 @@ public abstract class Expr {
         // Fields is an expression that must evaluate to a list
         public final Expr fieldsExpression;
         public final List<Expr> orderBy;
+        public final Expr limitExpr;
 
-        public Query(Token sObjectType, Expr fieldsExpression, List<Expr> orderBy) {
+        public Query(Token sObjectType, Expr fieldsExpression, List<Expr> orderBy, Expr limitExpr) {
             this.sObjectType = sObjectType;
             this.fieldsExpression = fieldsExpression;
             if (orderBy != null) {
@@ -199,6 +200,7 @@ public abstract class Expr {
             } else {
                 this.orderBy = new List<Expr>();
             }
+            this.limitExpr = limitExpr;
         }
 
         public override Object accept(Visitor v) {
