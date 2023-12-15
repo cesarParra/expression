@@ -47,22 +47,20 @@ private class DataFunctionsTest {
         }
     }
 
+    @IsTest
+    static void canQueryForRelationshipFields() {
+        Account account = new Account(Name = 'Test');
+        insert account;
 
-//
-//    @IsTest
-//    static void canQueryForRelationshipFields() {
-//        Account account = new Account(Name = 'Test');
-//        insert account;
-//
-//        Contact contact = new Contact(AccountId = account.Id, LastName = 'Test');
-//        insert contact;
-//
-//        String expr = 'QUERY(Contact {Id, Account.Name})';
-//        List<Contact> result = (List<Contact>) Evaluator.run(expr);
-//
-//        Assert.areEqual(1, result.size());
-//        Assert.areEqual(account.Name, result[0].Account.Name);
-//    }
+        Contact contact = new Contact(AccountId = account.Id, LastName = 'Test');
+        insert contact;
+
+        String expr = 'QUERY(Contact [Id, Account.Name])';
+        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(account.Name, result[0].Account.Name);
+    }
 
     // TODO: Can use string literals when querying for fields.
 

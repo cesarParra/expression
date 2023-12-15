@@ -167,7 +167,7 @@ public virtual with sharing class Interpreter implements Visitor {
         return stringValue;
     }
 
-    public Object visit(Expr.GetExpr getExpr) {
+    public virtual Object visit(Expr.GetExpr getExpr) {
         Object result = evaluate(getExpr.objectExpr);
         if (result instanceof SObject) {
             if (!getExpr.arguments.isEmpty()) {

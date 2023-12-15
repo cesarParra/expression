@@ -31,4 +31,9 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
     public override Object visit(Expr.MergeField mergeField) {
         return mergeField.name.lexeme;
     }
+
+    public override Object visit(Expr.GetExpr getExpr) {
+        String field = getExpr.field.lexeme;
+        return evaluate(getExpr.objectExpr) + '.' + field;
+    }
 }
