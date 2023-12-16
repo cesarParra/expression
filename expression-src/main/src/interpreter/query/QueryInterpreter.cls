@@ -115,6 +115,55 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         return evaluate(getExpr.objectExpr) + '.' + field;
     }
 
+    public override Object visit(Expr.FunctionCall function) {
+        Map<String, ExpressionFunction> supportedFunctions = new Map<String, ExpressionFunction> {
+            'LIKE' => new LikeFn()
+        };
+
+        String functionName = function.functionToken.lexeme.toUpperCase();
+        if (supportedFunctions.containsKey(functionName)) {
+            ExpressionFunction expressionFunction = supportedFunctions.get(function.functionToken.lexeme);
+            expressionFunction.setInterpreter(this);
+            evaluateArity(expressionFunction, function);
+            try {
+                return expressionFunction.call(function.arguments);
+            } catch (Exceptions.PositionAwareException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new Exceptions.RuntimeException(
+                    function.functionToken,
+                    e.getMessage()
+                );
+            }
+        }
+
+        throw new Exceptions.RuntimeException(function.functionToken,
+            'Unsupported function: ' + function.functionToken.lexeme + ' within a Query context.');
+    }
+
+    private class LikeFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object text = evaluate(arguments.get(0));
+            Object pattern = evaluate(arguments.get(1));
+            if (!(text instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "LIKE" function: the first argument must evaluate to a string value.'
+                );
+            }
+            if (!(pattern instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "LIKE" function: the second argument must evaluate to a string value.'
+                );
+            }
+
+            return Q.condition((String) text).isLike((String) pattern);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
     // TODO: For functions we are just going to pick a few that we support
     // and throw an exception for the rest. If people want to use the rest
     // of the language, do it through variables

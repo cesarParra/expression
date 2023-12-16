@@ -50,7 +50,7 @@ public class QCondition implements QICondition {
 		return this;
 	}
 
-	public QCondition notEqualsTo(Object value) { // TODO
+	public QCondition notEqualsTo(Object value) {
 		this.operatorValue = ComparisonOperator.NOT_EQUALS;
 		this.fieldValue = value;
 		return this;

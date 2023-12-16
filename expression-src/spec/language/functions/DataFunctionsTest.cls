@@ -382,6 +382,37 @@ private class DataFunctionsTest {
         Assert.areEqual('Test 9', result[8].Name);
     }
 
+    @IsTest
+    static void canHaveAWhereConditionWithALikeFunction_usingPercentWildcard_throwsExceptionWhenTheFirstArgumentDoesNotEvaluateToString() {
+        String expr = 'QUERY(Account(where: LIKE(1, "Test 5%")) [Id, Name])';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Exceptions.PositionAwareException ex = (Exceptions.PositionAwareException) e;
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    static void canHaveAWhereConditionWithALikeFunction_usingPercentWildcard() {
+        List<Account> accountsInDatabase = new List<Account>();
+        for (Integer i = 0; i < 10; i++) {
+            String name = 'Test ' + i;
+            if (i == 5) {
+                name = 'Test 5 - 6';
+            }
+            accountsInDatabase.add(new Account(Name = name));
+        }
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(where: LIKE(Name, "Test 5%")) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual('Test 5 - 6', result[0].Name);
+    }
+
 //    // WHERE: Multiple conditions
 //    // And support
 //    // Or support
@@ -398,4 +429,6 @@ private class DataFunctionsTest {
     // Update the example project
     // Update docs
     // Deprecate FETCH
+
+    // TODO: What to do about piping
 }

@@ -326,19 +326,12 @@ public virtual with sharing class Interpreter implements Visitor {
         );
     }
 
-    public Object visit(Expr.FunctionCall function) {
+    public virtual Object visit(Expr.FunctionCall function) {
         // Check if the function is in the list of supported functions
         if (ExpressionFunction.functionExistsInStandardLibrary(function.functionName)) {
             ExpressionFunction fn = ExpressionFunction.getByName(function.functionName);
             fn.setInterpreter(this);
-            if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
-                throw new Exceptions.RuntimeException(
-                    function.functionToken,
-                    'Error executing ' + function.functionName + ' function: the function expects ' +
-                    fn.getArity().toString() + ' argument(s), but ' +
-                    function.arguments.size() + ' were provided.'
-                );
-            }
+            evaluateArity(fn, function);
 
             try {
                 CallStack.instance.push(function.functionName);
@@ -379,6 +372,17 @@ public virtual with sharing class Interpreter implements Visitor {
             function.functionToken,
             'Error executing ' + function.functionName + ' function: the function is not supported.'
         );
+    }
+
+    protected void evaluateArity(ExpressionFunction fn, Expr.FunctionCall function) {
+        if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
+            throw new Exceptions.RuntimeException(
+                function.functionToken,
+                'Error executing ' + function.functionName + ' function: the function expects ' +
+                fn.getArity().toString() + ' argument(s), but ' +
+                function.arguments.size() + ' were provided.'
+            );
+        }
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {

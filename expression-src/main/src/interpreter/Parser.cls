@@ -18,7 +18,8 @@ public with sharing class Parser {
         Expr expr = comparison();
 
         while (match(new List<TokenType>{
-            TokenType.BANG_EQUAL, TokenType.EQUAL, TokenType.EQUAL_EQUAL, TokenType.LESS_GREATER, TokenType.DOUBLE_PIPE, TokenType.DOUBLE_AMPERSAND
+            TokenType.BANG_EQUAL, TokenType.EQUAL, TokenType.EQUAL_EQUAL,
+            TokenType.LESS_GREATER, TokenType.DOUBLE_PIPE, TokenType.DOUBLE_AMPERSAND
         })) {
             Token operator = previous();
             Expr right = comparison();
@@ -250,12 +251,11 @@ public with sharing class Parser {
                     consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
                     if (qClause == 'orderby') {
                         orderBys = getOrderBys();
-                    } else if(qClause == 'limit') {
+                    } else if (qClause == 'limit') {
                         limitExpr = expression();
                     } else if (qClause == 'where') {
                         whereExpr = expression();
-                    }
-                    else {
+                    } else {
                         throw error(previous(), 'Expect \'orderby\' or \'limit\' after \'where\'.');
                     }
                 } while (match(TokenType.COMMA));
