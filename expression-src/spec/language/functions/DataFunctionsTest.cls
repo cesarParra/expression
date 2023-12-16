@@ -432,6 +432,37 @@ private class DataFunctionsTest {
         Assert.areEqual('Test 5 - 6', result[0].Name);
     }
 
+    @IsTest
+    static void canHaveAWhereConditionWithAnIsInClause() {
+        List<Account> accountsInDatabase = new List<Account>();
+        Account account1 = new Account(Name = 'Test 1');
+        Account account2 = new Account(Name = 'Test 2');
+        Account account3 = new Account(Name = 'Test 3');
+        accountsInDatabase.add(account1);
+        accountsInDatabase.add(account2);
+        accountsInDatabase.add(account3);
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(where: IsIn(Id,  ["' + account1.Id + '", "' + account2.Id + '"])) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual(account1.Id, result[0].Id);
+        Assert.areEqual(account2.Id, result[1].Id);
+    }
+
+    @IsTest
+    static void canUsePipesWhenUsingWhereFunctions() {
+        Account someAccount = new Account(Name = 'Test');
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: Name -> ISIN(["Test"])) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
 //    // WHERE: Multiple conditions
 //    // And support
 //    // Or support
