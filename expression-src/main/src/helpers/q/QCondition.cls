@@ -86,7 +86,7 @@ public class QCondition implements QICondition {
 		return this;
 	}
 
-	public QCondition isIn(List<Object> values) { // TODO
+	public QCondition isIn(List<Object> values) {
 		this.operatorValue = ComparisonOperator.IS_IN;
 		this.fieldValue = values;
 		return this;

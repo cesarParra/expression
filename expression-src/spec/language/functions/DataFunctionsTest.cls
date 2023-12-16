@@ -452,6 +452,24 @@ private class DataFunctionsTest {
     }
 
     @IsTest
+    static void canHaveAWhereConditionWithAnIsNotInClause() {
+        List<Account> accountsInDatabase = new List<Account>();
+        Account account1 = new Account(Name = 'Test 1');
+        Account account2 = new Account(Name = 'Test 2');
+        Account account3 = new Account(Name = 'Test 3');
+        accountsInDatabase.add(account1);
+        accountsInDatabase.add(account2);
+        accountsInDatabase.add(account3);
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(where: IsNotIn(Id,  ["' + account1.Id + '", "' + account2.Id + '"])) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(account3.Id, result[0].Id);
+    }
+
+    @IsTest
     static void canUsePipesWhenUsingWhereFunctions() {
         Account someAccount = new Account(Name = 'Test');
         insert someAccount;

@@ -118,7 +118,8 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
     public override Object visit(Expr.FunctionCall function) {
         Map<String, ExpressionFunction> supportedFunctions = new Map<String, ExpressionFunction> {
             'LIKE' => new LikeFn(),
-            'ISIN' => new IsInFn()
+            'ISIN' => new IsInFn(),
+            'ISNOTIN' => new IsNotInFn()
         };
 
         String functionName = function.functionToken.lexeme.toUpperCase();
@@ -191,6 +192,39 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             }
 
             return Q.condition((String) field).isIn((List<Object>) values);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    private class IsNotInFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect 2 arguments, the first is the field name, the second is a list of values
+            Object field = evaluate(arguments.get(0));
+            Object values = evaluate(arguments.get(1));
+
+            if (!(field instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "ISNOTIN" function: the first argument must evaluate to a string value or a merge field.'
+                );
+            }
+
+            if (!(values instanceof List<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "ISNOTIN" function: the second argument must evaluate to a list of values.'
+                );
+            }
+
+            // Empty lists are not accepted, as they will never match anything
+            if (((List<Object>) values).isEmpty()) {
+                throw new FunctionExecutionException(
+                    'Error executing "ISNOTIN" function: the second argument must evaluate to a non-empty list of values.'
+                );
+            }
+
+            return Q.condition((String) field).isNotIn((List<Object>) values);
         }
 
         public override Arity getArity() {
