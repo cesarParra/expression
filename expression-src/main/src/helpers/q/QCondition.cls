@@ -80,7 +80,7 @@ public class QCondition implements QICondition {
 		return this;
 	}
 
-	public QCondition isLike(String value) { // TODO
+	public QCondition isLike(String value) {
 		this.operatorValue = ComparisonOperator.IS_LIKE;
 		this.fieldValue = value;
 		return this;

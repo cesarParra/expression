@@ -163,8 +163,4 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             return Arity.exactly(2);
         }
     }
-
-    // TODO: For functions we are just going to pick a few that we support
-    // and throw an exception for the rest. If people want to use the rest
-    // of the language, do it through variables
 }
