@@ -120,7 +120,8 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             'LIKE' => new LikeFn(),
             'ISIN' => new IsInFn(),
             'ISNOTIN' => new IsNotInFn(),
-            'ISNULL' => new IsNullFn()
+            'ISNULL' => new IsNullFn(),
+            'ISNOTNULL' => new IsNotNullFn()
         };
 
         String functionName = function.functionToken.lexeme.toUpperCase();
@@ -245,6 +246,25 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             }
 
             return Q.condition((String) field).isNull();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    private class IsNotNullFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect 1 argument, the field name
+            Object field = evaluate(arguments.get(0));
+
+            if (!(field instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "ISNOTNULL" function: the first argument must evaluate to a string value or a merge field.'
+                );
+            }
+
+            return Q.condition((String) field).isNotNull();
         }
 
         public override Arity getArity() {
