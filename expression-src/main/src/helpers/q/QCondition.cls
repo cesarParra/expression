@@ -56,7 +56,7 @@ public class QCondition implements QICondition {
 		return this;
 	}
 
-	public QCondition isLessThan(Object value) { // TODO
+	public QCondition isLessThan(Object value) {
 		this.operatorValue = ComparisonOperator.LESS_THAN;
 		this.fieldValue = value;
 		return this;
@@ -74,7 +74,7 @@ public class QCondition implements QICondition {
 		return this;
 	}
 
-	public QCondition isGreaterOrEquals(Object value) { // TODO
+	public QCondition isGreaterOrEquals(Object value) {
 		this.operatorValue = ComparisonOperator.GREATER_OR_EQUAL;
 		this.fieldValue = value;
 		return this;

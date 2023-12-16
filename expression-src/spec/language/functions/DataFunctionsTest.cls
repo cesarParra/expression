@@ -336,6 +336,52 @@ private class DataFunctionsTest {
         Assert.areEqual('Test 5', result[5].Name);
     }
 
+    @IsTest
+    static void canHaveAWhereCondition_notEquals_bangEquals() {
+        List<Account> accountsInDatabase = new List<Account>();
+        for (Integer i = 0; i < 10; i++) {
+            accountsInDatabase.add(new Account(Name = 'Test ' + i, NumberOfEmployees = i));
+        }
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(where: NumberOfEmployees != 5) [Id, Name, NumberOfEmployees])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(9, result.size());
+        Assert.areEqual('Test 0', result[0].Name);
+        Assert.areEqual('Test 1', result[1].Name);
+        Assert.areEqual('Test 2', result[2].Name);
+        Assert.areEqual('Test 3', result[3].Name);
+        Assert.areEqual('Test 4', result[4].Name);
+        Assert.areEqual('Test 6', result[5].Name);
+        Assert.areEqual('Test 7', result[6].Name);
+        Assert.areEqual('Test 8', result[7].Name);
+        Assert.areEqual('Test 9', result[8].Name);
+    }
+
+    @IsTest
+    static void canHaveAWhereCondition_notEquals_lessGreater() {
+        List<Account> accountsInDatabase = new List<Account>();
+        for (Integer i = 0; i < 10; i++) {
+            accountsInDatabase.add(new Account(Name = 'Test ' + i, NumberOfEmployees = i));
+        }
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(where: NumberOfEmployees <> 5) [Id, Name, NumberOfEmployees])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(9, result.size());
+        Assert.areEqual('Test 0', result[0].Name);
+        Assert.areEqual('Test 1', result[1].Name);
+        Assert.areEqual('Test 2', result[2].Name);
+        Assert.areEqual('Test 3', result[3].Name);
+        Assert.areEqual('Test 4', result[4].Name);
+        Assert.areEqual('Test 6', result[5].Name);
+        Assert.areEqual('Test 7', result[6].Name);
+        Assert.areEqual('Test 8', result[7].Name);
+        Assert.areEqual('Test 9', result[8].Name);
+    }
+
 //    // WHERE: Multiple conditions
 //    // And support
 //    // Or support
