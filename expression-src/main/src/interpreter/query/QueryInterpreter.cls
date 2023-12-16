@@ -119,7 +119,8 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         Map<String, ExpressionFunction> supportedFunctions = new Map<String, ExpressionFunction> {
             'LIKE' => new LikeFn(),
             'ISIN' => new IsInFn(),
-            'ISNOTIN' => new IsNotInFn()
+            'ISNOTIN' => new IsNotInFn(),
+            'ISNULL' => new IsNullFn()
         };
 
         String functionName = function.functionToken.lexeme.toUpperCase();
@@ -229,6 +230,25 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+    }
+
+    private class IsNullFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            // Expect 1 argument, the field name
+            Object field = evaluate(arguments.get(0));
+
+            if (!(field instanceof String)) {
+                throw new FunctionExecutionException(
+                    'Error executing "ISNULL" function: the first argument must evaluate to a string value or a merge field.'
+                );
+            }
+
+            return Q.condition((String) field).isNull();
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 }

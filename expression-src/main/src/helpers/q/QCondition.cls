@@ -92,20 +92,8 @@ public class QCondition implements QICondition {
 		return this;
 	}
 
-	public QCondition isNotIn(List<Object> values) { // TODO
+	public QCondition isNotIn(List<Object> values) {
 		this.operatorValue = ComparisonOperator.NOT_IN;
-		this.fieldValue = values;
-		return this;
-	}
-
-	public QCondition includes(List<Object> values) { // TODO
-		this.operatorValue = ComparisonOperator.INCLUDES;
-		this.fieldValue = values;
-		return this;
-	}
-
-	public QCondition excludes(List<Object> values) { // TODO
-		this.operatorValue = ComparisonOperator.EXCLUDES;
 		this.fieldValue = values;
 		return this;
 	}

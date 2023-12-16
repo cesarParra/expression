@@ -68,20 +68,6 @@ private class QConditionTest {
 	}
 
 	@IsTest
-	static void testIncludes() {
-		List<String> markets = new List<String>{'APAC', 'EMEA'};
-		String segment = new QCondition('Market').includes(markets).build();
-		System.assertEquals('Market INCLUDES (\'APAC\', \'EMEA\')', segment, 'It should output an INCLUDES condition.');
-	}
-
-	@IsTest
-	static void testExcludes() {
-		List<String> markets = new List<String>{'APAC', 'EMEA'};
-		String segment = new QCondition('Market').excludes(markets).build();
-		System.assertEquals('Market EXCLUDES (\'APAC\', \'EMEA\')', segment, 'It should output a EXCLUDES condition.');
-	}
-
-	@IsTest
 	static void testIsNull() {
 		String segment = new QCondition('Name').isNull().build();
 		System.assertEquals('Name = null', segment, 'It should output an IS NULL condition.');

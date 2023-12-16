@@ -481,6 +481,17 @@ private class DataFunctionsTest {
         Assert.areEqual(someAccount.Id, result[0].Id);
     }
 
+    @IsTest
+    static void canUseTheIsNullFunctionInAWhereClause() {
+        Account someAccount = new Account(Name = 'Test');
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: ISNULL(Name)) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(0, result.size());
+    }
+
 //    // WHERE: Multiple conditions
 //    // And support
 //    // Or support
