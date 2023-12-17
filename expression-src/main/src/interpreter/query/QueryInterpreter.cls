@@ -71,6 +71,9 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
     }
 
     public override Object visit(Expr.Binary binary) {
+        // TODO: Maybe we want to do this ONLY when we are inside of a where?
+        // OR just disallow things outside of it. We just need to be consistent and have expected behaviors
+        // so let's play around with the different options
         Set<TokenType> supportedQueryOperations = new Set<TokenType> {
             TokenType.EQUAL,
             TokenType.EQUAL_EQUAL,
@@ -79,7 +82,8 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             TokenType.LESS,
             TokenType.LESS_EQUAL,
             TokenType.BANG_EQUAL,
-            TokenType.LESS_GREATER
+            TokenType.LESS_GREATER,
+            TokenType.DOUBLE_AMPERSAND
         };
 
         if (!supportedQueryOperations.contains(binary.operator.type)) {
@@ -107,6 +111,24 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             }
             when BANG_EQUAL, LESS_GREATER {
                 return Q.condition((String) left).notEqualsTo(right);
+            }
+            when DOUBLE_AMPERSAND {
+                System.debug('left: ' + left);
+                if (!(left instanceof QCondition)) {
+                    throw new Exceptions.RuntimeException(binary.operator,
+                        'Expected a condition or an expression that evaluates to a condition for the left side of the AND operator.');
+                }
+                System.debug('right: ' + right);
+                if (!(right instanceof QCondition)) {
+                    throw new Exceptions.RuntimeException(binary.operator,
+                        'Expected a condition or an expression that evaluates to a condition for the right side of the AND operator.');
+                }
+
+                List<QCondition> conditions = new List<QCondition> {
+                    (QCondition) left,
+                    (QCondition) right
+                };
+                return new QAndGroup(conditions);
             }
             when else {
                 throw new Exceptions.RuntimeException(binary.operator,
