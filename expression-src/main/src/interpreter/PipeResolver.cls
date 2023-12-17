@@ -151,12 +151,18 @@ public with sharing class PipeResolver implements Visitor {
             newWhereExpr = resolve(query.whereExpr);
         }
 
+        Expr newOffsetExpr;
+        if (query.offsetExpr != null) {
+            newOffsetExpr = resolve(query.offsetExpr);
+        }
+
         return new Expr.Query(
             query.sObjectType,
             newFieldsExpression,
             newOrderBys,
             newLimitExpr,
-            newWhereExpr
+            newWhereExpr,
+            newOffsetExpr
         );
     }
 }

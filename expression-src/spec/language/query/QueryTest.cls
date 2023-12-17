@@ -502,4 +502,24 @@ private class QueryTest {
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
     }
+
+    @IsTest
+    static void canSpecifyAnOffSet() {
+        List<Account> accountsInDatabase = new List<Account>();
+        for (Integer i = 0; i < 10; i++) {
+            String name = 'Test ' + i;
+            accountsInDatabase.add(new Account(Name = name));
+        }
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(offset: 5, orderBy: Name) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(5, result.size());
+        Assert.areEqual('Test 5', result[0].Name);
+        Assert.areEqual('Test 6', result[1].Name);
+        Assert.areEqual('Test 7', result[2].Name);
+        Assert.areEqual('Test 8', result[3].Name);
+        Assert.areEqual('Test 9', result[4].Name);
+    }
 }

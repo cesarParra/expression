@@ -58,6 +58,15 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             querier.add((QCondition) whereResult);
         }
 
+        if (query.offsetExpr != null) {
+            Object offsetResult = evaluate(query.offsetExpr);
+            if (!(offsetResult instanceof Decimal)) {
+                throw new Exceptions.RuntimeException(query.sObjectType,
+                    'Expected an integer or an expression that evaluates to an number for the offset clause.');
+            }
+            querier.addOffset(((Decimal) offsetResult).intValue());
+        }
+
         return QRunner.getInstance().run(querier);
     }
 

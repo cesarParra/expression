@@ -33,6 +33,6 @@ jobs:
       - name: Push source
         run: sfdx force:source:push
       - name: Run tests
-        run: sf apex run test --code-coverage --result-format human -w 30
+        run: sf apex run test --code-coverage --result-format tap -w 30
       - name: Clean up scratch org
         run: sfdx force:org:delete --targetusername=scratch-org --noprompt
