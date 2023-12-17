@@ -1,4 +1,5 @@
 public interface Visitor {
+    Object visit(Expr.Logical logical);
     Object visit(Expr.Binary binary);
     Object visit(Expr.Grouping grouping);
     Object visit(Expr.StringLiteral literal);

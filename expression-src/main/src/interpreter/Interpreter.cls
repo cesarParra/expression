@@ -20,6 +20,58 @@ public virtual with sharing class Interpreter implements Visitor {
         return expr.accept(this);
     }
 
+    public Object visit(Expr.Logical logical) {
+        Object left = evaluate(logical.left);
+
+        if (logical.operator.type == TokenType.DOUBLE_PIPE) {
+            if (!isBoolean(left)) {
+                throw new Exceptions.RuntimeException(
+                    logical.operator,
+                    'Error executing ' + logical.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
+                );
+            }
+
+            Boolean leftAsBoolean = (Boolean) left;
+
+            if (leftAsBoolean) {
+                return true;
+            }
+
+            Object right = evaluate(logical.right);
+            if (!isBoolean(right)) {
+                throw new Exceptions.RuntimeException(
+                    logical.operator,
+                    'Error executing ' + logical.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
+                );
+            }
+
+            return (Boolean) right;
+        } else {
+            if (!isBoolean(left)) {
+                throw new Exceptions.RuntimeException(
+                    logical.operator,
+                    'Error executing ' + logical.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
+                );
+            }
+
+            Boolean leftAsBoolean = (Boolean) left;
+
+            if (!leftAsBoolean) {
+                return false;
+            }
+
+            Object right = evaluate(logical.right);
+            if (!isBoolean(right)) {
+                throw new Exceptions.RuntimeException(
+                    logical.operator,
+                    'Error executing ' + logical.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
+                );
+            }
+
+            return (Boolean) right;
+        }
+    }
+
     public virtual Object visit(Expr.Binary binary) {
         Object left = evaluate(binary.left);
         Object right = evaluate(binary.right);
@@ -94,52 +146,52 @@ public virtual with sharing class Interpreter implements Visitor {
             when LESS_GREATER, BANG_EQUAL {
                 return left != right;
             }
-            when DOUBLE_AMPERSAND {
-                if (!isBoolean(left)) {
-                    throw new Exceptions.RuntimeException(
-                        binary.operator,
-                        'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
-                    );
-                }
-
-                Boolean leftAsBoolean = (Boolean) left;
-
-                if (leftAsBoolean) {
-                    if (!isBoolean(right)) {
-                        throw new Exceptions.RuntimeException(
-                            binary.operator,
-                            'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
-                        );
-                    }
-
-                    return (Boolean) right;
-                }
-
-                return false;
-            }
-            when DOUBLE_PIPE {
-                if (!isBoolean(left)) {
-                    throw new Exceptions.RuntimeException(
-                        binary.operator,
-                        'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
-                    );
-                }
-
-                Boolean leftAsBoolean = (Boolean) left;
-
-                if (!leftAsBoolean) {
-                    if (!isBoolean(right)) {
-                        throw new Exceptions.RuntimeException(
-                            binary.operator,
-                            'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
-                        );
-                    }
-
-                    return (Boolean) right;
-                }
-
-                return true;
-            }
+//            when DOUBLE_AMPERSAND {
+//                if (!isBoolean(left)) {
+//                    throw new Exceptions.RuntimeException(
+//                        binary.operator,
+//                        'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
+//                    );
+//                }
+//
+//                Boolean leftAsBoolean = (Boolean) left;
+//
+//                if (leftAsBoolean) {
+//                    if (!isBoolean(right)) {
+//                        throw new Exceptions.RuntimeException(
+//                            binary.operator,
+//                            'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
+//                        );
+//                    }
+//
+//                    return (Boolean) right;
+//                }
+//
+//                return false;
+//            }
+//            when DOUBLE_PIPE {
+//                if (!isBoolean(left)) {
+//                    throw new Exceptions.RuntimeException(
+//                        binary.operator,
+//                        'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
+//                    );
+//                }
+//
+//                Boolean leftAsBoolean = (Boolean) left;
+//
+//                if (!leftAsBoolean) {
+//                    if (!isBoolean(right)) {
+//                        throw new Exceptions.RuntimeException(
+//                            binary.operator,
+//                            'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
+//                        );
+//                    }
+//
+//                    return (Boolean) right;
+//                }
+//
+//                return true;
+//            }
         }
 
         // Unreachable

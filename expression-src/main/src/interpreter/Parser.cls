@@ -14,12 +14,36 @@ public with sharing class Parser {
         return result;
     }
 
+    private Expr orCheck() {
+        Expr expr = andCheck();
+
+        while (match(TokenType.DOUBLE_PIPE)) {
+            Token operator = previous();
+            Expr right = andCheck();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expr andCheck() {
+        Expr expr = equality();
+
+        while (match(TokenType.DOUBLE_AMPERSAND)) {
+            Token operator = previous();
+            Expr right = equality();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+
+        return expr;
+    }
+
     private Expr equality() {
         Expr expr = comparison();
 
         while (match(new List<TokenType>{
             TokenType.BANG_EQUAL, TokenType.EQUAL, TokenType.EQUAL_EQUAL,
-            TokenType.LESS_GREATER, TokenType.DOUBLE_PIPE, TokenType.DOUBLE_AMPERSAND
+            TokenType.LESS_GREATER
         })) {
             Token operator = previous();
             Expr right = comparison();
@@ -318,7 +342,7 @@ public with sharing class Parser {
     }
 
     private Expr expression() {
-        return equality();
+        return orCheck();
     }
 
     private Boolean match(TokenType type) {
