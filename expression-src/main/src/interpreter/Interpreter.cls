@@ -146,52 +146,6 @@ public virtual with sharing class Interpreter implements Visitor {
             when LESS_GREATER, BANG_EQUAL {
                 return left != right;
             }
-//            when DOUBLE_AMPERSAND {
-//                if (!isBoolean(left)) {
-//                    throw new Exceptions.RuntimeException(
-//                        binary.operator,
-//                        'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
-//                    );
-//                }
-//
-//                Boolean leftAsBoolean = (Boolean) left;
-//
-//                if (leftAsBoolean) {
-//                    if (!isBoolean(right)) {
-//                        throw new Exceptions.RuntimeException(
-//                            binary.operator,
-//                            'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
-//                        );
-//                    }
-//
-//                    return (Boolean) right;
-//                }
-//
-//                return false;
-//            }
-//            when DOUBLE_PIPE {
-//                if (!isBoolean(left)) {
-//                    throw new Exceptions.RuntimeException(
-//                        binary.operator,
-//                        'Error executing ' + binary.operator.lexeme + ' operator: the left operand must evaluate to a boolean value.'
-//                    );
-//                }
-//
-//                Boolean leftAsBoolean = (Boolean) left;
-//
-//                if (!leftAsBoolean) {
-//                    if (!isBoolean(right)) {
-//                        throw new Exceptions.RuntimeException(
-//                            binary.operator,
-//                            'Error executing ' + binary.operator.lexeme + ' operator: the right operand must evaluate to a boolean value.'
-//                        );
-//                    }
-//
-//                    return (Boolean) right;
-//                }
-//
-//                return true;
-//            }
         }
 
         // Unreachable
