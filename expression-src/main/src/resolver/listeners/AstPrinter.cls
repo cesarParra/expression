@@ -169,7 +169,20 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     }
 
     public Object visit(Expr.Query query) {
-        // TODO
-        return new Map<String, Object>();
+        List<Object> orderBys = new List<Object>();
+        for (Expr orderBy : query.orderBy) {
+            orderBys.add(orderBy.accept(this));
+        }
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'Query',
+            'body' => new Map<String, Object> {
+                'select' => query.sObjectType.lexeme,
+                'fields' => query.fieldsExpression?.accept(this),
+                'where' => query.whereExpr?.accept(this),
+                'orderBy' => orderBys
+            }
+        };
+
+        return toPrint;
     }
 }

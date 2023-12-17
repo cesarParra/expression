@@ -334,10 +334,7 @@ public virtual with sharing class Interpreter implements Visitor {
             evaluateArity(fn, function);
 
             try {
-                CallStack.instance.push(function.functionName);
-                Object result = fn.call(function.arguments);
-                CallStack.instance.pop();
-                return result;
+                return fn.call(function.arguments);
             } catch (Exceptions.PositionAwareException e) {
                 throw e;
             } catch (Exception e) {

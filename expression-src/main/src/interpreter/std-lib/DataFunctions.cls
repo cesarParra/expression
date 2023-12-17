@@ -8,8 +8,7 @@ public with sharing class DataFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'FETCH' => new FetchFn(),
         'TRANSFORM' => new TransformFn(),
-        'LET' => new LET(),
-        'ORDERBY' => new OrderByFn()
+        'LET' => new LET()
     };
 
     public class DataFunctionsProvider implements FunctionProvider {
@@ -59,94 +58,11 @@ public with sharing class DataFunctions {
                 query.selectField((String) fieldName);
             }
 
-            if (arguments.size() > 2) {
-                Object orderBy = evaluate(arguments.get(2));
-                if (!(orderBy instanceof QOrder)) {
-                    throw new FunctionExecutionException(
-                        'Invalid function used within a FETCH function: the third argument must be an ORDER BY clause.'
-                    );
-                }
-                query.add((QOrder) orderBy);
-            }
-
             return QRunner.getInstance().run(query);
         }
 
         public override Arity getArity() {
-            return Arity.atLeast(2);
-        }
-    }
-
-    /**
-     * @description Allows you to specify the order in which the results of a FETCH function are returned.
-     * Note that this function can only be used within a FETCH function.
-     *
-     * Takes 2 arguments: a string with the field name to order by and a string with the order direction.
-     * The order direction can be either `ASC` or `DESC`.
-     * The order of direction is optional and defaults to `ASC`.
-     *
-     * @function ORDER BY
-     * @example FETCH("Account", ["Id", "Name"], ORDERBY("Name", "DESC"))
-     */
-    private with sharing class OrderByFn extends ExpressionFunction {
-        public override Object call(List<Expr> arguments) {
-            // This can only be called from within a FETCH function.
-            // The call stack will include the current function, so if it is only 1 element long
-            // it means that the current function is the only one in the stack.
-            // If the second element is not FETCH, it means that the current function is not being called
-            // from within a FETCH function.
-            if (CallStack.instance.size()  == 1 || CallStack.instance.peekN(2).toUpperCase() != 'FETCH') {
-                System.debug(CallStack.instance.toString());
-                throw new FunctionExecutionException(
-                    'Error executing "ORDER BY" function: this function can only be used within a FETCH function.'
-                );
-            }
-
-            // First argument is a string representing the field name
-            Object fieldName = evaluate(arguments.get(0));
-            if (!(fieldName instanceof String)) {
-                throw new FunctionExecutionException(
-                    'Error executing "ORDER BY" function: the first argument must evaluate to a string.'
-                );
-            }
-
-            // The second argument is optional and represents the order direction
-            if (arguments.size() > 1) {
-                Object orderDirection = evaluate(arguments.get(1));
-                if (!(orderDirection instanceof String)) {
-                    throw new FunctionExecutionException(
-                        'Error executing "ORDER BY" function: the second argument must evaluate to a string.'
-                    );
-                }
-
-                if (!orderDirection.equals('ASC') && !orderDirection.equals('DESC')) {
-                    throw new FunctionExecutionException(
-                        'Error executing "ORDER BY" function: the second argument must be either "ASC" or "DESC".'
-                    );
-                }
-
-                switch on ((String) orderDirection) {
-                    when 'ASC' {
-                        return new QOrder((String) fieldName).ascending();
-                    }
-
-                    when 'DESC' {
-                        return new QOrder((String) fieldName).descending();
-                    }
-
-                    when else {
-                        throw new FunctionExecutionException(
-                            'Error executing "ORDER BY" function: the second argument must be either "ASC" or "DESC".'
-                        );
-                    }
-                }
-            }
-
-            return new QOrder((String) fieldName);
-        }
-
-        public override Arity getArity() {
-            return Arity.atLeast(1);
+            return Arity.exactly(2);
         }
     }
 

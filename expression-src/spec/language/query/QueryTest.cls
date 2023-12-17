@@ -1,5 +1,5 @@
 @IsTest
-private class DataFunctionsTest {
+private class QueryTest {
     private static List<Account> givenAccounts() {
         List<Account> accounts = new List<Account>();
         for (Integer i = 0; i < 10; i++) {
@@ -389,7 +389,6 @@ private class DataFunctionsTest {
             Evaluator.run(expr);
             Assert.fail('Expected an exception to be thrown');
         } catch (Exception e) {
-            Exceptions.PositionAwareException ex = (Exceptions.PositionAwareException) e;
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
     }
@@ -503,24 +502,4 @@ private class DataFunctionsTest {
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
     }
-
-//    // WHERE: Multiple conditions
-//    // And support
-//    // Or support
-//    // Offset
-//    // Subquery
-    // Play nice with dates and date ranges and such (could be in a future improvement)
-
-    // Combining query contexts with top level context (Id based).
-    // so that for example we can do a dynamic query based on data of the
-    // context record -> we can do this by wrapping everything in LET and
-    // using variables
-
-    // Can use pipes for the named parameter expressions
-
-    // Update the example project
-    // Update docs
-    // Deprecate FETCH
-
-    // TODO: What to do about piping
 }
