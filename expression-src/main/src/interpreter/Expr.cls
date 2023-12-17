@@ -1,6 +1,22 @@
 public abstract class Expr {
     public abstract Object accept(Visitor v);
 
+    public class Logical extends Expr {
+        public final Expr left;
+        public final Token operator;
+        public final Expr right;
+
+        public Logical(Expr left, Token operator, Expr right) {
+            this.left = left;
+            this.operator = operator;
+            this.right = right;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
+
     public class Binary extends Expr {
         public final Expr left;
         public final Token operator;

@@ -111,7 +111,12 @@ private class OperatorTest {
     }
 
     @IsTest
-    private static void supportsAnd() {
+    private static void andHasCorrectPrecedence() {
+        Assert.areEqual(true, Evaluator.run('1 = 1 && 2 = 2 || 3 = 3'));
+    }
+
+    @IsTest
+    private static void supportsAnd_withGrouping() {
         Assert.areEqual(true, Evaluator.run('1 = 1 && (2 = 2)'));
     }
 
