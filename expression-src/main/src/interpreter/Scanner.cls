@@ -13,6 +13,9 @@ public with sharing class Scanner {
         keywords.put('true', TokenType.TRUE_KEYWORD);
         keywords.put('false', TokenType.FALSE_KEYWORD);
         keywords.put('null', TokenType.NULL_KEYWORD);
+        keywords.put('query', TokenType.QUERY_KEYWORD);
+        keywords.put('asc', TokenType.ASC_KEYWORD);
+        keywords.put('desc', TokenType.DESC_KEYWORD);
     }
 
     public Scanner(String source) {

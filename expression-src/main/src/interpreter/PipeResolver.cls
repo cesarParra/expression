@@ -7,7 +7,7 @@ public with sharing class PipeResolver implements Visitor {
     }
 
     public Object visit(Expr.Binary binary) {
-        if (binary.operator.type == TokenType.ARROW) {
+        if (binary.operator?.type == TokenType.ARROW) {
             // Check that the right side is a function call
             if (!(binary.right instanceof Expr.FunctionCall)) {
                 throw new Exceptions.RuntimeException(
@@ -128,5 +128,35 @@ public with sharing class PipeResolver implements Visitor {
     public Object visit(Expr.Spread spread) {
         Expr.Spread newSpread = new Expr.Spread(spread.spreadToken, resolve(spread.expression));
         return newSpread;
+    }
+
+    public Object visit(Expr.Query query) {
+        Expr newFieldsExpression;
+        if (query.fieldsExpression != null) {
+            newFieldsExpression = resolve(query.fieldsExpression);
+        }
+
+        List<Expr> newOrderBys = new List<Expr>();
+        for (Expr orderBy : query.orderBy) {
+            newOrderBys.add(resolve(orderBy));
+        }
+
+        Expr newLimitExpr;
+        if (query.limitExpr != null) {
+            newLimitExpr = resolve(query.limitExpr);
+        }
+
+        Expr newWhereExpr;
+        if (query.whereExpr != null) {
+            newWhereExpr = resolve(query.whereExpr);
+        }
+
+        return new Expr.Query(
+            query.sObjectType,
+            newFieldsExpression,
+            newOrderBys,
+            newLimitExpr,
+            newWhereExpr
+        );
     }
 }

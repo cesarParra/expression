@@ -1,6 +1,6 @@
 @IsTest
 private class AstPrinterTest {
-    static void buildsCorrectExpression(String expressionFormula, String expectedType) {
+    static void buildsAnExpressionContaining(String expressionFormula, String expectedType) {
         EvaluationResult result = EvaluatorResolver.withoutContext().evaluate(expressionFormula,
             new Configuration().printAst());
         Object ast = result.additionalData.get('ast');
@@ -16,31 +16,31 @@ private class AstPrinterTest {
     @IsTest
     static void buildsBinaryExpressions() {
         String expressionFormula = '1 + 1';
-        buildsCorrectExpression(expressionFormula, 'Binary');
+        buildsAnExpressionContaining(expressionFormula, 'Binary');
     }
 
     @IsTest
     static void buildsGroupingExpressions() {
         String expressionFormula = '(1 + 1)';
-        buildsCorrectExpression(expressionFormula, 'Grouping');
+        buildsAnExpressionContaining(expressionFormula, 'Grouping');
     }
 
     @IsTest
     static void buildsLiteralExpressions() {
         String expressionFormula = '1';
-        buildsCorrectExpression(expressionFormula, 'Literal');
+        buildsAnExpressionContaining(expressionFormula, 'Literal');
     }
 
     @IsTest
     static void buildsStringLiteralExpressions() {
         String expressionFormula = '"Hello"';
-        buildsCorrectExpression(expressionFormula, 'StringLiteral');
+        buildsAnExpressionContaining(expressionFormula, 'StringLiteral');
     }
 
     @IsTest
     static void buildsVariableExpressions() {
         String expressionFormula = '$User';
-        buildsCorrectExpression(expressionFormula, 'Variable');
+        buildsAnExpressionContaining(expressionFormula, 'Variable');
     }
 
     @IsTest
@@ -62,30 +62,36 @@ private class AstPrinterTest {
     @IsTest
     static void buildsUnaryExpressions() {
         String expressionFormula = '!true';
-        buildsCorrectExpression(expressionFormula, 'Unary');
+        buildsAnExpressionContaining(expressionFormula, 'Unary');
     }
 
     @IsTest
     static void buildGetExpressions() {
         String expressionFormula = '$User.Id';
-        buildsCorrectExpression(expressionFormula, 'Get');
+        buildsAnExpressionContaining(expressionFormula, 'Get');
     }
 
     @IsTest
     static void buildFunctionExpressions() {
         String expressionFormula = 'BR()';
-        buildsCorrectExpression(expressionFormula, 'FunctionCall');
+        buildsAnExpressionContaining(expressionFormula, 'FunctionCall');
     }
 
     @IsTest
     static void buildListExpressions() {
         String expressionFormula = '[...[]]';
-        buildsCorrectExpression(expressionFormula, 'ListLiteral');
+        buildsAnExpressionContaining(expressionFormula, 'ListLiteral');
     }
 
     @IsTest
     static void buildMapExpressions() {
         String expressionFormula = '{}';
-        buildsCorrectExpression(expressionFormula, 'MapLiteral');
+        buildsAnExpressionContaining(expressionFormula, 'MapLiteral');
+    }
+
+    @IsTest
+    static void buildQueryExpressions() {
+        String expressionFormula = 'QUERY(Account)';
+        buildsAnExpressionContaining(expressionFormula, 'Query');
     }
 }

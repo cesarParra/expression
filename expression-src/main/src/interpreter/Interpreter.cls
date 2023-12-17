@@ -1,4 +1,4 @@
-public with sharing class Interpreter implements Visitor {
+public virtual with sharing class Interpreter implements Visitor {
     private final Environment env;
 
     private Boolean inListLiteral = false;
@@ -16,11 +16,11 @@ public with sharing class Interpreter implements Visitor {
         return evaluate(expression);
     }
 
-    private Object evaluate(Expr expr) {
+    protected Object evaluate(Expr expr) {
         return expr.accept(this);
     }
 
-    public Object visit(Expr.Binary binary) {
+    public virtual Object visit(Expr.Binary binary) {
         Object left = evaluate(binary.left);
         Object right = evaluate(binary.right);
 
@@ -167,7 +167,7 @@ public with sharing class Interpreter implements Visitor {
         return stringValue;
     }
 
-    public Object visit(Expr.GetExpr getExpr) {
+    public virtual Object visit(Expr.GetExpr getExpr) {
         Object result = evaluate(getExpr.objectExpr);
         if (result instanceof SObject) {
             if (!getExpr.arguments.isEmpty()) {
@@ -254,7 +254,7 @@ public with sharing class Interpreter implements Visitor {
         );
     }
 
-    public Object visit(Expr.MergeField mergeField) {
+    public virtual Object visit(Expr.MergeField mergeField) {
         if (env.noRecordContext()) {
             throw new Exceptions.RuntimeException(
                 mergeField.name,
@@ -326,19 +326,12 @@ public with sharing class Interpreter implements Visitor {
         );
     }
 
-    public Object visit(Expr.FunctionCall function) {
+    public virtual Object visit(Expr.FunctionCall function) {
         // Check if the function is in the list of supported functions
         if (ExpressionFunction.functionExistsInStandardLibrary(function.functionName)) {
             ExpressionFunction fn = ExpressionFunction.getByName(function.functionName);
             fn.setInterpreter(this);
-            if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
-                throw new Exceptions.RuntimeException(
-                    function.functionToken,
-                    'Error executing ' + function.functionName + ' function: the function expects ' +
-                    fn.getArity().toString() + ' argument(s), but ' +
-                    function.arguments.size() + ' were provided.'
-                );
-            }
+            evaluateArity(fn, function);
 
             try {
                 return fn.call(function.arguments);
@@ -376,6 +369,17 @@ public with sharing class Interpreter implements Visitor {
             function.functionToken,
             'Error executing ' + function.functionName + ' function: the function is not supported.'
         );
+    }
+
+    protected void evaluateArity(ExpressionFunction fn, Expr.FunctionCall function) {
+        if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
+            throw new Exceptions.RuntimeException(
+                function.functionToken,
+                'Error executing ' + function.functionName + ' function: the function expects ' +
+                fn.getArity().toString() + ' argument(s), but ' +
+                function.arguments.size() + ' were provided.'
+            );
+        }
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
@@ -458,5 +462,9 @@ public with sharing class Interpreter implements Visitor {
         }
         isInMapLiteral = false;
         return resultMap;
+    }
+
+    public Object visit(Expr.Query query) {
+        return new QueryInterpreter(this.env).evaluateToQuery(query);
     }
 }

@@ -28,8 +28,7 @@ public with sharing class DataFunctions {
      * Note that when using this function, the automatic context resolution is not performed, so you need to
      * explicitly specify all fields you wish to reference in the formula.
      * @function FETCH
-     * @example
-     * FETCH("Account", ["Id", "Name"])
+     * @example FETCH("Account", ["Id", "Name"])
      */
     private with sharing class FetchFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -73,8 +72,7 @@ public with sharing class DataFunctions {
      *
      * Accepts 2 arguments: the input to transform and the expression to evaluate.
      * @function TRANSFORM
-     * @example
-     * TRANSFORM("Hello World", UPPER($source)) // "HELLO WORLD"
+     * @example TRANSFORM("Hello World", UPPER($source)) // "HELLO WORLD"
      */
     private class TransformFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -95,8 +93,7 @@ public with sharing class DataFunctions {
      * Accepts 2 arguments: a map of variables to define and the expression to evaluate.
      * The map keys should be the variable names prefixed with `$`.
      * @function LET
-     * @example
-     * LET({ "$a": 1, "$b": 2 }, $a + $b) // 3
+     * @example LET({ "$a": 1, "$b": 2 }, $a + $b) // 3
      */
     private class LET extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -106,17 +103,17 @@ public with sharing class DataFunctions {
                 throw new FunctionExecutionException('First argument to LET must be a map');
             }
 
-            for (Object key : ((Map<Object, Object>)left).keySet()) {
+            for (Object key : ((Map<Object, Object>) left).keySet()) {
                 if (!(key instanceof String)) {
                     throw new FunctionExecutionException('Keys in map passed to LET must be strings');
                 }
 
-                String keyStr = (String)key;
+                String keyStr = (String) key;
                 if (!keyStr.startsWith('$')) {
                     throw new FunctionExecutionException('Custom variables created through LET must start with $');
                 }
 
-                Environment.addGlobalVariable(keyStr, ((Map<Object, Object>)left).get(key));
+                Environment.addGlobalVariable(keyStr, ((Map<Object, Object>) left).get(key));
             }
 
             // Second argument is any expression

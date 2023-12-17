@@ -184,6 +184,12 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.Query query) {
+        // Nothing to resolve when inside of a Query expression.
+        // A query expression essentially starts an isolated context.
+        return null;
+    }
+
     private final Map<SObjectType, Set<String>> cachedFieldsBySObjectType = new Map<SObjectType, Set<String>>();
     private Set<String> getFields() {
         if (cachedFieldsBySObjectType.containsKey(this.queryContext.objectType)) {

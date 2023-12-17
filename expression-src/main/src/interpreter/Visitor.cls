@@ -11,4 +11,5 @@ public interface Visitor {
     Object visit(Expr.ListLiteral listLiteral);
     Object visit(Expr.MapLiteral mapLiteral);
     Object visit(Expr.Spread spread);
+    Object visit(Expr.Query query);
 }

@@ -18,7 +18,8 @@ public with sharing class Parser {
         Expr expr = comparison();
 
         while (match(new List<TokenType>{
-            TokenType.BANG_EQUAL, TokenType.EQUAL, TokenType.EQUAL_EQUAL, TokenType.LESS_GREATER, TokenType.DOUBLE_PIPE, TokenType.DOUBLE_AMPERSAND
+            TokenType.BANG_EQUAL, TokenType.EQUAL, TokenType.EQUAL_EQUAL,
+            TokenType.LESS_GREATER, TokenType.DOUBLE_PIPE, TokenType.DOUBLE_AMPERSAND
         })) {
             Token operator = previous();
             Expr right = comparison();
@@ -142,6 +143,10 @@ public with sharing class Parser {
             return new Expr.Literal(null);
         }
 
+        if (match(TokenType.QUERY_KEYWORD)) {
+            return parseQuery();
+        }
+
         if (match(TokenType.STRING_LITERAL_START)) {
             // Grab all characters until we reach the STRING_LITERAL_END
             List<Object> strings = new List<Object>();
@@ -223,6 +228,81 @@ public with sharing class Parser {
         }
 
         throw error(peek(), 'Expect expression.');
+    }
+
+    private Expr parseQuery() {
+        consume(TokenType.LEFT_PAREN, 'Expect \'(\' after \'query\'.');
+
+        if (!match(TokenType.IDENTIFIER)) {
+            throw error(peek(), 'Expect object name.');
+        }
+
+        Token sObjectType = previous();
+        Expr fieldsExpression;
+        List<Expr> orderBys = new List<Expr>();
+        Expr limitExpr;
+        Expr whereExpr;
+
+        // Optional named parameters section that define the "extra" parts of the query (order by, where, limit, etc.).
+        if (match(TokenType.LEFT_PAREN)) {
+            if (peek().type == TokenType.IDENTIFIER) {
+                do {
+                    String qClause = consume(TokenType.IDENTIFIER, 'Expect query clause name.').lexeme;
+                    consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
+                    if (qClause == 'orderby') {
+                        orderBys = getOrderBys();
+                    } else if (qClause == 'limit') {
+                        limitExpr = expression();
+                    } else if (qClause == 'where') {
+                        whereExpr = expression();
+                    } else {
+                        throw error(previous(), 'Expect \'orderby\' or \'limit\' after \'where\'.');
+                    }
+                } while (match(TokenType.COMMA));
+            }
+
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query arguments.');
+        }
+
+        // Optional expression that defines the fields to be returned in the query.
+        if (peek().type != TokenType.RIGHT_PAREN) {
+            fieldsExpression = expression();
+        }
+
+        consume(TokenType.RIGHT_PAREN, 'Expect \')\' to close the query.');
+        return new Expr.Query(sObjectType, fieldsExpression, orderBys, limitExpr, whereExpr);
+    }
+
+    private List<Expr> getOrderBys() {
+        List<Expr> orderBys = new List<Expr>();
+        // Check if the next one is a LEFT_BRACKET
+        if (match(TokenType.LEFT_BRACKET)) {
+            do {
+                Expr orderBy = extractOrderby();
+                orderBys.add(orderBy);
+            } while (match(TokenType.COMMA));
+            consume(TokenType.RIGHT_BRACKET, 'Expect \']\' to close list of order by references.');
+        } else {
+            // Assume we have a single field reference
+            Expr orderBy = extractOrderby();
+            orderBys.add(orderBy);
+        }
+
+        return orderBys;
+    }
+
+    private Expr extractOrderby() {
+        Expr orderByExpr = expression();
+        // The expression might be followed by (optionally) the ASC or DESC keyword
+        if (match(new List<TokenType>{
+            TokenType.ASC_KEYWORD, TokenType.DESC_KEYWORD
+        })) {
+            QOrder.SortOrder qSortOrder = previous().lexeme == 'ASC' ? QOrder.SortOrder.ASCENDING : QOrder.SortOrder.DESCENDING;
+            return new Expr.Binary(orderByExpr, null, new Expr.Literal(qSortOrder));
+        } else {
+            // Default to ASC
+            return new Expr.Binary(orderByExpr, null, new Expr.Literal(QOrder.SortOrder.ASCENDING));
+        }
     }
 
     private List<Expr> getParameters() {

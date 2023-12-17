@@ -184,4 +184,29 @@ public abstract class Expr {
             return v.visit(this);
         }
     }
+
+    public class Query extends Expr {
+        public final Token sObjectType;
+        // Fields is an expression that must evaluate to a list
+        public final Expr fieldsExpression;
+        public final List<Expr> orderBy;
+        public final Expr limitExpr;
+        public final Expr whereExpr;
+
+        public Query(Token sObjectType, Expr fieldsExpression, List<Expr> orderBy, Expr limitExpr, Expr whereExpr) {
+            this.sObjectType = sObjectType;
+            this.fieldsExpression = fieldsExpression;
+            if (orderBy != null) {
+                this.orderBy = orderBy;
+            } else {
+                this.orderBy = new List<Expr>();
+            }
+            this.limitExpr = limitExpr;
+            this.whereExpr = whereExpr;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
 }
