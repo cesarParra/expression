@@ -509,6 +509,7 @@ private class DataFunctionsTest {
 //    // Or support
 //    // Offset
 //    // Subquery
+    // Play nice with dates and date ranges and such (could be in a future improvement)
 
     // Combining query contexts with top level context (Id based).
     // so that for example we can do a dynamic query based on data of the

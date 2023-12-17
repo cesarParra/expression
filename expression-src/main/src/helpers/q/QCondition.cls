@@ -1,28 +1,45 @@
 /**
- * @description QCondition is used to build WHERE for SOQL statements
- * @author Jean-Philippe Monette
- * @since 2017-03-21
+ * QCondition is used to build WHERE for SOQL statements
+ * @author  Jean-Philippe Monette
+ * @since   2017-03-21
  */
-public class QCondition implements QICondition {
-
-	public enum ComparisonOperator { EQUALS, NOT_EQUALS, LESS_THAN, LESS_OR_EQUAL, GREATER_THAN, GREATER_OR_EQUAL, IS_LIKE, IS_IN, NOT_IN, INCLUDES, EXCLUDES }
+public virtual class QCondition implements QICondition {
+	public enum ComparisonOperator {
+		EQUALS,
+		NOT_EQUALS,
+		LESS_THAN,
+		LESS_OR_EQUAL,
+		GREATER_THAN,
+		GREATER_OR_EQUAL,
+		IS_LIKE,
+		IS_IN,
+		NOT_IN,
+		INCLUDES,
+		EXCLUDES
+	}
 
 	private ComparisonOperator operatorValue;
 
-	private final String field {
-		private get { return String.escapeSingleQuotes(field); }
+	private String field {
+		private get {
+			return String.escapeSingleQuotes(field);
+		}
 		private set;
 	}
 
 	private Object fieldValue {
-		private get { return formatFieldValue(fieldValue); }
-		private set { fieldValue = value; }
+		private get {
+			return formatFieldValue(fieldValue);
+		}
+		private set {
+			fieldValue = value;
+		}
 	}
 	public QCondition(String field) {
 		this.field = field;
 	}
 
-	private static Object formatFieldValue(Object val) {
+	protected virtual Object formatFieldValue(Object val) {
 		if (val instanceof List<Object>) {
 			List<String> values = new List<String>();
 			for (Object value : (List<Object>) val) {
@@ -39,6 +56,8 @@ public class QCondition implements QICondition {
 		} else if (val instanceof Date) {
 			String dateString = String.valueOf(val);
 			return dateString.substring(0, dateString.indexOf(' '));
+		} else if (val instanceof Datetime) {
+			return ((Datetime) val).formatGmt('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'');
 		} else {
 			return val;
 		}
@@ -98,13 +117,13 @@ public class QCondition implements QICondition {
 		return this;
 	}
 
-	public QCondition isNull() { // TODO
+	public QCondition isNull() {
 		this.operatorValue = ComparisonOperator.EQUALS;
 		this.fieldValue = null;
 		return this;
 	}
 
-	public QCondition isNotNull() { // TODO
+	public QCondition isNotNull() {
 		this.operatorValue = ComparisonOperator.NOT_EQUALS;
 		this.fieldValue = null;
 		return this;
@@ -139,16 +158,9 @@ public class QCondition implements QICondition {
 			when NOT_IN {
 				return field + ' NOT IN (' + fieldValue + ')';
 			}
-			when INCLUDES {
-				return field + ' INCLUDES (' + fieldValue + ')';
-			}
-			when EXCLUDES {
-				return field + ' EXCLUDES (' + fieldValue + ')';
-			}
 			when else {
 				return '';
 			}
 		}
 	}
-
 }
