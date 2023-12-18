@@ -6,6 +6,16 @@ public with sharing class PipeResolver implements Visitor {
         return (Expr) expr.accept(this);
     }
 
+    public Object visit(Expr.Logical logical) {
+        Expr.Logical newLogical = new Expr.Logical(
+            resolve(logical.left),
+            logical.operator,
+            resolve(logical.right)
+        );
+
+        return newLogical;
+    }
+
     public Object visit(Expr.Binary binary) {
         if (binary.operator?.type == TokenType.ARROW) {
             // Check that the right side is a function call

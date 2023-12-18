@@ -8,6 +8,18 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         };
     }
 
+    public Object visit(Expr.Logical logical) {
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'Logical',
+            'body' => new Map<String, Object> {
+                'left' => logical.left.accept(this),
+                'operator' => logical.operator.lexeme,
+                'right' => logical.right.accept(this)
+            }
+        };
+        return toPrint;
+    }
+
     public Object visit(Expr.Binary binary) {
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'Binary',

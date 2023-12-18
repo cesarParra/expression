@@ -30,6 +30,12 @@ public with sharing class ContextResolver implements Visitor {
         return results[0];
     }
 
+    public Object visit(Expr.Logical logical) {
+        resolve(logical.left);
+        resolve(logical.right);
+        return null;
+    }
+
     public Object visit(Expr.Binary binary) {
         resolve(binary.left);
         resolve(binary.right);
