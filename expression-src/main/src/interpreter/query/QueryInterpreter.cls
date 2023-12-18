@@ -1,5 +1,4 @@
 public with sharing class QueryInterpreter extends Interpreter implements Visitor {
-
     public QueryInterpreter(Environment environment) {
         super(environment);
     }
@@ -51,11 +50,16 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
 
         if (query.whereExpr != null) {
             Object whereResult = evaluate(query.whereExpr);
-            if (!(whereResult instanceof QCondition)) {
+            if (!(whereResult instanceof QCondition) && !(whereResult instanceof QAndGroup)) {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected a condition or an expression that evaluates to a condition for the where clause.');
             }
-            querier.add((QCondition) whereResult);
+
+            if (whereResult instanceof QAndGroup) {
+                querier.add((QAndGroup) whereResult);
+            } else if (whereResult instanceof QCondition) {
+                querier.add((QCondition) whereResult);
+            }
         }
 
         if (query.offsetExpr != null) {
@@ -70,6 +74,36 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         return QRunner.getInstance().run(querier);
     }
 
+    public override Object visit(Expr.Logical logical) {
+        Object left = evaluate(logical.left);
+        Object right = evaluate(logical.right);
+
+        switch on logical.operator.type {
+            when DOUBLE_AMPERSAND {
+                if (!(left instanceof QCondition)) {
+                    throw new Exceptions.RuntimeException(logical.operator,
+                        'Expected a condition or an expression that evaluates to a condition for the left side of the AND operator.');
+                }
+                if (!(right instanceof QCondition)) {
+                    throw new Exceptions.RuntimeException(logical.operator,
+                        'Expected a condition or an expression that evaluates to a condition for the right side of the AND operator.');
+                }
+
+                List<QCondition> conditions = new List<QCondition> {
+                    (QCondition) left,
+                    (QCondition) right
+                };
+                return new QAndGroup(conditions);
+            }
+            when DOUBLE_PIPE {
+                System.assert(false, 'Not supported yet');
+            }
+        }
+
+        // Unreachable
+        return null;
+    }
+
     public override Object visit(Expr.Binary binary) {
         // TODO: Maybe we want to do this ONLY when we are inside of a where?
         // OR just disallow things outside of it. We just need to be consistent and have expected behaviors
@@ -82,8 +116,7 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             TokenType.LESS,
             TokenType.LESS_EQUAL,
             TokenType.BANG_EQUAL,
-            TokenType.LESS_GREATER,
-            TokenType.DOUBLE_AMPERSAND
+            TokenType.LESS_GREATER
         };
 
         if (!supportedQueryOperations.contains(binary.operator.type)) {
@@ -111,24 +144,6 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             }
             when BANG_EQUAL, LESS_GREATER {
                 return Q.condition((String) left).notEqualsTo(right);
-            }
-            when DOUBLE_AMPERSAND {
-                System.debug('left: ' + left);
-                if (!(left instanceof QCondition)) {
-                    throw new Exceptions.RuntimeException(binary.operator,
-                        'Expected a condition or an expression that evaluates to a condition for the left side of the AND operator.');
-                }
-                System.debug('right: ' + right);
-                if (!(right instanceof QCondition)) {
-                    throw new Exceptions.RuntimeException(binary.operator,
-                        'Expected a condition or an expression that evaluates to a condition for the right side of the AND operator.');
-                }
-
-                List<QCondition> conditions = new List<QCondition> {
-                    (QCondition) left,
-                    (QCondition) right
-                };
-                return new QAndGroup(conditions);
             }
             when else {
                 throw new Exceptions.RuntimeException(binary.operator,

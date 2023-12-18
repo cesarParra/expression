@@ -523,17 +523,17 @@ private class QueryTest {
         Assert.areEqual('Test 9', result[4].Name);
     }
 
-//    @IsTest
-//    static void supportsMultipleAndConditionsThroughAmpOperator() {
-//        Account someAccount = new Account(Name = 'Test');
-//        insert someAccount;
-//
-//        String expr = 'QUERY(Account(where: Name = "Test" && Id = "' + someAccount.Id + '") [Id, Name])';
-//        List<Account> result = (List<Account>) Evaluator.run(expr, new Configuration().printAst());
-//
-//        Assert.areEqual(1, result.size());
-//        Assert.areEqual(someAccount.Id, result[0].Id);
-//    }
+    @IsTest
+    static void supportsMultipleAndConditionsThroughAmpOperator() {
+        Account someAccount = new Account(Name = 'Test');
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: Name = "Test" && Id = "' + someAccount.Id + '") [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
 
     // TODO: Same but through the AND function
 }
