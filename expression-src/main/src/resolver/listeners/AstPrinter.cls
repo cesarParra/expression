@@ -25,7 +25,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
             'type' => 'Binary',
             'body' => new Map<String, Object> {
                 'left' => binary.left.accept(this),
-                'operator' => binary.operator.lexeme,
+                'operator' => binary.operator?.lexeme,
                 'right' => binary.right.accept(this)
             }
         };
