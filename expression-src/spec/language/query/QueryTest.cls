@@ -44,6 +44,17 @@ private class QueryTest {
     }
 
     @IsTest
+    static void throwsAnExceptionIfTheFieldsSectionDoesNotEvaluateToAList() {
+        String expr = 'Query(Account{})';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
     static void canGetSpecificFieldsWhenQuerying_usingStrings() {
         List<Account> accounts = givenAccounts();
 
