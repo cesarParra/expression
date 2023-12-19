@@ -69,6 +69,17 @@ private class QueryTest {
     }
 
     @IsTest
+    static void throwsAnExceptionIfAnyOfTheFieldsBeingQueriedDoNotEvaluateToAStringOrAMergeField() {
+        String expr = 'Query(Account[Id, 1])';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
     static void canQueryForRelationshipFields() {
         Account account = new Account(Name = 'Test');
         insert account;
