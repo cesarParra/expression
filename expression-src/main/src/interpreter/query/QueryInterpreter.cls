@@ -92,12 +92,27 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
                 return new QAndGroup(conditions);
             }
             when DOUBLE_PIPE {
-                System.assert(false, 'Not supported yet');
+                if (!(left instanceof QICondition)) {
+                    throw new Exceptions.RuntimeException(logical.operator,
+                        'Expected a condition or an expression that evaluates to a condition for the left side of the OR operator.');
+                }
+                if (!(right instanceof QICondition)) {
+                    throw new Exceptions.RuntimeException(logical.operator,
+                        'Expected a condition or an expression that evaluates to a condition for the right side of the OR operator.');
+                }
+
+                List<QICondition> conditions = new List<QICondition> {
+                    (QICondition) left,
+                    (QICondition) right
+                };
+                return new QOrGroup(conditions);
+            }
+            when else {
+                // Unreachable
+                throw new Exceptions.RuntimeException(logical.operator,
+                    'Unsupported logical operator.');
             }
         }
-
-        // Unreachable
-        return null;
     }
 
     public override Object visit(Expr.Binary binary) {
@@ -166,7 +181,8 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             'ISNOTIN' => new IsNotInFn(),
             'ISNULL' => new IsNullFn(),
             'ISNOTNULL' => new IsNotNullFn(),
-            'AND' => new AndFn()
+            'AND' => new AndFn(),
+            'OR' => new OrFn()
         };
 
         String functionName = function.functionToken.lexeme.toUpperCase();
@@ -329,6 +345,27 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             }
 
             return new QAndGroup(conditions);
+        }
+
+        public override Arity getArity() {
+            return Arity.atLeast(2);
+        }
+    }
+
+    private class OrFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            List<QICondition> conditions = new List<QICondition>();
+            for (Expr argument : arguments) {
+                Object evaluatedArgument = evaluate(argument);
+                if (!(evaluatedArgument instanceof QICondition)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "OR" function: all arguments must evaluate to conditions.'
+                    );
+                }
+                conditions.add((QICondition) evaluatedArgument);
+            }
+
+            return new QOrGroup(conditions);
         }
 
         public override Arity getArity() {

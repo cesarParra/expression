@@ -689,7 +689,59 @@ private class QueryTest {
         runAndAssertRuntimeException(expr);
     }
 
-    // TODO: Or through ||
+    @IsTest
+    static void supportsOrConditionsThroughDoublePipeOperator() {
+        Account someAccount = new Account(Name = 'Test');
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: Name = "Test" || Id = "' + someAccount.Id + '") [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheLeftSideOfOrPipeOperationIsNotACondition() {
+        String expr = 'QUERY(Account(where: 1 || Id = "123"))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheRightSideOfOrPipeOperationIsNotACondition() {
+        String expr = 'QUERY(Account(where: Id = "123" || 1))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void supportsMultipleOrConditionsThroughDoublePipeOperator() {
+        Account account1 = new Account(Name = 'Test 1');
+        Account account2 = new Account(Name = 'Test 2');
+        insert new List<Account>{
+            account1, account2
+        };
+
+        String expr = 'QUERY(Account(where: Name = "Test 1" || Name = "Test 2" || Name = "Test 3"))';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(2, result.size());
+        Set<Id> resultIds = new Map<Id, SObject>(result).keySet();
+        Assert.isTrue(resultIds.contains(account1.Id));
+        Assert.isTrue(resultIds.contains(account2.Id));
+    }
+
+    @IsTest
+    static void supportsOrConditionsThroughTheOrFunction() {
+        Account someAccount = new Account(Name = 'Test');
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: OR(Name = "Test", Id = "' + someAccount.Id + '")) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
     // TODO: Or through the OR function
 
     // TODO: Mixing and matching multiple ORs
