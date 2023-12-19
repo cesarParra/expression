@@ -163,7 +163,8 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             'ISIN' => new IsInFn(),
             'ISNOTIN' => new IsNotInFn(),
             'ISNULL' => new IsNullFn(),
-            'ISNOTNULL' => new IsNotNullFn()
+            'ISNOTNULL' => new IsNotNullFn(),
+            'AND' => new AndFn()
         };
 
         String functionName = function.functionToken.lexeme.toUpperCase();
@@ -311,6 +312,27 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
 
         public override Arity getArity() {
             return Arity.exactly(1);
+        }
+    }
+
+    private class AndFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            List<QICondition> conditions = new List<QICondition>();
+            for (Expr argument : arguments) {
+                Object evaluatedArgument = evaluate(argument);
+                if (!(evaluatedArgument instanceof QICondition)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "AND" function: all arguments must evaluate to conditions.'
+                    );
+                }
+                conditions.add((QICondition) evaluatedArgument);
+            }
+
+            return new QAndGroup(conditions);
+        }
+
+        public override Arity getArity() {
+            return Arity.atLEast(2);
         }
     }
 }

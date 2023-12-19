@@ -547,7 +547,18 @@ private class QueryTest {
         Assert.areEqual(someAccount.Id, result[0].Id);
     }
 
-    // TODO: Mixing and matching multiple ANDs
+    @IsTest
+    static void supportsMultipleAndConditionsThroughAndFunction() {
+        Account someAccount = new Account(Name = 'Test');
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: AND(Name = "Test", Id = "' + someAccount.Id + '")) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
     // TODO: Same but through the AND function
     // TODO: Or through ||
     // TODO: Or through the OR function
