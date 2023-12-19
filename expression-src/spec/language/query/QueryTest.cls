@@ -527,6 +527,24 @@ private class QueryTest {
     }
 
     @IsTest
+    static void isNotInThrowsAnExceptionWhenTheFirstArgumentDoesNotEvaluateToAString() {
+        String expr = 'QUERY(Account(where: IsNotIn(1,  ["Test 1", "Test 2"])) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void isNotInThrowsAnExceptionWhenTheSecondArgumentDoesNotEvaluateToAList() {
+        String expr = 'QUERY(Account(where: IsNotIn(Name,  1)) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void isNotInThrowsAnExceptionWhenTheSecondArgumentIsEmpty() {
+        String expr = 'QUERY(Account(where: IsNotIn(Name,  [])) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
     static void canUsePipesWhenUsingWhereFunctions() {
         Account someAccount = new Account(Name = 'Test');
         insert someAccount;
@@ -550,6 +568,12 @@ private class QueryTest {
     }
 
     @IsTest
+    static void usingIsNullThrowsAnExceptionWhenTheArgumentDoesNotEvaluateToAString() {
+        String expr = 'QUERY(Account(where: ISNULL(1)) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
     static void canUseTheIsNotNullFunctionInAWhereClause() {
         Account someAccount = new Account(Name = 'Test');
         insert someAccount;
@@ -559,6 +583,12 @@ private class QueryTest {
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void usingIsNotNullThrowsAnExceptionWhenTheArgumentDoesNotEvaluateToAString() {
+        String expr = 'QUERY(Account(where: ISNOTNULL(1)) [Id, Name])';
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -633,6 +663,12 @@ private class QueryTest {
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void usingTheAndFunctionThrowsAnExceptionWhenAnyArgumentDoesNotEvaluateToACondition() {
+        String expr = 'QUERY(Account(where: AND(1, Id = "123")))';
+        runAndAssertRuntimeException(expr);
     }
 
     // TODO: Same but through the AND function
