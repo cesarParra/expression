@@ -30,7 +30,7 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             Object orderByResult = evaluate(orderBy.left);
             QOrder.SortOrder sortOrder = (QOrder.SortOrder)evaluate(orderBy.right);
 
-            // Must evaluate to a string
+            // Must evaluate to a string (or a merge field, which resolves as a string in this interpreter)
             if (!(orderByResult instanceof String)) {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected a string or an expression that evaluates to a string or merge field for the order by clause.');
@@ -142,6 +142,7 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
                 return Q.condition((String) left).notEqualsTo(right);
             }
             when else {
+                // Unreachable
                 throw new Exceptions.RuntimeException(binary.operator,
                     'Unsupported query operation.');
             }
@@ -175,8 +176,6 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             evaluateArity(expressionFunction, function);
             try {
                 return expressionFunction.call(function.arguments);
-            } catch (Exceptions.PositionAwareException e) {
-                throw e;
             } catch (Exception e) {
                 throw new Exceptions.RuntimeException(
                     function.functionToken,

@@ -220,6 +220,17 @@ private class QueryTest {
     }
 
     @IsTest
+    static void usingOrderByThrowsAnExceptionIfTheFieldDoesNotEvaluateToAString() {
+        String expr = 'QUERY(Account(orderBy: 1) [Id, Name])';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
     static void canLimitTheNumberOfRecordsReturned() {
         List<Account> accountsInDatabase = new List<Account>();
         for (Integer i = 0; i < 10; i++) {
@@ -231,6 +242,17 @@ private class QueryTest {
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(5, result.size());
+    }
+
+    @IsTest
+    static void usingLimitThrowsAnExceptionIfTheLimitDoesNotEvaluateToAnInteger() {
+        String expr = 'QUERY(Account(limit: "1") [Id, Name])';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
     }
 
     @IsTest
@@ -265,6 +287,17 @@ private class QueryTest {
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Test 5', result[0].Name);
+    }
+
+    @IsTest
+    static void usingTheWhereConditionThrowsAnExceptionIfTheFirstArgumentDoesNotEvaluateToACondition() {
+        String expr = 'QUERY(Account(where: 1) [Id, Name])';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
     }
 
     @IsTest
@@ -546,6 +579,17 @@ private class QueryTest {
     }
 
     @IsTest
+    static void usingOffsetThrowsAnExceptionIfTheOffsetDoesNotEvaluateToAnInteger() {
+        String expr = 'QUERY(Account(offset: "1") [Id, Name])';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
     static void supportsMultipleAndConditionsThroughAmpOperator() {
         Account someAccount = new Account(Name = 'Test');
         insert someAccount;
@@ -567,6 +611,28 @@ private class QueryTest {
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheLeftSideOfAndAmpOperationIsNotACondition() {
+        String expr = 'QUERY(Account(where: 1 && Id = "123"))';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheRightSideOfAndAmpOperationIsNotACondition() {
+        String expr = 'QUERY(Account(where: Id = "123" && 1))';
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
     }
 
     @IsTest
