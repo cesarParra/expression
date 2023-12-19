@@ -9,6 +9,15 @@ private class QueryTest {
         return accounts;
     }
 
+    private static void runAndAssertRuntimeException(String expr) {
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
     @IsTest
     static void canQueryAllRecordsOfAnSObject() {
         List<Account> accounts = givenAccounts();
@@ -44,6 +53,12 @@ private class QueryTest {
     }
 
     @IsTest
+    static void throwsAnExceptionIfTheFieldsSectionDoesNotEvaluateToAList() {
+        String expr = 'Query(Account{})';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
     static void canGetSpecificFieldsWhenQuerying_usingStrings() {
         List<Account> accounts = givenAccounts();
 
@@ -55,6 +70,12 @@ private class QueryTest {
             Assert.areEqual(accounts[i].Id, result[i].Id);
             Assert.areEqual(accounts[i].Name, result[i].Name);
         }
+    }
+
+    @IsTest
+    static void throwsAnExceptionIfAnyOfTheFieldsBeingQueriedDoNotEvaluateToAStringOrAMergeField() {
+        String expr = 'Query(Account[Id, 1])';
+       runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -198,6 +219,12 @@ private class QueryTest {
     }
 
     @IsTest
+    static void usingOrderByThrowsAnExceptionIfTheFieldDoesNotEvaluateToAString() {
+        String expr = 'QUERY(Account(orderBy: 1) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
     static void canLimitTheNumberOfRecordsReturned() {
         List<Account> accountsInDatabase = new List<Account>();
         for (Integer i = 0; i < 10; i++) {
@@ -209,6 +236,12 @@ private class QueryTest {
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(5, result.size());
+    }
+
+    @IsTest
+    static void usingLimitThrowsAnExceptionIfTheLimitDoesNotEvaluateToAnInteger() {
+        String expr = 'QUERY(Account(limit: "1") [Id, Name])';
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -243,6 +276,12 @@ private class QueryTest {
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Test 5', result[0].Name);
+    }
+
+    @IsTest
+    static void usingTheWhereConditionThrowsAnExceptionIfTheFirstArgumentDoesNotEvaluateToACondition() {
+        String expr = 'QUERY(Account(where: 1) [Id, Name])';
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -385,12 +424,13 @@ private class QueryTest {
     @IsTest
     static void canHaveAWhereConditionWithALikeFunction_usingPercentWildcard_throwsExceptionWhenTheFirstArgumentDoesNotEvaluateToString() {
         String expr = 'QUERY(Account(where: LIKE(1, "Test 5%")) [Id, Name])';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheSecondArgumentOfLikeDoesNotEvaluateToString() {
+        String expr = 'QUERY(Account(where: LIKE(Name, 1)) [Id, Name])';
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -451,6 +491,24 @@ private class QueryTest {
     }
 
     @IsTest
+    static void throwsAnExceptionWhenTheFirstArgumentOfIsInDoesNotEvaluateToAString() {
+        String expr = 'QUERY(Account(where: IsIn(1,  ["Test 1", "Test 2"])) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheSecondArgumentOfIsInDoesNotEvaluateToAList() {
+        String expr = 'QUERY(Account(where: IsIn(Name,  1)) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheSecondArgumentOfIsInIsEmpty() {
+        String expr = 'QUERY(Account(where: IsIn(Name,  [])) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
     static void canHaveAWhereConditionWithAnIsNotInClause() {
         List<Account> accountsInDatabase = new List<Account>();
         Account account1 = new Account(Name = 'Test 1');
@@ -466,6 +524,24 @@ private class QueryTest {
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(account3.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void isNotInThrowsAnExceptionWhenTheFirstArgumentDoesNotEvaluateToAString() {
+        String expr = 'QUERY(Account(where: IsNotIn(1,  ["Test 1", "Test 2"])) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void isNotInThrowsAnExceptionWhenTheSecondArgumentDoesNotEvaluateToAList() {
+        String expr = 'QUERY(Account(where: IsNotIn(Name,  1)) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void isNotInThrowsAnExceptionWhenTheSecondArgumentIsEmpty() {
+        String expr = 'QUERY(Account(where: IsNotIn(Name,  [])) [Id, Name])';
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -492,6 +568,12 @@ private class QueryTest {
     }
 
     @IsTest
+    static void usingIsNullThrowsAnExceptionWhenTheArgumentDoesNotEvaluateToAString() {
+        String expr = 'QUERY(Account(where: ISNULL(1)) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
     static void canUseTheIsNotNullFunctionInAWhereClause() {
         Account someAccount = new Account(Name = 'Test');
         insert someAccount;
@@ -501,5 +583,259 @@ private class QueryTest {
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void usingIsNotNullThrowsAnExceptionWhenTheArgumentDoesNotEvaluateToAString() {
+        String expr = 'QUERY(Account(where: ISNOTNULL(1)) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void canSpecifyAnOffSet() {
+        List<Account> accountsInDatabase = new List<Account>();
+        for (Integer i = 0; i < 10; i++) {
+            String name = 'Test ' + i;
+            accountsInDatabase.add(new Account(Name = name));
+        }
+        insert accountsInDatabase;
+
+        String expr = 'QUERY(Account(offset: 5, orderBy: Name) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(5, result.size());
+        Assert.areEqual('Test 5', result[0].Name);
+        Assert.areEqual('Test 6', result[1].Name);
+        Assert.areEqual('Test 7', result[2].Name);
+        Assert.areEqual('Test 8', result[3].Name);
+        Assert.areEqual('Test 9', result[4].Name);
+    }
+
+    @IsTest
+    static void usingOffsetThrowsAnExceptionIfTheOffsetDoesNotEvaluateToAnInteger() {
+        String expr = 'QUERY(Account(offset: "1") [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void supportsMultipleAndConditionsThroughAmpOperator() {
+        Account someAccount = new Account(Name = 'Test');
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: Name = "Test" && Id = "' + someAccount.Id + '") [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void supportsMultipleAndConditionsThroughAmpOperator_withMultipleConditions() {
+        Account someAccount = new Account(Name = 'Test', NumberOfEmployees = 5, AnnualRevenue = 1000);
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: Name = "Test" && NumberOfEmployees = 5 && AnnualRevenue = 1000) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheLeftSideOfAndAmpOperationIsNotACondition() {
+        String expr = 'QUERY(Account(where: 1 && Id = "123"))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheRightSideOfAndAmpOperationIsNotACondition() {
+        String expr = 'QUERY(Account(where: Id = "123" && 1))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void supportsMultipleAndConditionsThroughAndFunction() {
+        Account someAccount = new Account(Name = 'Test');
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: AND(Name = "Test", Id = "' + someAccount.Id + '")) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void supportsEmbeddedAndFunctions() {
+        Account someAccount = new Account(Name = 'Test', NumberOfEmployees = 5, AnnualRevenue = 1000);
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: AND(Name = "Test", AND(NumberOfEmployees = 5, AnnualRevenue = 1000))) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void usingTheAndFunctionThrowsAnExceptionWhenAnyArgumentDoesNotEvaluateToACondition() {
+        String expr = 'QUERY(Account(where: AND(1, Id = "123")))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void anExceptionIsThrownWhenUsingAnUnsupportedFunctionWithinAQuery() {
+        String expr = 'QUERY(Account(where: NOT(Name = "Test")))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void supportsOrConditionsThroughDoublePipeOperator() {
+        Account someAccount = new Account(Name = 'Test');
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: Name = "Test" || Id = "' + someAccount.Id + '") [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheLeftSideOfOrPipeOperationIsNotACondition() {
+        String expr = 'QUERY(Account(where: 1 || Id = "123"))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheRightSideOfOrPipeOperationIsNotACondition() {
+        String expr = 'QUERY(Account(where: Id = "123" || 1))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void supportsMultipleOrConditionsThroughDoublePipeOperator() {
+        Account account1 = new Account(Name = 'Test 1');
+        Account account2 = new Account(Name = 'Test 2');
+        insert new List<Account>{
+            account1, account2
+        };
+
+        String expr = 'QUERY(Account(where: Name = "Test 1" || Name = "Test 2" || Name = "Test 3"))';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(2, result.size());
+        Set<Id> resultIds = new Map<Id, SObject>(result).keySet();
+        Assert.isTrue(resultIds.contains(account1.Id));
+        Assert.isTrue(resultIds.contains(account2.Id));
+    }
+
+    @IsTest
+    static void supportsOrConditionsThroughTheOrFunction() {
+        Account someAccount = new Account(Name = 'Test');
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: OR(Name = "Test", Id = "' + someAccount.Id + '")) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenOneOfTheArgumentsToOrIsNotACondition() {
+        String expr = 'QUERY(Account(where: OR(1, Id = "123")))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void supportsMixAndMatchingAndsAndOrs() {
+        Account account1 = new Account(Name = 'Test 1');
+        Account account2 = new Account(Name = 'Test 2');
+        Account account3 = new Account(Name = 'Test 3', NumberOfEmployees = 5);
+        Account account4 = new Account(Name = 'Test 4');
+        insert new List<Account>{
+            account1, account2, account3, account4
+        };
+
+        String expr = 'QUERY(Account(where: Name = "Test 1" || (Name = "Test 3" && NumberOfEmployees = 5) || Name = "Test 4"))';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(3, result.size());
+        Set<Id> resultIds = new Map<Id, SObject>(result).keySet();
+        Assert.isTrue(resultIds.contains(account1.Id));
+        Assert.isTrue(resultIds.contains(account3.Id));
+        Assert.isTrue(resultIds.contains(account4.Id));
+    }
+
+    @IsTest
+    static void canMixAndMatchAndsAndOrsThroughFunctions() {
+        Account account1 = new Account(Name = 'Test 1');
+        Account account2 = new Account(Name = 'Test 2');
+        Account account3 = new Account(Name = 'Test 3');
+        Account account4 = new Account(Name = 'Test 4');
+        insert new List<Account>{
+            account1, account2, account3, account4
+        };
+
+        String expr = 'QUERY(\n' +
+            '    Account(\n' +
+            '        where: \n' +
+            '            OR(\n' +
+            '                Name = "Test 1", \n' +
+            '                AND(Name = "Test 2", \n' +
+            '                    Name = "Test 3"),\n' +
+            '                Name = "Test 4"\n' +
+            '                )\n' +
+            '    )\n' +
+            ')';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(2, result.size());
+        Set<Id> resultIds = new Map<Id, SObject>(result).keySet();
+        Assert.isTrue(resultIds.contains(account1.Id));
+        Assert.isTrue(resultIds.contains(account4.Id));
+    }
+
+    @IsTest
+    static void doesNotSupportLogicalOperationsOutsideOfWhere() {
+        String expr = 'Query(Account(offset: 1 || 1))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void doesNotSupportBinaryOperationsOutsideOfWhere() {
+        String expr = 'Query(Account(offset: 1 + 1))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void doesNotSupportNonOverloadedOperatorsWithinAWhereClause() {
+        String expr = 'Query(Account(where: 1 + 1))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void doesNotSupportTheNegationOperatorWithinAQueryContext() {
+        String expr = 'Query(Account(where: !Name = "Test"))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void supportsTheNegativeOperatorWithinAWhereClause() {
+        Account someAccount = new Account(Name = 'Test', AnnualRevenue = -1000);
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: AnnualRevenue = -1000) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void cannotUseAnyFunctionOutsideOfWhere() {
+        String expr = 'QUERY(Account(where: Name = "Test", offset: SIZE([1])))';
+        runAndAssertRuntimeException(expr);
     }
 }

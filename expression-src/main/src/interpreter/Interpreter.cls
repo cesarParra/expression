@@ -20,7 +20,7 @@ public virtual with sharing class Interpreter implements Visitor {
         return expr.accept(this);
     }
 
-    public Object visit(Expr.Logical logical) {
+    public virtual Object visit(Expr.Logical logical) {
         Object left = evaluate(logical.left);
 
         if (logical.operator.type == TokenType.DOUBLE_PIPE) {
@@ -286,7 +286,7 @@ public virtual with sharing class Interpreter implements Visitor {
         return env.get(mergeField.name.lexeme);
     }
 
-    public Object visit(Expr.Unary unary) {
+    public virtual Object visit(Expr.Unary unary) {
         Object right = evaluate(unary.right);
 
         switch on (unary.operator.type) {

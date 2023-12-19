@@ -266,6 +266,7 @@ public with sharing class Parser {
         List<Expr> orderBys = new List<Expr>();
         Expr limitExpr;
         Expr whereExpr;
+        Expr offsetExpr;
 
         // Optional named parameters section that define the "extra" parts of the query (order by, where, limit, etc.).
         if (match(TokenType.LEFT_PAREN)) {
@@ -279,8 +280,11 @@ public with sharing class Parser {
                         limitExpr = expression();
                     } else if (qClause == 'where') {
                         whereExpr = expression();
-                    } else {
-                        throw error(previous(), 'Expect \'orderby\' or \'limit\' after \'where\'.');
+                    } else if (qClause == 'offset') {
+                        offsetExpr = expression();
+                    }
+                    else {
+                        throw error(previous(), 'Expect one of \'orderby\', \'limit\', \'where\', or \'offset\'.');
                     }
                 } while (match(TokenType.COMMA));
             }
@@ -294,7 +298,7 @@ public with sharing class Parser {
         }
 
         consume(TokenType.RIGHT_PAREN, 'Expect \')\' to close the query.');
-        return new Expr.Query(sObjectType, fieldsExpression, orderBys, limitExpr, whereExpr);
+        return new Expr.Query(sObjectType, fieldsExpression, orderBys, limitExpr, whereExpr, offsetExpr);
     }
 
     private List<Expr> getOrderBys() {

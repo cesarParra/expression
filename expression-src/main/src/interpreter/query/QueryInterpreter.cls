@@ -1,4 +1,5 @@
-public with sharing class QueryInterpreter extends Interpreter implements Visitor {
+public with sharing class QueryInterpreter extends Interpreter {
+    private Boolean isWhereContext = false;
 
     public QueryInterpreter(Environment environment) {
         super(environment);
@@ -31,7 +32,7 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             Object orderByResult = evaluate(orderBy.left);
             QOrder.SortOrder sortOrder = (QOrder.SortOrder)evaluate(orderBy.right);
 
-            // Must evaluate to a string
+            // Must evaluate to a string (or a merge field, which resolves as a string in this interpreter)
             if (!(orderByResult instanceof String)) {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected a string or an expression that evaluates to a string or merge field for the order by clause.');
@@ -50,31 +51,83 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         }
 
         if (query.whereExpr != null) {
+            isWhereContext = true;
             Object whereResult = evaluate(query.whereExpr);
-            if (!(whereResult instanceof QCondition)) {
+            if (!(whereResult instanceof QICondition)) {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected a condition or an expression that evaluates to a condition for the where clause.');
             }
-            querier.add((QCondition) whereResult);
+            isWhereContext = false;
+
+            querier.add((QICondition) whereResult);
+        }
+
+        if (query.offsetExpr != null) {
+            Object offsetResult = evaluate(query.offsetExpr);
+            if (!(offsetResult instanceof Decimal)) {
+                throw new Exceptions.RuntimeException(query.sObjectType,
+                    'Expected an integer or an expression that evaluates to an number for the offset clause.');
+            }
+            querier.addOffset(((Decimal) offsetResult).intValue());
         }
 
         return QRunner.getInstance().run(querier);
     }
 
-    public override Object visit(Expr.Binary binary) {
-        Set<TokenType> supportedQueryOperations = new Set<TokenType> {
-            TokenType.EQUAL,
-            TokenType.EQUAL_EQUAL,
-            TokenType.GREATER,
-            TokenType.GREATER_EQUAL,
-            TokenType.LESS,
-            TokenType.LESS_EQUAL,
-            TokenType.BANG_EQUAL,
-            TokenType.LESS_GREATER
-        };
+    public override Object visit(Expr.Logical logical) {
+        if (!isWhereContext) {
+            throw new Exceptions.RuntimeException(logical.operator,
+                'Logical operators are not supported in a Query context outside of a where clause.');
+        }
 
-        if (!supportedQueryOperations.contains(binary.operator.type)) {
-            return super.visit(binary);
+        Object left = evaluate(logical.left);
+        Object right = evaluate(logical.right);
+
+        switch on logical.operator.type {
+            when DOUBLE_AMPERSAND {
+                if (!(left instanceof QICondition)) {
+                    throw new Exceptions.RuntimeException(logical.operator,
+                        'Expected a condition or an expression that evaluates to a condition for the left side of the AND operator.');
+                }
+                if (!(right instanceof QICondition)) {
+                    throw new Exceptions.RuntimeException(logical.operator,
+                        'Expected a condition or an expression that evaluates to a condition for the right side of the AND operator.');
+                }
+
+                List<QICondition> conditions = new List<QICondition> {
+                    (QICondition) left,
+                    (QICondition) right
+                };
+                return new QAndGroup(conditions);
+            }
+            when DOUBLE_PIPE {
+                if (!(left instanceof QICondition)) {
+                    throw new Exceptions.RuntimeException(logical.operator,
+                        'Expected a condition or an expression that evaluates to a condition for the left side of the OR operator.');
+                }
+                if (!(right instanceof QICondition)) {
+                    throw new Exceptions.RuntimeException(logical.operator,
+                        'Expected a condition or an expression that evaluates to a condition for the right side of the OR operator.');
+                }
+
+                List<QICondition> conditions = new List<QICondition> {
+                    (QICondition) left,
+                    (QICondition) right
+                };
+                return new QOrGroup(conditions);
+            }
+            when else {
+                // Unreachable
+                throw new Exceptions.RuntimeException(logical.operator,
+                    'Unsupported logical operator.');
+            }
+        }
+    }
+
+    public override Object visit(Expr.Binary binary) {
+        if (!isWhereContext) {
+            throw new Exceptions.RuntimeException(binary.operator,
+                'Operators are not supported in a Query context outside of a where clause.');
         }
 
         Object left = evaluate(binary.left);
@@ -101,9 +154,18 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
             }
             when else {
                 throw new Exceptions.RuntimeException(binary.operator,
-                    'Unsupported query operation.');
+                    'Unsupported operator: ' + binary.operator.lexeme + ' within a Query context\'s where clause.');
             }
         }
+    }
+
+    public override Object visit(Expr.Unary unary) {
+        if (unary.operator.type == TokenType.BANG) {
+            throw new Exceptions.RuntimeException(unary.operator,
+                'Unsupported operator: ' + unary.operator.lexeme + ' within a Query context.');
+        }
+
+        return super.visit(unary);
     }
 
     public override Object visit(Expr.MergeField mergeField) {
@@ -116,23 +178,28 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
     }
 
     public override Object visit(Expr.FunctionCall function) {
-        Map<String, ExpressionFunction> supportedFunctions = new Map<String, ExpressionFunction> {
+        if (!isWhereContext) {
+            throw new Exceptions.RuntimeException(function.functionToken,
+                'Functions are not supported in a Query context outside of a where clause.');
+        }
+
+        Map<String, ExpressionFunction> supportedWhereFunctions = new Map<String, ExpressionFunction> {
             'LIKE' => new LikeFn(),
             'ISIN' => new IsInFn(),
             'ISNOTIN' => new IsNotInFn(),
             'ISNULL' => new IsNullFn(),
-            'ISNOTNULL' => new IsNotNullFn()
+            'ISNOTNULL' => new IsNotNullFn(),
+            'AND' => new AndFn(),
+            'OR' => new OrFn()
         };
 
         String functionName = function.functionToken.lexeme.toUpperCase();
-        if (supportedFunctions.containsKey(functionName)) {
-            ExpressionFunction expressionFunction = supportedFunctions.get(functionName);
+        if (supportedWhereFunctions.containsKey(functionName)) {
+            ExpressionFunction expressionFunction = supportedWhereFunctions.get(functionName);
             expressionFunction.setInterpreter(this);
             evaluateArity(expressionFunction, function);
             try {
                 return expressionFunction.call(function.arguments);
-            } catch (Exceptions.PositionAwareException e) {
-                throw e;
             } catch (Exception e) {
                 throw new Exceptions.RuntimeException(
                     function.functionToken,
@@ -142,7 +209,7 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         }
 
         throw new Exceptions.RuntimeException(function.functionToken,
-            'Unsupported function: ' + function.functionToken.lexeme + ' within a Query context.');
+            'Unsupported function: ' + function.functionToken.lexeme + ' within a Query context\'s where clause.');
     }
 
     private class LikeFn extends ExpressionFunction {
@@ -269,6 +336,48 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
 
         public override Arity getArity() {
             return Arity.exactly(1);
+        }
+    }
+
+    private class AndFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            List<QICondition> conditions = new List<QICondition>();
+            for (Expr argument : arguments) {
+                Object evaluatedArgument = evaluate(argument);
+                if (!(evaluatedArgument instanceof QICondition)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "AND" function: all arguments must evaluate to conditions.'
+                    );
+                }
+                conditions.add((QICondition) evaluatedArgument);
+            }
+
+            return new QAndGroup(conditions);
+        }
+
+        public override Arity getArity() {
+            return Arity.atLeast(2);
+        }
+    }
+
+    private class OrFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            List<QICondition> conditions = new List<QICondition>();
+            for (Expr argument : arguments) {
+                Object evaluatedArgument = evaluate(argument);
+                if (!(evaluatedArgument instanceof QICondition)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "OR" function: all arguments must evaluate to conditions.'
+                    );
+                }
+                conditions.add((QICondition) evaluatedArgument);
+            }
+
+            return new QOrGroup(conditions);
+        }
+
+        public override Arity getArity() {
+            return Arity.atLeast(2);
         }
     }
 }
