@@ -796,4 +796,46 @@ private class QueryTest {
         Assert.isTrue(resultIds.contains(account1.Id));
         Assert.isTrue(resultIds.contains(account4.Id));
     }
+
+    @IsTest
+    static void doesNotSupportLogicalOperationsOutsideOfWhere() {
+        String expr = 'Query(Account(offset: 1 || 1))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void doesNotSupportBinaryOperationsOutsideOfWhere() {
+        String expr = 'Query(Account(offset: 1 + 1))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void doesNotSupportNonOverloadedOperatorsWithinAWhereClause() {
+        String expr = 'Query(Account(where: 1 + 1))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void doesNotSupportTheNegationOperatorWithinAQueryContext() {
+        String expr = 'Query(Account(where: !Name = "Test"))';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void supportsTheNegativeOperatorWithinAWhereClause() {
+        Account someAccount = new Account(Name = 'Test', AnnualRevenue = -1000);
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: AnnualRevenue = -1000) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
+    static void cannotUseAnyFunctionOutsideOfWhere() {
+        String expr = 'QUERY(Account(where: Name = "Test", offset: SIZE([1])))';
+        runAndAssertRuntimeException(expr);
+    }
 }

@@ -286,7 +286,7 @@ public virtual with sharing class Interpreter implements Visitor {
         return env.get(mergeField.name.lexeme);
     }
 
-    public Object visit(Expr.Unary unary) {
+    public virtual Object visit(Expr.Unary unary) {
         Object right = evaluate(unary.right);
 
         switch on (unary.operator.type) {

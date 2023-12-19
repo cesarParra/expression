@@ -1,4 +1,6 @@
-public with sharing class QueryInterpreter extends Interpreter implements Visitor {
+public with sharing class QueryInterpreter extends Interpreter {
+    private Boolean isWhereContext = false;
+
     public QueryInterpreter(Environment environment) {
         super(environment);
     }
@@ -49,11 +51,13 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         }
 
         if (query.whereExpr != null) {
+            isWhereContext = true;
             Object whereResult = evaluate(query.whereExpr);
             if (!(whereResult instanceof QICondition)) {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected a condition or an expression that evaluates to a condition for the where clause.');
             }
+            isWhereContext = false;
 
             querier.add((QICondition) whereResult);
         }
@@ -71,6 +75,11 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
     }
 
     public override Object visit(Expr.Logical logical) {
+        if (!isWhereContext) {
+            throw new Exceptions.RuntimeException(logical.operator,
+                'Logical operators are not supported in a Query context outside of a where clause.');
+        }
+
         Object left = evaluate(logical.left);
         Object right = evaluate(logical.right);
 
@@ -116,22 +125,9 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
     }
 
     public override Object visit(Expr.Binary binary) {
-        // TODO: Maybe we want to do this ONLY when we are inside of a where?
-        // OR just disallow things outside of it. We just need to be consistent and have expected behaviors
-        // so let's play around with the different options
-        Set<TokenType> supportedQueryOperations = new Set<TokenType> {
-            TokenType.EQUAL,
-            TokenType.EQUAL_EQUAL,
-            TokenType.GREATER,
-            TokenType.GREATER_EQUAL,
-            TokenType.LESS,
-            TokenType.LESS_EQUAL,
-            TokenType.BANG_EQUAL,
-            TokenType.LESS_GREATER
-        };
-
-        if (!supportedQueryOperations.contains(binary.operator.type)) {
-            return super.visit(binary);
+        if (!isWhereContext) {
+            throw new Exceptions.RuntimeException(binary.operator,
+                'Operators are not supported in a Query context outside of a where clause.');
         }
 
         Object left = evaluate(binary.left);
@@ -157,11 +153,19 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
                 return Q.condition((String) left).notEqualsTo(right);
             }
             when else {
-                // Unreachable
                 throw new Exceptions.RuntimeException(binary.operator,
-                    'Unsupported query operation.');
+                    'Unsupported operator: ' + binary.operator.lexeme + ' within a Query context\'s where clause.');
             }
         }
+    }
+
+    public override Object visit(Expr.Unary unary) {
+        if (unary.operator.type == TokenType.BANG) {
+            throw new Exceptions.RuntimeException(unary.operator,
+                'Unsupported operator: ' + unary.operator.lexeme + ' within a Query context.');
+        }
+
+        return super.visit(unary);
     }
 
     public override Object visit(Expr.MergeField mergeField) {
@@ -174,8 +178,12 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
     }
 
     public override Object visit(Expr.FunctionCall function) {
-        // TODO: All of these functions should not work outside of a where context
-        Map<String, ExpressionFunction> supportedFunctions = new Map<String, ExpressionFunction> {
+        if (!isWhereContext) {
+            throw new Exceptions.RuntimeException(function.functionToken,
+                'Functions are not supported in a Query context outside of a where clause.');
+        }
+
+        Map<String, ExpressionFunction> supportedWhereFunctions = new Map<String, ExpressionFunction> {
             'LIKE' => new LikeFn(),
             'ISIN' => new IsInFn(),
             'ISNOTIN' => new IsNotInFn(),
@@ -186,8 +194,8 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         };
 
         String functionName = function.functionToken.lexeme.toUpperCase();
-        if (supportedFunctions.containsKey(functionName)) {
-            ExpressionFunction expressionFunction = supportedFunctions.get(functionName);
+        if (supportedWhereFunctions.containsKey(functionName)) {
+            ExpressionFunction expressionFunction = supportedWhereFunctions.get(functionName);
             expressionFunction.setInterpreter(this);
             evaluateArity(expressionFunction, function);
             try {
@@ -201,7 +209,7 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         }
 
         throw new Exceptions.RuntimeException(function.functionToken,
-            'Unsupported function: ' + function.functionToken.lexeme + ' within a Query context.');
+            'Unsupported function: ' + function.functionToken.lexeme + ' within a Query context\'s where clause.');
     }
 
     private class LikeFn extends ExpressionFunction {
