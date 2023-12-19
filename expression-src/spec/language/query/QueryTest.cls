@@ -749,6 +749,26 @@ private class QueryTest {
     }
 
     @IsTest
+    static void supportsMixAndMatchingAndsAndOrs() {
+        Account account1 = new Account(Name = 'Test 1');
+        Account account2 = new Account(Name = 'Test 2');
+        Account account3 = new Account(Name = 'Test 3', NumberOfEmployees = 5);
+        Account account4 = new Account(Name = 'Test 4');
+        insert new List<Account>{
+            account1, account2, account3, account4
+        };
+
+        String expr = 'QUERY(Account(where: Name = "Test 1" || (Name = "Test 3" && NumberOfEmployees = 5) || Name = "Test 4"))';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(3, result.size());
+        Set<Id> resultIds = new Map<Id, SObject>(result).keySet();
+        Assert.isTrue(resultIds.contains(account1.Id));
+        Assert.isTrue(resultIds.contains(account3.Id));
+        Assert.isTrue(resultIds.contains(account4.Id));
+    }
+
+    @IsTest
     static void canMixAndMatchAndsAndOrsThroughFunctions() {
         Account account1 = new Account(Name = 'Test 1');
         Account account2 = new Account(Name = 'Test 2');
@@ -776,6 +796,4 @@ private class QueryTest {
         Assert.isTrue(resultIds.contains(account1.Id));
         Assert.isTrue(resultIds.contains(account4.Id));
     }
-
-    // TODO: Grouping support
 }
