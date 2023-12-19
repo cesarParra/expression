@@ -80,18 +80,18 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
 
         switch on logical.operator.type {
             when DOUBLE_AMPERSAND {
-                if (!(left instanceof QCondition)) {
+                if (!(left instanceof QICondition)) {
                     throw new Exceptions.RuntimeException(logical.operator,
                         'Expected a condition or an expression that evaluates to a condition for the left side of the AND operator.');
                 }
-                if (!(right instanceof QCondition)) {
+                if (!(right instanceof QICondition)) {
                     throw new Exceptions.RuntimeException(logical.operator,
                         'Expected a condition or an expression that evaluates to a condition for the right side of the AND operator.');
                 }
 
-                List<QCondition> conditions = new List<QCondition> {
-                    (QCondition) left,
-                    (QCondition) right
+                List<QICondition> conditions = new List<QICondition> {
+                    (QICondition) left,
+                    (QICondition) right
                 };
                 return new QAndGroup(conditions);
             }

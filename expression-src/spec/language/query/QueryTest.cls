@@ -535,5 +535,23 @@ private class QueryTest {
         Assert.areEqual(someAccount.Id, result[0].Id);
     }
 
+    @IsTest
+    static void supportsMultipleAndConditionsThroughAmpOperator_withMultipleConditions() {
+        Account someAccount = new Account(Name = 'Test', NumberOfEmployees = 5, AnnualRevenue = 1000);
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: Name = "Test" && NumberOfEmployees = 5 && AnnualRevenue = 1000) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    // TODO: Mixing and matching multiple ANDs
     // TODO: Same but through the AND function
+    // TODO: Or through ||
+    // TODO: Or through the OR function
+
+    // TODO: Mixing and matching multiple ORs
+    // TODO: Mixing and matching ANDs and ORs
 }
