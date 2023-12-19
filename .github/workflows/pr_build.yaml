@@ -36,7 +36,8 @@ jobs:
         run: sf apex run test --code-coverage --result-format json -w 30 > test-results.json
       - name: Check code coverage
         run: |
-          COVERAGE=$(jq '.result.summary.testRunCoverage' test-results.json)
+          COVERAGE=$(jq -r '.result.summary.testRunCoverage' test-results.json)
+          COVERAGE=${COVERAGE%\%}
           echo "Code coverage: $COVERAGE%"
           if (( $(echo "$COVERAGE < 90" | bc -l) )); then
             echo "Code coverage is less than 90%, failing the build."
