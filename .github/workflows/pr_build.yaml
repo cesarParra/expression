@@ -33,6 +33,14 @@ jobs:
       - name: Push source
         run: sfdx force:source:push
       - name: Run tests
-        run: sf apex run test --code-coverage --result-format human -w 30
+        run: sf apex run test --code-coverage --result-format json -w 30 > test-results.json
+      - name: Check code coverage
+        run: |
+          COVERAGE=$(jq '.result.summary.testRunCoverage' test-results.json)
+          echo "Code coverage: $COVERAGE%"
+          if (( $(echo "$COVERAGE < 90" | bc -l) )); then
+            echo "Code coverage is less than 90%, failing the build."
+            exit 1
+          fi
       - name: Clean up scratch org
         run: sfdx force:org:delete --targetusername=scratch-org --noprompt

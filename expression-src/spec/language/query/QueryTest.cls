@@ -9,6 +9,15 @@ private class QueryTest {
         return accounts;
     }
 
+    private static void runAndAssertRuntimeException(String expr) {
+        try {
+            Evaluator.run(expr);
+            Assert.fail('Expected an exception to be thrown');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+        }
+    }
+
     @IsTest
     static void canQueryAllRecordsOfAnSObject() {
         List<Account> accounts = givenAccounts();
@@ -46,12 +55,7 @@ private class QueryTest {
     @IsTest
     static void throwsAnExceptionIfTheFieldsSectionDoesNotEvaluateToAList() {
         String expr = 'Query(Account{})';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -71,12 +75,7 @@ private class QueryTest {
     @IsTest
     static void throwsAnExceptionIfAnyOfTheFieldsBeingQueriedDoNotEvaluateToAStringOrAMergeField() {
         String expr = 'Query(Account[Id, 1])';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
+       runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -222,12 +221,7 @@ private class QueryTest {
     @IsTest
     static void usingOrderByThrowsAnExceptionIfTheFieldDoesNotEvaluateToAString() {
         String expr = 'QUERY(Account(orderBy: 1) [Id, Name])';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -247,12 +241,7 @@ private class QueryTest {
     @IsTest
     static void usingLimitThrowsAnExceptionIfTheLimitDoesNotEvaluateToAnInteger() {
         String expr = 'QUERY(Account(limit: "1") [Id, Name])';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -292,12 +281,7 @@ private class QueryTest {
     @IsTest
     static void usingTheWhereConditionThrowsAnExceptionIfTheFirstArgumentDoesNotEvaluateToACondition() {
         String expr = 'QUERY(Account(where: 1) [Id, Name])';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -440,12 +424,13 @@ private class QueryTest {
     @IsTest
     static void canHaveAWhereConditionWithALikeFunction_usingPercentWildcard_throwsExceptionWhenTheFirstArgumentDoesNotEvaluateToString() {
         String expr = 'QUERY(Account(where: LIKE(1, "Test 5%")) [Id, Name])';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheSecondArgumentOfLikeDoesNotEvaluateToString() {
+        String expr = 'QUERY(Account(where: LIKE(Name, 1)) [Id, Name])';
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -503,6 +488,24 @@ private class QueryTest {
         Assert.areEqual(2, result.size());
         Assert.areEqual(account1.Id, result[0].Id);
         Assert.areEqual(account2.Id, result[1].Id);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheFirstArgumentOfIsInDoesNotEvaluateToAString() {
+        String expr = 'QUERY(Account(where: IsIn(1,  ["Test 1", "Test 2"])) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheSecondArgumentOfIsInDoesNotEvaluateToAList() {
+        String expr = 'QUERY(Account(where: IsIn(Name,  1)) [Id, Name])';
+        runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void throwsAnExceptionWhenTheSecondArgumentOfIsInIsEmpty() {
+        String expr = 'QUERY(Account(where: IsIn(Name,  [])) [Id, Name])';
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -581,12 +584,7 @@ private class QueryTest {
     @IsTest
     static void usingOffsetThrowsAnExceptionIfTheOffsetDoesNotEvaluateToAnInteger() {
         String expr = 'QUERY(Account(offset: "1") [Id, Name])';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
@@ -616,23 +614,13 @@ private class QueryTest {
     @IsTest
     static void throwsAnExceptionWhenTheLeftSideOfAndAmpOperationIsNotACondition() {
         String expr = 'QUERY(Account(where: 1 && Id = "123"))';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
     static void throwsAnExceptionWhenTheRightSideOfAndAmpOperationIsNotACondition() {
         String expr = 'QUERY(Account(where: Id = "123" && 1))';
-        try {
-            Evaluator.run(expr);
-            Assert.fail('Expected an exception to be thrown');
-        } catch (Exception e) {
-            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
-        }
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
