@@ -666,12 +666,29 @@ private class QueryTest {
     }
 
     @IsTest
+    static void supportsEmbeddedAndFunctions() {
+        Account someAccount = new Account(Name = 'Test', NumberOfEmployees = 5, AnnualRevenue = 1000);
+        insert someAccount;
+
+        String expr = 'QUERY(Account(where: AND(Name = "Test", AND(NumberOfEmployees = 5, AnnualRevenue = 1000))) [Id, Name])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(someAccount.Id, result[0].Id);
+    }
+
+    @IsTest
     static void usingTheAndFunctionThrowsAnExceptionWhenAnyArgumentDoesNotEvaluateToACondition() {
         String expr = 'QUERY(Account(where: AND(1, Id = "123")))';
         runAndAssertRuntimeException(expr);
     }
 
-    // TODO: Same but through the AND function
+    @IsTest
+    static void anExceptionIsThrownWhenUsingAnUnsupportedFunctionWithinAQuery() {
+        String expr = 'QUERY(Account(where: NOT(Name = "Test")))';
+        runAndAssertRuntimeException(expr);
+    }
+
     // TODO: Or through ||
     // TODO: Or through the OR function
 

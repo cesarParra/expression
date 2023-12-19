@@ -332,7 +332,7 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
         }
 
         public override Arity getArity() {
-            return Arity.atLEast(2);
+            return Arity.atLeast(2);
         }
     }
 }
