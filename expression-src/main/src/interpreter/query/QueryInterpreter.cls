@@ -50,16 +50,12 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
 
         if (query.whereExpr != null) {
             Object whereResult = evaluate(query.whereExpr);
-            if (!(whereResult instanceof QCondition) && !(whereResult instanceof QAndGroup)) {
+            if (!(whereResult instanceof QICondition)) {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected a condition or an expression that evaluates to a condition for the where clause.');
             }
 
-            if (whereResult instanceof QAndGroup) {
-                querier.add((QAndGroup) whereResult);
-            } else if (whereResult instanceof QCondition) {
-                querier.add((QCondition) whereResult);
-            }
+            querier.add((QICondition) whereResult);
         }
 
         if (query.offsetExpr != null) {
