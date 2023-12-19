@@ -158,6 +158,7 @@ public with sharing class QueryInterpreter extends Interpreter implements Visito
     }
 
     public override Object visit(Expr.FunctionCall function) {
+        // TODO: All of these functions should not work outside of a where context
         Map<String, ExpressionFunction> supportedFunctions = new Map<String, ExpressionFunction> {
             'LIKE' => new LikeFn(),
             'ISIN' => new IsInFn(),
