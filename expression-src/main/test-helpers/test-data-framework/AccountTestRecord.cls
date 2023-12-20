@@ -33,6 +33,14 @@ public with sharing class AccountTestRecord extends SObjectTestDataBuilder imple
         return (AccountTestRecord)this.withData(Account.BillingCity, billingCity);
     }
 
+    public AccountTestRecord withNumberOfEmployees(Integer numberOfEmployees) {
+        return (AccountTestRecord)this.withData(Account.NumberOfEmployees, numberOfEmployees);
+    }
+
+    public AccountTestRecord withAnnualRevenue(Integer annualRevenue) {
+        return (AccountTestRecord)this.withData(Account.AnnualRevenue, annualRevenue);
+    }
+
     public AccountTestRecord withAChildContact() {
         this.withChild(
             SObjectTestDataBuilder.of(Contact.SObjectType),
@@ -43,6 +51,16 @@ public with sharing class AccountTestRecord extends SObjectTestDataBuilder imple
 
     public AccountTestRecord withAChildContact(ITestDataBuilder childBuilder) {
         this.withChild(childBuilder, Contact.AccountId);
+        return this;
+    }
+
+    public ITestDataBuilder withChildContacts(Integer i) {
+        for (Integer j = 0; j < i; j++) {
+            this.withChild(
+                SObjectTestDataBuilder.of(Contact.SObjectType),
+                Contact.AccountId
+            );
+        }
         return this;
     }
 
