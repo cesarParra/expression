@@ -1,11 +1,26 @@
 @IsTest
 private class QueryTest {
-    private static List<Account> givenAccounts() {
-        List<Account> accounts = new List<Account>();
-        for (Integer i = 0; i < 10; i++) {
-            accounts.add(new Account(Name = 'Test ' + i));
+    private class FluentDataBuilder {
+        private final SObject registeredRecord;
+
+        private FluentDataBuilder(ITestDataBuilder builder) {
+            registeredRecord = builder.registerNewForInsert();
         }
-        insert accounts;
+
+        private SObject inTheDatabase() {
+            SObjectTestDataBuilder.commitRecords();
+            return registeredRecord;
+        }
+    }
+
+    private static FluentDataBuilder givenAn(ITestDataBuilder builder) {
+        return new FluentDataBuilder(builder);
+    }
+
+    private static List<Account> given10Accounts() {
+        List<Account> accounts = (List<Account>)SObjectTestDataBuilder.of(Account.SObjectType)
+            .registerNewForInsert(10);
+        SObjectTestDataBuilder.commitRecords();
         return accounts;
     }
 
@@ -20,27 +35,27 @@ private class QueryTest {
 
     @IsTest
     static void canQueryAllRecordsOfAnSObject() {
-        List<Account> accounts = givenAccounts();
+        given10Accounts();
 
         String expr = 'QUERY(Account)';
         List<SObject> result = (List<SObject>) Evaluator.run(expr);
 
-        Assert.areEqual(accounts.size(), result.size());
+        Assert.areEqual(10, result.size());
     }
 
     @IsTest
     static void canQueryWithAnEmptySetOfNamedParameters() {
-        List<Account> accounts = givenAccounts();
+        given10Accounts();
 
         String expr = 'QUERY(Account())';
         List<SObject> result = (List<SObject>) Evaluator.run(expr);
 
-        Assert.areEqual(accounts.size(), result.size());
+        Assert.areEqual(10, result.size());
     }
 
     @IsTest
     static void canGetSpecificFieldsWhenQuerying_usingMergeFields() {
-        List<Account> accounts = givenAccounts();
+        List<Account> accounts = given10Accounts();
 
         String expr = 'QUERY(Account[Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -60,7 +75,7 @@ private class QueryTest {
 
     @IsTest
     static void canGetSpecificFieldsWhenQuerying_usingStrings() {
-        List<Account> accounts = givenAccounts();
+        List<Account> accounts = given10Accounts();
 
         String expr = 'QUERY(Account["Id", "Name"])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -80,11 +95,7 @@ private class QueryTest {
 
     @IsTest
     static void canQueryForRelationshipFields() {
-        Account account = new Account(Name = 'Test');
-        insert account;
-
-        Contact contact = new Contact(AccountId = account.Id, LastName = 'Test');
-        insert contact;
+        Account account = (Account)givenAn(AccountTestRecord.any().withAChildContact()).inTheDatabase();
 
         String expr = 'QUERY(Contact [Id, Account.Name])';
         List<Contact> result = (List<Contact>) Evaluator.run(expr);
@@ -854,7 +865,6 @@ private class QueryTest {
         Assert.areEqual(1, result[0].Contacts.size());
     }
 
-    // TODO: Spend some time to see if we can improve subqueries without needing to say "query" again. It'd be a really nice touch
     // TODO: Sub query withe all types of clauses
     // TODO: Sub query with fields
 }
