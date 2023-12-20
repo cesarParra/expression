@@ -27,7 +27,6 @@ public with sharing class QueryInterpreter extends Interpreter {
             }
 
             for (Object field : (List<Object>) evaluatedFieldsExpression) {
-                // TODO: This is not true anymore
                 if (!(field instanceof String) && !(field instanceof Q)) {
                     throw new Exceptions.RuntimeException(query.sObjectType,
                         'Each field must evaluate to a string, a merge field or a sub query.');
