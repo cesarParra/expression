@@ -1,15 +1,24 @@
 @IsTest
 private class QueryTest {
     private class FluentDataBuilder {
-        private final SObject registeredRecord;
+        private final List<SObject> registeredRecords = new List<SObject>();
+
+        public SObject first { get { return registeredRecords[0]; } }
+
+        public List<SObject> all { get { return registeredRecords; } }
 
         private FluentDataBuilder(ITestDataBuilder builder) {
-            registeredRecord = builder.registerNewForInsert();
+            registeredRecords.add(builder.registerNewForInsert());
         }
 
-        private SObject inTheDatabase() {
+        private FluentDataBuilder andGiven(ITestDataBuilder builder) {
+            registeredRecords.add(builder.registerNewForInsert());
+            return this;
+        }
+
+        private FluentDataBuilder inTheDatabase() {
             SObjectTestDataBuilder.commitRecords();
-            return registeredRecord;
+            return this;
         }
     }
 
@@ -95,7 +104,7 @@ private class QueryTest {
 
     @IsTest
     static void canQueryForRelationshipFields() {
-        Account account = (Account)givenAn(AccountTestRecord.any().withAChildContact()).inTheDatabase();
+        Account account = (Account)givenAn(AnAccountRecord.any().withAChildContact()).inTheDatabase().first;
 
         String expr = 'QUERY(Contact [Id, Account.Name])';
         List<Contact> result = (List<Contact>) Evaluator.run(expr);
@@ -106,20 +115,17 @@ private class QueryTest {
 
     @IsTest
     static void canOrderByASingleFieldWhenQuerying() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account');
-        Account aAccount = new Account(Name = 'A Account');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        insert accountsInDatabase;
+        givenAn(AnAccountRecord.build().named('Z Account'))
+            .andGiven(AnAccountRecord.build().named('A Account'))
+            .inTheDatabase();
 
         String expr = 'QUERY(Account(OrderBy: Name) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         // Order by is ascending by default
         Assert.areEqual(2, result.size());
-        Assert.areEqual(aAccount.Id, result[0].Id);
-        Assert.areEqual(zAccount.Id, result[1].Id);
+        Assert.areEqual('A Account', result[0].Name);
+        Assert.areEqual('Z Account', result[1].Name);
     }
 
     @IsTest

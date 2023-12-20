@@ -1,7 +1,11 @@
 @IsTest
-public with sharing class AccountTestRecord extends SObjectTestDataBuilder implements ITestDataBuilder {
-    public static AccountTestRecord any() {
-        return new AccountTestRecord();
+public with sharing class AnAccountRecord extends SObjectTestDataBuilder implements ITestDataBuilder {
+    public static AnAccountRecord any() {
+        return new AnAccountRecord();
+    }
+
+    public static AnAccountRecord build() {
+        return new AnAccountRecord();
     }
 
     public ITestDataBuilder with(SObjectField field, Object value) {
@@ -21,11 +25,11 @@ public with sharing class AccountTestRecord extends SObjectTestDataBuilder imple
         return this.registerSObjectsForInsert(numberOfRecords);
     }
 
-    public AccountTestRecord named(String name) {
-        return (AccountTestRecord)this.withData(Account.Name, name);
+    public AnAccountRecord named(String name) {
+        return (AnAccountRecord)this.withData(Account.Name, name);
     }
 
-    public AccountTestRecord withAChildContact() {
+    public AnAccountRecord withAChildContact() {
         this.withChild(
             SObjectTestDataBuilder.of(Contact.SObjectType),
             Contact.AccountId
@@ -33,8 +37,8 @@ public with sharing class AccountTestRecord extends SObjectTestDataBuilder imple
         return this;
     }
 
-    public AccountTestRecord withChild(ITestDataBuilder childBuilder, SObjectField relationshipField) {
-        return (AccountTestRecord)this.withChildData(childBuilder, relationshipField);
+    public AnAccountRecord withChild(ITestDataBuilder childBuilder, SObjectField relationshipField) {
+        return (AnAccountRecord)this.withChildData(childBuilder, relationshipField);
     }
 
     protected override Map<SObjectField, Object> getDefaultValueMap() {

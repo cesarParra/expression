@@ -25,7 +25,7 @@
 **/
 
 /**
- * Provides an implementation of the Enterprise Application Architecture Unit Of Work, as defined by Martin Fowler
+ * @description Provides an implementation of the Enterprise Application Architecture Unit Of Work, as defined by Martin Fowler
  *   http://martinfowler.com/eaaCatalog/unitOfWork.html
  *
  * "When you're pulling data in and out of a database, it's important to keep track of what you've changed; otherwise,
@@ -41,10 +41,9 @@
  *  it figures out everything that needs to be done to alter the database as a result of your work."
  *
  * In an Apex context this pattern provides the following specific benefits
- *  - Applies bulkfication to DML operations, insert, update and delete
- *  - Manages a business transaction around the work and ensures a rollback occurs (even when exceptions are later handled by the caller)
- *  - Honours dependency rules between records and updates dependent relationships automatically during the commit
- *
+ * - Applies bulkfication to DML operations, insert, update and delete
+ * - Manages a business transaction around the work and ensures a rollback occurs (even when exceptions are later handled by the caller)
+ * - Honours dependency rules between records and updates dependent relationships automatically during the commit
  **/
 @IsTest
 public class TestDataUnitOfWork {
