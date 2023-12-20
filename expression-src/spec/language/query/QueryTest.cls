@@ -104,7 +104,7 @@ private class QueryTest {
 
     @IsTest
     static void canQueryForRelationshipFields() {
-        Account account = (Account)givenAn(AnAccountRecord.any().withAChildContact()).inTheDatabase().first;
+        Account account = (Account)givenAn(AccountTestRecord.any().withAChildContact()).inTheDatabase().first;
 
         String expr = 'QUERY(Contact [Id, Account.Name])';
         List<Contact> result = (List<Contact>) Evaluator.run(expr);
@@ -115,8 +115,8 @@ private class QueryTest {
 
     @IsTest
     static void canOrderByASingleFieldWhenQuerying() {
-        givenAn(AnAccountRecord.build().named('Z Account'))
-            .andGiven(AnAccountRecord.build().named('A Account'))
+        givenAn(AccountTestRecord.build().named('Z Account'))
+            .andGiven(AccountTestRecord.build().named('A Account'))
             .inTheDatabase();
 
         String expr = 'QUERY(Account(OrderBy: Name) [Id, Name])';
@@ -130,24 +130,16 @@ private class QueryTest {
 
     @IsTest
     static void canOrderByRelationshipField() {
-        Account account1 = new Account(Name = 'ZTest');
-        Account account2 = new Account(Name = 'ATest');
-        insert new List<Account>{
-            account1, account2
-        };
-
-        Contact zContact = new Contact(AccountId = account1.Id, LastName = 'ZTest');
-        Contact aContact = new Contact(AccountId = account2.Id, LastName = 'ATest');
-        insert new List<Contact>{
-            zContact, aContact
-        };
+        givenAn(AccountTestRecord.any().withAChildContact(ContactTestRecord.build()).named('ZTest'))
+            .andGiven(AccountTestRecord.any().withAChildContact(ContactTestRecord.build()).named('ATest'))
+            .inTheDatabase();
 
         String expr = 'QUERY(Contact(orderBy: Account.Name) [Id, Account.Name])';
         List<Contact> result = (List<Contact>) Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
-        Assert.areEqual(aContact.Id, result[0].Id);
-        Assert.areEqual(zContact.Id, result[1].Id);
+        Assert.areEqual('ATest', result[0].Account.Name);
+        Assert.areEqual('ZTest', result[1].Account.Name);
     }
 
     @IsTest
