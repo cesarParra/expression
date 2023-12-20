@@ -838,4 +838,23 @@ private class QueryTest {
         String expr = 'QUERY(Account(where: Name = "Test", offset: SIZE([1])))';
         runAndAssertRuntimeException(expr);
     }
+
+    @IsTest
+    static void allowsForSubqueries() {
+        Account someAccount = new Account(Name = 'Test');
+        insert someAccount;
+
+        Contact someContact = new Contact(AccountId = someAccount.Id, LastName = 'Test');
+        insert someContact;
+
+        String expr = 'QUERY(Account[Id, Query(Contacts)])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(1, result[0].Contacts.size());
+    }
+
+    // TODO: Spend some time to see if we can improve subqueries without needing to say "query" again. It'd be a really nice touch
+    // TODO: Sub query withe all types of clauses
+    // TODO: Sub query with fields
 }
