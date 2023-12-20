@@ -29,6 +29,10 @@ public with sharing class AccountTestRecord extends SObjectTestDataBuilder imple
         return (AccountTestRecord)this.withData(Account.Name, name);
     }
 
+    public AccountTestRecord withBillingCity(String billingCity) {
+        return (AccountTestRecord)this.withData(Account.BillingCity, billingCity);
+    }
+
     public AccountTestRecord withAChildContact() {
         this.withChild(
             SObjectTestDataBuilder.of(Contact.SObjectType),

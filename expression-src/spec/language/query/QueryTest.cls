@@ -11,7 +11,7 @@ private class QueryTest {
             registeredRecords.add(builder.registerNewForInsert());
         }
 
-        private FluentDataBuilder andGiven(ITestDataBuilder builder) {
+        private FluentDataBuilder andGivenAn(ITestDataBuilder builder) {
             registeredRecords.add(builder.registerNewForInsert());
             return this;
         }
@@ -116,7 +116,7 @@ private class QueryTest {
     @IsTest
     static void canOrderByASingleFieldWhenQuerying() {
         givenAn(AccountTestRecord.build().named('Z Account'))
-            .andGiven(AccountTestRecord.build().named('A Account'))
+            .andGivenAn(AccountTestRecord.build().named('A Account'))
             .inTheDatabase();
 
         String expr = 'QUERY(Account(OrderBy: Name) [Id, Name])';
@@ -131,7 +131,7 @@ private class QueryTest {
     @IsTest
     static void canOrderByRelationshipField() {
         givenAn(AccountTestRecord.any().withAChildContact(ContactTestRecord.build()).named('ZTest'))
-            .andGiven(AccountTestRecord.any().withAChildContact(ContactTestRecord.build()).named('ATest'))
+            .andGivenAn(AccountTestRecord.any().withAChildContact(ContactTestRecord.build()).named('ATest'))
             .inTheDatabase();
 
         String expr = 'QUERY(Contact(orderBy: Account.Name) [Id, Account.Name])';
@@ -144,56 +144,49 @@ private class QueryTest {
 
     @IsTest
     static void canOrderByAFieldAndExplicitlySpecifyAscending() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account');
-        Account aAccount = new Account(Name = 'A Account');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        insert accountsInDatabase;
+        givenAn(AccountTestRecord.build().named('Z Account'))
+            .andGivenAn(AccountTestRecord.build().named('A Account'))
+            .inTheDatabase();
 
         String expr = 'QUERY(Account(orderBy: Name ASC) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
-        Assert.areEqual(aAccount.Id, result[0].Id);
-        Assert.areEqual(zAccount.Id, result[1].Id);
+        Assert.areEqual('A Account', result[0].Name);
+        Assert.areEqual('Z Account', result[1].Name);
     }
 
     @IsTest
     static void canOrderByAFieldAndExplicitlySpecifyDescending() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account');
-        Account aAccount = new Account(Name = 'A Account');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        insert accountsInDatabase;
+        givenAn(AccountTestRecord.build().named('Z Account'))
+            .andGivenAn(AccountTestRecord.build().named('A Account'))
+            .inTheDatabase();
 
         String expr = 'QUERY(Account(orderBy: Name DESC) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
-        Assert.areEqual(zAccount.Id, result[0].Id);
-        Assert.areEqual(aAccount.Id, result[1].Id);
+        Assert.areEqual('Z Account', result[0].Name);
+        Assert.areEqual('A Account', result[1].Name);
     }
 
     @IsTest
     static void canOrderByMultipleFields() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account', BillingCity = 'Z City');
-        Account aAccount = new Account(Name = 'A Account', BillingCity = 'A City');
-        Account aAccount2 = new Account(Name = 'A Account', BillingCity = 'Z City');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        accountsInDatabase.add(aAccount2);
-        insert accountsInDatabase;
+        List<Account> accountsInDatabase = (List<Account>)givenAn(
+            AccountTestRecord.build().named('Z Account').withBillingCity('Z City')
+        ).andGivenAn(
+            AccountTestRecord.build().named('A Account').withBillingCity('A City')
+        ).andGivenAn(
+            AccountTestRecord.build().named('A Account').withBillingCity('Z City')
+        ).inTheDatabase().all;
 
         String expr = 'QUERY(Account(orderBy: [Name, BillingCity]) [Id, Name, BillingCity])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(3, result.size());
-        Assert.areEqual(aAccount.Id, result[0].Id);
-        Assert.areEqual(aAccount2.Id, result[1].Id);
-        Assert.areEqual(zAccount.Id, result[2].Id);
+        Assert.areEqual(accountsInDatabase[1].Id, result[0].Id);
+        Assert.areEqual(accountsInDatabase[2].Id, result[1].Id);
+        Assert.areEqual(accountsInDatabase[0].Id, result[2].Id);
     }
 
     @IsTest
