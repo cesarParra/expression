@@ -191,22 +191,21 @@ private class QueryTest {
 
     @IsTest
     static void canOrderByMultipleFields_withDirection() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account', BillingCity = 'Z City');
-        Account aAccount = new Account(Name = 'A Account', BillingCity = 'A City');
-        Account aAccount2 = new Account(Name = 'A Account', BillingCity = 'Z City');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        accountsInDatabase.add(aAccount2);
-        insert accountsInDatabase;
+        List<Account> accountsInDatabase = (List<Account>)givenAn(
+            AccountTestRecord.build().named('Z Account').withBillingCity('Z City')
+        ).andGivenAn(
+            AccountTestRecord.build().named('A Account').withBillingCity('A City')
+        ).andGivenAn(
+            AccountTestRecord.build().named('A Account').withBillingCity('Z City')
+        ).inTheDatabase().all;
 
         String expr = 'QUERY(Account(orderBy: [Name ASC, BillingCity DESC]) [Id, Name, BillingCity])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(3, result.size());
-        Assert.areEqual(aAccount2.Id, result[0].Id);
-        Assert.areEqual(aAccount.Id, result[1].Id);
-        Assert.areEqual(zAccount.Id, result[2].Id);
+        Assert.areEqual(accountsInDatabase[2].Id, result[0].Id);
+        Assert.areEqual(accountsInDatabase[1].Id, result[1].Id);
+        Assert.areEqual(accountsInDatabase[0].Id, result[2].Id);
     }
 
     @IsTest
