@@ -470,7 +470,8 @@ public virtual with sharing class Interpreter implements Visitor {
         return resultMap;
     }
 
-    public Object visit(Expr.Query query) {
-        return new QueryInterpreter(this.env).evaluateToQuery(query);
+    public virtual Object visit(Expr.Query query) {
+        Q querier = new QueryInterpreter(this.env).evaluateToQuery(query);
+        return QRunner.getInstance().run(querier);
     }
 }

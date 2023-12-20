@@ -1,11 +1,35 @@
 @IsTest
 private class QueryTest {
-    private static List<Account> givenAccounts() {
-        List<Account> accounts = new List<Account>();
-        for (Integer i = 0; i < 10; i++) {
-            accounts.add(new Account(Name = 'Test ' + i));
+    private class FluentDataBuilder {
+        private final List<SObject> registeredRecords = new List<SObject>();
+
+        public SObject first { get {return registeredRecords[0];} }
+
+        public List<SObject> all { get {return registeredRecords;} }
+
+        private FluentDataBuilder andGivenAn(ITestDataBuilder builder) {
+            registeredRecords.add(builder.registerNewForInsert());
+            return this;
         }
-        insert accounts;
+
+        private FluentDataBuilder inTheDatabase() {
+            SObjectTestDataBuilder.commitRecords();
+            return this;
+        }
+    }
+
+    private static FluentDataBuilder given() {
+        return new FluentDataBuilder();
+    }
+
+    private static FluentDataBuilder givenAn(ITestDataBuilder builder) {
+        return new FluentDataBuilder().andGivenAn(builder);
+    }
+
+    private static List<Account> given10Accounts() {
+        List<Account> accounts = (List<Account>) SObjectTestDataBuilder.of(Account.SObjectType)
+            .registerNewForInsert(10);
+        SObjectTestDataBuilder.commitRecords();
         return accounts;
     }
 
@@ -20,27 +44,27 @@ private class QueryTest {
 
     @IsTest
     static void canQueryAllRecordsOfAnSObject() {
-        List<Account> accounts = givenAccounts();
+        given10Accounts();
 
         String expr = 'QUERY(Account)';
         List<SObject> result = (List<SObject>) Evaluator.run(expr);
 
-        Assert.areEqual(accounts.size(), result.size());
+        Assert.areEqual(10, result.size());
     }
 
     @IsTest
     static void canQueryWithAnEmptySetOfNamedParameters() {
-        List<Account> accounts = givenAccounts();
+        given10Accounts();
 
         String expr = 'QUERY(Account())';
         List<SObject> result = (List<SObject>) Evaluator.run(expr);
 
-        Assert.areEqual(accounts.size(), result.size());
+        Assert.areEqual(10, result.size());
     }
 
     @IsTest
     static void canGetSpecificFieldsWhenQuerying_usingMergeFields() {
-        List<Account> accounts = givenAccounts();
+        List<Account> accounts = given10Accounts();
 
         String expr = 'QUERY(Account[Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -60,7 +84,7 @@ private class QueryTest {
 
     @IsTest
     static void canGetSpecificFieldsWhenQuerying_usingStrings() {
-        List<Account> accounts = givenAccounts();
+        List<Account> accounts = given10Accounts();
 
         String expr = 'QUERY(Account["Id", "Name"])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -75,16 +99,12 @@ private class QueryTest {
     @IsTest
     static void throwsAnExceptionIfAnyOfTheFieldsBeingQueriedDoNotEvaluateToAStringOrAMergeField() {
         String expr = 'Query(Account[Id, 1])';
-       runAndAssertRuntimeException(expr);
+        runAndAssertRuntimeException(expr);
     }
 
     @IsTest
     static void canQueryForRelationshipFields() {
-        Account account = new Account(Name = 'Test');
-        insert account;
-
-        Contact contact = new Contact(AccountId = account.Id, LastName = 'Test');
-        insert contact;
+        Account account = (Account) givenAn(AccountTestRecord.any().withAChildContact()).inTheDatabase().first;
 
         String expr = 'QUERY(Contact [Id, Account.Name])';
         List<Contact> result = (List<Contact>) Evaluator.run(expr);
@@ -95,116 +115,97 @@ private class QueryTest {
 
     @IsTest
     static void canOrderByASingleFieldWhenQuerying() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account');
-        Account aAccount = new Account(Name = 'A Account');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        insert accountsInDatabase;
+        givenAn(AccountTestRecord.build().named('Z Account'))
+            .andGivenAn(AccountTestRecord.build().named('A Account'))
+            .inTheDatabase();
 
         String expr = 'QUERY(Account(OrderBy: Name) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         // Order by is ascending by default
         Assert.areEqual(2, result.size());
-        Assert.areEqual(aAccount.Id, result[0].Id);
-        Assert.areEqual(zAccount.Id, result[1].Id);
+        Assert.areEqual('A Account', result[0].Name);
+        Assert.areEqual('Z Account', result[1].Name);
     }
 
     @IsTest
     static void canOrderByRelationshipField() {
-        Account account1 = new Account(Name = 'ZTest');
-        Account account2 = new Account(Name = 'ATest');
-        insert new List<Account>{
-            account1, account2
-        };
-
-        Contact zContact = new Contact(AccountId = account1.Id, LastName = 'ZTest');
-        Contact aContact = new Contact(AccountId = account2.Id, LastName = 'ATest');
-        insert new List<Contact>{
-            zContact, aContact
-        };
+        givenAn(AccountTestRecord.any().withAChildContact(ContactTestRecord.build()).named('ZTest'))
+            .andGivenAn(AccountTestRecord.any().withAChildContact(ContactTestRecord.build()).named('ATest'))
+            .inTheDatabase();
 
         String expr = 'QUERY(Contact(orderBy: Account.Name) [Id, Account.Name])';
         List<Contact> result = (List<Contact>) Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
-        Assert.areEqual(aContact.Id, result[0].Id);
-        Assert.areEqual(zContact.Id, result[1].Id);
+        Assert.areEqual('ATest', result[0].Account.Name);
+        Assert.areEqual('ZTest', result[1].Account.Name);
     }
 
     @IsTest
     static void canOrderByAFieldAndExplicitlySpecifyAscending() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account');
-        Account aAccount = new Account(Name = 'A Account');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        insert accountsInDatabase;
+        givenAn(AccountTestRecord.build().named('Z Account'))
+            .andGivenAn(AccountTestRecord.build().named('A Account'))
+            .inTheDatabase();
 
         String expr = 'QUERY(Account(orderBy: Name ASC) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
-        Assert.areEqual(aAccount.Id, result[0].Id);
-        Assert.areEqual(zAccount.Id, result[1].Id);
+        Assert.areEqual('A Account', result[0].Name);
+        Assert.areEqual('Z Account', result[1].Name);
     }
 
     @IsTest
     static void canOrderByAFieldAndExplicitlySpecifyDescending() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account');
-        Account aAccount = new Account(Name = 'A Account');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        insert accountsInDatabase;
+        givenAn(AccountTestRecord.build().named('Z Account'))
+            .andGivenAn(AccountTestRecord.build().named('A Account'))
+            .inTheDatabase();
 
         String expr = 'QUERY(Account(orderBy: Name DESC) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
-        Assert.areEqual(zAccount.Id, result[0].Id);
-        Assert.areEqual(aAccount.Id, result[1].Id);
+        Assert.areEqual('Z Account', result[0].Name);
+        Assert.areEqual('A Account', result[1].Name);
     }
 
     @IsTest
     static void canOrderByMultipleFields() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account', BillingCity = 'Z City');
-        Account aAccount = new Account(Name = 'A Account', BillingCity = 'A City');
-        Account aAccount2 = new Account(Name = 'A Account', BillingCity = 'Z City');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        accountsInDatabase.add(aAccount2);
-        insert accountsInDatabase;
+        List<Account> accountsInDatabase = (List<Account>) givenAn(
+            AccountTestRecord.build().named('Z Account').withBillingCity('Z City')
+        ).andGivenAn(
+            AccountTestRecord.build().named('A Account').withBillingCity('A City')
+        ).andGivenAn(
+            AccountTestRecord.build().named('A Account').withBillingCity('Z City')
+        ).inTheDatabase().all;
 
         String expr = 'QUERY(Account(orderBy: [Name, BillingCity]) [Id, Name, BillingCity])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(3, result.size());
-        Assert.areEqual(aAccount.Id, result[0].Id);
-        Assert.areEqual(aAccount2.Id, result[1].Id);
-        Assert.areEqual(zAccount.Id, result[2].Id);
+        Assert.areEqual(accountsInDatabase[1].Id, result[0].Id);
+        Assert.areEqual(accountsInDatabase[2].Id, result[1].Id);
+        Assert.areEqual(accountsInDatabase[0].Id, result[2].Id);
     }
 
     @IsTest
     static void canOrderByMultipleFields_withDirection() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account zAccount = new Account(Name = 'Z Account', BillingCity = 'Z City');
-        Account aAccount = new Account(Name = 'A Account', BillingCity = 'A City');
-        Account aAccount2 = new Account(Name = 'A Account', BillingCity = 'Z City');
-        accountsInDatabase.add(zAccount);
-        accountsInDatabase.add(aAccount);
-        accountsInDatabase.add(aAccount2);
-        insert accountsInDatabase;
+        List<Account> accountsInDatabase = (List<Account>) givenAn(
+            AccountTestRecord.build().named('Z Account').withBillingCity('Z City')
+        ).andGivenAn(
+            AccountTestRecord.build().named('A Account').withBillingCity('A City')
+        ).andGivenAn(
+            AccountTestRecord.build().named('A Account').withBillingCity('Z City')
+        ).inTheDatabase().all;
 
         String expr = 'QUERY(Account(orderBy: [Name ASC, BillingCity DESC]) [Id, Name, BillingCity])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(3, result.size());
-        Assert.areEqual(aAccount2.Id, result[0].Id);
-        Assert.areEqual(aAccount.Id, result[1].Id);
-        Assert.areEqual(zAccount.Id, result[2].Id);
+        Assert.areEqual(accountsInDatabase[2].Id, result[0].Id);
+        Assert.areEqual(accountsInDatabase[1].Id, result[1].Id);
+        Assert.areEqual(accountsInDatabase[0].Id, result[2].Id);
     }
 
     @IsTest
@@ -226,11 +227,7 @@ private class QueryTest {
 
     @IsTest
     static void canLimitTheNumberOfRecordsReturned() {
-        List<Account> accountsInDatabase = new List<Account>();
-        for (Integer i = 0; i < 10; i++) {
-            accountsInDatabase.add(new Account(Name = 'Test ' + i));
-        }
-        insert accountsInDatabase;
+        given10Accounts();
 
         String expr = 'QUERY(Account(limit: 5) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -246,11 +243,11 @@ private class QueryTest {
 
     @IsTest
     static void canHaveBothAnOrderByAndALimit() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
-            accountsInDatabase.add(new Account(Name = 'Test ' + i));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named('Test ' + i));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(orderBy: Name DESC, limit: 5) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -265,11 +262,11 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereCondition_singleEquals() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
-            accountsInDatabase.add(new Account(Name = 'Test ' + i));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named('Test ' + i));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: Name = "Test 5") [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -286,11 +283,11 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereCondition_doubleEquals() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
-            accountsInDatabase.add(new Account(Name = 'Test ' + i));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named('Test ' + i));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: Name == "Test 5") [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -301,11 +298,11 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereCondition_greaterThan() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
-            accountsInDatabase.add(new Account(Name = 'Test ' + i, NumberOfEmployees = i));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named('Test ' + i).withNumberOfEmployees(i));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees > 5) [Id, Name, NumberOfEmployees])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -319,11 +316,11 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereCondition_greaterThanOrEqual() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
-            accountsInDatabase.add(new Account(Name = 'Test ' + i, NumberOfEmployees = i));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named('Test ' + i).withNumberOfEmployees(i));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees >= 5) [Id, Name, NumberOfEmployees])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -338,11 +335,11 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereCondition_lessThan() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
-            accountsInDatabase.add(new Account(Name = 'Test ' + i, NumberOfEmployees = i));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named('Test ' + i).withNumberOfEmployees(i));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees < 5) [Id, Name, NumberOfEmployees])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -357,11 +354,11 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereCondition_lessThanOrEquals() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
-            accountsInDatabase.add(new Account(Name = 'Test ' + i, NumberOfEmployees = i));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named('Test ' + i).withNumberOfEmployees(i));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees <= 5) [Id, Name, NumberOfEmployees])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -377,11 +374,11 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereCondition_notEquals_bangEquals() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
-            accountsInDatabase.add(new Account(Name = 'Test ' + i, NumberOfEmployees = i));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named('Test ' + i).withNumberOfEmployees(i));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees != 5) [Id, Name, NumberOfEmployees])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -400,11 +397,11 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereCondition_notEquals_lessGreater() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
-            accountsInDatabase.add(new Account(Name = 'Test ' + i, NumberOfEmployees = i));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named('Test ' + i).withNumberOfEmployees(i));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees <> 5) [Id, Name, NumberOfEmployees])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -435,15 +432,15 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereConditionWithALikeFunction_usingPercentWildcard() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
             String name = 'Test ' + i;
             if (i == 5) {
                 name = 'Test 5 - 6';
             }
-            accountsInDatabase.add(new Account(Name = name));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named(name));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: LIKE(Name, "Test 5%")) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -454,15 +451,15 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereConditionWithALikeFunction_usingUnderscoreWildcard() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
             String name = 'Test ' + i;
             if (i == 5) {
                 name = 'Test 5 - 6';
             }
-            accountsInDatabase.add(new Account(Name = name));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named(name));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: LIKE(Name, "_est 5 - 6")) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -473,21 +470,20 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereConditionWithAnIsInClause() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account account1 = new Account(Name = 'Test 1');
-        Account account2 = new Account(Name = 'Test 2');
-        Account account3 = new Account(Name = 'Test 3');
-        accountsInDatabase.add(account1);
-        accountsInDatabase.add(account2);
-        accountsInDatabase.add(account3);
-        insert accountsInDatabase;
+        List<Account> accountsInDatabase = (List<Account>) givenAn(
+            AccountTestRecord.build().named('Test 1')
+        ).andGivenAn(
+            AccountTestRecord.build().named('Test 2')
+        ).andGivenAn(
+            AccountTestRecord.build().named('Test 3')
+        ).inTheDatabase().all;
 
-        String expr = 'QUERY(Account(where: IsIn(Id,  ["' + account1.Id + '", "' + account2.Id + '"])) [Id, Name])';
+        String expr = 'QUERY(Account(where: IsIn(Id,  ["' + accountsInDatabase[0].Id + '", "' + accountsInDatabase[1].Id + '"])) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
-        Assert.areEqual(account1.Id, result[0].Id);
-        Assert.areEqual(account2.Id, result[1].Id);
+        Assert.areEqual('Test 1', result[0].Name);
+        Assert.areEqual('Test 2', result[1].Name);
     }
 
     @IsTest
@@ -510,20 +506,19 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereConditionWithAnIsNotInClause() {
-        List<Account> accountsInDatabase = new List<Account>();
-        Account account1 = new Account(Name = 'Test 1');
-        Account account2 = new Account(Name = 'Test 2');
-        Account account3 = new Account(Name = 'Test 3');
-        accountsInDatabase.add(account1);
-        accountsInDatabase.add(account2);
-        accountsInDatabase.add(account3);
-        insert accountsInDatabase;
+        List<Account> accountsInDatabase = (List<Account>) givenAn(
+            AccountTestRecord.build().named('Test 1')
+        ).andGivenAn(
+            AccountTestRecord.build().named('Test 2')
+        ).andGivenAn(
+            AccountTestRecord.build().named('Test 3')
+        ).inTheDatabase().all;
 
-        String expr = 'QUERY(Account(where: IsNotIn(Id,  ["' + account1.Id + '", "' + account2.Id + '"])) [Id, Name])';
+        String expr = 'QUERY(Account(where: IsNotIn(Id,  ["' + accountsInDatabase[0].Id + '", "' + accountsInDatabase[1].Id + '"])) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
-        Assert.areEqual(account3.Id, result[0].Id);
+        Assert.areEqual('Test 3', result[0].Name);
     }
 
     @IsTest
@@ -546,20 +541,20 @@ private class QueryTest {
 
     @IsTest
     static void canUsePipesWhenUsingWhereFunctions() {
-        Account someAccount = new Account(Name = 'Test');
-        insert someAccount;
+        givenAn(AccountTestRecord.build().named('Test'))
+            .inTheDatabase();
 
         String expr = 'QUERY(Account(where: Name -> ISIN(["Test"])) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
-        Assert.areEqual(someAccount.Id, result[0].Id);
+        Assert.areEqual('Test', result[0].Name);
     }
 
     @IsTest
     static void canUseTheIsNullFunctionInAWhereClause() {
-        Account someAccount = new Account(Name = 'Test');
-        insert someAccount;
+        givenAn(AccountTestRecord.build().named('Test'))
+            .inTheDatabase();
 
         String expr = 'QUERY(Account(where: ISNULL(Name)) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -575,14 +570,13 @@ private class QueryTest {
 
     @IsTest
     static void canUseTheIsNotNullFunctionInAWhereClause() {
-        Account someAccount = new Account(Name = 'Test');
-        insert someAccount;
+        givenAn(AccountTestRecord.build().named('Test'))
+            .inTheDatabase();
 
         String expr = 'QUERY(Account(where: ISNOTNULL(Name)) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
-        Assert.areEqual(someAccount.Id, result[0].Id);
     }
 
     @IsTest
@@ -593,12 +587,12 @@ private class QueryTest {
 
     @IsTest
     static void canSpecifyAnOffSet() {
-        List<Account> accountsInDatabase = new List<Account>();
+        FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
             String name = 'Test ' + i;
-            accountsInDatabase.add(new Account(Name = name));
+            dataBuilder.andGivenAn(AccountTestRecord.build().named(name));
         }
-        insert accountsInDatabase;
+        dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(offset: 5, orderBy: Name) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
@@ -631,14 +625,13 @@ private class QueryTest {
 
     @IsTest
     static void supportsMultipleAndConditionsThroughAmpOperator_withMultipleConditions() {
-        Account someAccount = new Account(Name = 'Test', NumberOfEmployees = 5, AnnualRevenue = 1000);
-        insert someAccount;
+        givenAn(AccountTestRecord.build().named('Test').withNumberOfEmployees(5).withAnnualRevenue(1000))
+            .inTheDatabase();
 
         String expr = 'QUERY(Account(where: Name = "Test" && NumberOfEmployees = 5 && AnnualRevenue = 1000) [Id, Name])';
         List<Account> result = (List<Account>) Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
-        Assert.areEqual(someAccount.Id, result[0].Id);
     }
 
     @IsTest
@@ -837,5 +830,55 @@ private class QueryTest {
     static void cannotUseAnyFunctionOutsideOfWhere() {
         String expr = 'QUERY(Account(where: Name = "Test", offset: SIZE([1])))';
         runAndAssertRuntimeException(expr);
+    }
+
+    @IsTest
+    static void allowsForSubqueries() {
+        givenAn(AccountTestRecord.any().withAChildContact()).inTheDatabase();
+
+        String expr = 'QUERY(Account[Id, Query(Contacts)])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(1, result[0].Contacts.size());
+    }
+
+    @IsTest
+    static void allowsForSubqueriesWithLimits() {
+        givenAn(AccountTestRecord.any().withChildContacts(2)).inTheDatabase();
+
+        String expr = 'QUERY(Account[Id, Query(Contacts(limit: 1))])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(1, result[0].Contacts.size());
+    }
+
+    @IsTest
+    static void allowsForSubqueriesWithWhereClauses() {
+        givenAn(AccountTestRecord.any()
+            .withAChildContact(ContactTestRecord.build().withLastName('Test 1'))
+            .withAChildContact(ContactTestRecord.build().withLastName('Test 2'))
+        )
+            .inTheDatabase();
+
+        String expr = 'QUERY(Account[Id, Query(Contacts(where: LastName = "Test 1"))])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(1, result[0].Contacts.size());
+    }
+
+    @IsTest
+    static void allowsForSubqueriesWithQueriedFields() {
+        givenAn(AccountTestRecord.any().withAChildContact()).inTheDatabase();
+
+        String expr = 'QUERY(Account[Id, Query(Contacts[Id, LastName])])';
+        List<Account> result = (List<Account>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual(1, result[0].Contacts.size());
+        Assert.isNotNull(result[0].Contacts[0].Id);
+        Assert.isNotNull(result[0].Contacts[0].LastName);
     }
 }

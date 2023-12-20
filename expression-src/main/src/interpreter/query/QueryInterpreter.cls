@@ -1,12 +1,23 @@
 public with sharing class QueryInterpreter extends Interpreter {
     private Boolean isWhereContext = false;
+    private SObjectType objectType;
 
     public QueryInterpreter(Environment environment) {
         super(environment);
     }
 
-    public List<SObject> evaluateToQuery(Expr.Query query) {
-        Q querier = new Q(query.sObjectType.lexeme);
+    public Q evaluateToQuery(Expr.Query query) {
+        objectType = Schema.getGlobalDescribe().get(query.sObjectType.lexeme);
+        if (objectType == null) {
+            throw new Exceptions.RuntimeException(query.sObjectType,
+                'Unknown sObject type: ' + query.sObjectType.lexeme);
+        }
+
+        return buildQ(query.sObjectType.lexeme, query);
+    }
+
+    private Q buildQ(String sObjectToQuery, Expr.Query query) {
+        Q querier = new Q(sObjectToQuery);
 
         if (query.fieldsExpression != null) {
             Object evaluatedFieldsExpression = evaluate(query.fieldsExpression);
@@ -16,11 +27,16 @@ public with sharing class QueryInterpreter extends Interpreter {
             }
 
             for (Object field : (List<Object>) evaluatedFieldsExpression) {
-                if (!(field instanceof String)) {
+                if (!(field instanceof String) && !(field instanceof Q)) {
                     throw new Exceptions.RuntimeException(query.sObjectType,
-                        'Each field must evaluate to a string or a merge field.');
+                        'Each field must evaluate to a string, a merge field or a sub query.');
                 }
-                querier.selectField((String) field);
+
+                if (field instanceof Q) {
+                    querier.addSubquery((Q) field);
+                } else {
+                    querier.selectField((String) field);
+                }
             }
         }
 
@@ -28,9 +44,9 @@ public with sharing class QueryInterpreter extends Interpreter {
             // Each Order by will be a binary expression, containing
             // an expression that evaluates to the field name to order by
             // and the QOrder.SortOrder for the direction.
-            Expr.Binary orderBy = (Expr.Binary)orderByExpr;
+            Expr.Binary orderBy = (Expr.Binary) orderByExpr;
             Object orderByResult = evaluate(orderBy.left);
-            QOrder.SortOrder sortOrder = (QOrder.SortOrder)evaluate(orderBy.right);
+            QOrder.SortOrder sortOrder = (QOrder.SortOrder) evaluate(orderBy.right);
 
             // Must evaluate to a string (or a merge field, which resolves as a string in this interpreter)
             if (!(orderByResult instanceof String)) {
@@ -71,7 +87,7 @@ public with sharing class QueryInterpreter extends Interpreter {
             querier.addOffset(((Decimal) offsetResult).intValue());
         }
 
-        return QRunner.getInstance().run(querier);
+        return querier;
     }
 
     public override Object visit(Expr.Logical logical) {
@@ -175,6 +191,10 @@ public with sharing class QueryInterpreter extends Interpreter {
     public override Object visit(Expr.GetExpr getExpr) {
         String field = getExpr.field.lexeme;
         return evaluate(getExpr.objectExpr) + '.' + field;
+    }
+
+    public override Object visit(Expr.Query query) {
+        return buildQ(query.sObjectType.lexeme, query);
     }
 
     public override Object visit(Expr.FunctionCall function) {
