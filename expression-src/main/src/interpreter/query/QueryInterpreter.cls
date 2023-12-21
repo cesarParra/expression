@@ -210,7 +210,8 @@ public with sharing class QueryInterpreter extends Interpreter {
             'ISNULL' => new IsNullFn(),
             'ISNOTNULL' => new IsNotNullFn(),
             'AND' => new AndFn(),
-            'OR' => new OrFn()
+            'OR' => new OrFn(),
+            'DATETIMEVALUE' => new DateAndTimeFunctions.DateAndTimeFunctionsProvider().getFunctions().get('DATETIMEVALUE')
         };
 
         String functionName = function.functionToken.lexeme.toUpperCase();

@@ -881,4 +881,18 @@ private class QueryTest {
         Assert.isNotNull(result[0].Contacts[0].Id);
         Assert.isNotNull(result[0].Contacts[0].LastName);
     }
+
+    @IsTest
+    static void canQueryUsingADateTimeFunction() {
+        givenAn(
+            EventTestRecord.build().withAStartTimeOf(Date.newInstance(2021, 1, 1)))
+            .inTheDatabase();
+
+       String expr = 'QUERY(Event(where: StartDateTime > DATETIMEVALUE("2020-01-01 00:00:00")) [Id, StartDateTime])';
+         List<Event> result = (List<Event>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+    }
 }
+
+// TODO: Test to write: LET and variable suppport
