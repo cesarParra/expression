@@ -25,6 +25,10 @@ public with sharing class ContactTestRecord extends SObjectTestDataBuilder imple
         return (ContactTestRecord) this.withData(Contact.LastName, name);
     }
 
+    public ContactTestRecord bornOn(Date d) {
+        return (ContactTestRecord) this.withData(Contact.Birthdate, d);
+    }
+
     public ContactTestRecord withChild(ITestDataBuilder childBuilder, SObjectField relationshipField) {
         return (ContactTestRecord)this.withChildData(childBuilder, relationshipField);
     }

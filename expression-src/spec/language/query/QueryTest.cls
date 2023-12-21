@@ -893,6 +893,54 @@ private class QueryTest {
 
         Assert.areEqual(1, result.size());
     }
+
+    @IsTest
+    static void canQueryUsingTheNowFunction() {
+        givenAn(
+            EventTestRecord.build().withAStartTimeOf(Date.newInstance(2021, 1, 1)))
+            .inTheDatabase();
+
+       String expr = 'QUERY(Event(where: StartDateTime < NOW()) [Id, StartDateTime])';
+         List<Event> result = (List<Event>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+    }
+
+    @IsTest
+    static void canQueryUsingADateFunction_date() {
+        givenAn(
+            ContactTestRecord.build().bornOn(Date.newInstance(2021, 1, 1))
+        ).inTheDatabase();
+
+       String expr = 'QUERY(Contact(where: Birthdate > DATE(2020, 1, 1)) [Id, Birthdate])';
+         List<Contact> result = (List<Contact>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+    }
+
+    @IsTest
+    static void canQueryUsingADateFunction_dateValue() {
+        givenAn(
+            ContactTestRecord.build().bornOn(Date.newInstance(2021, 1, 1))
+        ).inTheDatabase();
+
+        String expr = 'QUERY(Contact(where: Birthdate > DATEVALUE("2020-01-01")) [Id, Birthdate])';
+        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+    }
+
+    @IsTest
+    static void canQueryUsingTheTodayFunction() {
+        givenAn(
+            ContactTestRecord.build().bornOn(Date.newInstance(2021, 1, 1))
+        ).inTheDatabase();
+
+        String expr = 'QUERY(Contact(where: Birthdate < TODAY()) [Id, Birthdate])';
+        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+    }
 }
 
 // TODO: Test to write: LET and variable suppport

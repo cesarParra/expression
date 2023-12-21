@@ -426,12 +426,12 @@ expression.Evaluator.run('DATEVALUE(NOW())'); // 2020-01-01
 
 - `DATETIMEVALUE`
 
-Returns a datetime value from a string representation of a date.
+Returns a datetime value from a string representation of a date time.
 
-Accepts 1 argument: the date as a string.
+Accepts 1 argument: the date time as a string.
 
 ```apex
-expression.Evaluator.run('DATETIMEVALUE("2020-01-01")'); // 2020-01-01 00:00:00
+expression.Evaluator.run('DATETIMEVALUE("2020-01-01 00:00:00")'); // 2020-01-01 00:00:00
 ```
 
 - `DATETIMEFORMAT`

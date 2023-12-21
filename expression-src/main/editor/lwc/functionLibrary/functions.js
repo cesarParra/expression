@@ -339,9 +339,9 @@ export const data = [
       {
         "name": "DATETIMEVALUE",
         "autoCompleteValue": "DATETIMEVALUE(",
-        "description": "Returns a datetime value from a string representation of a date.<br/>Accepts 1 argument: the date as a string.",
+        "description": "Returns a datetime value from a string representation of a date time.<br/>Accepts 1 argument: the date time as a string.",
         "examples": [
-          "DATETIMEVALUE(\"2020-01-01\") // 2020-01-01 00:00:00"
+          "DATETIMEVALUE(\"2020-01-01 00:00:00\") // 2020-01-01 00:00:00"
         ],
         "icon": "utility:date_input"
       },
