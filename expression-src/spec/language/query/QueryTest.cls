@@ -941,6 +941,23 @@ private class QueryTest {
 
         Assert.areEqual(1, result.size());
     }
-}
 
-// TODO: Test to write: LET and variable suppport
+    @IsTest
+    static void canCombineQueriesWithLetToUseCustomVariables() {
+        givenAn(AccountTestRecord.build().named('Account 1').withAnnualRevenue(1000))
+            .andGivenAn(AccountTestRecord.build().named('Account 2').withAnnualRevenue(2000))
+            .andGivenAn(AccountTestRecord.build().named('Account 3').withAnnualRevenue(3000))
+            .inTheDatabase();
+
+        String expr = 'LET(\n' +
+            '    {\n' +
+            '        "$averageAnnualRevenue": Query(Account[AnnualRevenue]) -> MAP(AnnualRevenue) -> AVERAGE()\n' +
+            '    },\n' +
+            '    Query(Account(where: AnnualRevenue > $averageAnnualRevenue)[Name]) -> MAP(Name)\n' +
+            ')';
+        List<Object> result = (List<Object>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual('Account 3', result[0]);
+    }
+}
