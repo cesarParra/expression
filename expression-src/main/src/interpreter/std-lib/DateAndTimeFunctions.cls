@@ -211,12 +211,12 @@ public with sharing class DateAndTimeFunctions {
     }
 
     /**
-     * @description Returns a datetime value from a string representation of a date.
+     * @description Returns a datetime value from a string representation of a date time.
      *
-     * Accepts 1 argument: the date as a string.
+     * Accepts 1 argument: the date time as a string.
      * @function DATETIMEVALUE
      * @example
-     * DATETIMEVALUE("2020-01-01") // 2020-01-01 00:00:00
+     * DATETIMEVALUE("2020-01-01 00:00:00") // 2020-01-01 00:00:00
      */
     private class DateTimeValueFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {

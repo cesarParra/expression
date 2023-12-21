@@ -1,7 +1,7 @@
 @IsTest
-public with sharing class ContactTestRecord extends SObjectTestDataBuilder implements ITestDataBuilder {
-    public static ContactTestRecord build() {
-        return new ContactTestRecord();
+public with sharing class EventTestRecord extends SObjectTestDataBuilder implements ITestDataBuilder {
+    public static EventTestRecord build() {
+        return new EventTestRecord();
     }
 
     public ITestDataBuilder with(SObjectField field, Object value) {
@@ -10,23 +10,19 @@ public with sharing class ContactTestRecord extends SObjectTestDataBuilder imple
     }
 
     public override SObjectType getSObjectType() {
-        return Contact.SObjectType;
+        return Event.SObjectType;
     }
 
-    public Contact registerNewForInsert() {
-        return (Contact)this.registerSObjectForInsert();
+    public Event registerNewForInsert() {
+        return (Event)this.registerSObjectForInsert();
     }
 
     public List<SObject> registerNewForInsert(Integer numberOfRecords) {
         return this.registerSObjectsForInsert(numberOfRecords);
     }
 
-    public ContactTestRecord withLastName(String name) {
-        return (ContactTestRecord) this.withData(Contact.LastName, name);
-    }
-
-    public ContactTestRecord bornOn(Date d) {
-        return (ContactTestRecord) this.withData(Contact.Birthdate, d);
+    public EventTestRecord withAStartTimeOf(Datetime startTime) {
+        return (EventTestRecord) this.withData(Event.StartDateTime, startTime);
     }
 
     public ContactTestRecord withChild(ITestDataBuilder childBuilder, SObjectField relationshipField) {
@@ -35,7 +31,7 @@ public with sharing class ContactTestRecord extends SObjectTestDataBuilder imple
 
     protected override Map<SObjectField, Object> getDefaultValueMap() {
         return new Map<SObjectField, Object> {
-            Contact.LastName => 'Perez'
+            Event.DurationInMinutes => 60
         };
     }
 }

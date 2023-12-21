@@ -203,6 +203,7 @@ public with sharing class QueryInterpreter extends Interpreter {
                 'Functions are not supported in a Query context outside of a where clause.');
         }
 
+        Map<String, ExpressionFunction> dateAndTimeFunctions = new DateAndTimeFunctions.DateAndTimeFunctionsProvider().getFunctions();
         Map<String, ExpressionFunction> supportedWhereFunctions = new Map<String, ExpressionFunction> {
             'LIKE' => new LikeFn(),
             'ISIN' => new IsInFn(),
@@ -210,7 +211,12 @@ public with sharing class QueryInterpreter extends Interpreter {
             'ISNULL' => new IsNullFn(),
             'ISNOTNULL' => new IsNotNullFn(),
             'AND' => new AndFn(),
-            'OR' => new OrFn()
+            'OR' => new OrFn(),
+            'DATETIMEVALUE' => dateAndTimeFunctions.get('DATETIMEVALUE'),
+            'DATEVALUE' => dateAndTimeFunctions.get('DATEVALUE'),
+            'DATE' => dateAndTimeFunctions.get('DATE'),
+            'TODAY' => dateAndTimeFunctions.get('TODAY'),
+            'NOW' => dateAndTimeFunctions.get('NOW')
         };
 
         String functionName = function.functionToken.lexeme.toUpperCase();

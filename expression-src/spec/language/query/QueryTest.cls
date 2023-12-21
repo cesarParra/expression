@@ -881,4 +881,83 @@ private class QueryTest {
         Assert.isNotNull(result[0].Contacts[0].Id);
         Assert.isNotNull(result[0].Contacts[0].LastName);
     }
+
+    @IsTest
+    static void canQueryUsingADateTimeFunction() {
+        givenAn(
+            EventTestRecord.build().withAStartTimeOf(Date.newInstance(2021, 1, 1)))
+            .inTheDatabase();
+
+       String expr = 'QUERY(Event(where: StartDateTime > DATETIMEVALUE("2020-01-01 00:00:00")) [Id, StartDateTime])';
+         List<Event> result = (List<Event>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+    }
+
+    @IsTest
+    static void canQueryUsingTheNowFunction() {
+        givenAn(
+            EventTestRecord.build().withAStartTimeOf(Date.newInstance(2021, 1, 1)))
+            .inTheDatabase();
+
+       String expr = 'QUERY(Event(where: StartDateTime < NOW()) [Id, StartDateTime])';
+         List<Event> result = (List<Event>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+    }
+
+    @IsTest
+    static void canQueryUsingADateFunction_date() {
+        givenAn(
+            ContactTestRecord.build().bornOn(Date.newInstance(2021, 1, 1))
+        ).inTheDatabase();
+
+       String expr = 'QUERY(Contact(where: Birthdate > DATE(2020, 1, 1)) [Id, Birthdate])';
+         List<Contact> result = (List<Contact>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+    }
+
+    @IsTest
+    static void canQueryUsingADateFunction_dateValue() {
+        givenAn(
+            ContactTestRecord.build().bornOn(Date.newInstance(2021, 1, 1))
+        ).inTheDatabase();
+
+        String expr = 'QUERY(Contact(where: Birthdate > DATEVALUE("2020-01-01")) [Id, Birthdate])';
+        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+    }
+
+    @IsTest
+    static void canQueryUsingTheTodayFunction() {
+        givenAn(
+            ContactTestRecord.build().bornOn(Date.newInstance(2021, 1, 1))
+        ).inTheDatabase();
+
+        String expr = 'QUERY(Contact(where: Birthdate < TODAY()) [Id, Birthdate])';
+        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+    }
+
+    @IsTest
+    static void canCombineQueriesWithLetToUseCustomVariables() {
+        givenAn(AccountTestRecord.build().named('Account 1').withAnnualRevenue(1000))
+            .andGivenAn(AccountTestRecord.build().named('Account 2').withAnnualRevenue(2000))
+            .andGivenAn(AccountTestRecord.build().named('Account 3').withAnnualRevenue(3000))
+            .inTheDatabase();
+
+        String expr = 'LET(\n' +
+            '    {\n' +
+            '        "$averageAnnualRevenue": Query(Account[AnnualRevenue]) -> MAP(AnnualRevenue) -> AVERAGE()\n' +
+            '    },\n' +
+            '    Query(Account(where: AnnualRevenue > $averageAnnualRevenue)[Name]) -> MAP(Name)\n' +
+            ')';
+        List<Object> result = (List<Object>) Evaluator.run(expr);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual('Account 3', result[0]);
+    }
 }
