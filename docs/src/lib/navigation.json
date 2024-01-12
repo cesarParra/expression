@@ -57,8 +57,8 @@
         "href": "/docs/string-interpolation"
       },
       {
-        "title": "Fetching Record Data",
-        "href": "/docs/fetching-record-data"
+        "title": "Querying Record Data",
+        "href": "/docs/querying-record-data"
       },
       {
         "title": "Reference Org Data",
