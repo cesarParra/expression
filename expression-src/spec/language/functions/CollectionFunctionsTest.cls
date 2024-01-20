@@ -165,7 +165,7 @@ private class CollectionFunctionsTest {
             account1, account2, account3
         };
 
-        List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")');
+        List<Object> result = (List<Object>) Evaluator.run('QUERY(Account[Name]) -> SORT("Name")');
 
         Assert.areEqual(3, result.size());
         Assert.areEqual('A', ((Account) result[0]).Name);
@@ -183,7 +183,7 @@ private class CollectionFunctionsTest {
             account1, account2, account3
         };
 
-        List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name", "desc")');
+        List<Object> result = (List<Object>) Evaluator.run('QUERY(Account["Name"]) -> SORT("Name", "desc")');
 
         Assert.areEqual(3, result.size());
         Assert.areEqual('C', ((Account) result[0]).Name);
@@ -201,7 +201,7 @@ private class CollectionFunctionsTest {
             account1, account2, account3
         };
 
-        List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name", "asc")');
+        List<Object> result = (List<Object>) Evaluator.run('QUERY(Account[Name]) -> SORT("Name", "asc")');
 
         Assert.areEqual(3, result.size());
         Assert.areEqual('A', ((Account) result[0]).Name);
@@ -220,7 +220,7 @@ private class CollectionFunctionsTest {
             account1, account2, account3, account4
         };
 
-        List<Object> result = (List<Object>) Evaluator.run('FETCH("Account", ["Name", "NumberOfEmployees"]) -> SORT("NumberOfEmployees")');
+        List<Object> result = (List<Object>) Evaluator.run('Query(Account["Name", "NumberOfEmployees"]) -> SORT("NumberOfEmployees")');
 
         Assert.areEqual(4, result.size());
         Assert.areEqual('A', ((Account) result[0]).Name);
@@ -284,7 +284,7 @@ private class CollectionFunctionsTest {
         Account account = new Account(Name = 'Test');
         insert account;
 
-        String formula = 'FETCH("Account", ["Name"]) -> FIRST() -> GET("Name")';
+        String formula = 'QUERY(Account["Name"]) -> FIRST() -> GET("Name")';
         Object result = Evaluator.run(formula);
 
         Assert.areEqual('Test', result);
@@ -390,18 +390,6 @@ private class CollectionFunctionsTest {
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Child3', result[0]);
-    }
-
-    @IsTest
-    private static void fetchAllowsForQueryingTheDatabase() {
-        Account account = new Account(Name = 'Test');
-        insert account;
-
-        Object result = Evaluator.run('FETCH("ACCOUNT", ["Id", "Name"]) -> MAP({"Id": Id, "Name": Name})');
-
-        Assert.areEqual(1, ((List<Object>) result).size());
-        Assert.areEqual(account.Id, ((Map<Object, Object>) ((List<Object>) result)[0]).get('Id'));
-        Assert.areEqual(account.Name, ((Map<Object, Object>) ((List<Object>) result)[0]).get('Name'));
     }
 
     @IsTest
