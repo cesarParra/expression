@@ -13,7 +13,7 @@ when the data you want to use is not provided as part of the context.
 
 {% callout %}
 Note that not all `Expression` functions can be used within a `QUERY` function. Only the following functions specified throughout
-this page are supported.
+this page are supported, and these are only supported within the `where` filter.
 {% /callout %}
 
 The `QUERY` function behaves differently than other functions. Instead of taking a list of arguments, it supports
@@ -53,6 +53,30 @@ QUERY(Account(where: NumberOfEmployees > 5) [Id, Name, NumberOfEmployees])
 QUERY(Account(where: NumberOfEmployees >= 5) [Id, Name, NumberOfEmployees])
 ...
 ```
+
+`where` filters also support the `&&` and `||` operators to combine multiple conditions.
+
+```
+QUERY(Account(where: Name = "Acme" && NumberOfEmployees > 5))
+```
+
+Alternatively, you can also use the `AND` and `OR` functions.
+
+```
+QUERY(Account(where: AND(Name = "Acme", NumberOfEmployees > 5)))
+```
+
+Besides `AND` and `OR`, other supported functions within a `where` filter are:
+* `LIKE`
+* `ISIN`
+* `ISNOTIN`
+* `ISNULL`
+* `ISNOTNULL`
+* `DATETIMEVALUE`
+* `DATEVALUE`
+* `DATE`
+* `TODAY`
+* `NOW`
 
 #### LIKE
 
@@ -134,10 +158,33 @@ QUERY(Contact[
 
 The fields can either be string literals (quoted) or the field references (no quotes).
 
+## Subqueries
 
-Note that when using this function, the automatic context resolution is not performed, so you need to
-explicitly specify all fields you wish to reference in the formula.
+Subqueries can be used to query related records. Subqueries are specified by using the `QUERY` function within the field list.
 
-At this moment, advanced querying capabilities like filtering, sorting, or limiting the number of records
-are not supported. To get over these limitations, you can create a custom formula using Apex. See the
-[Advanced Usage](./../docs/custom-functions) section for more information.
+```
+QUERY(Account[
+        Id,
+        Name,
+        QUERY(Contacts[Id, FirstName, LastName])
+    ]
+)
+```
+
+Within a subquery, you can also specify any of the filters supported by the `QUERY` function.
+
+## Using variables
+
+Even though a QUERY context only support a subset of the `Expression` functions, you can still use variables within the query.
+This allows you to build dynamic queries based on your custom logic.
+
+```
+LET(
+    {
+        "$averageAnnualRevenue": Query(Account[AnnualRevenue]) 
+            -> MAP(AnnualRevenue) 
+            -> AVERAGE()
+    },
+    Query(Account(where: AnnualRevenue > $averageAnnualRevenue)[Name]) -> MAP(Name)
+)
+```
