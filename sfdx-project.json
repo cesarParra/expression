@@ -2,10 +2,11 @@
   "packageDirectories": [
     {
       "path": "expression-src",
-      "package": "Expression (Unlocked)",
-      "versionName": "Version 1.29",
-      "versionNumber": "1.29.0.NEXT",
-      "default": false
+      "package": "Expression",
+      "versionName": "Version 1.0",
+      "versionNumber": "1.0.0.NEXT",
+      "default": false,
+      "versionDescription": "Expression core language"
     },
     {
       "path": "expression-components",
@@ -30,13 +31,7 @@
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "58.0",
   "packageAliases": {
-    "Expression (Unlocked)": "0HoDm000000XZKSKA4",
-    "Expression Components": "0HoDm000000XZKhKAO",
-    "Expression Components@1.4.0-1": "04tDm000000tLLkIAM",
-    "Expression Components@1.5.0-1": "04tDm000000tLLuIAM",
-    "Expression (Unlocked)@1.27.0-1": "04tDm000000tLMEIA2",
-    "Expression Components@1.6.0-1": "04tDm000000tLMJIA2",
-    "Expression (Unlocked)@1.28.0-1": "04tDm000000tLMOIA2",
-    "Expression (Unlocked)@1.29.0-1": "04tDm000000tLMTIA2"
+    "Expression": "0HoHu000000TNMAKA4",
+    "Expression@1.0.0-1": "04tHu000003OVu3IAG"
   }
 }

@@ -3,11 +3,13 @@ import nodes from "./nodes";
 
 const IS_PROD = process.env.NODE_ENV === 'production'
 
-export default {
+const variables = {
   tags,
   nodes,
   variables: {
-    packageId: "04t",
+    packageId: "04tHu000003OVu3IAG",
     urlPrefix: IS_PROD ? "/expression" : "",
   }
 }
+
+export default variables;
