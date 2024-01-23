@@ -9,7 +9,7 @@
     "start:dev": "npm run scratch:create && npm run source:push && npm run permset:assign",
     "start:dev:components": "npm run scratch:create:communities && npm run source:push && npm run permset:assign",
     "start:dev:example:conf": "npm run start:dev:components && sfdx force:source:deploy -p unpackaged/examples/expression-conf/main && sf data import tree -p unpackaged/examples/expression-conf/data/data-plan.json",
-    "package:create:expression": "sf package version create -x -c -p 0HoDm000000XZKSKA4 -w 30",
+    "package:create:expression": "sf package version create -x -c -p 0HoHu000000TNMAKA4 -w 30",
     "package:create:expression:components": "sf package version create -x -c -p 0HoDm000000XZKhKAO -w 30",
     "generate:library:docs": "node scripts/generate-library-docs.mjs",
     "docs:generate": "apexdocs-generate -s expression-src -t docs/src/app/docs/api --scope global -g plain-markdown --namespace expression",
