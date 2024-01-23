@@ -278,15 +278,6 @@ export const data = [
     "category": "Data",
     "values": [
       {
-        "name": "FETCH",
-        "autoCompleteValue": "FETCH(",
-        "description": "Allows you to query data from the database. This is useful<br/>when the data you want to use is not provided as part of the context.<br/>Takes 2 arguments: a string with the `SObjectName` you wish to extract data from,<br/>and a list of strings with the fields you wish to extract. This will query all the records of the given<br/>type and return a list of `SObjects` with the data.<br/>Note that when using this function, the automatic context resolution is not performed, so you need to<br/>explicitly specify all fields you wish to reference in the formula.",
-        "examples": [
-          "FETCH(\"Account\", [\"Id\", \"Name\"])"
-        ],
-        "icon": "utility:data_mapping"
-      },
-      {
         "name": "LET",
         "autoCompleteValue": "LET(",
         "description": "Allows you to define custom variables that can be used in the expression.<br/>Accepts 2 arguments: a map of variables to define and the expression to evaluate.<br/>The map keys should be the variable names prefixed with `$`.",

@@ -6,7 +6,6 @@
  */
 public with sharing class DataFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
-        'FETCH' => new FetchFn(),
         'TRANSFORM' => new TransformFn(),
         'LET' => new LET()
     };
@@ -14,55 +13,6 @@ public with sharing class DataFunctions {
     public class DataFunctionsProvider implements FunctionProvider {
         public Map<String, ExpressionFunction> getFunctions() {
             return FUNCTIONS;
-        }
-    }
-
-    /**
-     * @description Allows you to query data from the database. This is useful
-     * when the data you want to use is not provided as part of the context.
-     *
-     * Takes 2 arguments: a string with the `SObjectName` you wish to extract data from,
-     * and a list of strings with the fields you wish to extract. This will query all the records of the given
-     * type and return a list of `SObjects` with the data.
-     *
-     * Note that when using this function, the automatic context resolution is not performed, so you need to
-     * explicitly specify all fields you wish to reference in the formula.
-     * @function FETCH
-     * @example FETCH("Account", ["Id", "Name"])
-     */
-    private with sharing class FetchFn extends ExpressionFunction {
-        public override Object call(List<Expr> arguments) {
-            // First argument is a string representing the sobject type name
-            Object sobjectType = evaluate(arguments.get(0));
-            if (!(sobjectType instanceof String)) {
-                throw new FunctionExecutionException(
-                    'Error executing "FETCH" function: the first argument must evaluate to a string.'
-                );
-            }
-
-            // Second argument is a list of strings representing the field names
-            Object fieldNames = evaluate(arguments.get(1));
-            if (!(fieldNames instanceof List<Object>)) {
-                throw new FunctionExecutionException(
-                    'Error executing "FETCH" function: the second argument must evaluate to a list of strings.'
-                );
-            }
-
-            Q query = new Q((String) sobjectType);
-            for (Object fieldName : (List<Object>) fieldNames) {
-                if (!(fieldName instanceof String)) {
-                    throw new FunctionExecutionException(
-                        'Error executing "FETCH" function: the second argument must evaluate to a list of strings.'
-                    );
-                }
-                query.selectField((String) fieldName);
-            }
-
-            return QRunner.getInstance().run(query);
-        }
-
-        public override Arity getArity() {
-            return Arity.exactly(2);
         }
     }
 

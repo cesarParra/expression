@@ -21,6 +21,10 @@ Powerful formula-syntax evaluator for Apex and LWC.
 * Pre-built LWC component to evaluate Expressions in record pages and Experience Builder sites
 * And much more!
 
+## Documentation
+
+For the full documentation, visit [cesarparra.github.io/expression/](cesarparra.github.io/expression/).
+
 ## Installation
 
 ### Unlocked Package (`expression` namespace)
@@ -130,7 +134,7 @@ or filter records. See more information about these functions below.
 
 ### Considerations
 
-When using the endpoint that takes a record Id as the context or fetching data through the `FETCH` function, 
+When using the endpoint that takes a record Id as the context or fetching data through the `QUERY` function, 
 the query is performed `with sharing` by default, so any records that the user does not have access to
 will not be returned or taken into account in the operation.
   
@@ -246,32 +250,6 @@ multiple strings together without having to use the `&` or `+` operators.
 String expression = 'LET({"$greeting": "World"}, "${ $greeting } World!")';
 expressionEvaluator.run(expression); // "World World!"
 ````
-
-## Fetching Data from the Database
-
-A special function, `FETCH`, is provided which allows you to query data from the database. This is useful
-when the data you want to use is not provided as part of the context.
-
-The `FETCH` function takes 2 arguments: a string with the `SObjectName` you wish to extract data from,
-and a list of strings with the fields you wish to extract. This will query all the records of the given
-type and return a list of `SObjects` with the data.
-
-```apex
-Object result = expression.Evaluator.run('FETCH("Account", ["Id", "Name"])');
-```
-
-This can be combined with other collection functions like `MAP` and `WHERE` to filter or map the data.
-
-```apex
-Object result = expression.Evaluator.run('MAP(WHERE(FETCH("Account", ["Id", "Name"]), Name = "ACME"), Id)');
-```
-
-Note that when using this function, the automatic context resolution is not performed, so you need to
-explicitly specify all fields you wish to reference in the formula.
-
-At this moment, advanced querying capabilities like filtering, sorting, or limiting the number of records
-are not supported. To get over these limitations, you can create a custom formula using Apex. See the
-[Advanced Usage](#advanced-usage) section for more information.
 
 ## Referencing Org Data
 
@@ -1429,7 +1407,7 @@ The sort direction can either be the literal string (requires quotes) `ASC` or `
 expression.Evaluator.run('SORT([3, 2, 1])'); // (1, 2, 3)
 expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a")'); // ({ "a": 1 }, { "a": 2 }, { "a": 3 })
 expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a", "DESC")'); // ({ "a": 3 }, { "a": 2 }, { "a": 1 })
-expression.Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")'); // ({"Name": "ACME"}, {"Name": "Another Account"})
+expression.Evaluator.run('QUERY(Account["Name"]) -> SORT("Name")'); // ({"Name": "ACME"}, {"Name": "Another Account"})
 expression.Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc")', parentAccount.Id); // ({"NumberOfEmployees": 1}, {"NumberOfEmployees": 2})
 ```
 
@@ -1966,8 +1944,7 @@ The following formula can be used to query for Navigation Menu Items and display
 		"imagePath": "https://example.com/img/logos/primary.svg",
 		"url": "/"
 	},
-	"menuItems": FETCH("NavigationMenuItem", ["Label", "Target", "Status", "Position"]) 
-		-> WHERE(Status = "Live") 
+	"menuItems": Query(NavigationMenuItem(where: Status = "Live")["Label", "Target", "Status", "Position"]) 
 		-> SORT("Position")
 		-> MAP({
 			"label": Label,

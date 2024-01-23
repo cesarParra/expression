@@ -6,7 +6,7 @@ nextjs:
     description: Learn about the different considerations when using Expression.
 ---
 
-When using the endpoint that takes a record Id as the context or fetching data through the `FETCH` function,
+When using the endpoint that takes a record Id as the context or fetching data through the `QUERY` function,
 the query is performed `with sharing` by default, so any records that the user does not have access to
 will not be returned or taken into account in the operation.
 

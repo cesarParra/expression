@@ -877,7 +877,7 @@ The sort direction can either be the literal string (requires quotes) `ASC` or `
 expression.Evaluator.run('SORT([3, 2, 1])'); // (1, 2, 3)
 expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a")'); // ({ "a": 1 }, { "a": 2 }, { "a": 3 })
 expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a", "DESC")'); // ({ "a": 3 }, { "a": 2 }, { "a": 1 })
-expression.Evaluator.run('FETCH("Account", ["Name"]) -> SORT("Name")'); // ({"Name": "ACME"}, {"Name": "Another Account"})
+expression.Evaluator.run('QUERY(Account["Name"]) -> SORT("Name")'); // ({"Name": "ACME"}, {"Name": "Another Account"})
 expression.Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc")', parentAccount.Id); // ({"NumberOfEmployees": 1}, {"NumberOfEmployees": 2})
 ```
 

@@ -13,7 +13,7 @@
           "children" : [ {
             "children" : [ {
               "attributes" : {
-                "expr" : "{   \"logo\": {     \"name\": \"Logo\",     \"imagePath\": \"/resource/1696872935000/expression__logo?aura.ApexAction.execute=1&aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A%22MlRqRU5YT3pjWFRNenJranFOMWFjQXlMaWFpdmxPSTZWeEo0bWtiN0hsaXcyNDQuMjAuNC0yLjQxLjQ%22%2C%22app%22%3A%22one%3Aone%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fone%3Aone%22%3A%22LYI_D_s7631bZj0jNii5LQ%22%7D%2C%22dn%22%3A%5B%5D%2C%22globals%22%3A%7B%22density%22%3A%22VIEW_ONE%22%2C%22appContextId%22%3A%2206mDS000001gLvHYAU%22%7D%2C%22uad%22%3Atrue%7D&aura.pageURI=%2Flightning%2Fn%2Fexpression__Expression_Playground&aura.token=eyJub25jZSI6Im4zOWR1dkVrWHhDVmRXNXJoRHJkclJQcFh3eXMzWDhSN3U0LWJXaUFTX1VcdTAwM2QiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IntcInRcIjpcIjAwRDFGMDAwMDAwczdxc1wiLFwidlwiOlwiMDJHMUYwMDAwMDBQczRzXCIsXCJhXCI6XCJjYWltYW5zaWduZXJcIn0iLCJjcml0IjpbImlhdCJdLCJpYXQiOjE2OTY4NzM2OTA5MTQsImV4cCI6MH0%3D..l5f0eGay5IwTgvdqmSVIO89D6IHWP32sJr4dEXGAR4Y%3D&message=%7B%22actions%22%3A%5B%7B%22id%22%3A%22860%3Ba%22%2C%22descriptor%22%3A%22aura%3A%2F%2FApexActionController%2FACTION%24execute%22%2C%22callingDescriptor%22%3A%22UNKNOWN%22%2C%22params%22%3A%7B%22namespace%22%3A%22expression%22%2C%22classname%22%3A%22PlaygroundController%22%2C%22method%22%3A%22validate%22%2C%22params%22%3A%7B%22expr%22%3A%22%7B%5Cr%5Cn%5Ct%5C%22logo%5C%22%3A+%7B%5Cr%5Cn%5Ct%5Ct%5C%22name%5C%22%3A+%5C%22Logo%5C%22%2C%5Cr%5Cn%5Ct%5Ct%5C%22imagePath%5C%22%3A+%24Resource.logo%2C%5Cr%5Cn%5Ct%5Ct%5C%22url%5C%22%3A+%5C%22%2F%5C%22%5Cr%5Cn%5Ct%7D%2C%5Cr%5Cn%5Ct%5C%22menuItems%5C%22%3A+%5B%5D%2C%5Cr%5Cn%5Ct%5C%22callToAction%5C%22%3A+%7B%5Cr%5Cn%5Ct%5Ct%5C%22label%5C%22%3A+%24label.c.Register_Now%2C%5Cr%5Cn%5Ct%5Ct%5C%22url%5C%22%3A+%5C%22%2F%5C%22%5Cr%5Cn%5Ct%7D%5Cr%5Cn%7D%22%7D%2C%22cacheable%22%3Afalse%2C%22isContinuation%22%3Afalse%7D%7D%5D%7D&r=35\",     \"url\": \"/\"   },   \"menuItems\": [],   \"callToAction\": {     \"label\": \"Register Now!\",     \"url\": \"/\"   } }",
+                "expr" : "{     \"logo\": {         \"name\": \"Logo\",         \"imagePath\": $Resource.logo,         \"url\": \"/\"     },     \"menuItems\": [],     \"callToAction\": {         \"label\": \"Register Now!\",         \"url\": \"/\"     } }",
                 "respectSharing" : false
               },
               "definition" : "expression:navBar",
@@ -36,7 +36,7 @@
                     "top" : ""
                   }
                 },
-                "expr" : "FETCH(\"Event__c\", [\"Id\", \"Name\", \"Tag_Line__c\", \"Description__c\"])  -> WHERE(Name = \"ExpressionConf\")  -> FIRST()  -> TRANSFORM(     {     \"title\": $source.expression__Tag_Line__c,     \"description\": SUBSTITUTE($source.expression__Description__c, \"\\n\", BR())     }  )",
+                "expr" : "Query(     expression__Event__c(where: Name = \"ExpressionConf\", limit: 1)     [Id, Name, Tag_Line__c, Description__c] )  -> FIRST()  -> TRANSFORM(     {     \"title\": $source.expression__Tag_Line__c,     \"description\": SUBSTITUTE($source.expression__Description__c, \"\\n\", BR())     }  )",
                 "respectSharing" : false
               },
               "definition" : "expression:hero",
@@ -53,7 +53,7 @@
                     "top" : "25px"
                   }
                 },
-                "expr" : "FETCH(\"Event__c\", [\"Id\", \"Name\", \"Start_Date__c\", \"End_Date__c\"])  -> WHERE(Name = \"ExpressionConf\")  -> FIRST()  -> TRANSFORM(         \"\uD83D\uDCC5\" +         TEXT(DAY($source.expression__Start_Date__c)) +          \"-\" +         DATETIMEFORMAT(DATETODATETIME($source.expression__End_Date__c), \"dd MMMM yyyy\") +         \" ◆ \" +         \"\uD83D\uDDFA️Los Angeles, CA\"     )",
+                "expr" : "Query(expression__Event__c(where: Name = \"ExpressionConf\")     [Id, Name, Start_Date__c, End_Date__c] )  -> FIRST()  -> TRANSFORM(         \"\uD83D\uDCC5 ${TEXT(DAY($source.expression__Start_Date__c))} - ${DATETIMEFORMAT(DATETODATETIME($source.expression__End_Date__c), \"dd MMMM yyyy\")} ◆ \uD83D\uDDFA️Los Angeles, CA\"     )",
                 "respectSharing" : false,
                 "textAlignment" : "Center"
               },
@@ -70,7 +70,7 @@
                     "top" : "50px"
                   }
                 },
-                "expr" : "{ \t\"stats\": [ \t\t{ \t\t\t\"label\": \"Speakers\", \t\t\t\"value\": TEXT(SIZE(FETCH(\"Speaker__c\", []))) \t\t},         {             \"label\": \"Days\",             \"value\":                  FETCH(\"Event__c\", [\"Name\", \"Start_Date__c\", \"End_Date__c\"])                 -> WHERE(Name = \"ExpressionConf\")                 -> FIRST()                 -> TRANSFORM(                     DAY($source.expression__End_Date__c)                     -                     DAY($source.expression__Start_Date__c)                 )         }, \t\t{ \t\t\t\"label\": \"Venue\", \t\t\t\"value\": \"Staples Center\" \t\t}, \t\t{ \t\t\t\"label\": \"Location\", \t\t\t\"value\": \"Los Angeles\" \t\t} \t] }",
+                "expr" : "{ \t\"stats\": [ \t\t{ \t\t\t\"label\": \"Speakers\", \t\t\t\"value\": TEXT(SIZE(QUERY(Speaker__c))) \t\t},     {       \"label\": \"Days\",       \"value\":                  Query(expression__Event__c(where: Name = \"ExpressionConf\")                     [Name, Start_Date__c, End_Date__c]                 )                 -> FIRST()                 -> TRANSFORM(                     IF(                         ISBLANK($source),                          \"\",                          DAY($source.expression__End_Date__c)                         -                         DAY($source.expression__Start_Date__c)                     )                 )       }, \t\t{ \t\t\t\"label\": \"Venue\", \t\t\t\"value\": \"Staples Center\" \t\t}, \t\t{ \t\t\t\"label\": \"Location\", \t\t\t\"value\": \"Los Angeles\" \t\t} \t] }",
                 "respectSharing" : false
               },
               "definition" : "expression:stats",
@@ -86,7 +86,7 @@
                     "top" : "100px"
                   }
                 },
-                "expr" : "FETCH(\"Speaker__c\",      [     \"Id\", \"Name\", \"Event__r.Name\",      \"Person__r.Name\", \"Person__r.Title\",     \"Person__r.PhotoUrl__c\", \"About__c\"     ]     )     -> WHERE(expression__Event__r.Name = \"ExpressionConf\")     -> MAP(         {             \"name\": $current.Person__r.Name,             \"title\": $current.Person__r.Title,             \"imgUrl\": $current.Person__r.expression__PhotoUrl__c,             \"about\": $current.expression__About__c         }     )     -> TRANSFORM(         {             \"title\": \"Speakers\",             \"description\": \"Learn from the experts on the cutting-edge of deception at the most sinister companies.\",             \"people\": $source         }     )",
+                "expr" : "LET(     {         \"$speakers\": Query(expression__Speaker__c(where: (expression__Event__r.Name = \"ExpressionConf\"))                     [                     \"Id\", \"Name\", \"Event__r.Name\",                      \"Person__r.Name\", \"Person__r.Title\",                     \"Person__r.PhotoUrl__c\", \"About__c\"                     ]                     )                     -> MAP(                         {                             \"name\": $current.Person__r.Name,                             \"title\": $current.Person__r.Title,                             \"imgUrl\": $current.Person__r.expression__PhotoUrl__c,                             \"about\": $current.expression__About__c                         }                     )     },     {         \"title\": \"Speakers\",         \"description\": \"Learn from the experts on the cutting-edge of technology.\",         \"people\": $speakers     })",
                 "respectSharing" : false
               },
               "definition" : "expression:people",
@@ -112,7 +112,7 @@
                     "top" : "50px"
                   }
                 },
-                "expr" : "{ \t\"tag\": \"Pricing\", \t\"title\": \"Choose the righ pass for you\", \t\"description\": \"Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et quasi iusto modi velit ut non voluptas in. Explicabo id ut laborum.\", \t\"plans\": FETCH(\"Product__c\", [\"Name\", \"Features__c\", \"Description__c\", \"Event__r.Name\"])     -> WHERE(expression__Event__r.Name = \"ExpressionConf\")     -> MAP(         {             \"name\": Name,             \"price\": GETLISTPRICE(Id),             \"action\": {                 \"label\": \"Register\", \t\t\t\t\t\t\t\t\"type\": \"action\", \t\t\t\t\t\t\t\t\"src\": $Action.Apex.CreateSalesOrder(Id), \t\t\t\t\t\t\t\t\"callback\": $Action.Lwc.GoToNamedPage( \t\t\t\t\t\t\t\t\t{ \t\t\t\t\t\t\t\t\t\t\"name\": \"checkout__c\", \t\t\t\t\t\t\t\t\t\t\"id\": $returnValue \t\t\t\t\t\t\t\t\t} \t\t\t\t\t\t\t\t)             },             \"description\": expression__Description__c,             \"features\": SPLIT(expression__Features__c, \"\\r\\n\")         }     )     -> SORT(\"price\") }",
+                "expr" : "{ \t\"tag\": \"Pricing\", \t\"title\": \"Choose the righ pass for you\", \t\"description\": \"Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et quasi iusto modi velit ut non voluptas in. Explicabo id ut laborum.\", \t\"plans\": Query(expression__Product__c(where: expression__Event__r.Name = \"ExpressionConf\")[\"Name\", \"Features__c\", \"Description__c\", \"Event__r.Name\"])     -> MAP(         {             \"name\": Name,             \"price\": GETLISTPRICE(Id),             \"action\": {                 \"label\": \"Register\", \t\t\t\t\t\t\t\t\"type\": \"action\", \t\t\t\t\t\t\t\t\"src\": $Action.Apex.CreateSalesOrder(Id), \t\t\t\t\t\t\t\t\"callback\": $Action.Lwc.GoToNamedPage( \t\t\t\t\t\t\t\t\t{ \t\t\t\t\t\t\t\t\t\t\"name\": \"checkout__c\", \t\t\t\t\t\t\t\t\t\t\"id\": $returnValue \t\t\t\t\t\t\t\t\t} \t\t\t\t\t\t\t\t)             },             \"description\": expression__Description__c,             \"features\": SPLIT(expression__Features__c, \"\\r\\n\")         }     )     -> SORT(\"price\") }",
                 "respectSharing" : false
               },
               "definition" : "expression:pricingTable",
