@@ -11,13 +11,13 @@
     {
       "path": "expression-components",
       "package": "Expression Components",
-      "versionName": "Version 1.6",
-      "versionNumber": "1.6.0.NEXT",
+      "versionName": "Version 1.0",
+      "versionNumber": "1.0.0.NEXT",
       "default": false,
       "dependencies": [
         {
-          "package": "Expression (Unlocked)",
-          "versionNumber": "1.27.0.LATEST"
+          "package": "Expression",
+          "versionNumber": "1.0.0.LATEST"
         }
       ]
     },
@@ -32,6 +32,8 @@
   "sourceApiVersion": "58.0",
   "packageAliases": {
     "Expression": "0HoHu000000TNMAKA4",
-    "Expression@1.0.0-1": "04tHu000003OVu3IAG"
+    "Expression@1.0.0-1": "04tHu000003OVu3IAG",
+    "Expression Components": "0HoHu000000TNMFKA4",
+    "Expression Components@1.0.0-1": "04tHu000003OWFLIA4"
   }
 }

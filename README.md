@@ -25,7 +25,47 @@ Powerful formula-syntax evaluator for Apex and LWC.
 For the full Expression language documentation,
 please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/expression/).
 
-## Components
+---
+
+# Expression Components
+
+`Expression Components` is a UI library included that can be deployed independently of the core library.
+These components give you powerful configuration abilities, as their configuration properties are powered
+by the `Expression` language.
+
+## Installation
+
+### Unlocked Package (`expression` namespace)
+
+[![Install Unlocked Package in a Sandbox](assets/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tHu000003OWFLIA4)
+[![Install Unlocked Package in Production](assets/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tHu000003OWFLIA4)
+
+Install with SF CLI:
+
+```shell
+sf package install --apex-compile package --wait 20 --package 04tHu000003OWFLIA4
+```
+
+Install with SFDX CLI:
+
+```shell
+sfdx force:package:install --apexcompile package --wait 20 --package 04tHu000003OWFLIA4
+```
+
+## Site Context
+
+### Query Parameters
+
+From any expression you can access query parameters for the current page using
+the global context variable prefix `@` followed by the query parameter name:
+
+```apex
+"Hello ${@name}"
+```
+
+where `name` is a query parameter in the current page.
+For the full Expression language documentation,
+please visit [cesarparra.github.io/expression/](cesarparra.github.io/expression/).
 
 > 📓 All components supported in communities are meant to be used within an LWR template. They might
 > work in Aura templates, but keep in mind they developed and tested with LWR in mind.
