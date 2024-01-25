@@ -23,7 +23,7 @@ Powerful formula-syntax evaluator for Apex and LWC.
 ## Documentation
 
 For the full Expression language documentation,
-please visit [cesarparra.github.io/expression/](cesarparra.github.io/expression/).
+please visit [cesarparra.github.io/expression/]([cesarparra.github.io/expression/](https://cesarparra.github.io/expression/)).
 
 ## Components
 
