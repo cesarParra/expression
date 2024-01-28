@@ -78,4 +78,14 @@ private class ParserTest {
         Assert.areEqual('@Id', variable.name.lexeme);
         Assert.areEqual(Expr.VariableType.GLOBAL_CONTEXT, variable.type);
     }
+
+    @IsTest
+    private static void throwsExceptionIfThereAreMoreTokensAfterTheEndOfACompleteExpression() {
+        try {
+            Evaluator.run('1 + 1 1');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.ParsingException.class);
+        }
+    }
 }

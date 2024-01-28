@@ -135,4 +135,76 @@ private class GlobalContextTest {
 
         Assert.areEqual('MyCustomContextValue', result);
     }
+
+    @IsTest
+    private static void shouldBeAbleToAccessDataFromParentWhenMappingAChildRelationshipList_recordAsContext() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        Account parentAccountWithChildren = [SELECT Id, Name, (SELECT Id, NumberOfEmployees, Parent.Name FROM ChildAccounts) FROM Account WHERE Id = :parentAccount.Id];
+
+        List<Object> result = (List<Object>) Evaluator.run('MAP(ChildAccounts, {"parentName": Parent.Name, "numberOfEmployees": NumberOfEmployees})', parentAccountWithChildren);
+
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[0]).get('parentName'));
+        Assert.areEqual(10, ((Map<Object, Object>) result[0]).get('numberOfEmployees'));
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parentName'));
+        Assert.areEqual(20, ((Map<Object, Object>) result[1]).get('numberOfEmployees'));
+    }
+
+    @IsTest
+    private static void canExtractDataDirectlyFromChildren() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        Object result = Evaluator.run('SIZE(ChildAccounts)', parentAccount.Id);
+
+        Assert.areEqual(2, result);
+    }
+
+    @IsTest
+    private static void shouldBeAbleToAccessDataFromParentWhenMappingAChildRelationshipList_idAsContext() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run(
+            'MAP(ChildAccounts, {"parentName": Parent.Name, "numberOfEmployees": NumberOfEmployees})',
+            parentAccount.Id
+        );
+
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[0]).get('parentName'));
+        Assert.areEqual(10, ((Map<Object, Object>) result[0]).get('numberOfEmployees'));
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parentName'));
+        Assert.areEqual(20, ((Map<Object, Object>) result[1]).get('numberOfEmployees'));
+    }
+
+    @IsTest
+    private static void theIdIsNotReferencedTwiceInTheQueryWhenReferenced() {
+        Account parentAccount = new Account(Name = 'ACME');
+        insert parentAccount;
+
+        Account childAccount = new Account(Name = 'ACME Child', ParentId = parentAccount.Id);
+        insert childAccount;
+
+        Object result = Evaluator.run('map(ChildAccounts, Id)', parentAccount.Id);
+
+        Assert.areEqual(childAccount.Id, ((List<Object>) result)[0]);
+    }
 }
