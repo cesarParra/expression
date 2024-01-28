@@ -34,3 +34,6 @@ jobs:
 
       - name: Authenticate against dev hub
         run: sf org login sfdx-url --sfdxurlfile=./SFDX_URL_STORE.txt --alias=devhub --set-default-dev-hub
+
+      - name: Create Expression package version
+        run: npm run package:create:expression
