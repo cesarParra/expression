@@ -209,4 +209,47 @@ private class OperatorTest {
     private static void supportsParentheses_toTheRight() {
         Assert.areEqual(9, Evaluator.run('3 * (1 + 2)'));
     }
+
+    @IsTest
+    private static void spreadOperatorExpandsAList() {
+        Assert.areEqual(3, Evaluator.run('SIZE([...LIST(1, 2, 3)])'));
+    }
+
+    @IsTest
+    private static void spreadOperatorCanBeUsedInsideOfAListFunction() {
+        Assert.areEqual(3, Evaluator.run('SIZE(LIST(...LIST(1, 2, 3)))'));
+        Assert.areEqual(6, Evaluator.run('SIZE(LIST(1, 2, 3, ...[4, 5, 6]))'));
+    }
+
+    @IsTest
+    private static void mapsSupportTheSpreadOperator() {
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run('{...{"a": 1, "b": 2}}');
+        Assert.areEqual(1, result.get('a'));
+        Assert.areEqual(2, result.get('b'));
+    }
+
+    @IsTest
+    private static void spreadOperatorInMapRespectTheRightmostValue() {
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run('{...{"a": 1, "b": 2}, "b": 3}');
+        Assert.areEqual(1, result.get('a'));
+        Assert.areEqual(3, result.get('b'));
+    }
+
+    @IsTest
+    private static void canPipeFunctionCalls() {
+        Assert.areEqual(3, Evaluator.run('LIST(1, 2, 3) -> SIZE()'));
+    }
+
+    @IsTest
+    private static void canPipeFunctionCalls_pipeHasPrecedenceWhenPairedWithOtherExpressions() {
+        Assert.areEqual(8, Evaluator.run('LIST(1, 2, 3) -> SIZE() + 5'));
+    }
+
+    @IsTest
+    private static void canPipeFunctionCallsMultipleTimes() {
+        Object result = Evaluator.run('[1, 2, 3, 4, 5, 6] -> WHERE($current > 2) -> WHERE($current < 5)');
+        Assert.areEqual(2, ((List<Object>) result).size());
+        Assert.areEqual(3, ((List<Object>) result)[0]);
+        Assert.areEqual(4, ((List<Object>) result)[1]);
+    }
 }
