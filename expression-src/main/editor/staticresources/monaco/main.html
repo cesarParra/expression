@@ -154,13 +154,17 @@
     });
 
     window.editor.getModel().onDidChangeContent((event) => {
-      monaco.editor.setModelMarkers(window.editor.getModel(), "owner", []);
+      clearModelMarkers();
 
       parent.postMessage({
         name: 'content_change',
         payload: window.editor.getValue()
       }, getParentOrigin());
     });
+  }
+
+  function clearModelMarkers() {
+    monaco.editor.setModelMarkers(window.editor.getModel(), "owner", []);
   }
 
   function markError(error) {
