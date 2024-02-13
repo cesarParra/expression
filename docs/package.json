@@ -1,5 +1,5 @@
 {
-  "name": "Expression Documentation",
+  "name": "expression-documentation",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -7,7 +7,6 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "browserslist": "defaults, not ie <= 11",
   "dependencies": {
     "@algolia/autocomplete-core": "^1.9.2",
     "@headlessui/react": "^1.7.13",

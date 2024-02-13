@@ -306,10 +306,7 @@ public with sharing class Scanner {
         // See if the identifier is a reserved word
         // Formulas are case insensitive, so we need to lowercase the identifier
         String text = source.substring(start, current).toLowerCase();
-        TokenType type = keywords.get(text);
-        if (type == null) {
-            type = TokenType.IDENTIFIER;
-        }
+        TokenType type = keywords.get(text) ?? TokenType.IDENTIFIER;
         addToken(type);
     }
 

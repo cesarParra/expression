@@ -54,7 +54,9 @@ public class TestDataUnitOfWork {
      * AttemptResolveOutOfOrder - Update child to set the relationship (e.g. insert parent, insert child, update child)
      * IgnoreOutOfOrder (default behaviour) - Do not set the relationship (e.g. leave lookup null)
      */
-    public enum UnresolvedRelationshipBehavior { AttemptResolveOutOfOrder, IgnoreOutOfOrder }
+    public enum UnresolvedRelationshipBehavior {
+        AttemptResolveOutOfOrder, IgnoreOutOfOrder
+    }
 
     private static final UnresolvedRelationshipBehavior DEFAULT_UNRESOLVED_RELATIONSHIP_BEHAVIOR =
         UnresolvedRelationshipBehavior.IgnoreOutOfOrder;
@@ -87,8 +89,7 @@ public class TestDataUnitOfWork {
         public virtual void dmlInsert(List<SObject> objList) {
             insert objList;
         }
-        public virtual void dmlUpdate(List<SObject> objList)
-        {
+        public virtual void dmlUpdate(List<SObject> objList) {
             update objList;
         }
     }
@@ -138,8 +139,7 @@ public class TestDataUnitOfWork {
         m_unresolvedRelationshipBehaviour = unresolvedRelationshipBehavior;
         m_sObjectTypes = sObjectTypes.clone();
 
-        for (Schema.SObjectType sObjectType : m_sObjectTypes)
-        {
+        for (Schema.SObjectType sObjectType : m_sObjectTypes) {
             // register the type
             handleRegisterType(sObjectType);
         }
@@ -150,15 +150,16 @@ public class TestDataUnitOfWork {
         m_dml = dml;
     }
 
-    public virtual void onCommitWorkStarting() {}
-    public virtual void onCommitWorkFinishing() {}
+    public virtual void onCommitWorkStarting() {
+    }
+    public virtual void onCommitWorkFinishing() {
+    }
 
     /**
      * @description Registers the type to be used for DML operations
      * @param sObjectType - The type to register
      */
-    private void handleRegisterType(Schema.SObjectType sObjectType)
-    {
+    private void handleRegisterType(Schema.SObjectType sObjectType) {
         String sObjectName = sObjectType.getDescribe().getName();
 
         // add type to dml operation tracking
@@ -191,8 +192,7 @@ public class TestDataUnitOfWork {
      * @param relatedToField A SObjectField reference to the lookup field that relates the two records together
      * @param relatedTo A SObject instance (yet to be committed to the database)
      */
-    public void registerRelationship(SObject record, Schema.SObjectField relatedToField, SObject relatedTo)
-    {
+    public void registerRelationship(SObject record, Schema.SObjectField relatedToField, SObject relatedTo) {
         String sObjectType = record.getSObjectType().getDescribe().getName();
 
         assertForSupportedSObjectType(m_newListByType, sObjectType);
@@ -214,8 +214,7 @@ public class TestDataUnitOfWork {
     }
 
     private void insertDmlByType() {
-        for (Schema.SObjectType sObjectType : m_sObjectTypes)
-        {
+        for (Schema.SObjectType sObjectType : m_sObjectTypes) {
             m_relationships.get(sObjectType.getDescribe().getName()).resolve();
             List<SObject> recordsToInsert = new List<SObject>();
             for (NewSObjectAndCallback toInsert : m_newListByType.get(sObjectType.getDescribe().getName())) {
@@ -229,13 +228,10 @@ public class TestDataUnitOfWork {
         }
 
         // Resolve any unresolved relationships where parent was inserted after child, and so child lookup was not set
-        if (m_unresolvedRelationshipBehaviour == UnresolvedRelationshipBehavior.AttemptResolveOutOfOrder)
-        {
-            for(Schema.SObjectType sObjectType : m_sObjectTypes)
-            {
+        if (m_unresolvedRelationshipBehaviour == UnresolvedRelationshipBehavior.AttemptResolveOutOfOrder) {
+            for (Schema.SObjectType sObjectType : m_sObjectTypes) {
                 Relationships relationships = m_relationships.get(sObjectType.getDescribe().getName());
-                if (relationships.hasParentInsertedAfterChild())
-                {
+                if (relationships.hasParentInsertedAfterChild()) {
                     List<SObject> childrenToUpdate = relationships.resolveParentInsertedAfterChild();
                     m_dml.dmlUpdate(childrenToUpdate);
                 }
@@ -243,23 +239,22 @@ public class TestDataUnitOfWork {
         }
     }
 
-    private void assertForSupportedSObjectType(Map<String, Object> theMap, String sObjectType)
-    {
-        if (!theMap.containsKey(sObjectType))
-        {
+    private static void assertForSupportedSObjectType(Map<String, Object> theMap, String sObjectType) {
+        if (!theMap.containsKey(sObjectType)) {
             throw new UnitOfWorkException(
                 String.format(
                     'SObject type {0} is not supported by this unit of work',
-                    new List<String> { sObjectType }
+                    new List<String>{
+                        sObjectType
+                    }
                 )
             );
         }
     }
 
-    private class Relationships
-    {
-        private List<IRelationship> m_relationships = new List<IRelationship>();
-        private List<RelationshipPermittingOutOfOrderInsert> m_parentInsertedAfterChildRelationships =
+    private class Relationships {
+        private final List<IRelationship> m_relationships = new List<IRelationship>();
+        private final List<RelationshipPermittingOutOfOrderInsert> m_parentInsertedAfterChildRelationships =
             new List<RelationshipPermittingOutOfOrderInsert>();
         private final UnresolvedRelationshipBehavior m_unresolvedRelationshipBehaviour;
 
@@ -278,21 +273,20 @@ public class TestDataUnitOfWork {
 
         public void resolve() {
             // Resolve relationships
-            for (IRelationship relationship : m_relationships)
-            {
+            for (IRelationship relationship : m_relationships) {
                 //relationship.Record.put(relationship.RelatedToField, relationship.RelatedTo.Id);
                 relationship.resolve();
 
                 // Check if parent is inserted after the child
                 if (m_unresolvedRelationshipBehaviour == UnresolvedRelationshipBehavior.AttemptResolveOutOfOrder &&
-                    !((RelationshipPermittingOutOfOrderInsert) relationship).Resolved)
-                {
+                    !((RelationshipPermittingOutOfOrderInsert) relationship).Resolved) {
                     m_parentInsertedAfterChildRelationships.add((RelationshipPermittingOutOfOrderInsert) relationship);
                 }
             }
         }
 
         /**
+         * @description
          * @return true if there are unresolved relationships
          */
         public Boolean hasParentInsertedAfterChild() {
@@ -308,8 +302,7 @@ public class TestDataUnitOfWork {
         public List<SObject> resolveParentInsertedAfterChild() {
             for (RelationshipPermittingOutOfOrderInsert relationship : m_parentInsertedAfterChildRelationships) {
                 relationship.resolve();
-                if (!relationship.Resolved)
-                {
+                if (!relationship.Resolved) {
                     throw new UnitOfWorkException('Error resolving relationship where parent is inserted after child.' +
                         ' The parent has not been inserted. Is it registered with a unit of work?');
                 }
@@ -324,8 +317,7 @@ public class TestDataUnitOfWork {
         private List<SObject> getChildRecordsWithParentInsertedAfter() {
             // Get rid of dupes
             Map<Id, SObject> recordsToUpdate = new Map<Id, SObject>();
-            for (RelationshipPermittingOutOfOrderInsert relationship : m_parentInsertedAfterChildRelationships)
-            {
+            for (RelationshipPermittingOutOfOrderInsert relationship : m_parentInsertedAfterChildRelationships) {
                 SObject childRecord = relationship.Record;
                 SObject recordToUpdate = recordsToUpdate.get(childRecord.Id);
                 if (recordToUpdate == null) {
@@ -339,16 +331,13 @@ public class TestDataUnitOfWork {
 
         public void add(SObject record, Schema.SObjectField relatedToField, SObject relatedTo) {
             // Relationship to resolve
-            if (m_unresolvedRelationshipBehaviour == UnresolvedRelationshipBehavior.IgnoreOutOfOrder)
-            {
+            if (m_unresolvedRelationshipBehaviour == UnresolvedRelationshipBehavior.IgnoreOutOfOrder) {
                 Relationship relationship = new Relationship();
                 relationship.Record = record;
                 relationship.RelatedToField = relatedToField;
                 relationship.RelatedTo = relatedTo;
                 m_relationships.add(relationship);
-            }
-            else
-            {
+            } else {
                 RelationshipPermittingOutOfOrderInsert relationship = new RelationshipPermittingOutOfOrderInsert();
                 relationship.Record = record;
                 relationship.RelatedToField = relatedToField;
@@ -358,20 +347,17 @@ public class TestDataUnitOfWork {
         }
     }
 
-    private interface IRelationship
-    {
+    private interface IRelationship {
         void resolve();
     }
 
-    private class Relationship implements IRelationship
-    {
+    private class Relationship implements IRelationship {
         public SObject Record;
         public Schema.SObjectField RelatedToField;
         public SObject RelatedTo;
 
-        public void resolve()
-        {
-            this.Record.put( this.RelatedToField, this.RelatedTo.Id);
+        public void resolve() {
+            this.Record.put(this.RelatedToField, this.RelatedTo.Id);
         }
     }
 
@@ -385,8 +371,7 @@ public class TestDataUnitOfWork {
         public SObject RelatedTo;
         public Boolean Resolved = false;
 
-        public void resolve()
-        {
+        public void resolve() {
             if (RelatedTo.Id == null) {
                 /*
                 If relationship is between two records in same table then update is always required to set the lookup,
@@ -410,5 +395,6 @@ public class TestDataUnitOfWork {
     /**
      * @description UnitOfWork Exception
      **/
-    public class UnitOfWorkException extends Exception {}
+    public class UnitOfWorkException extends Exception {
+    }
 }

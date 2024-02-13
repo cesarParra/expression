@@ -102,12 +102,7 @@ public with sharing class Environment {
         for (ChildRelationship relationship : context.getSObjectType().getDescribe().getChildRelationships()) {
             String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
             if (childRelationshipName != null && childRelationshipName == lowerCaseField) {
-                List<SObject> returnValue = context.getSObjects(relationship.getRelationshipName());
-                if (returnValue == null) {
-                    return new List<SObject>();
-                } else {
-                    return returnValue;
-                }
+                return context.getSObjects(relationship.getRelationshipName()) ?? new List<SObject>();
             }
         }
 
@@ -122,5 +117,6 @@ public with sharing class Environment {
         return context.getSObject(fieldName);
     }
 
-    public class EnvironmentException extends Exception {}
+    public class EnvironmentException extends Exception {
+    }
 }
