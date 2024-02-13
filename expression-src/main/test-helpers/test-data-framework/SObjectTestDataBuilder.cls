@@ -33,11 +33,7 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
      * @return New {@link ITestDataBuilder} instance.
      */
     public static ITestDataBuilder of(SObjectType objectType) {
-        ITestDataBuilder builder = builderCache.getFor(objectType);
-        if (builder == null) {
-            return new DefaultTestDataBuilder(objectType);
-        }
-        return builder;
+        return builderCache.getFor(objectType) ?? new DefaultTestDataBuilder(objectType);
     }
 
     /**
@@ -466,11 +462,7 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
         }
 
         private void log(HistoryItem item) {
-            List<HistoryItem> historiesByType = recordsByType.get(item.getRecord().getSObjectType());
-            if (historiesByType == null) {
-                historiesByType = new List<HistoryItem>();
-            }
-
+            List<HistoryItem> historiesByType = recordsByType.get(item.getRecord().getSObjectType()) ?? new List<HistoryItem>();
             historiesByType.add(item);
             recordsByType.put(item.getRecord().getSObjectType(), historiesByType);
         }

@@ -44,8 +44,7 @@
     height:25px;
     padding-top:1px;
     padding-left:2px;
-    margin:0px;
-
+    margin:0;
 }
 
 .THIS #sfdc_lock{
@@ -54,7 +53,7 @@
     height:25px;
     padding-top:1px;
     padding-left:2px;
-    margin:0px;
+    margin:0;
 }
 
 .THIS  .login-icon {
@@ -113,7 +112,7 @@
 .THIS  input {
     margin-left:10px;
     margin-top: 3px;
-    border: 0px solid transparent;
+    border: 0 solid transparent;
     width: 70%;
     -webkit-appearance: none;
     font-size: 14px;

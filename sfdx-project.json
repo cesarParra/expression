@@ -30,7 +30,7 @@
   "name": "Expression",
   "namespace": "expression",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "58.0",
+  "sourceApiVersion": "60.0",
   "packageAliases": {
     "Expression": "0HoHu000000TNMAKA4",
     "Expression@1.0.0-1": "04tHu000003OVu3IAG",

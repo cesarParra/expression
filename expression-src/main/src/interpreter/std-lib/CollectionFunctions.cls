@@ -310,11 +310,8 @@ public with sharing class CollectionFunctions {
      */
     private class AppendFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            Object listObj = evaluate(arguments.get(0));
+            Object listObj = evaluate(arguments.get(0)) ?? new List<Object>();
             Object item = evaluate(arguments.get(1));
-            if (listObj == null) {
-                listObj = new List<Object>();
-            }
             if (!(listObj instanceof List<Object>)) {
                 throw new FunctionExecutionException(
                     'Error executing "APPEND" function: the first argument must evaluate to a list.'

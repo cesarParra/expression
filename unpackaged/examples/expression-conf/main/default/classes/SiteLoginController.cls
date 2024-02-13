@@ -1,5 +1,5 @@
 /**
- * An apex page controller that exposes the site login functionality
+ * @description An apex page controller that exposes the site login functionality
  */
 global with sharing class SiteLoginController {
     global String username {get; set;}
@@ -9,6 +9,6 @@ global with sharing class SiteLoginController {
         String startUrl = System.currentPageReference().getParameters().get('startURL');
         return Site.login(username, password, startUrl);
     }
-    
+
    	global SiteLoginController () {}
 }

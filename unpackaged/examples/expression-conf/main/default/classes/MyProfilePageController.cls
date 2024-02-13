@@ -1,6 +1,6 @@
 /**
- * An apex class that updates portal user details.
-   Guest users are never able to access this page.
+ * @description An apex class that updates portal user details.
+ * Guest users are never able to access this page.
  */
 public with sharing class MyProfilePageController {
 
@@ -49,5 +49,5 @@ public with sharing class MyProfilePageController {
                 street, city, country, postalcode, state, localesidkey, mobilephone, extension, fax, contact.email
                 FROM User
                 WHERE id = :UserInfo.getUserId()];
-    }    
+    }
 }

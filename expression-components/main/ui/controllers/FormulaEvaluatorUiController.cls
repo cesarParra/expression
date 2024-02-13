@@ -51,10 +51,7 @@ public with sharing class FormulaEvaluatorUiController {
             }
 
             IExpressionFunction f = (IExpressionFunction) t.newInstance();
-            List<Object> args = (List<Object>) fnReference.get('args');
-            if (args == null) {
-                args = new List<Object>();
-            }
+            List<Object> args = (List<Object>) fnReference.get('args') ?? new List<Object>();
             return f.execute(args);
         } catch (Exception e) {
             AuraHandledException ex = new AuraHandledException(e.getMessage());
