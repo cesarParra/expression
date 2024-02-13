@@ -24,7 +24,7 @@ export default class Monaco extends LightningElement {
     });
 
     window.addEventListener('message', (event) => {
-      const { name, payload } = event.data;
+      const {name, payload} = event.data;
       if (name === 'content_change') {
         this.currentExpression = payload;
       }
@@ -32,6 +32,10 @@ export default class Monaco extends LightningElement {
   }
 
   async getExpression() {
+    this.iframeWindow.postMessage({
+      name: 'clear_markers'
+    });
+
     const result = await validate({expr: this.currentExpression, recordId: this.recordId});
     if (result.error) {
       this.result = {
@@ -53,15 +57,15 @@ export default class Monaco extends LightningElement {
       }
     }
 
-    this._setDiagnostics(result);
+    this._setDiagnostics(result.diagnostics ?? {});
     this.ast = result.ast ?
       this._syntaxHighlight(JSON.stringify(result.ast, null, 4)) :
       "";
   }
 
-  _setDiagnostics(result) {
-    this.diagnostics = Object.keys(result.diagnostics).reduce((acc, key) => {
-      acc[key] = result.diagnostics[key] ?? "Unavailable";
+  _setDiagnostics(diagnostics) {
+    this.diagnostics = Object.keys(diagnostics).reduce((acc, key) => {
+      acc[key] = diagnostics[key] ?? "Unavailable";
       return acc;
     }, {
       cpuTime: "Unavailable",

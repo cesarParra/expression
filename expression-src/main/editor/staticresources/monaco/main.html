@@ -31,6 +31,9 @@
     if (event.data.name === 'append') {
       appendText(event.data.payload);
     }
+    if (event.data.name === 'clear_markers') {
+      clearMarkers();
+    }
   }
 
   function initialize(functionKeywords) {
@@ -154,13 +157,17 @@
     });
 
     window.editor.getModel().onDidChangeContent((event) => {
-      monaco.editor.setModelMarkers(window.editor.getModel(), "owner", []);
+      clearMarkers();
 
       parent.postMessage({
         name: 'content_change',
         payload: window.editor.getValue()
       }, getParentOrigin());
     });
+  }
+
+  function clearMarkers() {
+    monaco.editor.setModelMarkers(window.editor.getModel(), "owner", []);
   }
 
   function markError(error) {
