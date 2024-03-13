@@ -7,7 +7,8 @@
 public with sharing class DataFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'TRANSFORM' => new TransformFn(),
-        'LET' => new LET()
+        'LET' => new LET(),
+        'RAWQUERY' => new RawQuery()
     };
 
     public class DataFunctionsProvider implements FunctionProvider {
@@ -72,6 +73,27 @@ public with sharing class DataFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+    }
+
+    /**
+     * @description Allows you to run a raw query against the database.
+     * Accepts 1 argument: the query to run.
+     * @function RAWQUERY
+     * @example RAWQUERY("SELECT Id, Name FROM Account LIMIT 10")
+     */
+    private class RawQuery extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object queryObj = (String) evaluate(arguments.get(0));
+            if (!(queryObj instanceof String)) {
+                throw new FunctionExecutionException('First argument to RAW_QUERY must be a string');
+            }
+            String query = (String) queryObj;
+            return QRunner.getInstance().runRaw(query);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 }
