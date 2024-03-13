@@ -13,4 +13,11 @@ private class DataFunctionsTest {
         Object result = Evaluator.run(formula);
         Assert.areEqual(3, result);
     }
+
+    @IsTest
+    private static void canRunARawSoqlQueryThroughTheRawQueryFunction() {
+        String formula = 'RAWQUERY("SELECT Id FROM Account LIMIT 1")';
+        Object result = Evaluator.run(formula);
+        Assert.isNotNull(result);
+    }
 }

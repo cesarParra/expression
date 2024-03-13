@@ -1155,6 +1155,16 @@ The map keys should be the variable names prefixed with `$`.
 expression.Evaluator.run('LET({ "$a": 1, "$b": 2 }, $a + $b)'); // 3
 ```
 
+- `RAWQUERY`
+
+Executes a raw SOQL query and returns the results as a list of SObjects.
+
+Accepts 1 argument: the SOQL query to execute.
+
+```apex
+expression.Evaluator.run('RAWQUERY("SELECT Id, Name FROM Account")'); // [{ "Id": "001000000000000AAA", "Name": "ACME" }, { "Id": "001000000000000AAB", "Name": "Another Account" }]
+```
+
 ## Location Functions
 
 - `LOCATION`

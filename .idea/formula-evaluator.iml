@@ -6,11 +6,6 @@
         <option name="connectionName" value="Expression" />
         <option name="connectionType" value="SFDX" />
         <option name="defaultSourceRootUrl" value="file://$MODULE_DIR$/src-pull" />
-        <option name="moduleContents">
-          <ModuleContents>
-            <option name="contentSelectionType" value="LOCAL_FILES" />
-          </ModuleContents>
-        </option>
       </configuration>
     </facet>
   </component>

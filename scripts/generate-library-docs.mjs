@@ -34,7 +34,7 @@ function getClass(fileContents) {
 }
 
 function isFunctionRepository(reflectedClass) {
-  return reflectedClass.docComment?.annotations.find((annotation) => annotation.name === 'function-repository');
+  return reflectedClass?.docComment?.annotations.find((annotation) => annotation.name === 'function-repository');
 }
 
 function getCategory(functionRepo) {
