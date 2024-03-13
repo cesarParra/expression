@@ -287,6 +287,15 @@ export const data = [
         "icon": "utility:data_mapping"
       },
       {
+        "name": "RAWQUERY",
+        "autoCompleteValue": "RAWQUERY(",
+        "description": "Allows you to run a raw query against the database.<br/>Accepts 1 argument: the query to run.",
+        "examples": [
+          "RAWQUERY(\"SELECT Id, Name FROM Account LIMIT 10\")"
+        ],
+        "icon": "utility:data_mapping"
+      },
+      {
         "name": "TRANSFORM",
         "autoCompleteValue": "TRANSFORM(",
         "description": "Transforms any input using the provided expression.<br/>Provides a special variable `$source` in the inner expression that contains the original input.<br/>Accepts 2 arguments: the input to transform and the expression to evaluate.",
