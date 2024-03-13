@@ -52,6 +52,10 @@ private class ApexFfiTest {
                 )
             };
         }
+
+        public override List<SObject> runRaw(String query) {
+            return new List<SObject>();
+        }
     }
 
     public class FakeFunction implements IExpressionFunction {
