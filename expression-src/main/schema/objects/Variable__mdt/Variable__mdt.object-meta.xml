@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Allows you to define custom Expression variables to reuse with other expressions.</description>
+    <label>Variable</label>
+    <pluralLabel>Variables</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

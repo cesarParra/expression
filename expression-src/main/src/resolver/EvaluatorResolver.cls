@@ -23,6 +23,9 @@ public with sharing abstract class EvaluatorResolver {
 
         eventNotifier.notify(new OnEvaluationStartEvent(config));
 
+        // TODO: I think it would be better instead of having to do a re-parsing, to
+        // just do a string replacement here before scanning. That way the variables
+        // have full context and they just serve as merged fields essentially
         List<Token> tokens = this.scan(input);
         Expr parsedExpression = this.parse(tokens);
 
@@ -30,12 +33,27 @@ public with sharing abstract class EvaluatorResolver {
 
         Expr pipedExpression = this.desugarPipe(parsedExpression);
         Environment anEnvironment = this.prepareEnvironment(pipedExpression);
+        if (!config.skipUserDefinedVariableEvaluation) {
+            addUserDefinedVariablesToEnvironment();
+        }
+        // Custom context variables are added after user defined variables to allow for overriding
         addCustomContextVariablesToEnvironment(config);
         Object result = this.interpret(anEnvironment, pipedExpression);
 
         eventNotifier.notify(new OnEvaluationEndEvent());
 
         return new EvaluationResult(result, additionalResultData);
+    }
+
+    private static void addUserDefinedVariablesToEnvironment() {
+        // Limitations of user defined variables:
+        // 1. cannot reference other variables
+        // 2. do not have access to the current context
+       Map<String, Variable__mdt> variables = Variable__mdt.getAll();
+        for (String variableIdentifier : variables.keySet()) {
+            Environment.addGlobalContextVariable(variableIdentifier,
+                Evaluator.run(variables.get(variableIdentifier).Value__c, new Configuration().skipUserDefinedVariableEvaluation()));
+        }
     }
 
     private static void addCustomContextVariablesToEnvironment(Configuration config) {

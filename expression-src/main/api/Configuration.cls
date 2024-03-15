@@ -11,6 +11,7 @@ global with sharing class Configuration {
     global Boolean printAst = false;
     global Map<String, Object> customContext = new Map<String, Object>();
     public Boolean withDiagnostics = false;
+    public Boolean skipUserDefinedVariableEvaluation = false;
 
     global Configuration respectSharing(Boolean respect) {
         sharing = respect ? SharingMode.WITH : SharingMode.WITHOUT;
@@ -29,6 +30,11 @@ global with sharing class Configuration {
 
     global Configuration withCustomContext(Map<String, Object> objectsByStrings) {
         this.customContext = objectsByStrings;
+        return this;
+    }
+
+    public Configuration skipUserDefinedVariableEvaluation() {
+        this.skipUserDefinedVariableEvaluation = true;
         return this;
     }
 
