@@ -1,7 +1,9 @@
 <template>
-    <div for:each={displayableItems} for:item="item" key={item.title}>
+    <div for:each={displayableItems} for:item="item" key={item.id}>
         <h2>
             <button type="button"
+                    onclick={handleClick}
+                    data-id={item.id}
                     class={item.buttonClasses}
                     data-accordion-target="#accordion-collapse-body-1" aria-expanded="true"
                     aria-controls="accordion-collapse-body-1">
@@ -13,7 +15,7 @@
                 </svg>
             </button>
         </h2>
-        <div class="hidden">
+        <div class={item.contentClasses}>
             <div class="p-5 border border-b-0 border-gray-200">
                 <p class="mb-2 text-gray-500">Flowbite is an open-source library of interactive
                     components built on top of Tailwind CSS including buttons, dropdowns, modals, navbars, and more.</p>
