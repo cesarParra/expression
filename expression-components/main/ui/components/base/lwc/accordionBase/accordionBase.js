@@ -17,6 +17,7 @@ export default class AccordionBase extends LightningElement {
     }
 
     get displayableItems() {
+        const baseArrowClasses = 'w-3 h-3 shrink-0';
         const sharedButtonClasses = 'flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-gray-200 focus:ring-4 focus:ring-gray-200 hover:bg-gray-100 gap-3';
         const sharedContentClasses = 'p-5 border border-gray-200';
 
@@ -36,15 +37,17 @@ export default class AccordionBase extends LightningElement {
                 {'border-b-0': i !== this.items.length - 1},
                 {'border-t-0': i === this.items.length - 1},
             ),
+            arrowClasses: classNames(
+                baseArrowClasses,
+                {'rotate-180': !this.visibleIds.includes(i.toString())},
+            ),
         }));
     }
 
     handleClick(event) {
-        const {id} = event.currentTarg
-        // Toggle visibility of the clicked item
+        const {id} = event.currentTarget.dataset;
         this.visibleIds = this.visibleIds.includes(id)
             ? this.visibleIds.filter(visibleId => visibleId !== id)
             : [...this.visibleIds, id];
-        console.log('visibleIds', this.visibleIds);
     }
 }
