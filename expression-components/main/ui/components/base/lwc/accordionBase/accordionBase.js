@@ -23,9 +23,13 @@ export default class AccordionBase extends LightningElement {
         return this.items.map((item, i) => ({
             id: i.toString(),
             ...item,
-            buttonClasses: classNames(sharedButtonClasses, {
-                'border-b-0 rounded-t-xl': i === 0, 'border-b-0': i > 0 && i < this.items.length - 1,
-            }),
+            buttonClasses: classNames(
+                sharedButtonClasses,
+                {
+                    'border-b-0 rounded-t-xl': i === 0,
+                    'border-b-0': i > 0 && i < this.items.length - 1,
+                    'bg-gray-100': this.visibleIds.includes(i.toString())
+                }),
             contentContainerClasses: classNames({'hidden': !this.visibleIds.includes(i.toString())}),
             contentClasses: classNames(
                 sharedContentClasses,
@@ -36,7 +40,7 @@ export default class AccordionBase extends LightningElement {
     }
 
     handleClick(event) {
-        const {id} = event.currentTarget.dataset;
+        const {id} = event.currentTarg
         // Toggle visibility of the clicked item
         this.visibleIds = this.visibleIds.includes(id)
             ? this.visibleIds.filter(visibleId => visibleId !== id)
