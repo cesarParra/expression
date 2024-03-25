@@ -27,7 +27,7 @@ export default class AccordionBase extends LightningElement {
             buttonClasses: classNames(
                 sharedButtonClasses,
                 {
-                    'border-b-0 rounded-t-xl': i === 0,
+                    'border-b-0 rounded-t-xl': this.items.length > 1 ? i === 0 : false,
                     'border-b-0': i > 0 && i < this.items.length - 1,
                     'bg-gray-100': this.visibleIds.includes(i.toString())
                 }),
