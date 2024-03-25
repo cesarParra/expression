@@ -1,5 +1,6 @@
 import ExpressionSiteElement from "c/expressionSiteElement";
 import {api} from "lwc";
+import {z} from 'c/zod';
 
 export default class Accordion extends ExpressionSiteElement {
     @api contextUrlParam;
@@ -11,9 +12,20 @@ export default class Accordion extends ExpressionSiteElement {
         if (!this.computed) {
             return;
         }
-        // Computed should be a list
-        if (!Array.isArray(this.computed)) {
-            this.error = 'Accordion component requires a list of items.';
+
+        const accordionSchema = z.array(
+            z.object({
+                title: z.string(),
+                content: z.string(),
+            })
+        );
+        const validationResult = accordionSchema.safeParse(this.computed);
+        if (!validationResult.success) {
+            this.error = {
+                message: 'Accordion component requires an array of objects with "title" and "content" properties.',
+                rawError: JSON.stringify(validationResult.error.format(), null, 2),
+            };
+            return;
         }
     }
 }

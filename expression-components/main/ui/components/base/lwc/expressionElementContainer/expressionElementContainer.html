@@ -15,6 +15,6 @@
         </c-alert>
     </div>
     <div if:true={error}>
-        <c-alert type="error" title="Error parsing expression" message={error}></c-alert>
+        <c-alert type="error" title="Error parsing expression" message={errorMessage} raw-error={errorRaw}></c-alert>
     </div>
 </template>
