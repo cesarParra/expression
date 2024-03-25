@@ -1,3 +1,7 @@
 <template>
-    <c-accordion-base items={someItems}></c-accordion-base>
+    <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error} loading={loading}>
+        <div if:true={ready}>
+            <c-accordion-base items={computed}></c-accordion-base>
+        </div>
+    </c-expression-element-container>
 </template>

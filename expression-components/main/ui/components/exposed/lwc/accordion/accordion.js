@@ -7,20 +7,13 @@ export default class Accordion extends ExpressionSiteElement {
     @api expr;
     @api respectSharing;
 
-    get someItems() {
-        return [
-            {
-                title: 'Item 1',
-                content: 'Content of item 1'
-            },
-            {
-                title: 'Item 2',
-                content: 'Content of item 2'
-            },
-            {
-                title: 'Item 3',
-                content: 'Content of item 3'
-            }
-        ];
+    validate() {
+        if (!this.computed) {
+            return;
+        }
+        // Computed should be a list
+        if (!Array.isArray(this.computed)) {
+            this.error = 'Accordion component requires a list of items.';
+        }
     }
 }
