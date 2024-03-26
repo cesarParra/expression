@@ -8,9 +8,15 @@ export default class AccordionBase extends LightningElement {
     @api items;
 
     /**
+     * Whether to collapse all other items when one is opened. Defaults to false.
+     * @type {boolean}
+     */
+    @api autoCollapse = false;
+
+    /**
      * @type {string[]}
      */
-    visibleIds = [];
+    _visibleIds = [];
 
     get displayableItems() {
         const baseArrowClasses = 'w-3 h-3 shrink-0';
@@ -25,9 +31,9 @@ export default class AccordionBase extends LightningElement {
                 {
                     'border-b-0 rounded-t-xl': this.items.length > 1 ? i === 0 : false,
                     'border-b-0': i > 0 && i < this.items.length - 1,
-                    'bg-gray-100': this.visibleIds.includes(i.toString())
+                    'bg-gray-100': this._visibleIds.includes(i.toString())
                 }),
-            contentContainerClasses: classNames({'hidden': !this.visibleIds.includes(i.toString())}),
+            contentContainerClasses: classNames({'hidden': !this._visibleIds.includes(i.toString())}),
             contentClasses: classNames(
                 sharedContentClasses,
                 {'border-b-0': i !== this.items.length - 1},
@@ -35,15 +41,31 @@ export default class AccordionBase extends LightningElement {
             ),
             arrowClasses: classNames(
                 baseArrowClasses,
-                {'rotate-180': !this.visibleIds.includes(i.toString())},
+                {'rotate-180': !this._visibleIds.includes(i.toString())},
             ),
         }));
     }
 
     handleClick(event) {
         const {id} = event.currentTarget.dataset;
-        this.visibleIds = this.visibleIds.includes(id)
-            ? this.visibleIds.filter(visibleId => visibleId !== id)
-            : [...this.visibleIds, id];
+        this._handleToggled(id);
+    }
+
+    _handleToggled(id) {
+        if (this.autoCollapse) {
+            this._toggleAutoCollapse(id);
+        } else {
+            this._toggleNoAutoCollapse(id);
+        }
+    }
+
+    _toggleAutoCollapse(id) {
+        this._visibleIds = this._visibleIds.includes(id) ? [] : [id];
+    }
+
+    _toggleNoAutoCollapse(id) {
+        this._visibleIds = this._visibleIds.includes(id)
+            ? this._visibleIds.filter(visibleId => visibleId !== id)
+            : [...this._visibleIds, id];
     }
 }

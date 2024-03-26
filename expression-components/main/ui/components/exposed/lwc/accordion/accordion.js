@@ -7,6 +7,7 @@ export default class Accordion extends ExpressionSiteElement {
     @api previewContextId;
     @api expr;
     @api respectSharing;
+    @api autoCollapse;
 
     validate() {
         if (!this.computed) {

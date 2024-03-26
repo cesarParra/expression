@@ -1,7 +1,7 @@
 <template>
     <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error} loading={loading}>
         <div if:true={ready}>
-            <c-accordion-base items={computed}></c-accordion-base>
+            <c-accordion-base items={computed} auto-collapse={autoCollapse}></c-accordion-base>
         </div>
     </c-expression-element-container>
 </template>

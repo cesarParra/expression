@@ -18,6 +18,8 @@
                       description="Formula expression to be evaluated." default=""/>
             <property name="respectSharing" type="Boolean" default="true" label="Respect Sharing"
                       description="Whether to run the evaluation with or without sharing."/>
+            <property name="autoCollapse" type="Boolean" default="false" label="Auto Collapse"
+                      description="Whether to automatically collapse the accordion when a new section is expanded."/>
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
