@@ -14,29 +14,40 @@ export default class AccordionBase extends LightningElement {
     @api autoCollapse = false;
 
     /**
+     * Whether to remove the background color and border from the accordion.
+     * @type {boolean}
+     */
+    @api flushStyle = false;
+
+    /**
      * @type {string[]}
      */
     _visibleIds = [];
 
     get displayableItems() {
+        const flushBorder = this.flushStyle ? 'border-b' : 'border';
         const baseArrowClasses = 'w-3 h-3 shrink-0';
-        const sharedButtonClasses = 'flex items-center justify-between w-full p-5 font-medium text-dxp-text-contrast border border-gray-200 focus:ring-4 focus:ring-text-contrast-2 hover:bg-brand-foreground gap-3';
-        const sharedContentClasses = 'p-5 border border-gray-200';
+        const sharedHeaderButtonClasses = 'flex items-center justify-between w-full p-5 font-medium text-dxp-text-contrast ' +
+            `${flushBorder} ` +
+            'border-gray-200 focus:ring-4 focus:ring-text-contrast-2 hover:bg-brand-foreground gap-3';
+        const sharedContentClasses = 'p-5 ' +
+            `${flushBorder} ` +
+            'border-gray-200';
 
         return this.items.map((item, i) => ({
             id: i.toString(),
             ...item,
             buttonClasses: classNames(
-                sharedButtonClasses,
-                {
+                sharedHeaderButtonClasses,
+                !this.flushStyle ? {
                     'border-b-0 rounded-t-xl': this.items.length > 1 ? i === 0 : false,
                     'border-b-0': i > 0 && i < this.items.length - 1,
                     'bg-gray-100': this._visibleIds.includes(i.toString())
-                }),
+                } : {}),
             contentContainerClasses: classNames({'hidden': !this._visibleIds.includes(i.toString())}),
             contentClasses: classNames(
                 sharedContentClasses,
-                {'border-b-0': i !== this.items.length - 1},
+                !this.flushStyle ? {'border-b-0': i !== this.items.length - 1} : {},
                 {'border-t-0': i === this.items.length - 1},
             ),
             arrowClasses: classNames(

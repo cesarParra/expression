@@ -8,6 +8,7 @@ export default class Accordion extends ExpressionSiteElement {
     @api expr;
     @api respectSharing;
     @api autoCollapse;
+    @api flushStyle;
 
     validate() {
         if (!this.computed) {
