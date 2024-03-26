@@ -16,7 +16,9 @@
         </h2>
         <div class={item.contentContainerClasses}>
             <div class={item.contentClasses}>
-                <p class="text-dxp-text-contrast">{item.content}</p>
+                <p class="text-dxp-text-contrast">
+                    <lightning-formatted-rich-text value={item.content}></lightning-formatted-rich-text>
+                </p>
             </div>
         </div>
     </div>
