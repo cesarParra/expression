@@ -101,6 +101,19 @@
     ]
   },
   {
+    "title": "Components",
+    "links": [
+      {
+        "title": "Getting Started",
+        "href": "/docs/components/getting-started"
+      },
+      {
+        "title": "Accordion",
+        "href": "/docs/components/accordion"
+      }
+    ]
+  },
+  {
     "title": "Api",
     "links": [
       {
