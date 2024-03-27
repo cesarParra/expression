@@ -6,15 +6,23 @@ Learn how to get Expression set up in your org.
 
 {% quick-links %}
 
-{% quick-link title="Installation" icon="installation" href="/docs/installation" description="Instructions on how to get the Expression package." /%}
+{% quick-link title="Installation" icon="installation" href="/docs/installation"
+description="Instructions on how to get the Expression package." /%}
 
-{% quick-link title="Usage" icon="plugins" href="/docs/usage" description="Learn how to use the language in your projects." /%}
+{% quick-link title="Usage" icon="plugins" href="/docs/usage"
+description="Learn how to use the language in your projects." /%}
 
-{% quick-link title="Language Features" icon="presets" href="/docs/lists" description="Learn how the language works." /%}
+{% quick-link title="Language Features" icon="presets" href="/docs/lists"
+description="Learn how the language works." /%}
 
-{% quick-link title="Standard Library" icon="operators" href="/docs/operators" description="Learn about the standard library." /%}
+{% quick-link title="Standard Library" icon="operators" href="/docs/operators"
+description="Learn about the standard library." /%}
 
-{% quick-link title="Advance Usage" icon="theming" href="/docs/custom-functions" description="Build powerful functionality with the language." /%}
+{% quick-link title="Advance Usage" icon="theming" href="/docs/custom-functions"
+description="Build powerful functionality with the language." /%}
+
+{% quick-link title="Component" icon="components" href="/docs/components/getting-started"  
+description="Learn how to use LWC powered by the Expression Languague." /%}
 
 {% /quick-links %}
 

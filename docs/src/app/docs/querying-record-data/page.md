@@ -12,7 +12,8 @@ A special function, `QUERY`, is provided which allows you to query data from the
 when the data you want to use is not provided as part of the context.
 
 {% callout %}
-Note that not all `Expression` functions can be used within a `QUERY` function. Only the following functions specified throughout
+Note that not all `Expression` functions can be used within a `QUERY` function. Only the following functions specified
+throughout
 this page are supported, and these are only supported within the `where` filter.
 {% /callout %}
 
@@ -27,13 +28,22 @@ There are 3 parts to a `QUERY` call:
 
 ## `SObjectName`
 
-The name of the object you wish to query. Note that this is not a string literal (it should not be quoted), instead it is a reference to the `SObject` type.
+The name of the object you wish to query. Note that this is not a string literal (it should not be quoted), instead it
+is a reference to the `SObject` type.
 
 This is the only required part of the query. Only specifying the object name will return all records of that type.
 
 ```
 QUERY(Account) # Returns all Account records, with only the Id field populated
 ````
+
+It is important to keep in mind that queries are performed `with sharing` by default, so any records that the user does
+not have access to
+will not be returned or taken into account in the operation.
+
+To change this behavior, use configuration settings used by the evaluator by passing
+an `expression.Configuration` object to the `run` method with a `sharing` property set to
+`expression.Configuration.SharingMode.WITHOUT`.
 
 ## Filters
 
@@ -67,6 +77,7 @@ QUERY(Account(where: AND(Name = "Acme", NumberOfEmployees > 5)))
 ```
 
 Besides `AND` and `OR`, other supported functions within a `where` filter are:
+
 * `LIKE`
 * `ISIN`
 * `ISNOTIN`
@@ -81,7 +92,8 @@ Besides `AND` and `OR`, other supported functions within a `where` filter are:
 #### LIKE
 
 The `LIKE` function can be used to perform a partial match. The `LIKE` function takes 2 arguments, the first
-is the field to match against, and the second is the value to match. The value can contain the same wildcards supported by a SOQL query (`%`, `_`).
+is the field to match against, and the second is the value to match. The value can contain the same wildcards supported
+by a SOQL query (`%`, `_`).
 
 ```
 QUERY(Account(where: LIKE(Name, "Test 5%")) [Id, Name])
@@ -89,7 +101,8 @@ QUERY(Account(where: LIKE(Name, "Test 5%")) [Id, Name])
 
 #### ISIN and ISNOTIN
 
-The `ISIN` and `ISNOTIN` functions can be used to perform a match against a list of values. Both functions take 2 arguments, the first
+The `ISIN` and `ISNOTIN` functions can be used to perform a match against a list of values. Both functions take 2
+arguments, the first
 is the field to match against, and the second is the list of values to match for or against.
 
 ```
@@ -99,7 +112,8 @@ QUERY(Account(where: ISNOTIN(Name, ["Test 1", "Test 2"])) [Id, Name])
 
 #### ISNULL and ISNOTNULL
 
-The `ISNULL` and `ISNOTNULL` functions can be used to perform a match against a null value. Both functions take 1 argument, the field to match against.
+The `ISNULL` and `ISNOTNULL` functions can be used to perform a match against a null value. Both functions take 1
+argument, the field to match against.
 
 ```
 QUERY(Account(where: ISNULL(Name)) [Id, Name])
@@ -114,13 +128,15 @@ The `orderBy` filter allows you to specify the field to sort the results by.
 QUERY(Account(orderBy: Name))
 ```
 
-An direction can also be specified after the field reference. The direction should either be `ASC` or `DESC`. The default is `ASC`.
+An direction can also be specified after the field reference. The direction should either be `ASC` or `DESC`. The
+default is `ASC`.
 
 ```
 QUERY(Account(orderBy: Name DESC))
 ```
 
-You can also order by multiple fields and directions by using a comma separated list (using `[]`) instead of a single field.
+You can also order by multiple fields and directions by using a comma separated list (using `[]`) instead of a single
+field.
 
 ```
 QUERY(Account(orderBy: [Name DESC, CreatedDate ASC]))
@@ -160,7 +176,8 @@ The fields can either be string literals (quoted) or the field references (no qu
 
 ## Subqueries
 
-Subqueries can be used to query related records. Subqueries are specified by using the `QUERY` function within the field list.
+Subqueries can be used to query related records. Subqueries are specified by using the `QUERY` function within the field
+list.
 
 ```
 QUERY(Account[
@@ -175,7 +192,8 @@ Within a subquery, you can also specify any of the filters supported by the `QUE
 
 ## Using variables
 
-Even though a QUERY context only support a subset of the `Expression` functions, you can still use variables within the query.
+Even though a QUERY context only support a subset of the `Expression` functions, you can still use variables within the
+query.
 This allows you to build dynamic queries based on your custom logic.
 
 ```

@@ -22,6 +22,34 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 ## Documentation
 
+### Table of Contents
+
+- Introduction
+    - [Getting Started](https://cesarparra.github.io/expression/)
+    - [Installation](https://cesarparra.github.io/expression/docs/installation)
+    - [Try](https://cesarparra.github.io/expression/docs/try)
+- Usabe
+    - [Evaluating Expressions](https://cesarparra.github.io/expression/docs/usage)
+    - [Configuring the evaluation](https://cesarparra.github.io/expression/docs/configuring-the-evaluation)
+- Language Features
+    - [Lists](https://cesarparra.github.io/expression/docs/lists)
+    - [Maps](https://cesarparra.github.io/expression/docs/maps)
+    - [Piping](https://cesarparra.github.io/expression/docs/piping)
+    - [String Interpolation](https://cesarparra.github.io/expression/docs/string-interpolation)
+    - [Querying Record Data](https://cesarparra.github.io/expression/docs/querying-record-data)
+    - [Referencing Org Data](https://cesarparra.github.io/expression/docs/referencing-org-data)
+    - [Comments](https://cesarparra.github.io/expression/docs/comments)
+- Standard Library
+    - [Operators](https://cesarparra.github.io/expression/docs/operators)
+    - [Functions](https://cesarparra.github.io/expression/docs/functions)
+- Advanced Usage
+    - [Custom Functions](https://cesarparra.github.io/expression/docs/custom-functions)
+    - [Apex Interoperability](https://cesarparra.github.io/expression/docs/apex-interoperability)
+    - [Providing More Context To Your Expressions](https://cesarparra.github.io/expression/docs/more-context)
+- Components
+    - [Getting Started with Expression Components](https://cesarparra.github.io/expression/docs/components/getting-started)
+    - [Accordion](https://cesarparra.github.io/expression/docs/components/accordion)
+
 For the full Expression language documentation,
 please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/expression/).
 
@@ -60,7 +88,7 @@ From any expression you can access query parameters for the current page using
 the global context variable prefix `@` followed by the query parameter name:
 
 ```apex
-"Hello ${@name}"
+"Hello $ { @ name }"
 ```
 
 where `name` is a query parameter in the current page.
@@ -82,16 +110,18 @@ receive the record Id directly or in the form of a merge field, e.g. `{!recordId
 with the value of the `recordId` URL parameter.
 
 > Keep in mind that if a record Id is not specified, the expression provided should not contain any merge field
-references.
+> references.
 
 #### Properties
 
-- `Record Id` - The record Id to use as the context of the expression. This can be a merge field, e.g. `{!recordId}`. Only
-    used when the component is used in a community page.
+- `Record Id` - The record Id to use as the context of the expression. This can be a merge field, e.g. `{!recordId}`.
+  Only
+  used when the component is used in a community page.
 - `Title` - The card title.
 - `Formula Expression` - The expression to evaluate.
 
 #### Sample Usage
+
 Placing the component in an Account page and using the following formula:
 
 ```bash
@@ -112,12 +142,11 @@ allows you to essentially "build" a form that then be submitted through a `Butto
 Submitted forms will pass all the information of any embedded input components within the region
 to the Apex class specified in the `src` handler of the `Button`.
 
-
 ### Button
 
 > `Form` compatible
 
-The `Button` component allows you to display a button that can be used to trigger an action or navigate to a URL. 
+The `Button` component allows you to display a button that can be used to trigger an action or navigate to a URL.
 It can be used in a community page.
 
 #### Properties
@@ -125,13 +154,16 @@ It can be used in a community page.
 - `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
 
 * `label` - Expression that evaluates to a String - The label to display on the button.
-* `type` - Expression that evaluates to a String - The type of button to display. Valid values are `submit`, `action`, `navigation_namedPage`, `navigation_url`
+* `type` - Expression that evaluates to a String - The type of button to display. Valid values
+  are `submit`, `action`, `navigation_namedPage`, `navigation_url`
 * `src` - Depending on the `type` specified, this can hold one of the following values:
     * `submit` or `action` - Reference to an Apex action to execute using the `$Action.Apex.ClassName` format.
     * `navigation_namedPage` - The API name of the page to navigate to.
     * `navigation_url` - The URL to navigate to.
-* `callback` - Only to be used when the `action` type is specified. This should be a reference to an LWC action using the
-`$Action.LWC.ActionName` format. The special variable `$returnValue` can be used to reference the return value of the action.
+* `callback` - Only to be used when the `action` type is specified. This should be a reference to an LWC action using
+  the
+  `$Action.LWC.ActionName` format. The special variable `$returnValue` can be used to reference the return value of the
+  action.
 
 #### Action Types
 
@@ -163,13 +195,15 @@ evaluate to a String containing the URL to navigate to.
 {
   "label": "Checkout",
   "type": "action",
-  "src": $Action.Apex.CreateSalesOrder("00A56643Dr563lcwkL"),
+  "src": $Action.Apex.CreateSalesOrder(
+  "00A56643Dr563lcwkL"
+  ),
   "callback": $Action.Lwc.GoToNamedPage(
-    {
-      "name": "checkout__c",
-      "id": $returnValue
-    }
-  )
+{
+  "name": "checkout__c",
+  "id": $returnValue
+}
+)
 }
 ```
 
@@ -178,7 +212,7 @@ For more on how to call Apex actions, see [Apex Interoperability](#Apex-Interope
 #### Callbacks
 
 After executing an action, it is common to want to react to that action in some way. This is accomplished
-through callbacks and LWC Interoperability. To reference an LWC callback, 
+through callbacks and LWC Interoperability. To reference an LWC callback,
 use the `$Action.Lwc.ActionName(parameter_expression)` format.
 
 The following LWC action names are supported:
@@ -253,6 +287,7 @@ in a community page.
 > The `callToAction` property is optional.
 
 #### Sample Usage
+
 The following formula can be used to query for Navigation Menu Items and display them in the Nav Bar component:
 
 ```bash
@@ -288,8 +323,10 @@ in a community page.
 
 - `title` - The title to display.
 - `description` Optional - The description to display.
-- `callToAction` Optional - `Button Action type` -> The action to execute. Expects the same format as the `Button` component.
-- `secondaryAction` Optional - `Button Action type` -> The action to execute. Expects the same format as the `Button` component.
+- `callToAction` Optional - `Button Action type` -> The action to execute. Expects the same format as the `Button`
+  component.
+- `secondaryAction` Optional - `Button Action type` -> The action to execute. Expects the same format as the `Button`
+  component.
 - `bannerImage` Optional - The URL of the image to display.
 
 ```json
@@ -317,8 +354,8 @@ Supports being placed in a community page.
 
 - `title` - The title to display.
 - `logos` - List of logos to display. Each logo should be a map with the following format:
-  - `name` - The name of the logo.
-  - `src` - The URL of the image to display.
+    - `name` - The name of the logo.
+    - `src` - The URL of the image to display.
 
 ```json
 {
@@ -348,10 +385,10 @@ Supports being placed in a community page.
 - `title` - The title to display.
 - `description` Optional - The description to display.
 - `people` - List of people to display. Each person should be a map with the following format:
-  - `name` - The name of the person.
-  - `title` - The title of the person.
-  - `imageUrl` - The URL of the image to display.
-  - `about` - Optional - The description of the person.
+    - `name` - The name of the person.
+    - `title` - The title of the person.
+    - `imageUrl` - The URL of the image to display.
+    - `about` - Optional - The description of the person.
 
 ```json
 {
@@ -385,11 +422,11 @@ Supports being placed in a community page.
 - `title` - The title to display.
 - `description` Optional - The description to display.
 - `plans` - List of plans to display. Each plan should be a map with the following format:
-  - `name` - The name of the plan.
-  - `price` - The price of the plan.
-  - `action` - Action to execute when the plan is selected. Expects the same format as the `Button` component.
-  - `description` Optional - The description of the plan.
-  - `features` - List of strings detailing the features of the plan.
+    - `name` - The name of the plan.
+    - `price` - The price of the plan.
+    - `action` - Action to execute when the plan is selected. Expects the same format as the `Button` component.
+    - `description` Optional - The description of the plan.
+    - `features` - List of strings detailing the features of the plan.
 
 ```json
 {
@@ -426,8 +463,8 @@ Supports being placed in a community page.
 - `title` - The title to display.
 - `description` Optional - The description to display.
 - `stats` - List of stats to display. Each stat should be a map with the following format:
-  - `label` - The name of the stat.
-  - `value` - The value of the stat.
+    - `label` - The name of the stat.
+    - `value` - The value of the stat.
 
 ```json
 {
@@ -448,7 +485,6 @@ The `Text Block` component allows you to display a block of text. It can be used
 to display any row of text.
 
 Supports being placed in a community page.
-
 
 ### Features
 
@@ -525,7 +561,7 @@ The source code includes a `Visitor` implementation
 whose sole purpose is to do this, `AstPrinter`. When enabled, it will
 print the AST to the logs.
 
-You can enable it by passing an `expression.Configuration` option to the `run` 
+You can enable it by passing an `expression.Configuration` option to the `run`
 method with the `printAst` option enabled :
 
 ```apex
