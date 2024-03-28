@@ -49,6 +49,7 @@ Powerful formula-syntax evaluator for Apex and LWC.
 - Components
     - [Getting Started with Expression Components](https://cesarparra.github.io/expression/docs/components/getting-started)
     - [Accordion](https://cesarparra.github.io/expression/docs/components/accordion)
+    - [Alert](https://cesarparra.github.io/expression/docs/components/alert)
 
 For the full Expression language documentation,
 please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/expression/).
