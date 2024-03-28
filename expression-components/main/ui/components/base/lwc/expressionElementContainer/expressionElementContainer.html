@@ -10,11 +10,12 @@
         <slot></slot>
     </template>
     <div if:true={cannotShowPreview}>
-        <c-alert type="warning" title="Unable to show preview"
-                 message="To see a preview of the component, please provide a Preview Context ID when the Context URL Parameter is set.">
-        </c-alert>
+        <c-alert-base type="warning" title="Unable to show preview"
+                      message="To see a preview of the component, please provide a Preview Context ID when the Context URL Parameter is set.">
+        </c-alert-base>
     </div>
     <div if:true={error}>
-        <c-alert type="error" title="Error parsing expression" message={errorMessage} raw-error={errorRaw}></c-alert>
+        <c-alert-base type="error" title="Error parsing expression" message={errorMessage}
+                      raw-error={errorRaw}></c-alert-base>
     </div>
 </template>

@@ -1,7 +1,7 @@
 import {api, LightningElement} from 'lwc';
 import {classNames} from 'c/utils';
 
-export default class Alert extends LightningElement {
+export default class AlertBase extends LightningElement {
     @api title;
     @api message;
     /**
