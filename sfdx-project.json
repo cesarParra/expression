@@ -12,8 +12,8 @@
     {
       "path": "expression-components",
       "package": "Expression Components",
-      "versionName": "Version 1.1",
-      "versionNumber": "1.1.0.NEXT",
+      "versionName": "Version 1.2",
+      "versionNumber": "1.2.0.NEXT",
       "ancestorVersion": "HIGHEST",
       "default": false,
       "dependencies": [
@@ -37,6 +37,6 @@
     "Expression@1.0.0-1": "04tHu000003OVu3IAG",
     "Expression Components": "0HoHu000000TNMFKA4",
     "Expression Components@1.0.0-1": "04tHu000003OWFLIA4",
-    "Expression Components@1.1.0-1": "04tRb000000ltYvIAI"
+    "Expression Components@1.2.0-1": "04tRb000000mbuvIAA"
   }
 }
