@@ -1,7 +1,8 @@
 <template>
     <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error} loading={loading}>
         <div if:true={ready}>
-            <c-avatar-base avatar-item={computed} size={sizeLowerecased}></c-avatar-base>
+            <c-avatar-base avatar-item={computed} size={sizeLowerecased}
+                           display-style={styleLowercased}></c-avatar-base>
         </div>
     </c-expression-element-container>
 </template>

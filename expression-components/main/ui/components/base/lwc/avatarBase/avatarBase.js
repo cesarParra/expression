@@ -12,6 +12,11 @@ export default class AvatarBase extends LightningElement {
      */
     @api size;
 
+    /**
+     * @type {"square" | "rounded" | "circle"}
+     */
+    @api displayStyle;
+
     get shouldUseImageUrl() {
         return this.avatarItem && this.avatarItem.avatarUrl;
     }
@@ -26,13 +31,16 @@ export default class AvatarBase extends LightningElement {
 
     get avatarContainerClasses() {
         return classNames(
-            'rounded-full',
             {
                 // Common for initials and icon based avatars
                 'relative overflow-hidden bg-gray-100': this.shouldUseInitials || this.shouldUseIcon,
 
                 // Only for initials
                 'inline-flex items-center justify-center': this.shouldUseInitials,
+
+                // Style related classes
+                'rounded': this.displayStyle === 'rounded',
+                'rounded-full': this.displayStyle === 'circle',
 
                 // Size related classes
                 'w-8 h-8': this.size === 'small',

@@ -8,9 +8,14 @@ export default class Avatar extends ExpressionSiteElement {
     @api expr;
     @api respectSharing;
     @api size;
+    @api displayStyle;
 
     get sizeLowerecased() {
         return this.size?.toLowerCase();
+    }
+
+    get styleLowercased() {
+        return this.displayStyle?.toLowerCase();
     }
 
     /**
