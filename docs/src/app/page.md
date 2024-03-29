@@ -21,7 +21,7 @@ description="Learn about the standard library." /%}
 {% quick-link title="Advance Usage" icon="theming" href="/docs/custom-functions"
 description="Build powerful functionality with the language." /%}
 
-{% quick-link title="Component" icon="components" href="/docs/components/getting-started"  
+{% quick-link title="Components" icon="components" href="/docs/components/getting-started"  
 description="Learn how to use LWC powered by the Expression Languague." /%}
 
 {% /quick-links %}
