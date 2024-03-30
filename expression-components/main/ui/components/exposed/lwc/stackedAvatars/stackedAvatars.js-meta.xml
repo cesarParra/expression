@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>60.0</apiVersion>
+    <description>Stacked Avatars</description>
+    <isExposed>true</isExposed>
+    <masterLabel>Stacked Avatars</masterLabel>
+    <targets>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="contextUrlParam" type="String" required="false" label="Context URL Parameter"
+                      description="Optional - The name of the URL parameter that contains the context ID."/>
+            <property name="previewContextId" type="String" required="false" label="Preview Context ID"
+                      description="Optional - The ID of the context record to use when previewing the component in the builder."/>
+            <property name="expr" type="String" placeholder="1 + 1" required="true" label="Formula Expression"
+                      description="Formula expression to be evaluated." default=""/>
+            <property name="respectSharing" type="Boolean" default="true" label="Respect Sharing"
+                      description="Whether to run the evaluation with or without sharing."/>
+            <property name="size" type="String" datasource="Small,Medium,Large" label="Size" default="Medium"
+                      description="Select the size of the avatar."/>
+            <property name="displayStyle" type="String" datasource="Square,Rounded,Circle" label="Style"
+                      default="Circle"
+                      description="Select the style of the avatar."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,14 @@
+<template>
+    <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error} loading={loading}>
+        <div if:true={ready}>
+            <div class="flex -space-x-4">
+                <template for:each={computedWithIds} for:item="avatarItem">
+                    <c-avatar-base additional-classes="inline-block ring-2 ring-white" key={avatarItem.id}
+                                   avatar-item={avatarItem}
+                                   size={sizeLowerecased}
+                                   display-style={styleLowercased}></c-avatar-base>
+                </template>
+            </div>
+        </div>
+    </c-expression-element-container>
+</template>

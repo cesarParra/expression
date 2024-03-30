@@ -18,9 +18,6 @@ export default class Avatar extends ExpressionSiteElement {
         return this.displayStyle?.toLowerCase();
     }
 
-    /**
-     * @return {AvatarItem}
-     */
     validate() {
         if (!this.computed) {
             return;
