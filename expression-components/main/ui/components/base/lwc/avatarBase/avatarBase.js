@@ -17,6 +17,11 @@ export default class AvatarBase extends LightningElement {
      */
     @api displayStyle;
 
+    /**
+     * @type {string}
+     */
+    @api additionalClasses;
+
     get shouldUseImageUrl() {
         return this.avatarItem && this.avatarItem.avatarUrl;
     }
@@ -45,7 +50,10 @@ export default class AvatarBase extends LightningElement {
                 // Size related classes
                 'w-8 h-8': this.size === 'small',
                 'w-12 h-12': this.size === 'medium',
-                'w-16 h-16': this.size === 'large'
+                'w-16 h-16': this.size === 'large',
+
+                // Additional classes
+                [this.additionalClasses]: !!this.additionalClasses
             }
         );
     }
