@@ -3,7 +3,7 @@
     <apiVersion>60.0</apiVersion>
     <description>Stacked Avatars</description>
     <isExposed>true</isExposed>
-    <masterLabel>Stacked Avatars</masterLabel>
+    <masterLabel>Avatars (Stacked)</masterLabel>
     <targets>
         <target>lightningCommunity__Default</target>
         <target>lightningCommunity__Page</target>
