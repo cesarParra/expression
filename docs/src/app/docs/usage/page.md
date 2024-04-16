@@ -73,5 +73,5 @@ Assert.areEqual(1, result);
 
 Or you can use some of the collection functions (like `MAP` or `WHERE`) to extract (or map) data out of the child
 records
-or filter records. See more information about these functions [here](./../docs/functions).
+or filter records. See more information about these functions [here](./../functions).
 
