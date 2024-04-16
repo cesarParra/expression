@@ -8,10 +8,9 @@ nextjs:
 
 {% callout title="Be aware that" %}
 📓Code samples use the `expression` namespace, which assumes you are using the
- unlocked package.
- If you are not, you can remove the namespace prefix from the code samples.
+unlocked package.
+If you are not, you can remove the namespace prefix from the code samples.
 {% /callout %}
-
 
 Use `expression.Evaluator` class to evaluate formulas.
 
@@ -72,6 +71,7 @@ Object result = expression.Evaluator.run('SIZE(ChildAccounts)', parentAccount);
 Assert.areEqual(1, result);
 ```
 
-Or you can use some of the collection functions (like `MAP` or `WHERE`) to extract (or map) data out of the child records
-or filter records. See more information about these functions below.
+Or you can use some of the collection functions (like `MAP` or `WHERE`) to extract (or map) data out of the child
+records
+or filter records. See more information about these functions [here](/docs/functions).
 

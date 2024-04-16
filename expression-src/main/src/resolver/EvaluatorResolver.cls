@@ -90,6 +90,7 @@ public with sharing abstract class EvaluatorResolver {
         public BaseEvaluator(SObject record) {
             this.record = record;
         }
+
         public override Environment prepareEnvironment(Expr pipedExpression) {
             Environment.addGlobalContextVariable('id', record?.Id);
             return new Environment(record);
