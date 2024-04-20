@@ -1,10 +1,12 @@
 public with sharing class ContextResolver implements Visitor {
     private Boolean shouldExecuteQuery = false;
     private Query queryContext;
+    private Query topLevelQuery;
     private final List<Query> subQueries = new List<Query>();
 
     public ContextResolver(Id recordId) {
         this.queryContext = new Query(recordId);
+        this.topLevelQuery = this.queryContext;
     }
 
     private Object resolve(Expr expr) {
@@ -23,6 +25,7 @@ public with sharing class ContextResolver implements Visitor {
 
         this.queryContext.queryBuilder.add(Q.condition('Id').equalsTo(this.queryContext.recordId));
 
+        System.debug('query: ' + this.queryContext.queryBuilder.build());
         List<SObject> results = QRunner.getInstance().run(this.queryContext.queryBuilder);
         if (results.isEmpty()) {
             return null;
@@ -104,8 +107,23 @@ public with sharing class ContextResolver implements Visitor {
 
     public Object visit(Expr.GetExpr getExpr) {
         try {
+            system.debug('left: ' + getExpr.objectExpr + ' right: ' + getExpr.field.lexeme);
             String referenceName = this.resolveExtractReferenceOutOfGetExpression(getExpr);
-            this.queryContext.queryBuilder.selectField(referenceName);
+            System.debug('referenceName: ' + referenceName);
+
+            Boolean shouldAddToTopLevelQuery = false;
+            if ((getExpr.objectExpr instanceof Expr.Variable)) {
+                if (((Expr.Variable) getExpr.objectExpr).name.lexeme.toLowerCase() == '@context') {
+                    shouldAddToTopLevelQuery = true;
+                }
+            }
+
+            if (shouldAddToTopLevelQuery) {
+                this.topLevelQuery.queryBuilder.selectField(referenceName);
+            } else {
+                this.queryContext.queryBuilder.selectField(referenceName);
+            }
+
             this.shouldExecuteQuery = true;
             return null;
         } catch (NotSupportedGetResolutionException e) {
@@ -120,6 +138,13 @@ public with sharing class ContextResolver implements Visitor {
             relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme + '.';
         } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
             relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
+        } else if ((getExpr.objectExpr instanceof Expr.Variable)) {
+            system.debug('variable: ' + ((Expr.Variable) getExpr.objectExpr).name.lexeme);
+            if (((Expr.Variable) getExpr.objectExpr).name.lexeme.toLowerCase() == '@context') {
+                return getExpr.field.lexeme;
+            } else {
+                throw new NotSupportedGetResolutionException();
+            }
         } else {
             // If we are doing a "get" expression on anything that is not either a merge field
             // or another inner get expression, we don't know how to resolve it, so we shouldn't
@@ -132,7 +157,6 @@ public with sharing class ContextResolver implements Visitor {
 
     public Object visit(Expr.Variable variable) {
         if (variable.name.lexeme.toLowerCase() == '@context') {
-            System.debug('Found context variable');
             this.shouldExecuteQuery = true;
         }
         return null;

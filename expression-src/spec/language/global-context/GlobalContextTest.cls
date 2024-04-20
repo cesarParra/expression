@@ -118,6 +118,30 @@ private class GlobalContextTest {
     }
 
     @IsTest
+    private static void theContextGetsCorrectlyQueriedFromAnInnerQuery() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        String expression = 'MAP(ChildAccounts, {"name": Name, "parent": @Context.Name})';
+
+        List<Object> result = (List<Object>) Evaluator.run(expression, parentAccount.Id);
+
+        Assert.areEqual('Child1', ((Map<Object, Object>) result[0]).get('name'));
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[0]).get('parent'));
+
+        Assert.areEqual('Child2', ((Map<Object, Object>) result[1]).get('name'));
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parent'));
+    }
+
+    // TODO: In another test we also want to do @Context.Parent.Name
+
+    @IsTest
     private static void theRecordIdIsAccessibleAsAContextVariable_resolvingFromFullRecord() {
         String expression = '@Id';
         Id recordId = IdGenerator.generate(Account.SObjectType);
