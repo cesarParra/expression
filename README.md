@@ -10,7 +10,7 @@ Powerful formula-syntax evaluator for Apex and LWC.
 
 </div>
 
-## Features
+# Features
 
 * Supports all the most important operators and functions available in Salesforce formulas
 * Support for lists and maps, including spread operator (`...`) support.
@@ -20,9 +20,9 @@ Powerful formula-syntax evaluator for Apex and LWC.
 * Pre-built LWC component to evaluate Expressions in record pages and Experience Builder sites
 * And much more!
 
-## Documentation
+# Documentation
 
-### Table of Contents
+## Table of Contents
 
 - Introduction
     - [Getting Started](https://cesarparra.github.io/expression/)
@@ -532,11 +532,11 @@ Supports being placed in a community page.
 "<<String value or expression>>"
 ```
 
-## Contributing
+# Contributing
 
 Contributions are welcome! Feel free to open an issue or submit a pull request.
 
-### Setup
+## Setup
 
 Create a scratch org by running:
 
@@ -556,7 +556,7 @@ Assign the `Expression Admin` permission set to the default user:
 sfdx force:user:permset:assign -n Expression_Admin
 ```
 
-#### Debugging
+### Debugging
 
 While debugging, you might find it helpful to see the generated AST for
 a given expression.
@@ -575,7 +575,7 @@ Object value = expression.Evaluator.run('AND(true, false, 1=1)', config);
 // (AND true false (= 1 1))
 ```
 
-### Running tests
+## Running tests
 
 Run the tests with:
 
