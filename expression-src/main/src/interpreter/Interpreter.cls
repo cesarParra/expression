@@ -116,7 +116,7 @@ public virtual with sharing class Interpreter implements Visitor {
                     throw new Exceptions.RuntimeException(
                         binary.operator,
                         'Error executing ' + binary.operator.lexeme + ' operator: the left operand must be a number and' +
-                        ' the right operand must be an integer, but found: left' + left + ' and right ' + right
+                            ' the right operand must be an integer, but found: left' + left + ' and right ' + right
                     );
                 }
 
@@ -192,11 +192,13 @@ public virtual with sharing class Interpreter implements Visitor {
                 return tempEnvironmentForGet.getParentSObject(getExpr.field.lexeme);
             }
 
+            Account tmpAcc = (Account) result;
+            System.debug('tmpAcc: ' + tmpAcc.Parent);
             throw new Exceptions.RuntimeException(
                 getExpr.field,
                 'Error executing get expression: the SObject type ' +
-                tempEnvironmentForGet.getSObjectTypeName() +
-                ' does not contain a field with the name: ' + getExpr.field.lexeme
+                    tempEnvironmentForGet.getSObjectTypeName() +
+                    ' does not contain a field with the name: ' + getExpr.field.lexeme
             );
         } else if (result instanceof IGlobalVariableResolver) {
             List<Object> arguments = new List<Object>();
@@ -236,7 +238,7 @@ public virtual with sharing class Interpreter implements Visitor {
         throw new Exceptions.RuntimeException(
             getExpr.field,
             'Error executing get expression: could not determine the value of: ' +
-            getExpr.field.lexeme + ' from ' + result
+                getExpr.field.lexeme + ' from ' + result
         );
     }
 
@@ -255,8 +257,8 @@ public virtual with sharing class Interpreter implements Visitor {
         throw new Exceptions.RuntimeException(
             variable.name,
             'Error executing variable expression: the variable ' +
-            variable.name.lexeme +
-            ' is not defined in the current context.'
+                variable.name.lexeme +
+                ' is not defined in the current context.'
         );
     }
 
@@ -276,10 +278,10 @@ public virtual with sharing class Interpreter implements Visitor {
             throw new Exceptions.RuntimeException(
                 mergeField.name,
                 'Error executing merge field: ' +
-                mergeField.name.lexeme +
-                ' The SObject type ' +
-                env.getSObjectTypeName() +
-                ' does not contain a field with that name.'
+                    mergeField.name.lexeme +
+                    ' The SObject type ' +
+                    env.getSObjectTypeName() +
+                    ' does not contain a field with that name.'
             );
         }
 
@@ -382,8 +384,8 @@ public virtual with sharing class Interpreter implements Visitor {
             throw new Exceptions.RuntimeException(
                 function.functionToken,
                 'Error executing ' + function.functionName + ' function: the function expects ' +
-                fn.getArity().toString() + ' argument(s), but ' +
-                function.arguments.size() + ' were provided.'
+                    fn.getArity().toString() + ' argument(s), but ' +
+                    function.arguments.size() + ' were provided.'
             );
         }
     }

@@ -25,6 +25,7 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         this.queryContext.queryBuilder.add(Q.condition('Id').equalsTo(this.queryContext.recordId));
+        System.debug('query:' + this.queryContext.queryBuilder.build());
         List<SObject> results = QRunner.getInstance().run(this.queryContext.queryBuilder);
         if (results.isEmpty()) {
             return null;
@@ -145,8 +146,15 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     private static Boolean isReferencingContextField(Expr.GetExpr expr) {
-        return (expr.objectExpr instanceof Expr.Variable) &&
-            ((Expr.Variable) expr.objectExpr).isContext();
+        if (expr.objectExpr instanceof Expr.Variable) {
+            return ((Expr.Variable) expr.objectExpr).isContext();
+        } else if (expr.objectExpr instanceof Expr.GetExpr) {
+            // Recursively check if the parent object is referencing a context field
+            // since we can have nested get expressions and what is important is the top level
+            // object that is being referenced.
+            return isReferencingContextField((Expr.GetExpr) expr.objectExpr);
+        }
+        return false;
     }
 
     public Object visit(Expr.Variable variable) {

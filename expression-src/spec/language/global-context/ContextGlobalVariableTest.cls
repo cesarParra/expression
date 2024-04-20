@@ -59,30 +59,30 @@ private class ContextGlobalVariableTest {
         Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parent'));
     }
 
-//    @IsTest
-//    private static void theContextGetsCorrectlyQueriedFromAnInnerQuery_grandParentReferenceThroughContext() {
-//        Account grandParentAccount = new Account(Name = 'GrandParent');
-//        insert grandParentAccount;
-//
-//        Account parentAccount = new Account(Name = 'Parent', ParentId = grandParentAccount.Id);
-//        insert parentAccount;
-//
-//        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
-//        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
-//        insert new List<SObject>{
-//            childAccount1, childAccount2
-//        };
-//
-//        String expression = 'MAP(ChildAccounts, {"name": Name, "parent": @Context.Name, "grandParent": @Context.Parent.Name})';
-//
-//        List<Object> result = (List<Object>) Evaluator.run(expression, parentAccount.Id);
-//
-//        Assert.areEqual('Child1', ((Map<Object, Object>) result[0]).get('name'));
-//        Assert.areEqual('Parent', ((Map<Object, Object>) result[0]).get('parent'));
-//        Assert.areEqual('GrandParent', ((Map<Object, Object>) result[0]).get('grandParent'));
-//
-//        Assert.areEqual('Child2', ((Map<Object, Object>) result[1]).get('name'));
-//        Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parent'));
-//        Assert.areEqual('GrandParent', ((Map<Object, Object>) result[1]).get('grandParent'));
-//    }
+    @IsTest
+    private static void theContextGetsCorrectlyQueriedFromAnInnerQuery_grandParentReferenceThroughContext() {
+        Account grandParentAccount = new Account(Name = 'GrandParent');
+        insert grandParentAccount;
+
+        Account parentAccount = new Account(Name = 'Parent', ParentId = grandParentAccount.Id);
+        insert parentAccount;
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        insert new List<SObject>{
+            childAccount1, childAccount2
+        };
+
+        String expression = 'MAP(ChildAccounts, {"name": Name, "parent": @Context.Name, "grandParent": @Context.Parent.Name})';
+
+        List<Object> result = (List<Object>) Evaluator.run(expression, parentAccount.Id);
+
+        Assert.areEqual('Child1', ((Map<Object, Object>) result[0]).get('name'));
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[0]).get('parent'));
+        Assert.areEqual('GrandParent', ((Map<Object, Object>) result[0]).get('grandParent'));
+
+        Assert.areEqual('Child2', ((Map<Object, Object>) result[1]).get('name'));
+        Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parent'));
+        Assert.areEqual('GrandParent', ((Map<Object, Object>) result[1]).get('grandParent'));
+    }
 }
