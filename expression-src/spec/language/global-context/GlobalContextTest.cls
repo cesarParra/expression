@@ -94,6 +94,19 @@ private class GlobalContextTest {
     }
 
     @IsTest
+    private static void theRecordContextIsAccessibleAsAContextVariable_resolvingFromId() {
+        String expression = '@Context';
+        Account testRecord = new Account(Name = 'Test');
+        insert testRecord;
+
+        Object result = Evaluator.run(expression, testRecord.Id);
+
+        Assert.isNotNull(result);
+        SObject record = (SObject) result;
+        Assert.areEqual(testRecord.Id, record.Id);
+    }
+
+    @IsTest
     private static void theRecordIdIsAccessibleAsAContextVariable_resolvingFromFullRecord() {
         String expression = '@Id';
         Id recordId = IdGenerator.generate(Account.SObjectType);
@@ -106,6 +119,8 @@ private class GlobalContextTest {
 
         Assert.areEqual(recordId, result);
     }
+
+    // TODO: Another similar test here but for records
 
     @IsTest
     private static void throwsARuntimeExceptionWhenReferencingAGlobalVariableThatDoesNotExist() {

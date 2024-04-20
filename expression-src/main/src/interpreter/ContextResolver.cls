@@ -131,6 +131,10 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.Variable variable) {
+        if (variable.name.lexeme.toLowerCase() == '@context') {
+            System.debug('Found context variable');
+            this.shouldExecuteQuery = true;
+        }
         return null;
     }
 

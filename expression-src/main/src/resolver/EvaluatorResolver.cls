@@ -73,12 +73,14 @@ public with sharing abstract class EvaluatorResolver {
         public ContextResolverEvaluator(Id recordId) {
             this.recordId = recordId;
         }
-        public override Environment prepareEnvironment(Expr pipedExpression) {
+
+        public override Environment prepareEnvironment(Expr expression) {
             ContextResolver ctxInterpreter = new ContextResolver(recordId);
-            SObject record = ctxInterpreter.build(pipedExpression);
+            SObject record = ctxInterpreter.build(expression);
             Environment env = new Environment(record);
 
             Environment.addGlobalContextVariable('id', recordId);
+            Environment.addGlobalContextVariable('context', record);
 
             return env;
         }
@@ -91,7 +93,7 @@ public with sharing abstract class EvaluatorResolver {
             this.record = record;
         }
 
-        public override Environment prepareEnvironment(Expr pipedExpression) {
+        public override Environment prepareEnvironment(Expr expression) {
             Environment.addGlobalContextVariable('id', record?.Id);
             return new Environment(record);
         }

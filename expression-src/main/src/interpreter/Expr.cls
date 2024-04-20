@@ -92,8 +92,8 @@ public abstract class Expr {
     }
 
     public enum VariableType {
-        GLOBAL_CONTEXT,
-        LOCAL
+        GLOBAL_CONTEXT, // Represented with at sign (@)
+        LOCAL // Represented with dollar ($)
     }
 
     public class Variable extends Expr {
