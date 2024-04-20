@@ -1,10 +1,13 @@
 public with sharing class ContextResolver implements Visitor {
     private Boolean shouldExecuteQuery = false;
     private Query queryContext;
+
+    private final Query topLevelQuery;
     private final List<Query> subQueries = new List<Query>();
 
     public ContextResolver(Id recordId) {
         this.queryContext = new Query(recordId);
+        this.topLevelQuery = this.queryContext;
     }
 
     private Object resolve(Expr expr) {
@@ -22,7 +25,6 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         this.queryContext.queryBuilder.add(Q.condition('Id').equalsTo(this.queryContext.recordId));
-
         List<SObject> results = QRunner.getInstance().run(this.queryContext.queryBuilder);
         if (results.isEmpty()) {
             return null;
@@ -105,7 +107,16 @@ public with sharing class ContextResolver implements Visitor {
     public Object visit(Expr.GetExpr getExpr) {
         try {
             String referenceName = this.resolveExtractReferenceOutOfGetExpression(getExpr);
-            this.queryContext.queryBuilder.selectField(referenceName);
+
+            if (isReferencingContextField(getExpr)) {
+                // References to @Context fields will always go to the top level query
+                // as they are part of the global contextual context tied to the record Id
+                // from which the Evaluation was started.
+                addFieldToQuery(this.topLevelQuery, referenceName.toLowerCase());
+            } else {
+                this.queryContext.queryBuilder.selectField(referenceName);
+            }
+
             this.shouldExecuteQuery = true;
             return null;
         } catch (NotSupportedGetResolutionException e) {
@@ -120,9 +131,11 @@ public with sharing class ContextResolver implements Visitor {
             relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme + '.';
         } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
             relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
+        } else if (isReferencingContextField(getExpr)) {
+            return getExpr.field.lexeme;
         } else {
-            // If we are doing a "get" expression on anything that is not either a merge field
-            // or another inner get expression, we don't know how to resolve it, so we shouldn't
+            // If we are doing a "get" expression on anything that is not either a merge field,
+            // another inner get expression, or an @Context reference, we don't know how to resolve it, so we shouldn't
             // end up adding it to the query
             throw new NotSupportedGetResolutionException();
         }
@@ -130,22 +143,48 @@ public with sharing class ContextResolver implements Visitor {
         return relationshipToQuery + getExpr.field.lexeme;
     }
 
+    private static Boolean isReferencingContextField(Expr.GetExpr expr) {
+        if (expr.objectExpr instanceof Expr.Variable) {
+            return ((Expr.Variable) expr.objectExpr).isContext();
+        } else if (expr.objectExpr instanceof Expr.GetExpr) {
+            // Recursively check if the parent object is referencing a context field
+            // since we can have nested get expressions and what is important is the top level
+            // object that is being referenced.
+            return isReferencingContextField((Expr.GetExpr) expr.objectExpr);
+        }
+        return false;
+    }
+
     public Object visit(Expr.Variable variable) {
+        if (variable.isContext()) {
+            this.shouldExecuteQuery = true;
+        }
         return null;
     }
 
     public Object visit(Expr.MergeField mergeField) {
         String fieldName = mergeField.name.lexeme.toLowerCase();
+        return addFieldToQuery(this.queryContext, fieldName);
+    }
+
+    private Object addFieldToQuery(Query queryContext, String fieldName) {
+        if (fieldName.contains('.')) {
+            // If we are dealing with a relationship query, we will assume that the field
+            // might exist, and if it doesn't then we let it bomb when the query is tried to be executed.
+            queryContext.queryBuilder.selectField(fieldName);
+            this.shouldExecuteQuery = true;
+            return null;
+        }
 
         // Check if the field belongs to the parent object
         if (this.getFields().contains(fieldName)) {
-            this.queryContext.queryBuilder.selectField(fieldName);
+            queryContext.queryBuilder.selectField(fieldName);
             this.shouldExecuteQuery = true;
             return null;
         }
 
         // Check if the merge field is a child relationship field
-        for (ChildRelationship relationship : this.queryContext.objectType.getDescribe().getChildRelationships()) {
+        for (ChildRelationship relationship : queryContext.objectType.getDescribe().getChildRelationships()) {
             String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
             if (childRelationshipName != null && childRelationshipName == fieldName) {
                 // We have a child relationship, so we want to start building a subquery
@@ -161,7 +200,7 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         throw new ResolverException('Did not understand the relationship to field ' +
-            mergeField.name.lexeme + ' for SObjectType ' + this.queryContext.objectType);
+            fieldName + ' for SObjectType ' + queryContext.objectType);
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
