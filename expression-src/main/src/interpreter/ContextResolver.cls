@@ -106,9 +106,13 @@ public with sharing class ContextResolver implements Visitor {
 
     public Object visit(Expr.GetExpr getExpr) {
         try {
+            system.debug('GetExpr: ' + getExpr);
             String referenceName = this.resolveExtractReferenceOutOfGetExpression(getExpr);
 
             if (isReferencingContextField(getExpr)) {
+                // References to @Context fields will always go to the top level query
+                // as they are part of the global contextual context tied to the record Id
+                // from which the Evaluation was started.
                 this.topLevelQuery.queryBuilder.selectField(referenceName);
             } else {
                 this.queryContext.queryBuilder.selectField(referenceName);

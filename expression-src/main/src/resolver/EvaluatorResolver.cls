@@ -79,6 +79,7 @@ public with sharing abstract class EvaluatorResolver {
             SObject record = ctxInterpreter.build(expression);
             Environment env = new Environment(record);
 
+            // TODO: When @Context is referenced but there is no context/id, let's display a nicer error
             Environment.addGlobalContextVariable('id', recordId);
             Environment.addGlobalContextVariable('context', record);
 
