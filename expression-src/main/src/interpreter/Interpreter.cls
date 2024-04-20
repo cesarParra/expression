@@ -254,11 +254,18 @@ public virtual with sharing class Interpreter implements Visitor {
             return env.get(variable.name.lexeme);
         }
 
+        String errorMessage;
+        if (variable.isContext()) {
+            errorMessage = '@Context is not accessible when no context Id or record was provided.';
+        } else {
+            errorMessage = 'Error executing variable expression: the variable ' +
+                variable.name.lexeme +
+                ' is not defined in the current context.';
+        }
+
         throw new Exceptions.RuntimeException(
             variable.name,
-            'Error executing variable expression: the variable ' +
-                variable.name.lexeme +
-                ' is not defined in the current context.'
+            errorMessage
         );
     }
 

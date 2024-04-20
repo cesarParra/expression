@@ -85,4 +85,20 @@ private class ContextGlobalVariableTest {
         Assert.areEqual('Parent', ((Map<Object, Object>) result[1]).get('parent'));
         Assert.areEqual('GrandParent', ((Map<Object, Object>) result[1]).get('grandParent'));
     }
+
+    @IsTest
+    private static void theRecordIsAccessibleAsAContextVariable_resolvingFromFullRecord() {
+        String expression = '@Context';
+        Account testRecord = new Account(
+            Id = IdGenerator.generate(Account.SObjectType),
+            Name = 'Test'
+        );
+
+        Object result = Evaluator.run(expression, testRecord);
+
+        Assert.isNotNull(result);
+        SObject record = (SObject) result;
+        Assert.areEqual(testRecord.Id, record.Id);
+        Assert.areEqual(testRecord.Name, record.get('Name'));
+    }
 }

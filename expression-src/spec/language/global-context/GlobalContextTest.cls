@@ -107,8 +107,6 @@ private class GlobalContextTest {
         Assert.areEqual(recordId, result);
     }
 
-    // TODO: Another similar test here but for records
-
     @IsTest
     private static void throwsARuntimeExceptionWhenReferencingAGlobalVariableThatDoesNotExist() {
         String expression = '@DoesNotExist';
