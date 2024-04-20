@@ -28,8 +28,9 @@ Powerful formula-syntax evaluator for Apex and LWC.
     - [Getting Started](https://cesarparra.github.io/expression/)
     - [Installation](https://cesarparra.github.io/expression/docs/installation)
     - [Try](https://cesarparra.github.io/expression/docs/try)
-- Usabe
+- Usage
     - [Evaluating Expressions](https://cesarparra.github.io/expression/docs/usage)
+    - [Accessing Contextual Data](https://cesarparra.github.io/expression/docs/accessing-contextual-data)
     - [Configuring the evaluation](https://cesarparra.github.io/expression/docs/configuring-the-evaluation)
 - Language Features
     - [Lists](https://cesarparra.github.io/expression/docs/lists)
