@@ -107,6 +107,17 @@ private class GlobalContextTest {
     }
 
     @IsTest
+    private static void canGetFieldsFromTheRecordContext() {
+        String expression = '@Context.Name';
+        Account testRecord = new Account(Name = 'Test');
+        insert testRecord;
+
+        Object result = Evaluator.run(expression, testRecord.Id);
+
+        Assert.areEqual('Test', result);
+    }
+
+    @IsTest
     private static void theRecordIdIsAccessibleAsAContextVariable_resolvingFromFullRecord() {
         String expression = '@Id';
         Id recordId = IdGenerator.generate(Account.SObjectType);
