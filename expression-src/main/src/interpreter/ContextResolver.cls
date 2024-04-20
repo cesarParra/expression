@@ -114,7 +114,7 @@ public with sharing class ContextResolver implements Visitor {
                 // References to @Context fields will always go to the top level query
                 // as they are part of the global contextual context tied to the record Id
                 // from which the Evaluation was started.
-                this.topLevelQuery.queryBuilder.selectField(referenceName);
+                addFieldToQuery(this.topLevelQuery, referenceName.toLowerCase());
             } else {
                 this.queryContext.queryBuilder.selectField(referenceName);
             }
@@ -166,16 +166,27 @@ public with sharing class ContextResolver implements Visitor {
 
     public Object visit(Expr.MergeField mergeField) {
         String fieldName = mergeField.name.lexeme.toLowerCase();
+        return addFieldToQuery(this.queryContext, fieldName);
+    }
+
+    private Object addFieldToQuery(Query queryContext, String fieldName) {
+        if (fieldName.contains('.')) {
+            // If we are dealing with a relationship query, we will assume that the field
+            // might exist, and if it doesn't then we let it bomb when the query is tried to be executed.
+            queryContext.queryBuilder.selectField(fieldName);
+            this.shouldExecuteQuery = true;
+            return null;
+        }
 
         // Check if the field belongs to the parent object
         if (this.getFields().contains(fieldName)) {
-            this.queryContext.queryBuilder.selectField(fieldName);
+            queryContext.queryBuilder.selectField(fieldName);
             this.shouldExecuteQuery = true;
             return null;
         }
 
         // Check if the merge field is a child relationship field
-        for (ChildRelationship relationship : this.queryContext.objectType.getDescribe().getChildRelationships()) {
+        for (ChildRelationship relationship : queryContext.objectType.getDescribe().getChildRelationships()) {
             String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
             if (childRelationshipName != null && childRelationshipName == fieldName) {
                 // We have a child relationship, so we want to start building a subquery
@@ -191,7 +202,7 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         throw new ResolverException('Did not understand the relationship to field ' +
-            mergeField.name.lexeme + ' for SObjectType ' + this.queryContext.objectType);
+            fieldName + ' for SObjectType ' + queryContext.objectType);
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {

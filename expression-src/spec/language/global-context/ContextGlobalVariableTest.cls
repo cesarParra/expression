@@ -101,4 +101,21 @@ private class ContextGlobalVariableTest {
         Assert.areEqual(testRecord.Id, record.Id);
         Assert.areEqual(testRecord.Name, record.get('Name'));
     }
+
+    @IsTest
+    private static void canAccessAChildRecordsRelationshipThroughTheContext() {
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+
+        Contact childContact = new Contact(LastName = 'Child', AccountId = parentAccount.Id);
+        insert childContact;
+
+        String expr = '@Context.Contacts';
+
+        Object result = Evaluator.run(expr, parentAccount.Id);
+
+        Assert.isNotNull(result);
+        List<SObject> contacts = (List<SObject>) result;
+        Assert.areEqual(1, contacts.size());
+    }
 }

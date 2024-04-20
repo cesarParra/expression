@@ -24,6 +24,10 @@
         "href": "/docs/usage"
       },
       {
+        "title": "Accessing Contextual Data",
+        "href": "/docs/accessing-contextual-data"
+      },
+      {
         "title": "Configuring the evaluation",
         "href": "/docs/configuring-the-evaluation"
       }
