@@ -25,7 +25,6 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         this.queryContext.queryBuilder.add(Q.condition('Id').equalsTo(this.queryContext.recordId));
-        System.debug('query:' + this.queryContext.queryBuilder.build());
         List<SObject> results = QRunner.getInstance().run(this.queryContext.queryBuilder);
         if (results.isEmpty()) {
             return null;
@@ -107,7 +106,6 @@ public with sharing class ContextResolver implements Visitor {
 
     public Object visit(Expr.GetExpr getExpr) {
         try {
-            system.debug('GetExpr: ' + getExpr);
             String referenceName = this.resolveExtractReferenceOutOfGetExpression(getExpr);
 
             if (isReferencingContextField(getExpr)) {
