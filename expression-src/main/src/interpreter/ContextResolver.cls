@@ -141,7 +141,8 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     private static Boolean isReferencingContextField(Expr.GetExpr expr) {
-        return (expr.objectExpr instanceof Expr.Variable) && ((Expr.Variable) expr.objectExpr).name.lexeme.toLowerCase() == '@context';
+        return (expr.objectExpr instanceof Expr.Variable) &&
+            ((Expr.Variable) expr.objectExpr).isContext();
     }
 
     public Object visit(Expr.Variable variable) {

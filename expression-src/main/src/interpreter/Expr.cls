@@ -108,6 +108,10 @@ public abstract class Expr {
         public override Object accept(Visitor v) {
             return v.visit(this);
         }
+
+        public Boolean isContext() {
+            return this.name.lexeme.toLowerCase() == '@context';
+        }
     }
 
     public class MergeField extends Expr {
