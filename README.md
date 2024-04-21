@@ -54,6 +54,7 @@ Powerful formula-syntax evaluator for Apex and LWC.
     - [Avatar](https://cesarparra.github.io/expression/docs/components/avatar)
     - [Avatars (Stacked)](https://cesarparra.github.io/expression/docs/components/stacked-avatars)
     - [Formula](https://cesarparra.github.io/expression/docs/components/formula)
+    - [Text Block](https://cesarparra.github.io/expression/docs/components/text-block)
 
 For the full Expression language documentation,
 please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/expression/).
