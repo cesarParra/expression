@@ -406,15 +406,6 @@ Supports being placed in a community page.
 }
 ```
 
-### Text Block
-
-The `Text Block` component allows you to display a block of text. It can be used
-to display any row of text.
-
-Supports being placed in a community page.
-
-### Features
-
 ### Stats
 
 The `Features` component allows you to display a list of features. It can be used

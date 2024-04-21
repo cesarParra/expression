@@ -6,8 +6,6 @@ nextjs:
     description: Learn about the Formula component.
 ---
 
-## Formula
-
 The `Formula` component allows you to evaluate an expression and display the result.
 
 ## Targets

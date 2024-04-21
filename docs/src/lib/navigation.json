@@ -122,6 +122,10 @@
       {
         "title": "Formula",
         "href": "/docs/components/formula"
+      },
+      {
+        "title": "Text Block",
+        "href": "/docs/components/text-block"
       }
     ]
   },

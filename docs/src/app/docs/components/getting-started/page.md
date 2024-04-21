@@ -6,7 +6,7 @@ nextjs:
     description: Learn about how to get started with the Expression Components library.
 ---
 
-`Expression Components` is a UI library included that can be deployed independently of the core library.
+`Expression Components` is a UI library that can be deployed independently of the core library.
 These components give you powerful configuration abilities, as their configuration properties are powered
 by the `Expression` language.
 
