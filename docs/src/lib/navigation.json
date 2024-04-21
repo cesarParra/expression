@@ -132,6 +132,10 @@
         "href": "/docs/components/formula"
       },
       {
+        "title": "Input Text",
+        "href": "/docs/components/input-text"
+      },
+      {
         "title": "Text Block",
         "href": "/docs/components/text-block"
       }
