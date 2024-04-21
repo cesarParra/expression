@@ -53,6 +53,7 @@ Powerful formula-syntax evaluator for Apex and LWC.
     - [Alert](https://cesarparra.github.io/expression/docs/components/alert)
     - [Avatar](https://cesarparra.github.io/expression/docs/components/avatar)
     - [Avatars (Stacked)](https://cesarparra.github.io/expression/docs/components/stacked-avatars)
+    - [Form Builder](https://cesarparra.github.io/expression/docs/components/form-builder)
     - [Formula](https://cesarparra.github.io/expression/docs/components/formula)
     - [Text Block](https://cesarparra.github.io/expression/docs/components/text-block)
 
@@ -60,15 +61,6 @@ For the full Expression language documentation,
 please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/expression/).
 
 ---
-
-### Form
-
-The `Form` component exposes a region where you can place other Expression components inside. This
-allows you to essentially "build" a form that then be submitted through a `Button` component with a
-`submit` type.
-
-Submitted forms will pass all the information of any embedded input components within the region
-to the Apex class specified in the `src` handler of the `Button`.
 
 ### Button
 
