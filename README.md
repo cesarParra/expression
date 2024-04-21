@@ -52,6 +52,7 @@ Powerful formula-syntax evaluator for Apex and LWC.
     - [Accordion](https://cesarparra.github.io/expression/docs/components/accordion)
     - [Alert](https://cesarparra.github.io/expression/docs/components/alert)
     - [Avatar](https://cesarparra.github.io/expression/docs/components/avatar)
+    - [Button](https://cesarparra.github.io/expression/docs/components/button)
     - [Avatars (Stacked)](https://cesarparra.github.io/expression/docs/components/stacked-avatars)
     - [Form Builder](https://cesarparra.github.io/expression/docs/components/form-builder)
     - [Formula](https://cesarparra.github.io/expression/docs/components/formula)
@@ -62,129 +63,26 @@ please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/exp
 
 ---
 
-### Button
-
-> `Form` compatible
-
-The `Button` component allows you to display a button that can be used to trigger an action or navigate to a URL.
-It can be used in a community page.
-
-#### Properties
-
-- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
-
-* `label` - Expression that evaluates to a String - The label to display on the button.
-* `type` - Expression that evaluates to a String - The type of button to display. Valid values
-  are `submit`, `action`, `navigation_namedPage`, `navigation_url`
-* `src` - Depending on the `type` specified, this can hold one of the following values:
-    * `submit` or `action` - Reference to an Apex action to execute using the `$Action.Apex.ClassName` format.
-    * `navigation_namedPage` - The API name of the page to navigate to.
-    * `navigation_url` - The URL to navigate to.
-* `callback` - Only to be used when the `action` type is specified. This should be a reference to an LWC action using
-  the
-  `$Action.LWC.ActionName` format. The special variable `$returnValue` can be used to reference the return value of the
-  action.
-
-#### Action Types
-
-The `type` property determines how the button will behave when clicked. The following types are supported with their
-respective behaviors:
-
-* `submit`
-
-To use this type the button must be placed inside a `Form` component. When clicked, the form will be submitted (the
-Apex action referenced in the `src` property will be executed) receiving the form data as a Map.
-
-* `action`
-
-When clicked, the Apex action referenced in the `src` property will be executed.
-
-* `navigation_namedPage`
-
-When clicked, the user will be navigated to the page referenced in the `src` property. The `src` property should
-evaluate to a String containing the API name of the page to navigate to.
-
-* `navigation_url`
-
-When clicked, the user will be navigated to the URL referenced in the `src` property. The `src` property should
-evaluate to a String containing the URL to navigate to.
-
-**Example**
-
-```json
-{
-  "label": "Checkout",
-  "type": "action",
-  "src": $Action.Apex.CreateSalesOrder(
-  "00A56643Dr563lcwkL"
-  ),
-  "callback": $Action.Lwc.GoToNamedPage(
-{
-  "name": "checkout__c",
-  "id": $returnValue
-}
-)
-}
-```
-
-For more on how to call Apex actions, see [Apex Interoperability](#Apex-Interoperability)
-
-#### Callbacks
-
-After executing an action, it is common to want to react to that action in some way. This is accomplished
-through callbacks and LWC Interoperability. To reference an LWC callback,
-use the `$Action.Lwc.ActionName(parameter_expression)` format.
-
-The following LWC action names are supported:
-
-* `GoToNamedPage`
-
-This action navigates to a named page. A Map expression with a "name" property must be provided containing
-the page's API Name.
-To add query parameters to the URL, pass as many extra keys to the map as you wish.
-
-```json
-{
-  "name": "pageApiName",
-  "namedParam1": "success",
-  "namedParam2": "any_value"
-}
-```
-
-* `GoToUrl`
-
-This action navigates to a URL. A Map expression with a "name" property must be provided containing the URL.
-
-```json
-{
-  "name": "pageApiName"
-}
-```
-
-* `Reload`
-
-This action reloads the page.
-
-### Input Text
+## Input Text
 
 > `Form` compatible
 
 The `Input Text` component allows you to display a text input. It can be used
 in a community page.
 
-#### Properties
+### Properties
 
 - `Label` - The label to display.
 - `Name` - Unique name for the input. This will be used as the key in the form data during submission.
 - `Required` - Whether the input is required or not.
 - `Error Message` - The error message to display when the input is required and empty.
 
-### Nav Bar
+## Nav Bar
 
 The `Nav Bar` component allows you to display a navigation bar with links to other pages. It can be used
 in a community page.
 
-#### Properties
+### Properties
 
 - `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
 
@@ -206,7 +104,7 @@ in a community page.
 
 > The `callToAction` property is optional.
 
-#### Sample Usage
+### Sample Usage
 
 The following formula can be used to query for Navigation Menu Items and display them in the Nav Bar component:
 
@@ -399,7 +297,7 @@ Supports being placed in a community page.
 }
 ```
 
-### Stats
+### Features
 
 The `Features` component allows you to display a list of features. It can be used
 to display a list of features, benefits, etc.
