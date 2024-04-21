@@ -22,9 +22,7 @@ export default class StackedAvatars extends ExpressionSiteElement {
         if (!this.computed) {
             return;
         }
-        console.log(JSON.stringify(this.computed, null, 2));
         return this.computed.map((avatar, index) => {
-            console.log(JSON.stringify(avatar, null, 2));
             return {
                 ...avatar,
                 id: index,

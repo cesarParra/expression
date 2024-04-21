@@ -118,6 +118,10 @@
       {
         "title": "Avatars (Stacked)",
         "href": "/docs/components/stacked-avatars"
+      },
+      {
+        "title": "Formula",
+        "href": "/docs/components/formula"
       }
     ]
   },

@@ -32,10 +32,12 @@ From any expression you can access query parameters for the current page using
 the global context variable prefix `@` followed by the query parameter name:
 
 ```
-"Hello ${@name}"
+"Hello @name"
 ```
 
 where `name` is a query parameter in the current page.
 
-> 📓 All components supported in communities are meant to be used within an LWR template. They might
-> work in Aura templates, but keep in mind they developed and tested with LWR in mind.
+{% callout type="warning" %}
+All components supported in communities are meant to be used within an LWR template. They might
+work in Aura templates, but keep in mind they developed and tested with LWR in mind.
+{% /callout %}
