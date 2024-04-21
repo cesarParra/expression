@@ -15,7 +15,19 @@ to display any row of text.
 
 ### Example
 
-Given the following expression that evaluates to a string:
+Given a simple string:
+
+```
+"📅 17 - 19 October 2022 ◆ 🗺️Los Angeles, CA"
+```
+
+The following is procuded:
+
+![Text Block](./../../assets/components/textBlock/textBlock.png)
+
+Note that the input can include emojis and can be as complex as necessary, as long as it produces a string in the end.
+For example, take this expression which retrieves the start and end dates of an event and formats them
+using built-in date functions:
 
 ```
 Query(expression__Event__c(where: Name = "ExpressionConf")[Id, Name, Start_Date__c, End_Date__c])
@@ -25,7 +37,7 @@ Query(expression__Event__c(where: Name = "ExpressionConf")[Id, Name, Start_Date_
        )
 ````
 
-The following is procuded:
+It produces the same output as the simple string above:
 
 ![Text Block](./../../assets/components/textBlock/textBlock.png)
 
