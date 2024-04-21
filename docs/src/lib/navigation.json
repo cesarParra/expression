@@ -136,6 +136,10 @@
         "href": "/docs/components/input-text"
       },
       {
+        "title": "Nav Bar",
+        "href": "/docs/components/nav-bar"
+      },
+      {
         "title": "Text Block",
         "href": "/docs/components/text-block"
       }

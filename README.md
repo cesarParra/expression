@@ -56,63 +56,14 @@ Powerful formula-syntax evaluator for Apex and LWC.
     - [Avatars (Stacked)](https://cesarparra.github.io/expression/docs/components/stacked-avatars)
     - [Form Builder](https://cesarparra.github.io/expression/docs/components/form-builder)
     - [Formula](https://cesarparra.github.io/expression/docs/components/formula)
+    - [Input Text](https://cesarparra.github.io/expression/docs/components/input-text)
+    - [Nav Bar](https://cesarparra.github.io/expression/docs/components/nav-bar)
     - [Text Block](https://cesarparra.github.io/expression/docs/components/text-block)
 
 For the full Expression language documentation,
 please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/expression/).
 
 ---
-
-## Nav Bar
-
-The `Nav Bar` component allows you to display a navigation bar with links to other pages. It can be used
-in a community page.
-
-### Properties
-
-- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
-
-```json
-{
-  "logo": {
-    "name": "<<String value or expression>>",
-    "url": "<<String value or expression>>"
-  },
-  "menuItems": [
-    {
-      "label": "<<String value or expression>>",
-      "url": "<<String value or expression>>"
-    }
-  ],
-  "callToAction": "<<Expression that evaluates to a Button action>>"
-}
-```
-
-> The `callToAction` property is optional.
-
-### Sample Usage
-
-The following formula can be used to query for Navigation Menu Items and display them in the Nav Bar component:
-
-```bash
-{
-	"logo": {
-		"name": "Example",
-		"imagePath": "https://example.com/img/logos/primary.svg",
-		"url": "/"
-	},
-	"menuItems": Query(NavigationMenuItem(where: Status = "Live")["Label", "Target", "Status", "Position"]) 
-		-> SORT("Position")
-		-> MAP({
-			"label": Label,
-			"url": Target
-		}),
-	"callToAction": {
-		"label": "Contact Us",
-		"url": "/contact"
-	}
-}
-```
 
 ### Hero
 
