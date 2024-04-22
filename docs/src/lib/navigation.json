@@ -118,6 +118,54 @@
       {
         "title": "Avatars (Stacked)",
         "href": "/docs/components/stacked-avatars"
+      },
+      {
+        "title": "Button",
+        "href": "/docs/components/button"
+      },
+      {
+        "title": "Features",
+        "href": "/docs/components/features"
+      },
+      {
+        "title": "Form Builder",
+        "href": "/docs/components/form-builder"
+      },
+      {
+        "title": "Formula",
+        "href": "/docs/components/formula"
+      },
+      {
+        "title": "Hero",
+        "href": "/docs/components/hero"
+      },
+      {
+        "title": "Input Text",
+        "href": "/docs/components/input-text"
+      },
+      {
+        "title": "Logos",
+        "href": "/docs/components/logos"
+      },
+      {
+        "title": "Nav Bar",
+        "href": "/docs/components/nav-bar"
+      },
+      {
+        "title": "People",
+        "href": "/docs/components/people"
+      },
+      {
+        "title": "Pricing Table",
+        "href": "/docs/components/pricing-table"
+      },
+      {
+        "title": "Stats",
+        "href": "/docs/components/stats"
+      },
+      {
+        "title": "Text Block",
+        "href": "/docs/components/text-block"
       }
     ]
   },

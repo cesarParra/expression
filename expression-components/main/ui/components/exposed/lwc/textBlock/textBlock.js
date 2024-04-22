@@ -1,6 +1,7 @@
 import ExpressionSiteElement from "c/expressionSiteElement";
-import { api } from "lwc";
-import { classNames } from 'c/utils';
+import {api} from "lwc";
+import {classNames} from 'c/utils';
+import {z} from 'c/zod';
 
 export default class TextBlock extends ExpressionSiteElement {
   @api contextUrlParam;
@@ -20,5 +21,21 @@ export default class TextBlock extends ExpressionSiteElement {
 
   get textStyle() {
     return 'color: ' + this.color + ';"';
+  }
+
+  validate() {
+    if (!this.computed) {
+      return;
+    }
+
+    const textBlockSchema = z.string();
+
+    const validationResult = textBlockSchema.safeParse(this.computed);
+    if (!validationResult.success) {
+      this.error = {
+        message: 'Text Block component requires a string.',
+        rawError: JSON.stringify(validationResult.error.format(), null, 2),
+      };
+    }
   }
 }

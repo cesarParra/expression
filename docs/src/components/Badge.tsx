@@ -23,7 +23,7 @@ const colorMap: Record<Color, string> = {
 export function Badge({text, color = 'gray'}: BadgeProps) {
     return (
         <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colorMap[color]}`}
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mr-1 ${colorMap[color]}`}
         >
             {text}
         </span>
