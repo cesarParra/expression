@@ -148,6 +148,10 @@
         "href": "/docs/components/nav-bar"
       },
       {
+        "title": "People",
+        "href": "/docs/components/people"
+      },
+      {
         "title": "Text Block",
         "href": "/docs/components/text-block"
       }

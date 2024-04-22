@@ -60,48 +60,13 @@ Powerful formula-syntax evaluator for Apex and LWC.
     - [Input Text](https://cesarparra.github.io/expression/docs/components/input-text)
     - [Nav Bar](https://cesarparra.github.io/expression/docs/components/nav-bar)
     - [Logos](https://cesarparra.github.io/expression/docs/components/logos)
+    - [People](https://cesarparra.github.io/expression/docs/components/people)
     - [Text Block](https://cesarparra.github.io/expression/docs/components/text-block)
 
 For the full Expression language documentation,
 please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/expression/).
 
 ---
-
-### People
-
-The `People` component allows you to display a list of people. It can be used
-to display a list of team members, board members, event speakers, etc.
-
-Supports being placed in a community page.
-
-#### Properties
-
-- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
-
-##### Map Format
-
-- `title` - The title to display.
-- `description` Optional - The description to display.
-- `people` - List of people to display. Each person should be a map with the following format:
-    - `name` - The name of the person.
-    - `title` - The title of the person.
-    - `imageUrl` - The URL of the image to display.
-    - `about` - Optional - The description of the person.
-
-```json
-{
-  "title": "<<String value or expression>>",
-  "description": "<<String value or expression>>",
-  "people": [
-    {
-      "name": "<<String value or expression>>",
-      "title": "<<String value or expression>>",
-      "imageUrl": "<<String value or expression>>",
-      "about": "<<String value or expression>>"
-    }
-  ]
-}
-```
 
 ### Pricing Table
 
