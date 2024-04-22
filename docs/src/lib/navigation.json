@@ -132,6 +132,10 @@
         "href": "/docs/components/formula"
       },
       {
+        "title": "Hero",
+        "href": "/docs/components/hero"
+      },
+      {
         "title": "Input Text",
         "href": "/docs/components/input-text"
       },

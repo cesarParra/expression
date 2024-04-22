@@ -65,35 +65,6 @@ please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/exp
 
 ---
 
-### Hero
-
-The `Hero` component allows you to display a hero image with a title and description. It can be used
-in a community page.
-
-#### Properties
-
-- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
-
-##### Map Format
-
-- `title` - The title to display.
-- `description` Optional - The description to display.
-- `callToAction` Optional - `Button Action type` -> The action to execute. Expects the same format as the `Button`
-  component.
-- `secondaryAction` Optional - `Button Action type` -> The action to execute. Expects the same format as the `Button`
-  component.
-- `bannerImage` Optional - The URL of the image to display.
-
-```json
-{
-  "title": "<<String value or expression>>",
-  "description": "<<String value or expression>>",
-  "callToAction": "<<Expression that evaluates to a Button action>>",
-  "secondaryAction": "<<Expression that evaluates to a Button action>>",
-  "bannerImage": "<<String value or expression>>"
-}
-```
-
 ### Logos
 
 The `Logos` component allows you to display a list of logos. It can be used
