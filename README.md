@@ -54,6 +54,7 @@ Powerful formula-syntax evaluator for Apex and LWC.
     - [Avatar](https://cesarparra.github.io/expression/docs/components/avatar)
     - [Button](https://cesarparra.github.io/expression/docs/components/button)
     - [Avatars (Stacked)](https://cesarparra.github.io/expression/docs/components/stacked-avatars)
+    - [Features](https://cesarparra.github.io/expression/docs/components/features)
     - [Form Builder](https://cesarparra.github.io/expression/docs/components/form-builder)
     - [Formula](https://cesarparra.github.io/expression/docs/components/formula)
     - [Hero](https://cesarparra.github.io/expression/docs/components/hero)
@@ -69,46 +70,6 @@ For the full Expression language documentation,
 please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/expression/).
 
 ---
-
-### Features
-
-The `Features` component allows you to display a list of features. It can be used
-to display a list of features, benefits, etc.
-
-Supports being placed in a community page.
-
-#### Properties
-
-- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
-
-##### Map Format
-
-- `title` Optional - The title to display.
-- `description` Optional - The description to display.
-- `features` - List of features to display. Each feature should be a map with the following format:
-    - `title` - The title of the feature.
-    - `description` - The description of the feature.
-
-```json
-{
-  "title": "<<String value or expression>>",
-  "description": "<<String value or expression>>",
-  "features": [
-    {
-      "title": "<<String value or expression>>",
-      "description": "<<String value or expression>>"
-    }
-  ]
-}
-```
-
-#### Properties
-
-- `Formula Expression` - The expression to evaluate. This expression should evaluate to a String.
-
-```json
-"<<String value or expression>>"
-```
 
 # Contributing
 
