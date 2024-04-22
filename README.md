@@ -61,54 +61,13 @@ Powerful formula-syntax evaluator for Apex and LWC.
     - [Nav Bar](https://cesarparra.github.io/expression/docs/components/nav-bar)
     - [Logos](https://cesarparra.github.io/expression/docs/components/logos)
     - [People](https://cesarparra.github.io/expression/docs/components/people)
+    - [Pricing Table](https://cesarparra.github.io/expression/docs/components/pricing-table)
     - [Text Block](https://cesarparra.github.io/expression/docs/components/text-block)
 
 For the full Expression language documentation,
 please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/expression/).
 
 ---
-
-### Pricing Table
-
-The `Pricing Table` component allows you to display a pricing table. It can be used
-to display a list of plans, packages, etc.
-
-Supports being placed in a community page.
-
-#### Properties
-
-- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
-
-##### Map Format
-
-- `tag` Optional - The tag to display at the top of the component.
-- `title` - The title to display.
-- `description` Optional - The description to display.
-- `plans` - List of plans to display. Each plan should be a map with the following format:
-    - `name` - The name of the plan.
-    - `price` - The price of the plan.
-    - `action` - Action to execute when the plan is selected. Expects the same format as the `Button` component.
-    - `description` Optional - The description of the plan.
-    - `features` - List of strings detailing the features of the plan.
-
-```json
-{
-  "tag": "<<String value or expression>>",
-  "title": "<<String value or expression>>",
-  "description": "<<String value or expression>>",
-  "plans": [
-    {
-      "name": "<<String value or expression>>",
-      "price": "<<String value or expression>>",
-      "action": "<<Expression that evaluates to a Button action>>",
-      "description": "<<String value or expression>>",
-      "features": [
-        "<<String value or expression>>"
-      ]
-    }
-  ]
-}
-```
 
 ### Stats
 
