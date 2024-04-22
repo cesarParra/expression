@@ -17,7 +17,7 @@ to display a list of plans, packages, etc.
 
 ![Pricing Table](./../../assets/components/pricing-table/pricing-table.png)
 
-## Data Format
+## Data Structure
 
 ```
 {

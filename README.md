@@ -62,44 +62,13 @@ Powerful formula-syntax evaluator for Apex and LWC.
     - [Logos](https://cesarparra.github.io/expression/docs/components/logos)
     - [People](https://cesarparra.github.io/expression/docs/components/people)
     - [Pricing Table](https://cesarparra.github.io/expression/docs/components/pricing-table)
+    - [Stats](https://cesarparra.github.io/expression/docs/components/stats)
     - [Text Block](https://cesarparra.github.io/expression/docs/components/text-block)
 
 For the full Expression language documentation,
 please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/expression/).
 
 ---
-
-### Stats
-
-The `Stats` component allows you to display a list of stats. It can be used
-to display a list of metrics, KPIs, etc.
-
-Supports being placed in a community page.
-
-#### Properties
-
-- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
-
-##### Map Format
-
-- `title` - The title to display.
-- `description` Optional - The description to display.
-- `stats` - List of stats to display. Each stat should be a map with the following format:
-    - `label` - The name of the stat.
-    - `value` - The value of the stat.
-
-```json
-{
-  "title": "<<String value or expression>>",
-  "description": "<<String value or expression>>",
-  "stats": [
-    {
-      "label": "<<String value or expression>>",
-      "value": "<<String value or expression>>"
-    }
-  ]
-}
-```
 
 ### Features
 

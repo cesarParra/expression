@@ -156,6 +156,10 @@
         "href": "/docs/components/pricing-table"
       },
       {
+        "title": "Stats",
+        "href": "/docs/components/stats"
+      },
+      {
         "title": "Text Block",
         "href": "/docs/components/text-block"
       }
