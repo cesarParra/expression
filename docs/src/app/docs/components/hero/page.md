@@ -6,8 +6,7 @@ nextjs:
     description: Learn about the Hero component.
 ---
 
-The `Hero` component allows you to display a hero image with a title and description. It can be used
-in a community page.
+The `Hero` component allows you to display a hero image with a title and description.
 
 ## Targets
 

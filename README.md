@@ -56,44 +56,16 @@ Powerful formula-syntax evaluator for Apex and LWC.
     - [Avatars (Stacked)](https://cesarparra.github.io/expression/docs/components/stacked-avatars)
     - [Form Builder](https://cesarparra.github.io/expression/docs/components/form-builder)
     - [Formula](https://cesarparra.github.io/expression/docs/components/formula)
+    - [Hero](https://cesarparra.github.io/expression/docs/components/hero)
     - [Input Text](https://cesarparra.github.io/expression/docs/components/input-text)
     - [Nav Bar](https://cesarparra.github.io/expression/docs/components/nav-bar)
+    - [Logos](https://cesarparra.github.io/expression/docs/components/logos)
     - [Text Block](https://cesarparra.github.io/expression/docs/components/text-block)
 
 For the full Expression language documentation,
 please visit [cesarparra.github.io/expression/](https://cesarparra.github.io/expression/).
 
 ---
-
-### Logos
-
-The `Logos` component allows you to display a list of logos. It can be used
-to display a list of sponsors, partners, clients, etc.
-
-Supports being placed in a community page.
-
-#### Properties
-
-- `Formula Expression` - The expression to evaluate. This expression should evaluate to a map with the following format:
-
-##### Map Format
-
-- `title` - The title to display.
-- `logos` - List of logos to display. Each logo should be a map with the following format:
-    - `name` - The name of the logo.
-    - `src` - The URL of the image to display.
-
-```json
-{
-  "title": "<<String value or expression>>",
-  "logos": [
-    {
-      "name": "<<String value or expression>>",
-      "src": "<<String value or expression>>"
-    }
-  ]
-}
-```
 
 ### People
 
