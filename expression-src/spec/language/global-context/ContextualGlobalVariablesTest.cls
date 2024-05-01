@@ -11,7 +11,25 @@ private class ContextualGlobalVariablesTest {
         Assert.areEqual(testRecord.Id, result);
     }
 
-    // TODO: Ids are also accessible when there are many
+    @IsTest
+    private static void theIdsAreAccessibleAsAContextVariable_multipleIds() {
+        String expression = '@Ids';
+        Account testRecord1 = new Account(Name = 'Test1');
+        Account testRecord2 = new Account(Name = 'Test2');
+        insert new List<SObject>{
+            testRecord1, testRecord2
+        };
+
+        Object result = Evaluator.run(expression, new Set<Id>{
+            testRecord1.Id, testRecord2.Id
+        });
+
+        Assert.isNotNull(result);
+        Set<Id> ids = (Set<Id>) result;
+        Assert.areEqual(2, ids.size());
+        Assert.isTrue(ids.contains(testRecord1.Id));
+        Assert.isTrue(ids.contains(testRecord2.Id));
+    }
 
     @IsTest
     private static void theRecordContextIsAccessibleAsAContextVariable_resolvingFromId() {
