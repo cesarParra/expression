@@ -81,6 +81,11 @@ global with sharing abstract class Evaluator {
         return run(formula, recordId, new Configuration());
     }
 
+    // TODO: Apex docs
+    global static Object run(String formula, Set<Id> recordIds) {
+        return run(formula, recordIds, new Configuration());
+    }
+
     /**
      * @description Evaluates a formula and returns the result using a record Id as the context.
      *              When using this endpoint field references will automatically be resolved
@@ -101,5 +106,10 @@ global with sharing abstract class Evaluator {
      */
     global static Object run(String formula, Id recordId, Configuration config) {
         return EvaluatorResolver.forId(recordId).evaluate(formula, config).result;
+    }
+
+    // TODO: Apex docs
+    global static Object run(String formula, Set<Id> recordIds, Configuration config) {
+        return EvaluatorResolver.forIds(recordIds).evaluate(formula, config).result;
     }
 }

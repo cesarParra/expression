@@ -7,7 +7,11 @@ public with sharing abstract class EvaluatorResolver {
     }
 
     public static EvaluatorResolver forId(Id recordId) {
-        return new ContextResolverEvaluator(recordId);
+        return new SingleIdContextResolverEvaluator(recordId);
+    }
+
+    public static EvaluatorResolver forIds(Set<Id> ids) {
+        return new MultipleIdsContextResolverEvaluator(ids);
     }
 
     public static EvaluatorResolver forRecord(SObject record) {
@@ -67,10 +71,10 @@ public with sharing abstract class EvaluatorResolver {
         return theInterpreter.interpret(pipedExpression);
     }
 
-    private class ContextResolverEvaluator extends EvaluatorResolver {
+    private class SingleIdContextResolverEvaluator extends EvaluatorResolver {
         private final Id recordId;
 
-        public ContextResolverEvaluator(Id recordId) {
+        public SingleIdContextResolverEvaluator(Id recordId) {
             this.recordId = recordId;
         }
 
@@ -80,6 +84,25 @@ public with sharing abstract class EvaluatorResolver {
             Environment env = new Environment(record);
 
             Environment.addGlobalContextVariable('id', recordId);
+            Environment.addGlobalContextVariable('context', record);
+
+            return env;
+        }
+    }
+
+    private class MultipleIdsContextResolverEvaluator extends EvaluatorResolver {
+        private final Set<Id> recordIds;
+
+        public MultipleIdsContextResolverEvaluator(Set<Id> recordIds) {
+            this.recordIds = recordIds;
+        }
+
+        public override Environment prepareEnvironment(Expr expression) {
+            ContextResolver ctxInterpreter = new ContextResolver(recordIds);
+            SObject record = ctxInterpreter.build(expression);
+            Environment env = new Environment(record);
+
+            Environment.addGlobalContextVariable('ids', recordIds);
             Environment.addGlobalContextVariable('context', record);
 
             return env;

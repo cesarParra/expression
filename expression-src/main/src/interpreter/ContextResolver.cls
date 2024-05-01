@@ -10,6 +10,11 @@ public with sharing class ContextResolver implements Visitor {
         this.topLevelQuery = this.queryContext;
     }
 
+    public ContextResolver(Set<Id> recordIds) {
+        this.queryContext = new Query(recordIds);
+        this.topLevelQuery = this.queryContext;
+    }
+
     private Object resolve(Expr expr) {
         return expr.accept(this);
     }
@@ -24,7 +29,7 @@ public with sharing class ContextResolver implements Visitor {
             this.queryContext.queryBuilder.addSubquery(subquery.queryBuilder);
         }
 
-        this.queryContext.queryBuilder.add(Q.condition('Id').equalsTo(this.queryContext.recordId));
+        this.queryContext.queryBuilder.add(Q.condition('Id').isIn(new List<Id>(this.queryContext.recordId.getIds())));
         List<SObject> results = QRunner.getInstance().run(this.queryContext.queryBuilder);
         if (results.isEmpty()) {
             return null;
@@ -249,15 +254,59 @@ public with sharing class ContextResolver implements Visitor {
     public class ResolverException extends Exception {
     }
 
+    // TODO: Composite interface that behaves the same with one Id or multiple Ids
+    private interface IdComposite {
+        SObjectType getSobjectType();
+        Set<Id> getIds();
+    }
+
+    private class SingleId implements IdComposite {
+        private final Id id;
+        public SingleId(Id id) {
+            this.id = id;
+        }
+
+        public SObjectType getSobjectType() {
+            return this.id.getSobjectType();
+        }
+
+        public Set<Id> getIds() {
+            return new Set<Id>{
+                this.id
+            };
+        }
+    }
+
+    private class MultipleIds implements IdComposite {
+        private final Set<Id> ids;
+        public MultipleIds(Set<Id> ids) {
+            this.ids = ids;
+        }
+
+        public SObjectType getSobjectType() {
+            return new List<Id>(this.ids)[0].getSobjectType();
+        }
+
+        public Set<Id> getIds() {
+            return this.ids;
+        }
+    }
+
     public class Query {
         public Q queryBuilder { get; private set; }
-        public Id recordId { get; private set; }
+        public IdComposite recordId { get; private set; }
         public SObjectType objectType { get; private set; }
         public String relationshipName { get; private set; }
 
         public Query(Id recordId) {
-            this.recordId = recordId;
+            this.recordId = new SingleId(recordId);
             this.objectType = this.recordId.getSobjectType();
+            this.queryBuilder = new Q(this.objectType);
+            this.queryBuilder.selectField('Id');
+        }
+
+        public Query(Set<Id> recordIds) {
+            this.recordId = new MultipleIds(recordIds);
             this.queryBuilder = new Q(this.objectType);
             this.queryBuilder.selectField('Id');
         }
