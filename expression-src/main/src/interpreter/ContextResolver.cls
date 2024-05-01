@@ -164,8 +164,17 @@ public with sharing class ContextResolver implements Visitor {
     public Object visit(Expr.Variable variable) {
         if (variable.isContext()) {
             this.shouldExecuteQuery = true;
+
+
+            // TODO: Only do this if we are dealing with multiple record Ids.
+            // When dealing with multiple record Ids and accessing the @Context, then we return
+            // the top level query, so that we can take advantage of functions that resolve for children,
+            // but instead of resolving a subquery, it can just resolve the top level query and add
+            // fields to the main query itself.
+            return topLevelQuery;
         }
-        return topLevelQuery;
+
+        return null;
     }
 
     public Object visit(Expr.MergeField mergeField) {

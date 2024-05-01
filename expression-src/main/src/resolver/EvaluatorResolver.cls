@@ -80,7 +80,13 @@ public with sharing abstract class EvaluatorResolver {
 
         public override Environment prepareEnvironment(Expr expression) {
             ContextResolver ctxInterpreter = new ContextResolver(recordId);
-            SObject record = ctxInterpreter.build(expression)[0];
+            SObject record;
+            List<SObject> records = ctxInterpreter.build(expression);
+            if (records != null && records.size() > 0) {
+                record = records[0];
+            } else {
+                record = null;
+            }
             Environment env = new Environment(record);
 
             Environment.addGlobalContextVariable('id', recordId);

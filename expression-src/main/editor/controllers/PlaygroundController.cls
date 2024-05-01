@@ -42,7 +42,18 @@ public with sharing class PlaygroundController {
         try {
             EvaluationResult evalResult;
             if (String.isNotBlank(recordId)) {
-                evalResult = EvaluatorResolver.forId(recordId).evaluate(expr, config);
+                // The record Id might be one or more Ids separated by commas.
+                if (recordId.contains(',')) {
+                    recordId = recordId.replaceAll('\\s', '');
+                    List<String> recordIds = recordId.split(',');
+                    Set<Id> castRecordIds = new Set<Id>();
+                    for (String id : recordIds) {
+                        castRecordIds.add((Id) id);
+                    }
+                    evalResult = EvaluatorResolver.forIds(castRecordIds).evaluate(expr, config);
+                } else {
+                    evalResult = EvaluatorResolver.forId(recordId).evaluate(expr, config);
+                }
             } else {
                 evalResult = EvaluatorResolver.withoutContext().evaluate(expr, config);
             }
@@ -51,7 +62,7 @@ public with sharing class PlaygroundController {
 
             if (evalResult.additionalData.containsKey('diagnostics')) {
                 EvaluationDiagnosticsListener.DiagnosticsResult diagnosticsResult =
-                    (EvaluationDiagnosticsListener.DiagnosticsResult)evalResult.additionalData.get('diagnostics');
+                    (EvaluationDiagnosticsListener.DiagnosticsResult) evalResult.additionalData.get('diagnostics');
                 toReturn.diagnostics = new Diagnostics(diagnosticsResult);
             }
 

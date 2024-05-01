@@ -4,7 +4,8 @@
             <lightning-input type="text"
                              value={recordId}
                              onchange={handleInputChange}
-                             label="Record Id (Optional Context)"></lightning-input>
+                             field-level-help="Enter the record Id(s) to be used as context for the expression. If multiple record Ids are provided, they should be separated by a comma."
+                             label="Record Id(s) (Optional Context)"></lightning-input>
         </div>
         <div class="grow slds-grid slds-gutters slds-gutters_x-small overflow-hidden">
             <div class="slds-col slds-size_2-of-12">
@@ -23,8 +24,8 @@
                 ></iframe>
                 <div class="top-right">
                     <lightning-button
-                        icon-name="utility:play"
-                        variant="brand" label="Validate" onclick={getExpression}>
+                            icon-name="utility:play"
+                            variant="brand" label="Validate" onclick={getExpression}>
                     </lightning-button>
                 </div>
             </div>
@@ -35,13 +36,14 @@
                             <lightning-tabset>
                                 <lightning-tab label="Result">
                                     <pre class={resultColor}>
-                                        <lightning-formatted-rich-text value={result.payload}></lightning-formatted-rich-text>
+                                        <lightning-formatted-rich-text
+                                                value={result.payload}></lightning-formatted-rich-text>
                                     </pre>
                                 </lightning-tab>
                                 <lightning-tab label="Diagnostics">
                                     <ul>
                                         <li><strong>CPU Time (ms):</strong> {diagnostics.cpuTime}<span
-                                            if:true={diagnostics.cpuTime}></span></li>
+                                                if:true={diagnostics.cpuTime}></span></li>
                                         <li><strong>DML Statements:</strong> {diagnostics.dmlStatements}</li>
                                         <li><strong>Queries:</strong> {diagnostics.queries}</li>
                                         <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>
