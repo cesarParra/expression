@@ -44,6 +44,8 @@ global with sharing abstract class Evaluator {
         return run(formula, context, new Configuration());
     }
 
+    // TODO: run with List<SObject>
+
     /**
      * @description
      * @param formula Evaluates a formula and returns the result.
@@ -63,6 +65,10 @@ global with sharing abstract class Evaluator {
      */
     global static Object run(String formula, SObject context, Configuration config) {
         return EvaluatorResolver.forRecord(context).evaluate(formula, config).result;
+    }
+
+    global static Object run(String formula, List<SObject> context, Configuration config) {
+        return EvaluatorResolver.forRecords(context).evaluate(formula, config).result;
     }
 
     /**

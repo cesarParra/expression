@@ -1,5 +1,18 @@
 @IsTest
-private class ContextGlobalVariableTest {
+private class ContextualGlobalVariablesTest {
+    @IsTest
+    private static void theIdIsAccessibleAsAContextVariable_singleId() {
+        String expression = '@Id';
+        Account testRecord = new Account(Name = 'Test');
+        insert testRecord;
+
+        Object result = Evaluator.run(expression, testRecord.Id);
+
+        Assert.areEqual(testRecord.Id, result);
+    }
+
+    // TODO: Ids are also accessible when there are many
+
     @IsTest
     private static void theRecordContextIsAccessibleAsAContextVariable_resolvingFromId() {
         String expression = '@Context';
@@ -138,6 +151,8 @@ private class ContextGlobalVariableTest {
         Assert.areEqual(testRecord.Id, record.Id);
         Assert.areEqual(testRecord.Name, record.get('Name'));
     }
+
+    // TODO: Same as above but with multiple records
 
     @IsTest
     private static void canAccessAChildRecordsRelationshipThroughTheContext() {

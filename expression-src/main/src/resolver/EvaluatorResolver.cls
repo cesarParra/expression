@@ -15,11 +15,15 @@ public with sharing abstract class EvaluatorResolver {
     }
 
     public static EvaluatorResolver forRecord(SObject record) {
-        return new BaseEvaluator(record);
+        return new BaseSingleRecordEvaluator(record);
+    }
+
+    public static EvaluatorResolver forRecords(List<SObject> sObjects) {
+        return new BaseMultipleRecordsEvaluator(sObjects);
     }
 
     public static EvaluatorResolver withoutContext() {
-        return new BaseEvaluator(null);
+        return new BaseSingleRecordEvaluator(null);
     }
 
     public EvaluationResult evaluate(String input, Configuration config) {
@@ -111,6 +115,8 @@ public with sharing abstract class EvaluatorResolver {
             // variable should be used to access the list of records.
             Environment env = new Environment(null);
 
+            // TODO: The language should interpret both Sets and Lists as the same thing
+            // TODO: but this fails if I try to do something like FIRST(@ids)
             Environment.addGlobalContextVariable('ids', recordIds);
             Environment.addGlobalContextVariable('context', records);
 
@@ -118,10 +124,10 @@ public with sharing abstract class EvaluatorResolver {
         }
     }
 
-    private class BaseEvaluator extends EvaluatorResolver {
+    private class BaseSingleRecordEvaluator extends EvaluatorResolver {
         private final SObject record;
 
-        public BaseEvaluator(SObject record) {
+        public BaseSingleRecordEvaluator(SObject record) {
             this.record = record;
         }
 
@@ -129,6 +135,26 @@ public with sharing abstract class EvaluatorResolver {
             Environment.addGlobalContextVariable('id', record?.Id);
             Environment.addGlobalContextVariable('context', record);
             return new Environment(record);
+        }
+    }
+
+    private class BaseMultipleRecordsEvaluator extends EvaluatorResolver {
+        private final List<SObject> records;
+
+        public BaseMultipleRecordsEvaluator(List<SObject> records) {
+            this.records = records;
+        }
+
+        public override Environment prepareEnvironment(Expr expression) {
+            Set<Id> ids = new Set<Id>();
+            for (SObject record : records) {
+                if (record.Id != null) {
+                    ids.add(record.Id);
+                }
+            }
+            Environment.addGlobalContextVariable('ids', ids);
+            Environment.addGlobalContextVariable('context', records);
+            return new Environment(null);
         }
     }
 }
