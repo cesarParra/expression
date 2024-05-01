@@ -44,7 +44,26 @@ global with sharing abstract class Evaluator {
         return run(formula, context, new Configuration());
     }
 
-    // TODO: Apex docs
+    /**
+     * @description
+     * @param formula Evaluates a formula and returns the result.
+     * @param context A list of records that will act as the context for the formula.
+     *        Providing this allows you to reference the records through the `@context`
+     *        global variable, which will give you a list of records that can be iterated over.
+     * @return The result of the formula.
+     * @example
+     * List<Account> records = new List<Account>{
+     *    new Account(Name = 'Example 1'),
+     *    new Account(Name = 'Example 2')
+     * };
+     *
+     * List<String> recordNames = (List<String>)expression.Evaluator.run(
+     *   'MAP(@context, Name)',
+     *    records
+     * );
+     *
+     * System.assertEquals(new List<String>{'Example 1', 'Example 2'}, recordNames);
+     */
     global static Object run(String formula, List<SObject> context) {
         return run(formula, context, new Configuration());
     }
@@ -69,7 +88,7 @@ global with sharing abstract class Evaluator {
     global static Object run(String formula, SObject context, Configuration config) {
         return EvaluatorResolver.forRecord(context).evaluate(formula, config).result;
     }
-
+    
     global static Object run(String formula, List<SObject> context, Configuration config) {
         return EvaluatorResolver.forRecords(context).evaluate(formula, config).result;
     }
