@@ -13,25 +13,25 @@ private class ContextGlobalVariableTest {
         Assert.areEqual(testRecord.Id, record.Id);
     }
 
-//    @IsTest
-//    private static void theContextRecordsAreAccessibleAsContextVariable_multipleIdsAsContext() {
-//        String expression = '@Context';
-//        Account testRecord1 = new Account(Name = 'Test1');
-//        Account testRecord2 = new Account(Name = 'Test2');
-//        insert new List<SObject>{
-//            testRecord1, testRecord2
-//        };
-//
-//        Object result = Evaluator.run(expression, new Set<Id>{
-//            testRecord1.Id, testRecord2.Id
-//        });
-//
-//        Assert.isNotNull(result);
-//        List<SObject> records = (List<SObject>) result;
-//        Assert.areEqual(2, records.size());
-//        Assert.areEqual(testRecord1.Id, records[0].Id);
-//        Assert.areEqual(testRecord2.Id, records[1].Id);
-//    }
+    @IsTest
+    private static void theContextRecordsAreAccessibleAsContextVariable_multipleIdsAsContext() {
+        String expression = '@Context';
+        Account testRecord1 = new Account(Name = 'Test1');
+        Account testRecord2 = new Account(Name = 'Test2');
+        insert new List<SObject>{
+            testRecord1, testRecord2
+        };
+
+        Object result = Evaluator.run(expression, new Set<Id>{
+            testRecord1.Id, testRecord2.Id
+        });
+
+        Assert.isNotNull(result);
+        List<SObject> records = (List<SObject>) result;
+        Assert.areEqual(2, records.size());
+        Assert.areEqual(testRecord1.Id, records[0].Id);
+        Assert.areEqual(testRecord2.Id, records[1].Id);
+    }
 
     @IsTest
     private static void canGetFieldsFromTheRecordContext() {

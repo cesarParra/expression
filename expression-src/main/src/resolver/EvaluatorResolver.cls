@@ -80,7 +80,7 @@ public with sharing abstract class EvaluatorResolver {
 
         public override Environment prepareEnvironment(Expr expression) {
             ContextResolver ctxInterpreter = new ContextResolver(recordId);
-            SObject record = ctxInterpreter.build(expression);
+            SObject record = ctxInterpreter.build(expression)[0];
             Environment env = new Environment(record);
 
             Environment.addGlobalContextVariable('id', recordId);
@@ -99,11 +99,14 @@ public with sharing abstract class EvaluatorResolver {
 
         public override Environment prepareEnvironment(Expr expression) {
             ContextResolver ctxInterpreter = new ContextResolver(recordIds);
-            SObject record = ctxInterpreter.build(expression);
-            Environment env = new Environment(record);
+            List<SObject> records = ctxInterpreter.build(expression);
+            // The environment is created without a record, as we are dealing with a list of records,
+            // so it would not be possible to interpret references to record fields. Instead, the @context
+            // variable should be used to access the list of records.
+            Environment env = new Environment(null);
 
             Environment.addGlobalContextVariable('ids', recordIds);
-            Environment.addGlobalContextVariable('context', record);
+            Environment.addGlobalContextVariable('context', records);
 
             return env;
         }

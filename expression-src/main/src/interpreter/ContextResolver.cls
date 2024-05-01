@@ -19,7 +19,7 @@ public with sharing class ContextResolver implements Visitor {
         return expr.accept(this);
     }
 
-    public SObject build(Expr expression) {
+    public List<SObject> build(Expr expression) {
         this.resolve(expression);
         if (!this.shouldExecuteQuery) {
             return null;
@@ -34,7 +34,7 @@ public with sharing class ContextResolver implements Visitor {
         if (results.isEmpty()) {
             return null;
         }
-        return results[0];
+        return results;
     }
 
     public Object visit(Expr.Logical logical) {
@@ -254,7 +254,6 @@ public with sharing class ContextResolver implements Visitor {
     public class ResolverException extends Exception {
     }
 
-    // TODO: Composite interface that behaves the same with one Id or multiple Ids
     private interface IdComposite {
         SObjectType getSobjectType();
         Set<Id> getIds();
@@ -307,6 +306,7 @@ public with sharing class ContextResolver implements Visitor {
 
         public Query(Set<Id> recordIds) {
             this.recordId = new MultipleIds(recordIds);
+            this.objectType = this.recordId.getSobjectType();
             this.queryBuilder = new Q(this.objectType);
             this.queryBuilder.selectField('Id');
         }
