@@ -82,6 +82,7 @@ public with sharing class ContextResolver implements Visitor {
         // Whenever children resolution is needed we assume that the second argument contains the expression
         // for which to resolve, so skip this when the argument list is not long enough.
         if (fn.needsChildrenResolution() && function.arguments.size() > 1) {
+            System.debug('The function: ' + function.functionName + ' needs children resolution');
             // We want to first resolve the left side and it should resolve to a Query object
             // which we will use as the context for the right side.
 
@@ -97,7 +98,13 @@ public with sharing class ContextResolver implements Visitor {
 
             if (function.functionName == 'WHERE') {
                 // The WHERE function is a special case where we might want to keep building
-                // the query it started resolving.
+                // the query it started resolving, because where returns the List<SObject> back up, so
+                // the caller might want to keep operating on those records.
+                // TODO: We probably would want to do the same thing with other functions that also
+                // TODO: returns records back, for example FIRSTWHERE, LASTWHERE (and there might be more use cases,
+                // TODO: for example, what if the function ends up returning the $current?)
+                // See test: `combiningWhereAndMap`, and `combiningWhereAndMap_withRelationshipsBetweenDifferentSObjectTypes`
+                // for examples of why.
                 return result;
             } else {
                 return null;
@@ -140,6 +147,7 @@ public with sharing class ContextResolver implements Visitor {
         } else if (isReferencingContextField(getExpr)) {
             return getExpr.field.lexeme;
         } else {
+            System.debug('Fell into the not suported: ' + getExpr.field.lexeme);
             // If we are doing a "get" expression on anything that is not either a merge field,
             // another inner get expression, or an @Context reference, we don't know how to resolve it, so we shouldn't
             // end up adding it to the query
