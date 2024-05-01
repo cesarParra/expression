@@ -88,7 +88,30 @@ global with sharing abstract class Evaluator {
     global static Object run(String formula, SObject context, Configuration config) {
         return EvaluatorResolver.forRecord(context).evaluate(formula, config).result;
     }
-    
+
+    /**
+     * @description
+     * @param formula Evaluates a formula and returns the result.
+     * @param context A list of records that will act as the context for the formula.
+     *        Providing this allows you to reference the records through the `@context`
+     *        global variable, which will give you a list of records that can be iterated over.
+     * @param config A configuration object that allows you to set options for
+     *        the evaluation.
+     * @return The result of the formula.
+     * @example
+     * List<Account> records = new List<Account>{
+     *    new Account(Name = 'Example 1'),
+     *    new Account(Name = 'Example 2')
+     * };
+     *
+     * List<String> recordNames = (List<String>)expression.Evaluator.run(
+     *   'MAP(@context, Name)',
+     *    records,
+     *    new expression.Configuration().printAst()
+     * );
+     *
+     * System.assertEquals(new List<String>{'Example 1', 'Example 2'}, recordNames);
+     */
     global static Object run(String formula, List<SObject> context, Configuration config) {
         return EvaluatorResolver.forRecords(context).evaluate(formula, config).result;
     }
@@ -109,7 +132,30 @@ global with sharing abstract class Evaluator {
         return run(formula, recordId, new Configuration());
     }
 
-    // TODO: Apex docs
+    /**
+     * @description Evaluates a formula and returns the result using a set of record Ids as the context.
+     *              When using this endpoint field references will automatically be resolved
+     *              and queried.
+     *
+     *              The resulting records can be accessed through the `@context` global variable, which
+     *              will give you a list of records that can be iterated over.
+     * @param formula The formula to evaluate.
+     * @param recordIds The Ids of the records to use as the context for the formula.
+     * @return The result of the formula.
+     * @example
+     * List<Account> records = new List<Account>{
+     *   new Account(Name = 'Example 1'),
+     *   new Account(Name = 'Example 2')
+     * };
+     * insert records;
+     *
+     * List<String> recordNames = (List<String)expression.Evaluator.run(
+     *  'MAP(@context, Name)',
+     *  new Set<Id>{records[0].Id, records[1].Id}
+     * );
+     *
+     * System.assertEquals(new List<String>{'Example 1', 'Example 2'}, recordNames);
+     */
     global static Object run(String formula, Set<Id> recordIds) {
         return run(formula, recordIds, new Configuration());
     }
@@ -136,7 +182,33 @@ global with sharing abstract class Evaluator {
         return EvaluatorResolver.forId(recordId).evaluate(formula, config).result;
     }
 
-    // TODO: Apex docs
+    /**
+     * @description Evaluates a formula and returns the result using a set of record Ids as the context.
+     *              When using this endpoint field references will automatically be resolved
+     *              and queried.
+     *
+     *              The resulting records can be accessed through the `@context` global variable, which
+     *              will give you a list of records that can be iterated over.
+     * @param formula The formula to evaluate.
+     * @param recordIds The Ids of the records to use as the context for the formula.
+     * @param config A configuration object that allows you to set options for
+     *        the evaluation.
+     * @return The result of the formula.
+     * @example
+     * List<Account> records = new List<Account>{
+     *   new Account(Name = 'Example 1'),
+     *   new Account(Name = 'Example 2')
+     * };
+     * insert records;
+     *
+     * List<String> recordNames = (List<String)expression.Evaluator.run(
+     *  'MAP(@context, Name)',
+     *  new Set<Id>{records[0].Id, records[1].Id},
+     *  new expression.Configuration().respectSharing(false)
+     * );
+     *
+     * System.assertEquals(new List<String>{'Example 1', 'Example 2'}, recordNames);
+     */
     global static Object run(String formula, Set<Id> recordIds, Configuration config) {
         return EvaluatorResolver.forIds(recordIds).evaluate(formula, config).result;
     }
