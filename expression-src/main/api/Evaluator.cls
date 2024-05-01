@@ -44,7 +44,10 @@ global with sharing abstract class Evaluator {
         return run(formula, context, new Configuration());
     }
 
-    // TODO: run with List<SObject>
+    // TODO: Apex docs
+    global static Object run(String formula, List<SObject> context) {
+        return run(formula, context, new Configuration());
+    }
 
     /**
      * @description

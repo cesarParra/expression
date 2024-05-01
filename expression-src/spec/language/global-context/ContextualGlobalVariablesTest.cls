@@ -170,7 +170,30 @@ private class ContextualGlobalVariablesTest {
         Assert.areEqual(testRecord.Name, record.get('Name'));
     }
 
-    // TODO: Same as above but with multiple records
+    @IsTest
+    private static void theRecordsAreAccessibleAsContextVariable_multipleRecordsAsContext() {
+        String expression = '@Context';
+        Account testRecord1 = new Account(
+            Id = IdGenerator.generate(Account.SObjectType),
+            Name = 'Test1'
+        );
+        Account testRecord2 = new Account(
+            Id = IdGenerator.generate(Account.SObjectType),
+            Name = 'Test2'
+        );
+
+        Object result = Evaluator.run(expression, new List<SObject>{
+            testRecord1, testRecord2
+        });
+
+        Assert.isNotNull(result);
+        List<SObject> records = (List<SObject>) result;
+        Assert.areEqual(2, records.size());
+        Assert.areEqual(testRecord1.Id, records[0].Id);
+        Assert.areEqual(testRecord1.Name, records[0].get('Name'));
+        Assert.areEqual(testRecord2.Id, records[1].Id);
+        Assert.areEqual(testRecord2.Name, records[1].get('Name'));
+    }
 
     @IsTest
     private static void canAccessAChildRecordsRelationshipThroughTheContext() {
