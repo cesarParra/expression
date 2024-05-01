@@ -30,6 +30,7 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         this.queryContext.queryBuilder.add(Q.condition('Id').isIn(new List<Id>(this.queryContext.recordId.getIds())));
+        System.debug('Query: ' + this.queryContext.queryBuilder.build());
         List<SObject> results = QRunner.getInstance().run(this.queryContext.queryBuilder);
         if (results.isEmpty()) {
             return null;
@@ -164,7 +165,7 @@ public with sharing class ContextResolver implements Visitor {
         if (variable.isContext()) {
             this.shouldExecuteQuery = true;
         }
-        return null;
+        return topLevelQuery;
     }
 
     public Object visit(Expr.MergeField mergeField) {

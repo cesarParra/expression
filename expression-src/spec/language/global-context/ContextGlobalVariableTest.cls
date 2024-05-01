@@ -45,6 +45,23 @@ private class ContextGlobalVariableTest {
     }
 
     @IsTest
+    private static void canGetFieldsFromTheRecordContextWhenDealingWithAList() {
+        String expression = 'MAP(@Context, Name)';
+        Account testRecord1 = new Account(Name = 'Test1');
+        Account testRecord2 = new Account(Name = 'Test2');
+        insert new List<SObject>{
+            testRecord1, testRecord2
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run(expression, new Set<Id>{
+            testRecord1.Id, testRecord2.Id
+        });
+
+        Assert.areEqual('Test1', result[0]);
+        Assert.areEqual('Test2', result[1]);
+    }
+
+    @IsTest
     private static void canGetFieldsFromTheRecordContext_2levels() {
         String expression = '@Context.Parent.Name';
         Account parentAccount = new Account(Name = 'Parent');
