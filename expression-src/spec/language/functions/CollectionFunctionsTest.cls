@@ -650,7 +650,19 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
-    private static void anyFunctionThrowsAnExceptionIfTheFirstArgumentIsNotAList() {
+    private static void anyWorksOnASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                1, 2, 3
+            }
+        };
+
+        Assert.isTrue((Boolean) Evaluator.run('ANY(@extra, $current > 2)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
+    private static void anyFunctionThrowsAnExceptionIfTheFirstArgumentIsNotAnIterable() {
         try {
             Evaluator.run('ANY(1, $current > 3)');
             Assert.fail('Expected exception');
