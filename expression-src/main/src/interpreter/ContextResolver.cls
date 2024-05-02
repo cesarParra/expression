@@ -98,9 +98,6 @@ public with sharing class ContextResolver implements Visitor {
                 // The WHERE function is a special case where we might want to keep building
                 // the query it started resolving, because where returns the List<SObject> back up, so
                 // the caller might want to keep operating on those records.
-                // TODO: We probably would want to do the same thing with other functions that also
-                // TODO: returns records back, for example FIRSTWHERE, LASTWHERE (and there might be more use cases,
-                // TODO: for example, what if the function ends up returning the $current?)
                 // See test: `combiningWhereAndMap`, and `combiningWhereAndMap_withRelationshipsBetweenDifferentSObjectTypes`
                 // for examples of why.
                 return result;
