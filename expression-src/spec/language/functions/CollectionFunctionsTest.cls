@@ -324,6 +324,22 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void whereFunctionAllowsForASetOfValuesToBeFiltered() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<String>{
+                'a', 'b', 'c'
+            }
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('WHERE(@extra, $current != "b")',
+            new Configuration().withCustomContext(extraContext));
+
+        Assert.areEqual(2, result.size());
+        Assert.isTrue(result.contains('a'));
+        Assert.isTrue(result.contains('c'));
+    }
+
+    @IsTest
     private static void whereFunctionAllowsToFilterByFieldsOnChildRecords_usingRecord() {
         Account parentAccount = new Account(Name = 'Parent');
         insert parentAccount;
