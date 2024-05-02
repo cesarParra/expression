@@ -531,6 +531,18 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void reduceWorksOnASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                1, 2, 3
+            }
+        };
+
+        Assert.areEqual(6, Evaluator.run('REDUCE(@extra, $current + $accumulator, 0)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
     private static void reduceWorksWithSObjectExpressions() {
         Account parentAccount = new Account(Name = 'Parent');
         insert parentAccount;
