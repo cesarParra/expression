@@ -692,6 +692,18 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void sumFunctionWorksOnASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                1, 2, 3
+            }
+        };
+
+        Assert.areEqual(6, Evaluator.run('SUM(@extra)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
     private static void sumFunctionThrowsAnExceptionIfAListIsNotReceived() {
         try {
             Evaluator.run('SUM(1)');

@@ -888,14 +888,14 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
-            if (!(listObj instanceof List<Object>)) {
+            if (!(listObj instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "SUM" function: the first argument must evaluate to a list.'
+                    'Error executing "SUM" function: the first argument must evaluate to an iterable.'
                 );
             }
 
             // If the list is empty, return early
-            List<Object> listVal = (List<Object>) listObj;
+            List<Object> listVal = CollectionUtils.toObjectList((Iterable<Object>) listObj);
             if (listVal.isEmpty()) {
                 return 0;
             }
