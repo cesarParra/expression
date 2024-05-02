@@ -20,6 +20,54 @@ Powerful formula-syntax evaluator for Apex and LWC.
 * Pre-built LWC component to evaluate Expressions in record pages and Experience Builder sites
 * And much more!
 
+# Examples
+
+## Basic Math Operations
+
+```apex
+Object simpleMath = expression.Evaluator.run('(1 + 1) * 10');
+System.debug(simpleMath); // 20
+
+Object respectsPemdas = expression.Evaluator.run('1 + 1 * 10 + 50 * 20 / 100 + (20 * 20 /10)');
+System.debug(respectsPemdas); // 61
+```
+
+### String Operations
+
+```apex
+Object simpleConcat = expression.Evaluator.run('"👋 hello " + "there!"');
+System.debug(simpleConcat); // 👋 hello there!
+
+Id recordId = '001Oy00000GkWjfIAF';
+Object interpolation = expression.Evaluator.run('"👋 hello ${Name}"', recordId);
+System.debug(interpolation); // 👋 hello Acme Inc.
+```
+
+### Advanced Operations
+
+```apex
+// Calculating if a year is a leap year
+Id recordId = '001Oy00000GkWjfIAF';
+Object result = expression.Evaluator.run('OR(\n' +
+    '  MOD( YEAR( DATEVALUE(CreatedDate) ), 400 ) = 0, \n' +
+    '  AND( \n' +
+    '   MOD( YEAR( DATEVALUE(CreatedDate) ), 4 ) = 0,\n' +
+    '    MOD( YEAR( DATEVALUE(CreatedDate) ), 100 ) != 0\n' +
+    '  )\n' +
+    ')', recordId);
+System.debug(result); // true
+
+// Determining the the region of an address
+Id recordId = '001Oy00000GkWjfIAF';
+Object result = expression.Evaluator.run('IF(ISBLANK(BillingState), "None",\n' +
+    'IF(CONTAINS("AK:AZ:CA:HA:NV:NM:OR:UT:WA", BillingState), "West",\n' +
+    'IF(CONTAINS("CO:ID:MT:KS:OK:TX:WY", BillingState), "Central",\n' +
+    'IF(CONTAINS("CT:ME:MA:NH:NY:PA:RI:VT", BillingState), "East",\n' +
+    'IF(CONTAINS("AL:AR:DC:DE:FL:GA:KY:LA:MD:MS:NC:NJ:SC:TN:VA:WV", BillingState), "South",\n' +
+    'IF(CONTAINS("IL:IN:IA:MI:MN:MO:NE:ND:OH:SD:WI", BillingState), "North", "Other"))))))', recordId);
+System.debug(result); // South
+```
+
 # Documentation
 
 ## Table of Contents
