@@ -7,15 +7,23 @@ public with sharing abstract class EvaluatorResolver {
     }
 
     public static EvaluatorResolver forId(Id recordId) {
-        return new ContextResolverEvaluator(recordId);
+        return new SingleIdContextResolverEvaluator(recordId);
+    }
+
+    public static EvaluatorResolver forIds(Set<Id> ids) {
+        return new MultipleIdsContextResolverEvaluator(ids);
     }
 
     public static EvaluatorResolver forRecord(SObject record) {
-        return new BaseEvaluator(record);
+        return new BaseSingleRecordEvaluator(record);
+    }
+
+    public static EvaluatorResolver forRecords(List<SObject> sObjects) {
+        return new BaseMultipleRecordsEvaluator(sObjects);
     }
 
     public static EvaluatorResolver withoutContext() {
-        return new BaseEvaluator(null);
+        return new BaseSingleRecordEvaluator(null);
     }
 
     public EvaluationResult evaluate(String input, Configuration config) {
@@ -67,16 +75,20 @@ public with sharing abstract class EvaluatorResolver {
         return theInterpreter.interpret(pipedExpression);
     }
 
-    private class ContextResolverEvaluator extends EvaluatorResolver {
+    private class SingleIdContextResolverEvaluator extends EvaluatorResolver {
         private final Id recordId;
 
-        public ContextResolverEvaluator(Id recordId) {
+        public SingleIdContextResolverEvaluator(Id recordId) {
             this.recordId = recordId;
         }
 
         public override Environment prepareEnvironment(Expr expression) {
             ContextResolver ctxInterpreter = new ContextResolver(recordId);
-            SObject record = ctxInterpreter.build(expression);
+            List<SObject> records = ctxInterpreter.build(expression);
+            SObject record;
+            if (records != null && records.size() > 0) {
+                record = records[0];
+            }
             Environment env = new Environment(record);
 
             Environment.addGlobalContextVariable('id', recordId);
@@ -86,10 +98,32 @@ public with sharing abstract class EvaluatorResolver {
         }
     }
 
-    private class BaseEvaluator extends EvaluatorResolver {
+    private class MultipleIdsContextResolverEvaluator extends EvaluatorResolver {
+        private final Set<Id> recordIds;
+
+        public MultipleIdsContextResolverEvaluator(Set<Id> recordIds) {
+            this.recordIds = recordIds;
+        }
+
+        public override Environment prepareEnvironment(Expr expression) {
+            ContextResolver ctxInterpreter = new ContextResolver(recordIds);
+            List<SObject> records = ctxInterpreter.build(expression);
+            // The environment is created without a record, as we are dealing with a list of records,
+            // so it would not be possible to interpret references to record fields. Instead, the @context
+            // variable should be used to access the list of records.
+            Environment env = new Environment(null);
+
+            Environment.addGlobalContextVariable('ids', recordIds);
+            Environment.addGlobalContextVariable('context', records);
+
+            return env;
+        }
+    }
+
+    private class BaseSingleRecordEvaluator extends EvaluatorResolver {
         private final SObject record;
 
-        public BaseEvaluator(SObject record) {
+        public BaseSingleRecordEvaluator(SObject record) {
             this.record = record;
         }
 
@@ -97,6 +131,26 @@ public with sharing abstract class EvaluatorResolver {
             Environment.addGlobalContextVariable('id', record?.Id);
             Environment.addGlobalContextVariable('context', record);
             return new Environment(record);
+        }
+    }
+
+    private class BaseMultipleRecordsEvaluator extends EvaluatorResolver {
+        private final List<SObject> records;
+
+        public BaseMultipleRecordsEvaluator(List<SObject> records) {
+            this.records = records;
+        }
+
+        public override Environment prepareEnvironment(Expr expression) {
+            Set<Id> ids = new Set<Id>();
+            for (SObject record : records) {
+                if (record.Id != null) {
+                    ids.add(record.Id);
+                }
+            }
+            Environment.addGlobalContextVariable('ids', ids);
+            Environment.addGlobalContextVariable('context', records);
+            return new Environment(null);
         }
     }
 }

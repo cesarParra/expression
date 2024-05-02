@@ -4,13 +4,13 @@ Configuration class for the evaluator.
 
 ## Fields
 
-### `global customContext` → `Map<String,Object>`
+### `global sharing` → `SharingMode`
 
 
 ### `global printAst` → `Boolean`
 
 
-### `global sharing` → `SharingMode`
+### `global customContext` → `Map<String,Object>`
 
 
 ---

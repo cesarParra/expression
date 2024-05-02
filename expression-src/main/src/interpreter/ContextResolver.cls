@@ -10,11 +10,16 @@ public with sharing class ContextResolver implements Visitor {
         this.topLevelQuery = this.queryContext;
     }
 
+    public ContextResolver(Set<Id> recordIds) {
+        this.queryContext = new Query(recordIds);
+        this.topLevelQuery = this.queryContext;
+    }
+
     private Object resolve(Expr expr) {
         return expr.accept(this);
     }
 
-    public SObject build(Expr expression) {
+    public List<SObject> build(Expr expression) {
         this.resolve(expression);
         if (!this.shouldExecuteQuery) {
             return null;
@@ -24,12 +29,12 @@ public with sharing class ContextResolver implements Visitor {
             this.queryContext.queryBuilder.addSubquery(subquery.queryBuilder);
         }
 
-        this.queryContext.queryBuilder.add(Q.condition('Id').equalsTo(this.queryContext.recordId));
+        this.queryContext.queryBuilder.add(Q.condition('Id').isIn(new List<Id>(this.queryContext.recordId.getIds())));
         List<SObject> results = QRunner.getInstance().run(this.queryContext.queryBuilder);
         if (results.isEmpty()) {
             return null;
         }
-        return results[0];
+        return results;
     }
 
     public Object visit(Expr.Logical logical) {
@@ -91,7 +96,10 @@ public with sharing class ContextResolver implements Visitor {
 
             if (function.functionName == 'WHERE') {
                 // The WHERE function is a special case where we might want to keep building
-                // the query it started resolving.
+                // the query it started resolving, because where returns the List<SObject> back up, so
+                // the caller might want to keep operating on those records.
+                // See test: `combiningWhereAndMap`, and `combiningWhereAndMap_withRelationshipsBetweenDifferentSObjectTypes`
+                // for examples of why.
                 return result;
             } else {
                 return null;
@@ -158,7 +166,18 @@ public with sharing class ContextResolver implements Visitor {
     public Object visit(Expr.Variable variable) {
         if (variable.isContext()) {
             this.shouldExecuteQuery = true;
+
+            // When dealing with multiple record Ids and accessing the @Context, then we return
+            // the top level query, so that we can take advantage of functions that resolve for children,
+            // but instead of resolving a subquery, it can just resolve the top level query and add
+            // fields to the main query itself.
+            if (this.queryContext.recordId.getIds().size() > 1) {
+                return topLevelQuery;
+            } else {
+                return null;
+            }
         }
+
         return null;
     }
 
@@ -249,14 +268,58 @@ public with sharing class ContextResolver implements Visitor {
     public class ResolverException extends Exception {
     }
 
+    private interface IdComposite {
+        SObjectType getSobjectType();
+        Set<Id> getIds();
+    }
+
+    private class SingleId implements IdComposite {
+        private final Id id;
+        public SingleId(Id id) {
+            this.id = id;
+        }
+
+        public SObjectType getSobjectType() {
+            return this.id.getSobjectType();
+        }
+
+        public Set<Id> getIds() {
+            return new Set<Id>{
+                this.id
+            };
+        }
+    }
+
+    private class MultipleIds implements IdComposite {
+        private final Set<Id> ids;
+        public MultipleIds(Set<Id> ids) {
+            this.ids = ids;
+        }
+
+        public SObjectType getSobjectType() {
+            return new List<Id>(this.ids)[0].getSobjectType();
+        }
+
+        public Set<Id> getIds() {
+            return this.ids;
+        }
+    }
+
     public class Query {
         public Q queryBuilder { get; private set; }
-        public Id recordId { get; private set; }
+        public IdComposite recordId { get; private set; }
         public SObjectType objectType { get; private set; }
         public String relationshipName { get; private set; }
 
         public Query(Id recordId) {
-            this.recordId = recordId;
+            this.recordId = new SingleId(recordId);
+            this.objectType = this.recordId.getSobjectType();
+            this.queryBuilder = new Q(this.objectType);
+            this.queryBuilder.selectField('Id');
+        }
+
+        public Query(Set<Id> recordIds) {
+            this.recordId = new MultipleIds(recordIds);
             this.objectType = this.recordId.getSobjectType();
             this.queryBuilder = new Q(this.objectType);
             this.queryBuilder.selectField('Id');

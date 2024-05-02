@@ -1,4 +1,4 @@
-import { LightningElement } from 'lwc';
+import {LightningElement} from 'lwc';
 import monaco from '@salesforce/resourceUrl/monaco';
 import getFunctions from '@salesforce/apex/PlaygroundController.getFunctionNames';
 import validate from '@salesforce/apex/PlaygroundController.validate';

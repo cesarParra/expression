@@ -10,7 +10,8 @@ public with sharing abstract class ExpressionFunction {
     };
 
     public static Set<String> getStandardFunctionNames() {
-        Set<String> functionNames = new Set<String>{};
+        Set<String> functionNames = new Set<String>{
+        };
         for (FunctionProvider provider : FUNCTION_PROVIDERS) {
             functionNames.addAll(provider.getFunctions().keySet());
         }
@@ -59,5 +60,6 @@ public with sharing abstract class ExpressionFunction {
         return single instanceof Boolean;
     }
 
-    public class FunctionExecutionException extends Exception {}
+    public class FunctionExecutionException extends Exception {
+    }
 }
