@@ -143,6 +143,28 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void isEmptyReturnsTrueForAnEmptySet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<String>()
+        };
+
+        Assert.areEqual(true, Evaluator.run('ISEMPTY(@extra)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
+    private static void isEmptyReturnsFalseForANonEmptySet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<String>{
+                'a'
+            }
+        };
+
+        Assert.areEqual(false, Evaluator.run('ISEMPTY(@extra)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
     private static void appendFunctionAppendsToAList() {
         List<Object> result = (List<Object>) Evaluator.run('APPEND([1, 2], 3)');
         Assert.areEqual(3, result.size());

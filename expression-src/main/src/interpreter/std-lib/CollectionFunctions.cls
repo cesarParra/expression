@@ -284,14 +284,14 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             // The argument must either be a list or a map
             Object value = evaluate(arguments.get(0));
-            if (!(value instanceof List<Object>) && !(value instanceof Map<Object, Object>)) {
+            if (!(value instanceof Iterable<Object>) && !(value instanceof Map<Object, Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "ISEMPTY" function: the argument must evaluate to a list or a map.'
+                    'Error executing "ISEMPTY" function: the argument must evaluate to an iterable or a map.'
                 );
             }
 
-            if (value instanceof List<Object>) {
-                return ((List<Object>) value).isEmpty();
+            if (value instanceof Iterable<Object>) {
+                return CollectionUtils.toObjectList((Iterable<Object>) value).isEmpty();
             } else {
                 return ((Map<Object, Object>) value).isEmpty();
             }
