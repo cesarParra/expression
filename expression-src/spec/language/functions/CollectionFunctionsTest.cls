@@ -15,6 +15,18 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void averageFunctionReturnsTheAverageOfASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                1, 2, 3
+            }
+        };
+
+        Assert.areEqual(2, Evaluator.run('AVERAGE(@extra)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
     private static void maxFunctionAcceptsAListAsAsArgument() {
         Assert.areEqual(3, Evaluator.run('MAX(LIST(1, 2, 3))'));
     }
@@ -35,6 +47,23 @@ private class CollectionFunctionsTest {
         Assert.areEqual(2, result.size());
         Assert.areEqual('Test1', result[0]);
         Assert.areEqual('Test2', result[1]);
+    }
+
+    @IsTest
+    private static void mapFunctionWorksOnSets() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<String>{
+                'a', 'b', 'c'
+            }
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('MAP(@extra, upper($current))',
+            new Configuration().withCustomContext(extraContext));
+
+        Assert.areEqual(3, result.size());
+        Assert.isTrue(result.contains('A'));
+        Assert.isTrue(result.contains('B'));
+        Assert.isTrue(result.contains('C'));
     }
 
     @IsTest
@@ -63,6 +92,18 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void sizeFunctionReturnsAMapSize() {
         Assert.areEqual(2, Evaluator.run('SIZE({"a": 1, "b": 2})'));
+    }
+
+    @IsTest
+    private static void sizeFunctionReturnsASetSize() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<String>{
+                'a', 'b', 'c'
+            }
+        };
+
+        Assert.areEqual(3, Evaluator.run('SIZE(@extra)',
+            new Configuration().withCustomContext(extraContext)));
     }
 
     @IsTest
@@ -102,6 +143,28 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void isEmptyReturnsTrueForAnEmptySet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<String>()
+        };
+
+        Assert.areEqual(true, Evaluator.run('ISEMPTY(@extra)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
+    private static void isEmptyReturnsFalseForANonEmptySet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<String>{
+                'a'
+            }
+        };
+
+        Assert.areEqual(false, Evaluator.run('ISEMPTY(@extra)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
     private static void appendFunctionAppendsToAList() {
         List<Object> result = (List<Object>) Evaluator.run('APPEND([1, 2], 3)');
         Assert.areEqual(3, result.size());
@@ -111,8 +174,42 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void appendFunctionAppendsToASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<String>{
+                'a', 'b'
+            }
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('APPEND(@extra, "c")',
+            new Configuration().withCustomContext(extraContext));
+
+        Assert.areEqual(3, result.size());
+        Assert.isTrue(result.contains('a'));
+        Assert.isTrue(result.contains('b'));
+        Assert.isTrue(result.contains('c'));
+    }
+
+    @IsTest
     private static void sortFunctionSortsAList() {
         List<Object> result = (List<Object>) Evaluator.run('SORT([3, 2, 1])');
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+    }
+
+    @IsTest
+    private static void sortFunctionSortsASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                3, 2, 1
+            }
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('SORT(@extra)',
+            new Configuration().withCustomContext(extraContext));
+
         Assert.areEqual(3, result.size());
         Assert.areEqual(1, result[0]);
         Assert.areEqual(2, result[1]);
@@ -307,6 +404,22 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void whereFunctionAllowsForASetOfValuesToBeFiltered() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<String>{
+                'a', 'b', 'c'
+            }
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('WHERE(@extra, $current != "b")',
+            new Configuration().withCustomContext(extraContext));
+
+        Assert.areEqual(2, result.size());
+        Assert.isTrue(result.contains('a'));
+        Assert.isTrue(result.contains('c'));
+    }
+
+    @IsTest
     private static void whereFunctionAllowsToFilterByFieldsOnChildRecords_usingRecord() {
         Account parentAccount = new Account(Name = 'Parent');
         insert parentAccount;
@@ -418,6 +531,18 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void reduceWorksOnASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                1, 2, 3
+            }
+        };
+
+        Assert.areEqual(6, Evaluator.run('REDUCE(@extra, $current + $accumulator, 0)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
     private static void reduceWorksWithSObjectExpressions() {
         Account parentAccount = new Account(Name = 'Parent');
         insert parentAccount;
@@ -511,21 +636,33 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void anyFunctionReturnsTrueIfAnyElementMatchesThePredicate() {
-        Assert.isTrue((Boolean)Evaluator.run('ANY([1, 2, 3], $current > 2)'));
+        Assert.isTrue((Boolean) Evaluator.run('ANY([1, 2, 3], $current > 2)'));
     }
 
     @IsTest
     private static void anyFunctionReturnsFalseIfNoElementMatchesThePredicate() {
-        Assert.isFalse((Boolean)Evaluator.run('ANY([1, 2, 3], $current > 3)'));
+        Assert.isFalse((Boolean) Evaluator.run('ANY([1, 2, 3], $current > 3)'));
     }
 
     @IsTest
     private static void anyFunctionReturnsFalseIfTheListIsEmpty() {
-        Assert.isFalse((Boolean)Evaluator.run('ANY([], $current > 3)'));
+        Assert.isFalse((Boolean) Evaluator.run('ANY([], $current > 3)'));
     }
 
     @IsTest
-    private static void anyFunctionThrowsAnExceptionIfTheFirstArgumentIsNotAList() {
+    private static void anyWorksOnASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                1, 2, 3
+            }
+        };
+
+        Assert.isTrue((Boolean) Evaluator.run('ANY(@extra, $current > 2)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
+    private static void anyFunctionThrowsAnExceptionIfTheFirstArgumentIsNotAnIterable() {
         try {
             Evaluator.run('ANY(1, $current > 3)');
             Assert.fail('Expected exception');
@@ -555,6 +692,18 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void sumFunctionWorksOnASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                1, 2, 3
+            }
+        };
+
+        Assert.areEqual(6, Evaluator.run('SUM(@extra)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
     private static void sumFunctionThrowsAnExceptionIfAListIsNotReceived() {
         try {
             Evaluator.run('SUM(1)');
@@ -576,17 +725,29 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void everyFunctionReturnsTrueIfEveryElementMatchesThePredicate() {
-        Assert.isTrue((Boolean)Evaluator.run('EVERY([1, 2, 3], $current > 0)'));
+        Assert.isTrue((Boolean) Evaluator.run('EVERY([1, 2, 3], $current > 0)'));
     }
 
     @IsTest
     private static void everyFunctionReturnsFalseIfAnyElementDoesNotMatchThePredicate() {
-        Assert.isFalse((Boolean)Evaluator.run('EVERY([1, 2, 3], $current > 1)'));
+        Assert.isFalse((Boolean) Evaluator.run('EVERY([1, 2, 3], $current > 1)'));
     }
 
     @IsTest
     private static void everyFunctionReturnsFalseIfTheListIsEmpty() {
-        Assert.isFalse((Boolean)Evaluator.run('EVERY([], $current > 3)'));
+        Assert.isFalse((Boolean) Evaluator.run('EVERY([], $current > 3)'));
+    }
+
+    @IsTest
+    private static void everyFunctionWorksOnASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                1, 2, 3
+            }
+        };
+
+        Assert.isTrue((Boolean) Evaluator.run('EVERY(@extra, $current > 0)',
+            new Configuration().withCustomContext(extraContext)));
     }
 
     @IsTest
@@ -612,12 +773,12 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void expandFunctionExpandsEachElementOfTheListIntoTheResolvedExpression() {
         String formula = 'EXPAND([1, 3, 0, 2], [{"value": $current}])';
-        List<Object> result = (List<Object>)Evaluator.run(formula);
+        List<Object> result = (List<Object>) Evaluator.run(formula);
         Assert.areEqual(4, result.size());
-        Assert.areEqual(1, ((Map<Object, Object>)result[0]).get('value'));
-        Assert.areEqual(3, ((Map<Object, Object>)result[1]).get('value'));
-        Assert.areEqual(0, ((Map<Object, Object>)result[2]).get('value'));
-        Assert.areEqual(2, ((Map<Object, Object>)result[3]).get('value'));
+        Assert.areEqual(1, ((Map<Object, Object>) result[0]).get('value'));
+        Assert.areEqual(3, ((Map<Object, Object>) result[1]).get('value'));
+        Assert.areEqual(0, ((Map<Object, Object>) result[2]).get('value'));
+        Assert.areEqual(2, ((Map<Object, Object>) result[3]).get('value'));
     }
 
     @IsTest
@@ -632,7 +793,7 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void expandFunctionReturnsAnEmptyListIfAnEmptyListIsReceived() {
-        List<Object> result = (List<Object>)Evaluator.run('EXPAND([], [{"value": $current}])');
+        List<Object> result = (List<Object>) Evaluator.run('EXPAND([], [{"value": $current}])');
         Assert.areEqual(0, result.size());
     }
 
@@ -683,7 +844,7 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void followedByAppendsAListToAnother() {
-        List<Object> result = (List<Object>)Evaluator.run('[1, 2] -> FOLLOWEDBY([3, 4])');
+        List<Object> result = (List<Object>) Evaluator.run('[1, 2] -> FOLLOWEDBY([3, 4])');
         Assert.areEqual(4, result.size());
         Assert.areEqual(1, result[0]);
         Assert.areEqual(2, result[1]);
@@ -773,7 +934,7 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void skipFunctionSkipsTheFirstNElementsOfAList() {
-        List<Object> result = (List<Object>)Evaluator.run('SKIP([1, 2, 3, 4], 2)');
+        List<Object> result = (List<Object>) Evaluator.run('SKIP([1, 2, 3, 4], 2)');
         Assert.areEqual(2, result.size());
         Assert.areEqual(3, result[0]);
         Assert.areEqual(4, result[1]);
@@ -801,25 +962,25 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void skipFunctionReturnsAnEmptyListWhenTheListIsEmpty() {
-        List<Object> result = (List<Object>)Evaluator.run('SKIP([], 2)');
+        List<Object> result = (List<Object>) Evaluator.run('SKIP([], 2)');
         Assert.areEqual(0, result.size());
     }
 
     @IsTest
     private static void skipFunctionReturnsAnEmptyListWhenTheNumberIsNegative() {
-        List<Object> result = (List<Object>)Evaluator.run('SKIP([1, 2, 3, 4], -2)');
+        List<Object> result = (List<Object>) Evaluator.run('SKIP([1, 2, 3, 4], -2)');
         Assert.areEqual(0, result.size());
     }
 
     @IsTest
     private static void skipFunctionReturnsAnEmptyListWhenTheNumberIsGreaterThanTheSizeOfTheList() {
-        List<Object> result = (List<Object>)Evaluator.run('SKIP([1, 2, 3, 4], 5)');
+        List<Object> result = (List<Object>) Evaluator.run('SKIP([1, 2, 3, 4], 5)');
         Assert.areEqual(0, result.size());
     }
 
     @IsTest
     private static void skipWhileFunctionSkipsElementsWhileThePredicateIsTrue() {
-        List<Object> result = (List<Object>)Evaluator.run('SKIPWHILE([1, 2, 3, 4], $current < 3)');
+        List<Object> result = (List<Object>) Evaluator.run('SKIPWHILE([1, 2, 3, 4], $current < 3)');
         Assert.areEqual(2, result.size());
         Assert.areEqual(3, result[0]);
         Assert.areEqual(4, result[1]);
@@ -847,19 +1008,19 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void skipWhileReturnsAnEmptyListWhenTheListIsEmpty() {
-        List<Object> result = (List<Object>)Evaluator.run('SKIPWHILE([], $current < 3)');
+        List<Object> result = (List<Object>) Evaluator.run('SKIPWHILE([], $current < 3)');
         Assert.areEqual(0, result.size());
     }
 
     @IsTest
     private static void skipWhileReturnsAnEmptyWhenThePredicateIsNeverFalse() {
-        List<Object> result = (List<Object>)Evaluator.run('SKIPWHILE([1, 2, 3, 4], $current < 5)');
+        List<Object> result = (List<Object>) Evaluator.run('SKIPWHILE([1, 2, 3, 4], $current < 5)');
         Assert.areEqual(0, result.size());
     }
 
     @IsTest
     private static void takeFunctionTakesTheFirstNElementsOfAList() {
-        List<Object> result = (List<Object>)Evaluator.run('TAKE([1, 2, 3, 4], 2)');
+        List<Object> result = (List<Object>) Evaluator.run('TAKE([1, 2, 3, 4], 2)');
         Assert.areEqual(2, result.size());
         Assert.areEqual(1, result[0]);
         Assert.areEqual(2, result[1]);
@@ -887,19 +1048,19 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void takeFunctionReturnsAnEmptyListWhenTheListIsEmpty() {
-        List<Object> result = (List<Object>)Evaluator.run('TAKE([], 2)');
+        List<Object> result = (List<Object>) Evaluator.run('TAKE([], 2)');
         Assert.areEqual(0, result.size());
     }
 
     @IsTest
     private static void takeFunctionReturnsAnEmptyListWhenTheNumberIsNegative() {
-        List<Object> result = (List<Object>)Evaluator.run('TAKE([1, 2, 3, 4], -2)');
+        List<Object> result = (List<Object>) Evaluator.run('TAKE([1, 2, 3, 4], -2)');
         Assert.areEqual(0, result.size());
     }
 
     @IsTest
     private static void takeFunctionReturnsTheWholeListWhenTheNumberIsGreaterThanTheSizeOfTheList() {
-        List<Object> result = (List<Object>)Evaluator.run('TAKE([1, 2, 3, 4], 5)');
+        List<Object> result = (List<Object>) Evaluator.run('TAKE([1, 2, 3, 4], 5)');
         Assert.areEqual(4, result.size());
         Assert.areEqual(1, result[0]);
         Assert.areEqual(2, result[1]);
@@ -909,7 +1070,7 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void takeWhileFunctionTakesElementsWhileThePredicateIsTrue() {
-        List<Object> result = (List<Object>)Evaluator.run('TAKEWHILE([1, 2, 3, 4], $current < 3)');
+        List<Object> result = (List<Object>) Evaluator.run('TAKEWHILE([1, 2, 3, 4], $current < 3)');
         Assert.areEqual(2, result.size());
         Assert.areEqual(1, result[0]);
         Assert.areEqual(2, result[1]);
@@ -937,13 +1098,13 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void takeWhileReturnsAnEmptyListWhenTheListIsEmpty() {
-        List<Object> result = (List<Object>)Evaluator.run('TAKEWHILE([], $current < 3)');
+        List<Object> result = (List<Object>) Evaluator.run('TAKEWHILE([], $current < 3)');
         Assert.areEqual(0, result.size());
     }
 
     @IsTest
     private static void takeWhileReturnsTheWholeListWhenThePredicateIsNeverFalse() {
-        List<Object> result = (List<Object>)Evaluator.run('TAKEWHILE([1, 2, 3, 4], $current < 5)');
+        List<Object> result = (List<Object>) Evaluator.run('TAKEWHILE([1, 2, 3, 4], $current < 5)');
         Assert.areEqual(4, result.size());
         Assert.areEqual(1, result[0]);
         Assert.areEqual(2, result[1]);
@@ -953,7 +1114,7 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void rangeFunctionReturnsAListOfNumbers() {
-        List<Object> result = (List<Object>)Evaluator.run('RANGE(1, 3)');
+        List<Object> result = (List<Object>) Evaluator.run('RANGE(1, 3)');
         Assert.areEqual(3, result.size());
         Assert.areEqual(1, result[0]);
         Assert.areEqual(2, result[1]);
@@ -982,7 +1143,7 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void rangeReturnsAnEmptyListWhenTheFirstArgumentIsGreaterThanTheSecond() {
-        List<Object> result = (List<Object>)Evaluator.run('RANGE(3, 1)');
+        List<Object> result = (List<Object>) Evaluator.run('RANGE(3, 1)');
         Assert.areEqual(0, result.size());
     }
 }

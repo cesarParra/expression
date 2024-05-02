@@ -95,14 +95,15 @@ public with sharing class CollectionFunctions {
             if (children == null) {
                 return new List<Object>();
             }
-            if (!(children instanceof List<Object>)) {
+            if (!(children instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "MAP" function: the first argument must evaluate to a list.'
+                    'Error executing "MAP" function: the first argument must evaluate to an iterable.'
                 );
             }
 
+            List<Object> childrenAsList = CollectionUtils.toObjectList((Iterable<Object>) children);
+
             // If the list of children is empty, return early
-            List<Object> childrenAsList = (List<Object>) children;
             if (childrenAsList.isEmpty()) {
                 return new List<Object>();
             }
@@ -147,14 +148,14 @@ public with sharing class CollectionFunctions {
             if (children == null) {
                 return new List<Object>();
             }
-            if (!(children instanceof List<Object>)) {
+            if (!(children instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "WHERE" function: the first argument must evaluate to a list.'
+                    'Error executing "WHERE" function: the first argument must evaluate to an iterable.'
                 );
             }
 
             // If the list of children is empty, return early
-            List<Object> childrenAsList = (List<Object>) children;
+            List<Object> childrenAsList = CollectionUtils.toObjectList((Iterable<Object>) children);
             if (childrenAsList.isEmpty()) {
                 return new List<Object>();
             }
@@ -207,13 +208,13 @@ public with sharing class CollectionFunctions {
             Object listOfNumbers = evaluate(arguments.get(0));
 
             // Verify that all elements in the list are numbers
-            if (!(listOfNumbers instanceof List<Object>)) {
+            if (!(listOfNumbers instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "AVERAGE" function: the argument must evaluate to a list of numbers.'
+                    'Error executing "AVERAGE" function: the argument must evaluate to an iterable of numbers.'
                 );
             }
 
-            List<Object> listOfNumbersAsList = (List<Object>) listOfNumbers;
+            List<Object> listOfNumbersAsList = CollectionUtils.toObjectList((Iterable<Object>) listOfNumbers);
             // Sanitize nulls
             List<Object> sanitizedList = new List<Object>();
             for (Object maybeNull : listOfNumbersAsList) {
@@ -254,14 +255,14 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             Object listOfValues = evaluate(arguments.get(0));
             // Must be a list or a map
-            if (!(listOfValues instanceof List<Object>) && !(listOfValues instanceof Map<Object, Object>)) {
+            if (!(listOfValues instanceof Iterable<Object>) && !(listOfValues instanceof Map<Object, Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "SIZE" function: the argument must evaluate to a list or a map.'
+                    'Error executing "SIZE" function: the argument must evaluate to an iterable or a map.'
                 );
             }
 
-            if (listOfValues instanceof List<Object>) {
-                return ((List<Object>) listOfValues).size();
+            if (listOfValues instanceof Iterable<Object>) {
+                return CollectionUtils.toObjectList((Iterable<Object>) listOfValues).size();
             } else {
                 return ((Map<Object, Object>) listOfValues).size();
             }
@@ -283,14 +284,14 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             // The argument must either be a list or a map
             Object value = evaluate(arguments.get(0));
-            if (!(value instanceof List<Object>) && !(value instanceof Map<Object, Object>)) {
+            if (!(value instanceof Iterable<Object>) && !(value instanceof Map<Object, Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "ISEMPTY" function: the argument must evaluate to a list or a map.'
+                    'Error executing "ISEMPTY" function: the argument must evaluate to an iterable or a map.'
                 );
             }
 
-            if (value instanceof List<Object>) {
-                return ((List<Object>) value).isEmpty();
+            if (value instanceof Iterable<Object>) {
+                return CollectionUtils.toObjectList((Iterable<Object>) value).isEmpty();
             } else {
                 return ((Map<Object, Object>) value).isEmpty();
             }
@@ -312,12 +313,12 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0)) ?? new List<Object>();
             Object item = evaluate(arguments.get(1));
-            if (!(listObj instanceof List<Object>)) {
+            if (!(listObj instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "APPEND" function: the first argument must evaluate to a list.'
+                    'Error executing "APPEND" function: the first argument must evaluate to an iterable.'
                 );
             }
-            List<Object> result = new List<Object>((List<Object>) listObj);
+            List<Object> result = CollectionUtils.toObjectList((Iterable<Object>) listObj);
             result.add(item);
             return result;
         }
@@ -451,9 +452,9 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
-            if (!(listObj instanceof List<Object>)) {
+            if (!(listObj instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "SORT" function: the first argument must evaluate to a list.'
+                    'Error executing "SORT" function: the first argument must evaluate to an iterable.'
                 );
             }
 
@@ -497,7 +498,7 @@ public with sharing class CollectionFunctions {
             }
 
             // If the list is empty, return early
-            List<Object> listVal = (List<Object>) listObj;
+            List<Object> listVal = CollectionUtils.toObjectList((Iterable<Object>) listObj);
             if (listVal.isEmpty()) {
                 return listVal;
             }
@@ -701,9 +702,9 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
-            if (!(listObj instanceof List<Object>)) {
+            if (!(listObj instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "REDUCE" function: the first argument must evaluate to a list.'
+                    'Error executing "REDUCE" function: the first argument must evaluate to an iterable.'
                 );
             }
 
@@ -714,7 +715,7 @@ public with sharing class CollectionFunctions {
             Object initialValue = evaluate(arguments.get(2));
 
             // If the list is empty, return early
-            List<Object> listVal = (List<Object>) listObj;
+            List<Object> listVal = CollectionUtils.toObjectList((Iterable<Object>) listObj);
             if (listVal.isEmpty()) {
                 return initialValue;
             }
@@ -835,9 +836,9 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
-            if (!(listObj instanceof List<Object>)) {
+            if (!(listObj instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "ANY" function: the first argument must evaluate to a list.'
+                    'Error executing "ANY" function: the first argument must evaluate to an iterable.'
                 );
             }
 
@@ -845,7 +846,7 @@ public with sharing class CollectionFunctions {
             Expr expr = arguments.get(1);
 
             // If the list is empty, return early
-            List<Object> listVal = (List<Object>) listObj;
+            List<Object> listVal = CollectionUtils.toObjectList((Iterable<Object>) listObj);
             if (listVal.isEmpty()) {
                 return false;
             }
@@ -887,14 +888,14 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
-            if (!(listObj instanceof List<Object>)) {
+            if (!(listObj instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "SUM" function: the first argument must evaluate to a list.'
+                    'Error executing "SUM" function: the first argument must evaluate to an iterable.'
                 );
             }
 
             // If the list is empty, return early
-            List<Object> listVal = (List<Object>) listObj;
+            List<Object> listVal = CollectionUtils.toObjectList((Iterable<Object>) listObj);
             if (listVal.isEmpty()) {
                 return 0;
             }
@@ -928,9 +929,9 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
-            if (!(listObj instanceof List<Object>)) {
+            if (!(listObj instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "EVERY" function: the first argument must evaluate to a list.'
+                    'Error executing "EVERY" function: the first argument must evaluate to an iterable.'
                 );
             }
 
@@ -938,7 +939,7 @@ public with sharing class CollectionFunctions {
             Expr expr = arguments.get(1);
 
             // If the list is empty, return early
-            List<Object> listVal = (List<Object>) listObj;
+            List<Object> listVal = CollectionUtils.toObjectList((Iterable<Object>) listObj);
             if (listVal.isEmpty()) {
                 return false;
             }
