@@ -32,7 +32,7 @@ Object respectsPemdas = expression.Evaluator.run('1 + 1 * 10 + 50 * 20 / 100 + (
 System.debug(respectsPemdas); // 61
 ```
 
-### String Operations
+## String Operations
 
 ```apex
 Object simpleConcat = expression.Evaluator.run('"👋 hello " + "there!"');
@@ -43,7 +43,7 @@ Object interpolation = expression.Evaluator.run('"👋 hello ${Name}"', recordId
 System.debug(interpolation); // 👋 hello Acme Inc.
 ```
 
-### Advanced Operations
+## Advanced Operations
 
 ```apex
 // Calculating if a year is a leap year
@@ -66,6 +66,29 @@ Object result = expression.Evaluator.run('IF(ISBLANK(BillingState), "None",\n' +
     'IF(CONTAINS("AL:AR:DC:DE:FL:GA:KY:LA:MD:MS:NC:NJ:SC:TN:VA:WV", BillingState), "South",\n' +
     'IF(CONTAINS("IL:IN:IA:MI:MN:MO:NE:ND:OH:SD:WI", BillingState), "North", "Other"))))))', recordId);
 System.debug(result); // South
+```
+
+## Using Lists and Maps
+
+```apex
+Object listExample = expression.Evaluator.run('[1, 2, 3]');
+System.debug(listExample); // (1 2 3)
+
+Object mapExample = expression.Evaluator.run('{"key": "value"}');
+System.debug(mapExample); // {key=value}
+```
+
+## Piping Complex Operations
+
+```apex
+Id recordId = '001Oy00000GkWjfIAF';
+Object result = expression.Evaluator.run(
+    'ChildAccounts ' +
+        '-> WHERE(AnnualRevenue > 200) ' +
+        '-> WHERE(NumberOfEmployees > 10) ' +
+        '-> MAP(Name)',
+    recordId);
+System.debug(result); // (Acme Inc. Acme Subsidiary)
 ```
 
 # Documentation
