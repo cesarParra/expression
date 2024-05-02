@@ -30,7 +30,6 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         this.queryContext.queryBuilder.add(Q.condition('Id').isIn(new List<Id>(this.queryContext.recordId.getIds())));
-        System.debug('Query: ' + this.queryContext.queryBuilder.build());
         List<SObject> results = QRunner.getInstance().run(this.queryContext.queryBuilder);
         if (results.isEmpty()) {
             return null;
@@ -82,7 +81,6 @@ public with sharing class ContextResolver implements Visitor {
         // Whenever children resolution is needed we assume that the second argument contains the expression
         // for which to resolve, so skip this when the argument list is not long enough.
         if (fn.needsChildrenResolution() && function.arguments.size() > 1) {
-            System.debug('The function: ' + function.functionName + ' needs children resolution');
             // We want to first resolve the left side and it should resolve to a Query object
             // which we will use as the context for the right side.
 
@@ -147,7 +145,6 @@ public with sharing class ContextResolver implements Visitor {
         } else if (isReferencingContextField(getExpr)) {
             return getExpr.field.lexeme;
         } else {
-            System.debug('Fell into the not suported: ' + getExpr.field.lexeme);
             // If we are doing a "get" expression on anything that is not either a merge field,
             // another inner get expression, or an @Context reference, we don't know how to resolve it, so we shouldn't
             // end up adding it to the query
@@ -173,13 +170,15 @@ public with sharing class ContextResolver implements Visitor {
         if (variable.isContext()) {
             this.shouldExecuteQuery = true;
 
-
-            // TODO: Only do this if we are dealing with multiple record Ids.
             // When dealing with multiple record Ids and accessing the @Context, then we return
             // the top level query, so that we can take advantage of functions that resolve for children,
             // but instead of resolving a subquery, it can just resolve the top level query and add
             // fields to the main query itself.
-            return topLevelQuery;
+            if (this.queryContext.recordId.getIds().size() > 1) {
+                return topLevelQuery;
+            } else {
+                return null;
+            }
         }
 
         return null;
