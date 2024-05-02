@@ -174,6 +174,23 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void appendFunctionAppendsToASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<String>{
+                'a', 'b'
+            }
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('APPEND(@extra, "c")',
+            new Configuration().withCustomContext(extraContext));
+
+        Assert.areEqual(3, result.size());
+        Assert.isTrue(result.contains('a'));
+        Assert.isTrue(result.contains('b'));
+        Assert.isTrue(result.contains('c'));
+    }
+
+    @IsTest
     private static void sortFunctionSortsAList() {
         List<Object> result = (List<Object>) Evaluator.run('SORT([3, 2, 1])');
         Assert.areEqual(3, result.size());

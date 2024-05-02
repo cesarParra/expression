@@ -313,12 +313,12 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0)) ?? new List<Object>();
             Object item = evaluate(arguments.get(1));
-            if (!(listObj instanceof List<Object>)) {
+            if (!(listObj instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "APPEND" function: the first argument must evaluate to a list.'
+                    'Error executing "APPEND" function: the first argument must evaluate to an iterable.'
                 );
             }
-            List<Object> result = new List<Object>((List<Object>) listObj);
+            List<Object> result = CollectionUtils.toObjectList((Iterable<Object>) listObj);
             result.add(item);
             return result;
         }
