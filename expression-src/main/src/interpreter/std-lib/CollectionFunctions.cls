@@ -255,14 +255,14 @@ public with sharing class CollectionFunctions {
         public override Object call(List<Expr> arguments) {
             Object listOfValues = evaluate(arguments.get(0));
             // Must be a list or a map
-            if (!(listOfValues instanceof List<Object>) && !(listOfValues instanceof Map<Object, Object>)) {
+            if (!(listOfValues instanceof Iterable<Object>) && !(listOfValues instanceof Map<Object, Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "SIZE" function: the argument must evaluate to a list or a map.'
+                    'Error executing "SIZE" function: the argument must evaluate to an iterable or a map.'
                 );
             }
 
-            if (listOfValues instanceof List<Object>) {
-                return ((List<Object>) listOfValues).size();
+            if (listOfValues instanceof Iterable<Object>) {
+                return CollectionUtils.toObjectList((Iterable<Object>) listOfValues).size();
             } else {
                 return ((Map<Object, Object>) listOfValues).size();
             }

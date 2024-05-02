@@ -95,6 +95,18 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void sizeFunctionReturnsASetSize() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<String>{
+                'a', 'b', 'c'
+            }
+        };
+
+        Assert.areEqual(3, Evaluator.run('SIZE(@extra)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
     private static void canMapARegularListToASingleValue() {
         List<Object> result = (List<Object>) Evaluator.run('MAP(LIST("a", "b", "c"), upper($current))');
         Assert.areEqual('A', result[0]);
