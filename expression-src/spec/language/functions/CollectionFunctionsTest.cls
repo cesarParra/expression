@@ -200,6 +200,23 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void sortFunctionSortsASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                3, 2, 1
+            }
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('SORT(@extra)',
+            new Configuration().withCustomContext(extraContext));
+
+        Assert.areEqual(3, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+    }
+
+    @IsTest
     private static void canSortAListOfMapByAField() {
         List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"a": 1}], "a")');
         Assert.areEqual(3, result.size());
