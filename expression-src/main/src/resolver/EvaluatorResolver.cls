@@ -84,12 +84,10 @@ public with sharing abstract class EvaluatorResolver {
 
         public override Environment prepareEnvironment(Expr expression) {
             ContextResolver ctxInterpreter = new ContextResolver(recordId);
-            SObject record;
             List<SObject> records = ctxInterpreter.build(expression);
+            SObject record;
             if (records != null && records.size() > 0) {
                 record = records[0];
-            } else {
-                record = null;
             }
             Environment env = new Environment(record);
 
@@ -115,8 +113,6 @@ public with sharing abstract class EvaluatorResolver {
             // variable should be used to access the list of records.
             Environment env = new Environment(null);
 
-            // TODO: The language should interpret both Sets and Lists as the same thing
-            // TODO: but this fails if I try to do something like FIRST(@ids)
             Environment.addGlobalContextVariable('ids', recordIds);
             Environment.addGlobalContextVariable('context', records);
 
