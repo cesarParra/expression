@@ -95,14 +95,15 @@ public with sharing class CollectionFunctions {
             if (children == null) {
                 return new List<Object>();
             }
-            if (!(children instanceof List<Object>)) {
+            if (!(children instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "MAP" function: the first argument must evaluate to a list.'
+                    'Error executing "MAP" function: the first argument must evaluate to an iterable.'
                 );
             }
 
+            List<Object> childrenAsList = CollectionUtils.toObjectList((Iterable<Object>) children);
+
             // If the list of children is empty, return early
-            List<Object> childrenAsList = (List<Object>) children;
             if (childrenAsList.isEmpty()) {
                 return new List<Object>();
             }
