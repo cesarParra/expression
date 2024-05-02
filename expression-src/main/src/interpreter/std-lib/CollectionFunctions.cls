@@ -208,13 +208,13 @@ public with sharing class CollectionFunctions {
             Object listOfNumbers = evaluate(arguments.get(0));
 
             // Verify that all elements in the list are numbers
-            if (!(listOfNumbers instanceof List<Object>)) {
+            if (!(listOfNumbers instanceof Iterable<Object>)) {
                 throw new FunctionExecutionException(
-                    'Error executing "AVERAGE" function: the argument must evaluate to a list of numbers.'
+                    'Error executing "AVERAGE" function: the argument must evaluate to an iterable of numbers.'
                 );
             }
 
-            List<Object> listOfNumbersAsList = (List<Object>) listOfNumbers;
+            List<Object> listOfNumbersAsList = CollectionUtils.toObjectList((Iterable<Object>) listOfNumbers);
             // Sanitize nulls
             List<Object> sanitizedList = new List<Object>();
             for (Object maybeNull : listOfNumbersAsList) {

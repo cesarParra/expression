@@ -15,6 +15,18 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void averageFunctionReturnsTheAverageOfASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                1, 2, 3
+            }
+        };
+
+        Assert.areEqual(2, Evaluator.run('AVERAGE(@extra)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
     private static void maxFunctionAcceptsAListAsAsArgument() {
         Assert.areEqual(3, Evaluator.run('MAX(LIST(1, 2, 3))'));
     }
