@@ -739,6 +739,18 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void everyFunctionWorksOnASet() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Integer>{
+                1, 2, 3
+            }
+        };
+
+        Assert.isTrue((Boolean) Evaluator.run('EVERY(@extra, $current > 0)',
+            new Configuration().withCustomContext(extraContext)));
+    }
+
+    @IsTest
     private static void everyFunctionThrowsAnExceptionIfTheFirstArgumentIsNotAList() {
         try {
             Evaluator.run('EVERY(1, $current > 3)');
