@@ -48,7 +48,6 @@ public with sharing abstract class ExpressionFunction {
      *              the arguments need to be resolved as a subquery.
      * @return {Boolean}
      */
-    // TODO: Should this be true for every single collection function?
     public virtual Boolean needsChildrenResolution() {
         return false;
     }
