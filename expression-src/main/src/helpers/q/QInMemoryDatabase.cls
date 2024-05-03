@@ -15,13 +15,10 @@ public with sharing class QInMemoryDatabase implements QDatabase {
 
     public List<SObject> run(Q query) {
         SObjectType sObjectType = getSObjectTypeFromQ(query);
-        List<SObject> result = new List<SObject>();
-        for (SObject record : recordsInTheDatabase) {
-            if (record.getSObjectType() == sObjectType) {
-                result.add(record);
-            }
-        }
-        return result;
+
+        return R.of(recordsInTheDatabase)
+            .filter(R.isOfSObjectType.apply(sObjectType))
+            .toSObjectList();
     }
 
     private static SObjectType getSObjectTypeFromQ(Q query) {

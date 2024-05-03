@@ -124,7 +124,9 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public static R with(Object arg) {
-        return R.of(new List<Object>{ arg });
+        return R.of(new List<Object>{
+            arg
+        });
     }
 
     /**
@@ -138,7 +140,9 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public static R with(Object arg1, Object arg2) {
-        return R.of(new List<Object>{ arg1, arg2 });
+        return R.of(new List<Object>{
+            arg1, arg2
+        });
     }
 
     /**
@@ -153,7 +157,9 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public static R with(Object arg1, Object arg2, Object arg3) {
-        return R.of(new List<Object>{ arg1, arg2, arg3 });
+        return R.of(new List<Object>{
+            arg1, arg2, arg3
+        });
     }
 
     /**
@@ -167,7 +173,9 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public static R withObj(Object arg1, Object arg2) {
-        return R.of(new Map<String, Object>{ toString(arg1) => arg2 });
+        return R.of(new Map<String, Object>{
+            toString(arg1) => arg2
+        });
     }
 
     /**
@@ -265,7 +273,7 @@ public class R implements Func.IPackage {
      * @return wrapped List<Object>
      * */
     public List<Object> toList() {
-        return (List<Object>)this.val;
+        return (List<Object>) this.val;
     }
 
     /**
@@ -289,7 +297,7 @@ public class R implements Func.IPackage {
      * @return instance of Set<String>
      * */
     public Set<String> toSet() {
-        return (Set<String>)toSet.run(this.val);
+        return (Set<String>) toSet.run(this.val);
     }
 
     /**
@@ -301,7 +309,7 @@ public class R implements Func.IPackage {
      * @return instance of Set<Id>
      * */
     public Set<Id> toIdSet() {
-        return (Set<Id>)toIdSet.run(this.val);
+        return (Set<Id>) toIdSet.run(this.val);
     }
 
     /**
@@ -325,7 +333,7 @@ public class R implements Func.IPackage {
      * @return instance of Map<String, Object>
      * */
     public Map<String, Object> toMap() {
-        return (Map<String, Object>)this.val;
+        return (Map<String, Object>) this.val;
 
     }
 
@@ -335,7 +343,7 @@ public class R implements Func.IPackage {
      * @return List<Map<String, Object>>
      * */
     public List<Map<String, Object>> toMapList() {
-        return (List<Map<String, Object>>)R.toMapList.run(this.val);
+        return (List<Map<String, Object>>) R.toMapList.run(this.val);
     }
 
     /**
@@ -361,7 +369,7 @@ public class R implements Func.IPackage {
      * @return True only when the two R contain wrapped values that are equal
      * */
     public Boolean equals(Object other) {
-        return other instanceof R && (Boolean)R.equals.run(this.val, ((R)other).val);
+        return other instanceof R && (Boolean) R.equals.run(this.val, ((R) other).val);
     }
 
     /**
@@ -385,7 +393,7 @@ public class R implements Func.IPackage {
      * @return List of SObject
      * */
     public List<SObject> toSObjectList() {
-        return (List<SObject>)R.toSObjectList.run(this.val);
+        return (List<SObject>) R.toSObjectList.run(this.val);
     }
 
     /**
@@ -397,7 +405,7 @@ public class R implements Func.IPackage {
      * @return Map of String SObject
      * */
     public Map<String, SObject> toSObjectMap() {
-        return (Map<String, SObject>)R.toSObjectMap.run(this.val);
+        return (Map<String, SObject>) R.toSObjectMap.run(this.val);
     }
 
     /**
@@ -409,7 +417,7 @@ public class R implements Func.IPackage {
      * @return SObject
      * */
     public SObject toSObject() {
-        return (SObject)R.toSObject.run(this.val);
+        return (SObject) R.toSObject.run(this.val);
     }
 
     /**
@@ -421,7 +429,7 @@ public class R implements Func.IPackage {
      * @return Integer list
      * */
     public List<Integer> toIntegerList() {
-        return (List<Integer>)R.toIntegerList.run(this.val);
+        return (List<Integer>) R.toIntegerList.run(this.val);
     }
 
     /**
@@ -433,7 +441,7 @@ public class R implements Func.IPackage {
      * @return Map of string integer
      * */
     public Map<String, Integer> toIntegerMap() {
-        return (Map<String, Integer>)R.toIntegerMap.run(this.val);
+        return (Map<String, Integer>) R.toIntegerMap.run(this.val);
     }
 
     /**
@@ -445,7 +453,7 @@ public class R implements Func.IPackage {
      * @return integer
      * */
     public Integer toInteger() {
-        return (Integer)R.toInteger.run(this.val);
+        return (Integer) R.toInteger.run(this.val);
     }
 
     /**
@@ -457,7 +465,7 @@ public class R implements Func.IPackage {
      * @return list of Long
      * */
     public List<Long> toLongList() {
-        return (List<Long>)R.toLongList.run(this.val);
+        return (List<Long>) R.toLongList.run(this.val);
     }
 
     /**
@@ -469,7 +477,7 @@ public class R implements Func.IPackage {
      * @return Map<String, Long>
      * */
     public Map<String, Long> toLongMap() {
-        return (Map<String, Long>)R.toLongMap.run(this.val);
+        return (Map<String, Long>) R.toLongMap.run(this.val);
     }
 
     /**
@@ -481,7 +489,7 @@ public class R implements Func.IPackage {
      * @return Long
      * */
     public Long toLong() {
-        return (Long)R.toLong.run(this.val);
+        return (Long) R.toLong.run(this.val);
     }
 
     /**
@@ -493,7 +501,7 @@ public class R implements Func.IPackage {
      * @return List<Decimal>
      * */
     public List<Decimal> toDecimalList() {
-        return (List<Decimal>)R.toDecimalList.run(this.val);
+        return (List<Decimal>) R.toDecimalList.run(this.val);
     }
 
     /**
@@ -505,7 +513,7 @@ public class R implements Func.IPackage {
      * @return Map<String, Decimal>
      * */
     public Map<String, Decimal> toDecimalMap() {
-        return (Map<String, Decimal>)R.toDecimalMap.run(this.val);
+        return (Map<String, Decimal>) R.toDecimalMap.run(this.val);
     }
 
     /**
@@ -517,7 +525,7 @@ public class R implements Func.IPackage {
      * @return Decimal
      * */
     public Decimal toDecimal() {
-        return (Decimal)R.toDecimal.run(this.val);
+        return (Decimal) R.toDecimal.run(this.val);
     }
 
     /**
@@ -529,7 +537,7 @@ public class R implements Func.IPackage {
      * @return List<Double>
      * */
     public List<Double> toDoubleList() {
-        return (List<Double>)R.toDoubleList.run(this.val);
+        return (List<Double>) R.toDoubleList.run(this.val);
     }
 
     /**
@@ -541,7 +549,7 @@ public class R implements Func.IPackage {
      * @return Map<String, Double>
      * */
     public Map<String, Double> toDoubleMap() {
-        return (Map<String, Double>)R.toDoubleMap.run(this.val);
+        return (Map<String, Double>) R.toDoubleMap.run(this.val);
     }
 
     /**
@@ -553,7 +561,7 @@ public class R implements Func.IPackage {
      * @return Double
      * */
     public Double toDouble() {
-        return (Double)R.toDouble.run(this.val);
+        return (Double) R.toDouble.run(this.val);
     }
 
     /**
@@ -565,7 +573,7 @@ public class R implements Func.IPackage {
      * @return List<String>
      * */
     public List<String> toStringList() {
-        return (List<String>)R.toStringList.run(this.val);
+        return (List<String>) R.toStringList.run(this.val);
     }
 
     /**
@@ -577,7 +585,7 @@ public class R implements Func.IPackage {
      * @return Map<String, String>
      * */
     public Map<String, String> toStringMap() {
-        return (Map<String, String>)R.toStringMap.run(this.val);
+        return (Map<String, String>) R.toStringMap.run(this.val);
     }
 
     /**
@@ -613,7 +621,7 @@ public class R implements Func.IPackage {
      * @return List<Boolean>
      * */
     public List<Boolean> toBooleanList() {
-        return (List<Boolean>)R.toBooleanList.run(this.val);
+        return (List<Boolean>) R.toBooleanList.run(this.val);
     }
 
     /**
@@ -625,7 +633,7 @@ public class R implements Func.IPackage {
      * @return Map<String, Boolean>
      * */
     public Map<String, Boolean> toBooleanMap() {
-        return (Map<String, Boolean>)R.toBooleanMap.run(this.val);
+        return (Map<String, Boolean>) R.toBooleanMap.run(this.val);
     }
 
     /**
@@ -637,7 +645,7 @@ public class R implements Func.IPackage {
      * @return Boolean
      * */
     public Boolean toBoolean() {
-        return (Boolean)R.toBoolean.run(this.val);
+        return (Boolean) R.toBoolean.run(this.val);
     }
 
     /**
@@ -649,7 +657,7 @@ public class R implements Func.IPackage {
      * @return List<Date>
      * */
     public List<Date> toDateList() {
-        return (List<Date>)R.toDateList.run(this.val);
+        return (List<Date>) R.toDateList.run(this.val);
     }
 
     /**
@@ -661,7 +669,7 @@ public class R implements Func.IPackage {
      * @return Map<String, Date>
      * */
     public Map<String, Date> toDateMap() {
-        return (Map<String, Date>)R.toDateMap.run(this.val);
+        return (Map<String, Date>) R.toDateMap.run(this.val);
     }
 
     /**
@@ -673,7 +681,7 @@ public class R implements Func.IPackage {
      * @return Date
      * */
     public Date toDate() {
-        return (Date)R.toDate.run(this.val);
+        return (Date) R.toDate.run(this.val);
     }
 
     /**
@@ -685,7 +693,7 @@ public class R implements Func.IPackage {
      * @return List<Time>
      * */
     public List<Time> toTimeList() {
-        return (List<Time>)R.toTimeList.run(this.val);
+        return (List<Time>) R.toTimeList.run(this.val);
     }
 
     /**
@@ -697,7 +705,7 @@ public class R implements Func.IPackage {
      * @return Time
      * */
     public Time toTime() {
-        return (Time)R.toTime.run(this.val);
+        return (Time) R.toTime.run(this.val);
     }
 
     /**
@@ -709,7 +717,7 @@ public class R implements Func.IPackage {
      * @return Map<String, Time>
      * */
     public Map<String, Time> toTimeMap() {
-        return (Map<String, Time>)R.toTimeMap.run(this.val);
+        return (Map<String, Time>) R.toTimeMap.run(this.val);
     }
 
     /**
@@ -721,7 +729,7 @@ public class R implements Func.IPackage {
      * @return List<Datetime>
      * */
     public List<Datetime> toDatetimeList() {
-        return (List<Datetime>)R.toDatetimeList.run(this.val);
+        return (List<Datetime>) R.toDatetimeList.run(this.val);
     }
 
     /**
@@ -733,7 +741,7 @@ public class R implements Func.IPackage {
      * @return Map<String, Datetime>
      * */
     public Map<String, Datetime> toDatetimeMap() {
-        return (Map<String, Datetime>)R.toDatetimeMap.run(this.val);
+        return (Map<String, Datetime>) R.toDatetimeMap.run(this.val);
     }
 
     /**
@@ -745,7 +753,7 @@ public class R implements Func.IPackage {
      * @return Datetime
      * */
     public Datetime toDatetime() {
-        return (Datetime)R.toDatetime.run(this.val);
+        return (Datetime) R.toDatetime.run(this.val);
     }
 
     /**
@@ -757,7 +765,7 @@ public class R implements Func.IPackage {
      * @return List<Func>
      * */
     public List<Func> toFuncList() {
-        return (List<Func>)R.toFuncList.run(this.val);
+        return (List<Func>) R.toFuncList.run(this.val);
     }
 
     /**
@@ -769,7 +777,7 @@ public class R implements Func.IPackage {
      * @return Map<String, Func>
      * */
     public Map<String, Func> toFuncMap() {
-        return (Map<String, Func>)R.toFuncMap.run(this.val);
+        return (Map<String, Func>) R.toFuncMap.run(this.val);
     }
 
     /**
@@ -781,7 +789,7 @@ public class R implements Func.IPackage {
      * @return Func
      * */
     public Func toFunc() {
-        return (Func)R.toFunc.run(this.val);
+        return (Func) R.toFunc.run(this.val);
     }
 
     /**
@@ -793,7 +801,7 @@ public class R implements Func.IPackage {
      * @return List<R.Pair>
      * */
     public List<Pair> toPairList() {
-        return (List<Pair>)R.toPairList.run(this.val);
+        return (List<Pair>) R.toPairList.run(this.val);
     }
 
     /**
@@ -805,7 +813,7 @@ public class R implements Func.IPackage {
      * @return Map<String, R.Pair>
      * */
     public Map<String, R.Pair> toPairMap() {
-        return (Map<String, R.Pair>)R.toPairMap.run(this.val);
+        return (Map<String, R.Pair>) R.toPairMap.run(this.val);
     }
 
     /**
@@ -817,7 +825,7 @@ public class R implements Func.IPackage {
      * @return Pair
      * */
     public Pair toPair() {
-        return (Pair)R.toPair.run(this.val);
+        return (Pair) R.toPair.run(this.val);
     }
 
     /**
@@ -1000,7 +1008,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R length() {
-        return R.of(((Decimal)R.length.run(this.val)).intValue());
+        return R.of(((Decimal) R.length.run(this.val)).intValue());
     }
 
     /**
@@ -1012,7 +1020,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R size() {
-        return R.of(((Decimal)R.size.run(this.val)).intValue());
+        return R.of(((Decimal) R.size.run(this.val)).intValue());
     }
 
     /**
@@ -1024,7 +1032,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R isEmpty() {
-        return R.of((Boolean)R.isEmpty.run(this.val));
+        return R.of((Boolean) R.isEmpty.run(this.val));
     }
 
     /**
@@ -1036,7 +1044,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R isNotEmpty() {
-        return R.of((Boolean)R.isNotEmpty.run(this.val));
+        return R.of((Boolean) R.isNotEmpty.run(this.val));
     }
 
     /**
@@ -1048,7 +1056,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R sum() {
-        return R.of((Decimal)R.sum.run(this.val));
+        return R.of((Decimal) R.sum.run(this.val));
     }
 
     /**
@@ -1217,7 +1225,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R contains(Object target) {
-        return R.of((Boolean)R.contains.run(target, this.val));
+        return R.of((Boolean) R.contains.run(target, this.val));
     }
 
     /**
@@ -1231,7 +1239,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R containsBy(Func pred, Object target) {
-        return R.of((Boolean)R.containsBy.run(pred, target, this.val));
+        return R.of((Boolean) R.containsBy.run(pred, target, this.val));
     }
 
     /**
@@ -1244,7 +1252,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R containsKey(String key) {
-        return R.of((Boolean)R.containsKey.run(key, this.val));
+        return R.of((Boolean) R.containsKey.run(key, this.val));
     }
 
     /**
@@ -1348,7 +1356,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R all(Func pred) {
-        return R.of((Boolean)R.all.run(pred, this.val));
+        return R.of((Boolean) R.all.run(pred, this.val));
     }
 
     /**
@@ -1361,7 +1369,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R every(Func pred) {
-        return R.of((Boolean)R.every.run(pred, this.val));
+        return R.of((Boolean) R.every.run(pred, this.val));
     }
 
     /**
@@ -1374,7 +1382,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R some(Func pred) {
-        return R.of((Boolean)R.some.run(pred, this.val));
+        return R.of((Boolean) R.some.run(pred, this.val));
     }
 
     /**
@@ -1387,7 +1395,7 @@ public class R implements Func.IPackage {
      * @return R
      * */
     public R none(Func pred) {
-        return R.of((Boolean)R.none.run(pred, this.val));
+        return R.of((Boolean) R.none.run(pred, this.val));
     }
 
     /**
@@ -3071,6 +3079,8 @@ public class R implements Func.IPackage {
      * */
     public static Func equals = new EqualsFunc();
 
+    public static Func isOfSObjectType = new IsOfSObjectType();
+
     /**
      * Check for 'less than'
      *
@@ -3710,7 +3720,7 @@ public class R implements Func.IPackage {
      * @param target The target object
      * @return Object(Boolean)
      * */
-    public static Func isEmpty = (Func)R.pipe.run(
+    public static Func isEmpty = (Func) R.pipe.run(
         R.length,
         R.equals.apply(0)
     );
@@ -3725,7 +3735,7 @@ public class R implements Func.IPackage {
      * @param target The target object
      * @return Object(Boolean)
      * */
-    public static Func isNotEmpty = (Func)R.complement.run(R.isEmpty);
+    public static Func isNotEmpty = (Func) R.complement.run(R.isEmpty);
 
     /**
      * Get the sum
@@ -4598,7 +4608,7 @@ public class R implements Func.IPackage {
      * @param target The target object
      * @return Object
      * */
-    public static Func sample = (Func)R.pipe.run(
+    public static Func sample = (Func) R.pipe.run(
         R.sampleSize.apply(1),
         R.first
     );
@@ -5013,7 +5023,7 @@ public class R implements Func.IPackage {
      * @param target The target object
      * @return Boolean
      * */
-    public static Func isNotNil = (Func)R.complement.run(R.isNil);
+    public static Func isNotNil = (Func) R.complement.run(R.isNil);
 
     /**
      * Same as isNotNil
@@ -5092,7 +5102,7 @@ public class R implements Func.IPackage {
      *
      * @return true
      * */
-    public static Func T = (Func)R.always.run(true);
+    public static Func T = (Func) R.always.run(true);
 
     /**
      * A function that always returns false
@@ -5103,7 +5113,7 @@ public class R implements Func.IPackage {
      *
      * @return false
      * */
-    public static Func F = (Func)R.always.run(false);
+    public static Func F = (Func) R.always.run(false);
 
     /**
      * Remove any null value from the elements
@@ -5455,11 +5465,10 @@ public class R implements Func.IPackage {
     }
 
     private static List<Func> toFuncList(Object arg, Boolean reverse) {
-        if(!reverse) {
-            return (List<Func>)R.toFuncList.run(arg);
-        }
-        else {
-            return (List<Func>)R.toFuncList.run(R.reverse.run(arg));
+        if (!reverse) {
+            return (List<Func>) R.toFuncList.run(arg);
+        } else {
+            return (List<Func>) R.toFuncList.run(R.reverse.run(arg));
         }
     }
 
@@ -5468,131 +5477,131 @@ public class R implements Func.IPackage {
     }
 
     private static Boolean isNumber(Object target) {
-        return (Boolean)R.isNumber.run(target);
+        return (Boolean) R.isNumber.run(target);
     }
 
     private static Boolean toBoolean(Object arg) {
-        return (Boolean)R.toBoolean.run(arg);
+        return (Boolean) R.toBoolean.run(arg);
     }
 
     private static Integer toInteger(Object arg) {
-        return (Integer)R.toInteger.run(arg);
+        return (Integer) R.toInteger.run(arg);
     }
 
     private static Long toLong(Object arg) {
-        return (Long)R.toLong.run(arg);
+        return (Long) R.toLong.run(arg);
     }
 
     private static Decimal toDecimal(Object arg) {
-        return (Decimal)R.toDecimal.run(arg);
+        return (Decimal) R.toDecimal.run(arg);
     }
 
     private static List<Decimal> toDecimalList(Object arg) {
-        return (List<Decimal>)R.toDecimalList.run(arg);
+        return (List<Decimal>) R.toDecimalList.run(arg);
     }
 
     private static Double toDouble(Object arg) {
-        return (Double)R.toDouble.run(arg);
+        return (Double) R.toDouble.run(arg);
     }
 
     private static String toString(Object arg) {
-        return (String)R.toString.run(arg);
+        return (String) R.toString.run(arg);
     }
 
     private static List<String> toCharList(Object arg) {
-        return (List<String>)R.toCharList.run(arg);
+        return (List<String>) R.toCharList.run(arg);
     }
 
     private static Boolean isStringLike(Object arg) {
-        return (Boolean)R.isStringLike.run(arg);
+        return (Boolean) R.isStringLike.run(arg);
     }
 
     private static Date toDate(Object arg) {
-        return (Date)R.toDate.run(arg);
+        return (Date) R.toDate.run(arg);
     }
 
     private static Time toTime(Object arg) {
-        return (Time)R.toTime.run(arg);
+        return (Time) R.toTime.run(arg);
     }
 
     private static Datetime toDatetime(Object arg) {
-        return (Datetime)R.toDatetime.run(arg);
+        return (Datetime) R.toDatetime.run(arg);
     }
 
     private static Func toFunc(Object arg) {
-        return (Func)R.toFunc.run(arg);
+        return (Func) R.toFunc.run(arg);
     }
 
     private static Boolean isSObjectLike(Object arg) {
-        return (Boolean)R.isSObjectLike.run(arg);
+        return (Boolean) R.isSObjectLike.run(arg);
     }
 
     private static SObject toSObject(Object arg) {
-        return (SObject)R.toSObject.run(arg);
+        return (SObject) R.toSObject.run(arg);
     }
 
     private static List<Object> toList(Object arg) {
-        return (List<Object>)R.toList.run(arg);
+        return (List<Object>) R.toList.run(arg);
     }
 
     private static List<Integer> toIntegerList(Object arg) {
-        return (List<Integer>)R.toIntegerList.run(arg);
+        return (List<Integer>) R.toIntegerList.run(arg);
     }
 
     private static List<String> toStringList(Object arg) {
-        return (List<String>)R.toStringList.run(arg);
+        return (List<String>) R.toStringList.run(arg);
     }
 
     private static Boolean isListLike(Object arg) {
-        return (Boolean)R.isListLike.run(arg);
+        return (Boolean) R.isListLike.run(arg);
     }
 
     private static Set<String> toSet(Object arg) {
-        return (Set<String>)R.toSet.run(arg);
+        return (Set<String>) R.toSet.run(arg);
     }
 
     private static Boolean isSetLike(Object arg) {
-        return (Boolean)R.isSetLike.run(arg);
+        return (Boolean) R.isSetLike.run(arg);
     }
 
     private static Map<String, Object> toMap(Object arg) {
-        return (Map<String, Object>)R.toMap.run(arg);
+        return (Map<String, Object>) R.toMap.run(arg);
     }
 
     private static Boolean isMapLike(Object arg) {
-        return (Boolean)R.isMapLike.run(arg);
+        return (Boolean) R.isMapLike.run(arg);
     }
 
     private static List<Map<String, Object>> toMapList(Object arg) {
-        return (List<Map<String, Object>>)R.toMapList.run(arg);
+        return (List<Map<String, Object>>) R.toMapList.run(arg);
     }
 
     private static Pair toPair(Object arg) {
-        return (Pair)R.toPair.run(arg);
+        return (Pair) R.toPair.run(arg);
     }
 
     private static Boolean isPairLike(Object arg) {
-        return (Boolean)R.isPairLike.run(arg);
+        return (Boolean) R.isPairLike.run(arg);
     }
 
     private static List<Pair> toPairList(Object arg) {
-        return (List<Pair>)R.toPairList.run(arg);
+        return (List<Pair>) R.toPairList.run(arg);
     }
 
     private static Map<String, Pair> toPairMap(Object arg) {
-        return (Map<String, Pair>)R.toPairMap.run(arg);
+        return (Map<String, Pair>) R.toPairMap.run(arg);
     }
 
     private static Map<String, Func> toFuncMap(Object arg) {
-        return (Map<String, Func>)R.toFuncMap.run(arg);
+        return (Map<String, Func>) R.toFuncMap.run(arg);
     }
 
     private static Boolean isFuncLike(Object arg) {
-        return (Boolean)R.isFuncLike.run(arg);
+        return (Boolean) R.isFuncLike.run(arg);
     }
 
     private static List<Object> slice(Integer first, Integer last, List<Object> mList) {
-        return (List<Object>)R.slice.run(first, last, mList);
+        return (List<Object>) R.slice.run(first, last, mList);
     }
 
     private static List<Object> slice(Integer first, List<Object> mList) {
@@ -5600,11 +5609,11 @@ public class R implements Func.IPackage {
     }
 
     private static Integer compare(Object a, Object b) {
-        return (Integer)R.compare.run(a, b);
+        return (Integer) R.compare.run(a, b);
     }
 
     private static Boolean equals(Object a, Object b) {
-        return (Boolean)R.equals.run(a, b);
+        return (Boolean) R.equals.run(a, b);
     }
 
     private static Object getNthElement(Integer index, List<Object> args) {
@@ -5628,7 +5637,7 @@ public class R implements Func.IPackage {
         }
 
         public Integer compareTo(Object other) {
-            Object otherVal = ((ComparableWrapper)other).val;
+            Object otherVal = ((ComparableWrapper) other).val;
 
             return toInteger(this.comparator.run(this.val, otherVal));
         }
@@ -5644,8 +5653,8 @@ public class R implements Func.IPackage {
         }
 
         public Boolean equals(Object other) {
-            if(other instanceof Pair) {
-                Pair otherPair = (Pair)other;
+            if (other instanceof Pair) {
+                Pair otherPair = (Pair) other;
 
                 return this.fst == otherPair.fst && this.snd == otherPair.snd;
             }
@@ -5678,7 +5687,7 @@ public class R implements Func.IPackage {
         public override Object execN(List<Object> args) {
             Object ret = this.funcs.get(0).runN(args);
 
-            for(Integer i = 1; i < this.funcs.size(); i++) {
+            for (Integer i = 1; i < this.funcs.size(); i++) {
                 ret = this.funcs.get(i).run(ret);
             }
 
@@ -5694,9 +5703,9 @@ public class R implements Func.IPackage {
         }
 
         public override Object execN(List<Object> args) {
-            for(Func func : this.funcs) {
+            for (Func func : this.funcs) {
                 Boolean pass = toBoolean(func.runN(args));
-                if(!pass) {
+                if (!pass) {
                     return false;
                 }
             }
@@ -5713,9 +5722,9 @@ public class R implements Func.IPackage {
         }
 
         public override Object execN(List<Object> args) {
-            for(Func func : this.funcs) {
+            for (Func func : this.funcs) {
                 Boolean pass = toBoolean(func.runN(args));
-                if(pass) {
+                if (pass) {
                     return true;
                 }
             }
@@ -5745,10 +5754,10 @@ public class R implements Func.IPackage {
         }
 
         public override Object execN(List<Object> args) {
-            for(Integer i = 0; i < this.funcs.size() - 1; i += 2) {
+            for (Integer i = 0; i < this.funcs.size() - 1; i += 2) {
                 Func pred = this.funcs.get(i);
                 Boolean pass = toBoolean(pred.runN(args));
-                if(pass) {
+                if (pass) {
                     Func next = this.funcs.get(i + 1);
                     return next.runN(args);
                 }
@@ -5766,15 +5775,14 @@ public class R implements Func.IPackage {
         }
 
         public override Object execN(List<Object> args) {
-            if(this.funcs.size() >= 3) {
+            if (this.funcs.size() >= 3) {
                 Func pred = this.funcs.get(0);
                 Func next = this.funcs.get(1);
                 Func otherwise = this.funcs.get(2);
                 Boolean pass = toBoolean(pred.runN(args));
-                if(pass) {
+                if (pass) {
                     return next.runN(args);
-                }
-                else {
+                } else {
                     return otherwise.runN(args);
                 }
             }
@@ -5791,11 +5799,11 @@ public class R implements Func.IPackage {
         }
 
         public override Object execN(List<Object> args) {
-            if(this.funcs.size() >= 2) {
+            if (this.funcs.size() >= 2) {
                 Func pred = this.funcs.get(0);
                 Func next = this.funcs.get(1);
                 Boolean pass = toBoolean(pred.runN(args));
-                if(pass) {
+                if (pass) {
                     return next.runN(args);
                 }
             }
@@ -5812,11 +5820,11 @@ public class R implements Func.IPackage {
         }
 
         public override Object execN(List<Object> args) {
-            if(this.funcs.size() >= 2) {
+            if (this.funcs.size() >= 2) {
                 Func pred = this.funcs.get(0);
                 Func next = this.funcs.get(1);
                 Boolean pass = toBoolean(pred.runN(args));
-                if(!pass) {
+                if (!pass) {
                     return next.runN(args);
                 }
             }
@@ -5845,7 +5853,7 @@ public class R implements Func.IPackage {
         }
 
         public override Object execN(List<Object> args) {
-            if(args.size() >= 2) {
+            if (args.size() >= 2) {
                 Object arg1 = args.get(0);
                 Object arg2 = args.get(1);
                 args.set(0, arg2);
@@ -5866,7 +5874,7 @@ public class R implements Func.IPackage {
         public override Object execN(List<Object> args) {
             Func targetF = this.funcs.get(0);
             List<Object> newArgs = new List<Object>();
-            for(Integer i = 1; i < this.funcs.size(); i++) {
+            for (Integer i = 1; i < this.funcs.size(); i++) {
                 newArgs.add(this.funcs.get(i).runN(args));
             }
 
@@ -5884,9 +5892,9 @@ public class R implements Func.IPackage {
         public override Object execN(List<Object> args) {
             Func targetF = this.funcs.get(0);
             List<Object> newArgs = new List<Object>();
-            for(Integer i = 1; i < this.funcs.size(); i++) {
+            for (Integer i = 1; i < this.funcs.size(); i++) {
                 Object newArg = null;
-                if(i - 1 < args.size()) {
+                if (i - 1 < args.size()) {
                     newArg = args.get(i - 1);
                 }
                 newArgs.add(this.funcs.get(i).run(newArg));
@@ -5907,7 +5915,7 @@ public class R implements Func.IPackage {
 
         public override Object execN(List<Object> args) {
             Boolean invoked = functionalCache.containsKey(this.name);
-            if(!invoked) {
+            if (!invoked) {
                 functionalCache.put(this.name, this.targetF.runN(args));
             }
 
@@ -5928,7 +5936,7 @@ public class R implements Func.IPackage {
 
         public override Object execN(List<Object> args) {
             String key = this.name + '_' + toString(fn.runN(args));
-            if(!functionalCache.containsKey(key)) {
+            if (!functionalCache.containsKey(key)) {
                 functionalCache.put(key, this.targetF.runN(args));
             }
 
@@ -5947,11 +5955,10 @@ public class R implements Func.IPackage {
 
         public override Object execN(List<Object> args) {
             List<Object> newArgs = new List<Object>();
-            for(Integer i = 0; i < this.arity; i++) {
-                if(i < args.size()) {
+            for (Integer i = 0; i < this.arity; i++) {
+                if (i < args.size()) {
                     newArgs.add(args.get(i));
-                }
-                else {
+                } else {
                     newArgs.add(null);
                 }
             }
@@ -5999,9 +6006,9 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            for(Func fn : this.funcs) {
+            for (Func fn : this.funcs) {
                 Integer ret = toInteger(fn.run(arg1, arg2));
-                if(ret != 0) {
+                if (ret != 0) {
                     return ret;
                 }
             }
@@ -6032,28 +6039,21 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg == null) {
+            if (arg == null) {
                 return false;
-            }
-            else if(arg instanceof Boolean) {
-                return (Boolean)arg;
-            }
-            else if(arg instanceof Integer) {
-                return (Integer)arg != 0;
-            }
-            else if(arg instanceof Long) {
-                return (Long)arg != 0;
-            }
-            else if(arg instanceof Double) {
-                return (Double)arg != 0;
-            }
-            else if(arg instanceof Decimal) {
-                return (Decimal)arg != 0;
-            }
-            else if(arg instanceof String) {
-                return Boolean.valueOf((String)arg);
-            }
-            else {
+            } else if (arg instanceof Boolean) {
+                return (Boolean) arg;
+            } else if (arg instanceof Integer) {
+                return (Integer) arg != 0;
+            } else if (arg instanceof Long) {
+                return (Long) arg != 0;
+            } else if (arg instanceof Double) {
+                return (Double) arg != 0;
+            } else if (arg instanceof Decimal) {
+                return (Decimal) arg != 0;
+            } else if (arg instanceof String) {
+                return Boolean.valueOf((String) arg);
+            } else {
                 return true;
             }
         }
@@ -6100,23 +6100,18 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg == null) {
+            if (arg == null) {
                 return null;
-            }
-            else if(arg instanceof Integer) {
-                return (Integer)arg;
-            }
-            else if(arg instanceof Long) {
-                return ((Long)arg).intValue();
-            }
-            else if(arg instanceof Double) {
-                return ((Double)arg).intValue();
-            }
-            else if(arg instanceof Decimal) {
-                return ((Decimal)arg).intValue();
-            }
-            else if(arg instanceof String) {
-                return Integer.valueOf((String)arg);
+            } else if (arg instanceof Integer) {
+                return (Integer) arg;
+            } else if (arg instanceof Long) {
+                return ((Long) arg).intValue();
+            } else if (arg instanceof Double) {
+                return ((Double) arg).intValue();
+            } else if (arg instanceof Decimal) {
+                return ((Decimal) arg).intValue();
+            } else if (arg instanceof String) {
+                return Integer.valueOf((String) arg);
             }
 
             throw new Func.FuncException('Cannot convert arg to Integer');
@@ -6164,23 +6159,18 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg == null) {
+            if (arg == null) {
                 return null;
-            }
-            else if(arg instanceof Long) {
-                return (Long)arg;
-            }
-            else if(arg instanceof Integer) {
-                return (Integer)arg;
-            }
-            else if(arg instanceof Decimal) {
-                return ((Decimal)arg).longValue();
-            }
-            else if(arg instanceof Double) {
-                return ((Double)arg).longValue();
-            }
-            else if(arg instanceof String) {
-                return Long.valueOf((String)arg);
+            } else if (arg instanceof Long) {
+                return (Long) arg;
+            } else if (arg instanceof Integer) {
+                return (Integer) arg;
+            } else if (arg instanceof Decimal) {
+                return ((Decimal) arg).longValue();
+            } else if (arg instanceof Double) {
+                return ((Double) arg).longValue();
+            } else if (arg instanceof String) {
+                return Long.valueOf((String) arg);
             }
 
             throw new Func.FuncException('Cannot convert arg to Long');
@@ -6228,23 +6218,18 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg == null) {
+            if (arg == null) {
                 return null;
-            }
-            else if(arg instanceof Double) {
-                return (Double)arg;
-            }
-            else if(arg instanceof Integer) {
-                return (Integer)arg;
-            }
-            else if(arg instanceof Long) {
-                return (Long)arg;
-            }
-            else if(arg instanceof Decimal) {
-                return ((Decimal)arg).doubleValue();
-            }
-            else if(arg instanceof String) {
-                return Double.valueOf((String)arg);
+            } else if (arg instanceof Double) {
+                return (Double) arg;
+            } else if (arg instanceof Integer) {
+                return (Integer) arg;
+            } else if (arg instanceof Long) {
+                return (Long) arg;
+            } else if (arg instanceof Decimal) {
+                return ((Decimal) arg).doubleValue();
+            } else if (arg instanceof String) {
+                return Double.valueOf((String) arg);
             }
 
             throw new Func.FuncException('Cannot convert arg to Double');
@@ -6292,23 +6277,18 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg == null) {
+            if (arg == null) {
                 return null;
-            }
-            else if(arg instanceof Decimal) {
-                return (Decimal)arg;
-            }
-            else if(arg instanceof Double) {
-                return Decimal.valueOf((Double)arg);
-            }
-            else if(arg instanceof Integer) {
-                return Decimal.valueOf((Integer)arg);
-            }
-            else if(arg instanceof Long) {
-                return Decimal.valueOf((Long)arg);
-            }
-            else if(arg instanceof String) {
-                return Decimal.valueOf((String)arg);
+            } else if (arg instanceof Decimal) {
+                return (Decimal) arg;
+            } else if (arg instanceof Double) {
+                return Decimal.valueOf((Double) arg);
+            } else if (arg instanceof Integer) {
+                return Decimal.valueOf((Integer) arg);
+            } else if (arg instanceof Long) {
+                return Decimal.valueOf((Long) arg);
+            } else if (arg instanceof String) {
+                return Decimal.valueOf((String) arg);
             }
 
             throw new Func.FuncException('Cannot convert arg to Decimal');
@@ -6356,19 +6336,15 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg == null) {
+            if (arg == null) {
                 return null;
-            }
-            else if(arg instanceof R && ((R)arg).isString()) {
-                return ((R)arg).toString();
-            }
-            else if(arg instanceof Datetime) {
+            } else if (arg instanceof R && ((R) arg).isString()) {
+                return ((R) arg).toString();
+            } else if (arg instanceof Datetime) {
                 return JSON.serialize(arg).replaceAll('"', '');
-            }
-            else if(arg instanceof Map<String, Object>) {
+            } else if (arg instanceof Map<String, Object>) {
                 return JSON.serialize(arg);
-            }
-            else if(arg instanceof List<Object>) {
+            } else if (arg instanceof List<Object>) {
                 return JSON.serialize(arg);
             } else {
                 return String.valueOf(arg);
@@ -6430,10 +6406,9 @@ public class R implements Func.IPackage {
             String str = toString(arg);
             List<String> newList = null;
 
-            if(str == null || str == '') {
+            if (str == null || str == '') {
                 newList = new List<String>();
-            }
-            else {
+            } else {
                 newList = str.split('');
             }
 
@@ -6451,37 +6426,30 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg == null) {
+            if (arg == null) {
                 return null;
-            }
-            else if(arg instanceof Date) {
-                return (Date)arg;
-            }
-            else if(arg instanceof Datetime) {
-                return ((Datetime)arg).date();
-            }
-            else if(arg instanceof Integer) {
-                Long millis = (Long)arg;
+            } else if (arg instanceof Date) {
+                return (Date) arg;
+            } else if (arg instanceof Datetime) {
+                return ((Datetime) arg).date();
+            } else if (arg instanceof Integer) {
+                Long millis = (Long) arg;
                 return getDate(millis);
-            }
-            else if(arg instanceof Long) {
-                Long millis = (Long)arg;
+            } else if (arg instanceof Long) {
+                Long millis = (Long) arg;
                 return getDate(millis);
-            }
-            else if(arg instanceof Double) {
-                Long millis = ((Double)arg).longValue();
+            } else if (arg instanceof Double) {
+                Long millis = ((Double) arg).longValue();
                 return getDate(millis);
-            }
-            else if(arg instanceof Decimal) {
-                Long millis = ((Decimal)arg).longValue();
+            } else if (arg instanceof Decimal) {
+                Long millis = ((Decimal) arg).longValue();
                 return getDate(millis);
-            }
-            else if(arg instanceof String) {
+            } else if (arg instanceof String) {
                 try {
-                    return Date.valueOf((String)arg);
+                    return Date.valueOf((String) arg);
                 } catch (Exception e1) {
                     try {
-                        if (String.isBlank((String)arg)) {
+                        if (String.isBlank((String) arg)) {
                             System.debug(LoggingLevel.Error, 'Cannot convert this value to Date:' + arg);
                             return null;
                         }
@@ -6542,26 +6510,21 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg == null) {
+            if (arg == null) {
                 return null;
-            }
-            else if(arg instanceof Time) {
-                return (Time)arg;
-            }
-            else if(arg instanceof Integer) {
-                Long millis = (Long)arg;
+            } else if (arg instanceof Time) {
+                return (Time) arg;
+            } else if (arg instanceof Integer) {
+                Long millis = (Long) arg;
                 return getTime(millis);
-            }
-            else if(arg instanceof Long) {
-                Long millis = (Long)arg;
+            } else if (arg instanceof Long) {
+                Long millis = (Long) arg;
                 return getTime(millis);
-            }
-            else if(arg instanceof Double) {
-                Long millis = ((Double)arg).longValue();
+            } else if (arg instanceof Double) {
+                Long millis = ((Double) arg).longValue();
                 return getTime(millis);
-            }
-            else if(arg instanceof Decimal) {
-                Long millis = ((Decimal)arg).longValue();
+            } else if (arg instanceof Decimal) {
+                Long millis = ((Decimal) arg).longValue();
                 return getTime(millis);
             }
 
@@ -6618,37 +6581,30 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg == null) {
+            if (arg == null) {
                 return null;
-            }
-            else if(arg instanceof Date) {
-                return getDatetime((Date)arg);
-            }
-            else if(arg instanceof Datetime) {
-                return (Datetime)arg;
-            }
-            else if(arg instanceof Integer) {
-                Long millis = (Long)arg;
+            } else if (arg instanceof Date) {
+                return getDatetime((Date) arg);
+            } else if (arg instanceof Datetime) {
+                return (Datetime) arg;
+            } else if (arg instanceof Integer) {
+                Long millis = (Long) arg;
                 return getDatetime(millis);
-            }
-            else if(arg instanceof Long) {
-                Long millis = (Long)arg;
+            } else if (arg instanceof Long) {
+                Long millis = (Long) arg;
                 return getDatetime(millis);
-            }
-            else if(arg instanceof Double) {
-                Long millis = ((Double)arg).longValue();
+            } else if (arg instanceof Double) {
+                Long millis = ((Double) arg).longValue();
                 return getDatetime(millis);
-            }
-            else if(arg instanceof Decimal) {
-                Long millis = ((Decimal)arg).longValue();
+            } else if (arg instanceof Decimal) {
+                Long millis = ((Decimal) arg).longValue();
                 return getDatetime(millis);
-            }
-            else if(arg instanceof String) {
+            } else if (arg instanceof String) {
                 try {
-                    return Datetime.valueOf((String)arg);
+                    return Datetime.valueOf((String) arg);
                 } catch (Exception e1) {
                     try {
-                        if (String.isBlank((String)arg)) {
+                        if (String.isBlank((String) arg)) {
                             System.debug(LoggingLevel.Error, 'Cannot convert this value to Datetime:' + arg);
                             return null;
                         }
@@ -6715,14 +6671,12 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg == null) {
+            if (arg == null) {
                 return R.identity;
-            }
-            else if(arg instanceof Func) {
-                return (Func)arg;
-            }
-            else if(arg instanceof Comparable) {
-                return new FuncComparable((Comparable)arg);
+            } else if (arg instanceof Func) {
+                return (Func) arg;
+            } else if (arg instanceof Comparable) {
+                return new FuncComparable((Comparable) arg);
             }
 
             throw new Func.FuncException('Cannot convert arg to Func');
@@ -6780,14 +6734,12 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg == null) {
+            if (arg == null) {
                 return null;
-            }
-            else if(arg instanceof SObject) {
-                return (SObject)arg;
-            }
-            else if(arg instanceof R && ((R)arg).toObject() instanceof SObject) {
-                return ((SObject)((R)arg).toObject());
+            } else if (arg instanceof SObject) {
+                return (SObject) arg;
+            } else if (arg instanceof R && ((R) arg).toObject() instanceof SObject) {
+                return ((SObject) ((R) arg).toObject());
             }
 
             throw new Func.FuncException('Cannot convert arg to SObject');
@@ -6836,27 +6788,24 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg) {
             List<Object> newList = null;
-            if(arg == null) {
+            if (arg == null) {
                 newList = new List<Object>();
-            }
-            else if(arg instanceof List<Object>) {
-                newList = (List<Object>)arg;
-            }
-            else if(arg instanceof R && ((R)arg).isList()) {
-                newList = ((R)arg).toList();
-            }
-            else if(arg instanceof Pair) {
-                Pair mPair = (Pair)arg;
-                newList = new List<Object>{ mPair.fst, mPair.snd };
-            }
-            else if(arg instanceof String) {
+            } else if (arg instanceof List<Object>) {
+                newList = (List<Object>) arg;
+            } else if (arg instanceof R && ((R) arg).isList()) {
+                newList = ((R) arg).toList();
+            } else if (arg instanceof Pair) {
+                Pair mPair = (Pair) arg;
+                newList = new List<Object>{
+                    mPair.fst, mPair.snd
+                };
+            } else if (arg instanceof String) {
                 try {
-                    newList = (List<Object>)JSON.deserializeUntyped((String)arg);
-                } catch(Exception e) {
+                    newList = (List<Object>) JSON.deserializeUntyped((String) arg);
+                } catch (Exception e) {
                     System.debug(LoggingLevel.Error, 'ERROR (toList): ' + e);
                 }
-            }
-            else {
+            } else {
                 newList = new List<Object>();
             }
 
@@ -6871,10 +6820,10 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg) {
             return arg != null && (
-                 arg instanceof List<Object> ||
-                 (arg instanceof R && ((R)arg).isList()) ||
-                 arg instanceof Pair
-             );
+                arg instanceof List<Object> ||
+                    (arg instanceof R && ((R) arg).isList()) ||
+                    arg instanceof Pair
+            );
         }
     }
 
@@ -6885,24 +6834,20 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg) {
             Set<String> newSet = new Set<String>();
-            if(arg == null) {
-            }
-            else if(arg instanceof Set<String>) {
-                newSet = (Set<String>)arg;
-            }
-            else if(arg instanceof Set<Id>) {
-                for (Id id : (Set<Id>)arg) {
+            if (arg == null) {
+            } else if (arg instanceof Set<String>) {
+                newSet = (Set<String>) arg;
+            } else if (arg instanceof Set<Id>) {
+                for (Id id : (Set<Id>) arg) {
                     newSet.add(id);
                 }
-            }
-            else if(arg instanceof List<Object>) {
-                for (Object obj : (List<Object>)arg) {
-                    newSet.add((String)obj);
+            } else if (arg instanceof List<Object>) {
+                for (Object obj : (List<Object>) arg) {
+                    newSet.add((String) obj);
                 }
-            }
-            else if(arg instanceof R &&
-                    (((R)arg).isSet() || ((R)arg).isList())) {
-                newSet = ((R)arg).toSet();
+            } else if (arg instanceof R &&
+                (((R) arg).isSet() || ((R) arg).isList())) {
+                newSet = ((R) arg).toSet();
             }
 
             return newSet;
@@ -6916,24 +6861,20 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg) {
             Set<Id> newSet = new Set<Id>();
-            if(arg == null) {
-            }
-            else if(arg instanceof Set<Id>) {
-                newSet = (Set<Id>)arg;
-            }
-            else if(arg instanceof Set<String>) {
-                for (String str : (Set<String>)arg) {
+            if (arg == null) {
+            } else if (arg instanceof Set<Id>) {
+                newSet = (Set<Id>) arg;
+            } else if (arg instanceof Set<String>) {
+                for (String str : (Set<String>) arg) {
                     newSet.add(str);
                 }
-            }
-            else if(arg instanceof List<Object>) {
-                for (Object obj : (List<Object>)arg) {
-                    newSet.add((Id)obj);
+            } else if (arg instanceof List<Object>) {
+                for (Object obj : (List<Object>) arg) {
+                    newSet.add((Id) obj);
                 }
-            }
-            else if(arg instanceof R &&
-                    (((R)arg).isSet() || ((R)arg).isList())) {
-                newSet = ((R)arg).toIdSet();
+            } else if (arg instanceof R &&
+                (((R) arg).isSet() || ((R) arg).isList())) {
+                newSet = ((R) arg).toIdSet();
             }
 
             return newSet;
@@ -6947,9 +6888,9 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg) {
             return arg != null && (
-                    arg instanceof Set<String> ||
-                    (arg instanceof R && ((R)arg).isSet())
-                );
+                arg instanceof Set<String> ||
+                    (arg instanceof R && ((R) arg).isSet())
+            );
         }
     }
 
@@ -6960,37 +6901,31 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg) {
             Map<String, Object> newMap = null;
-            if(arg == null) {
+            if (arg == null) {
                 newMap = new Map<String, Object>();
-            }
-            else if(arg instanceof Map<String, Object>) {
-                newMap = (Map<String, Object>)arg;
-            }
-            else if(arg instanceof SObject) {
-                newMap = ((SObject)arg).getPopulatedFieldsAsMap();
-            }
-            else if(arg instanceof R && ((R)arg).isMap()) {
-                newMap = ((R)arg).toMap();
-            }
-            else if(arg instanceof Map<Object, Object>) {
+            } else if (arg instanceof Map<String, Object>) {
+                newMap = (Map<String, Object>) arg;
+            } else if (arg instanceof SObject) {
+                newMap = ((SObject) arg).getPopulatedFieldsAsMap();
+            } else if (arg instanceof R && ((R) arg).isMap()) {
+                newMap = ((R) arg).toMap();
+            } else if (arg instanceof Map<Object, Object>) {
                 newMap = new Map<String, Object>();
-                Map<Object, Object> srcMap = (Map<Object, Object>)arg;
-                for(Object key : srcMap.keySet()) {
+                Map<Object, Object> srcMap = (Map<Object, Object>) arg;
+                for (Object key : srcMap.keySet()) {
                     Object value = srcMap.get(key);
                     newMap.put(toString(key), value);
                 }
-            }
-            else if(arg instanceof String) {
+            } else if (arg instanceof String) {
                 try {
-                    newMap = (Map<String, Object>)JSON.deserializeUntyped((String)arg);
-                } catch(Exception e) {
+                    newMap = (Map<String, Object>) JSON.deserializeUntyped((String) arg);
+                } catch (Exception e) {
                     System.debug(LoggingLevel.Error, 'ERROR (toMap): ' + e);
                 }
-            }
-            else {
+            } else {
                 try {
-                    newMap = (Map<String, Object>)JSON.deserializeUntyped(JSON.serialize(arg));
-                } catch(Exception e) {
+                    newMap = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(arg));
+                } catch (Exception e) {
                     System.debug(LoggingLevel.Error, 'ERROR (toMap): ' + e);
                 }
             }
@@ -7006,10 +6941,10 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg) {
             return arg != null && (
-                    arg instanceof Map<String, Object> ||
-                    (arg instanceof R && ((R)arg).isMap()) ||
+                arg instanceof Map<String, Object> ||
+                    (arg instanceof R && ((R) arg).isMap()) ||
                     arg instanceof SObject
-                );
+            );
         }
     }
 
@@ -7037,17 +6972,14 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg) {
             Pair newPair = null;
-            if(arg == null) {
+            if (arg == null) {
                 newPair = new Pair(null, null);
-            }
-            else if(arg instanceof Pair) {
-                newPair = (Pair)arg;
-            }
-            else if(isListLike(arg)) {
+            } else if (arg instanceof Pair) {
+                newPair = (Pair) arg;
+            } else if (isListLike(arg)) {
                 List<Object> mList = toList(arg);
                 newPair = new Pair(getNthElement(0, mList), getNthElement(1, mList));
-            }
-            else {
+            } else {
                 newPair = new Pair(arg, arg);
             }
 
@@ -7184,10 +7116,9 @@ public class R implements Func.IPackage {
 
     private class DebugFunc extends Func {
         public override Object execN(List<Object> args) {
-            if(args.size() == 1) {
+            if (args.size() == 1) {
                 System.debug(args.get(0));
-            }
-            else {
+            } else {
                 System.debug(args);
             }
             return args;
@@ -7241,9 +7172,9 @@ public class R implements Func.IPackage {
 
     private class AndFunc extends Func {
         public override Object execN(List<Object> args) {
-            for(Object arg : args) {
+            for (Object arg : args) {
                 Boolean b = toBoolean(arg);
-                if(!b) {
+                if (!b) {
                     return false;
                 }
             }
@@ -7254,9 +7185,9 @@ public class R implements Func.IPackage {
 
     private class OrFunc extends Func {
         public override Object execN(List<Object> args) {
-            for(Object arg : args) {
+            for (Object arg : args) {
                 Boolean b = toBoolean(arg);
-                if(b) {
+                if (b) {
                     return true;
                 }
             }
@@ -7284,6 +7215,22 @@ public class R implements Func.IPackage {
         public override Object exec(Object a, Object b) {
             return (a == null && b == null) ||
                 (a != null && a.equals(b));
+        }
+    }
+
+    private class IsOfSObjectType extends Func {
+        public IsOfSObjectType() {
+            super(2);
+        }
+
+        public override Object exec(Object a, Object b) {
+            if (a == null || b == null) {
+                return false;
+            }
+
+            SObjectType sObjType = (SObjectType) a;
+            SObject record = (SObject) b;
+            return sObjType == record.getSObjectType();
         }
     }
 
@@ -7391,8 +7338,8 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg instanceof Exception) {
-                throw (Exception)arg;
+            if (arg instanceof Exception) {
+                throw (Exception) arg;
             }
 
             return arg;
@@ -7474,12 +7421,11 @@ public class R implements Func.IPackage {
             String field = items.get(0);
             Object value = mMap.get(field);
 
-            if(isMapLike(value) && items.size() > 1) {
+            if (isMapLike(value) && items.size() > 1) {
                 Map<String, Object> subMap = toMap(value);
                 items.remove(0);
                 return this.getValue(subMap, items);
-            }
-            else {
+            } else {
                 return value;
             }
         }
@@ -7542,11 +7488,11 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Map<String, Object> data = toMap(arg1);
-            for(String key : data.keySet()) {
+            for (String key : data.keySet()) {
                 Object val = data.get(key);
                 Map<String, Object> m = toMap(arg2);
                 Boolean pass = toBoolean(equals(m.get(key), val));
-                if(!pass) {
+                if (!pass) {
                     return false;
                 }
             }
@@ -7562,12 +7508,12 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Map<String, Func> data = toFuncMap(arg1);
-            for(String key : data.keySet()) {
+            for (String key : data.keySet()) {
                 Func pred = data.get(key);
                 Map<String, Object> m = toMap(arg2);
                 Object val = m.get(key);
                 Boolean pass = toBoolean(pred.run(val));
-                if(!pass) {
+                if (!pass) {
                     return false;
                 }
             }
@@ -7631,28 +7577,21 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(arg1 == null || arg2 == null) {
+            if (arg1 == null || arg2 == null) {
                 return 0;
-            }
-            else if(isNumber(arg1) && isNumber(arg2)) {
-                return (Integer)(toInteger(arg1) - toInteger(arg2));
-            }
-            else if(arg1 instanceof String && arg2 instanceof String) {
-                return ((String)arg1).compareTo((String)arg2);
-            }
-            else if(arg1 instanceof Date && arg2 instanceof Date) {
-                return (Date)arg1 < (Date)arg2 ? -1 : 1;
-            }
-            else if(arg1 instanceof Time && arg2 instanceof Time) {
-                return (Time)arg1 < (Time)arg2 ? -1 : 1;
-            }
-            else if(arg1 instanceof DateTime && arg2 instanceof DateTime) {
-                return (DateTime)arg1 < (DateTime)arg2 ? -1 : 1;
-            }
-            else if(arg1 instanceof Comparable && arg2 instanceof Comparable) {
-                return ((Comparable)arg1).compareTo(arg2);
-            }
-            else {
+            } else if (isNumber(arg1) && isNumber(arg2)) {
+                return (Integer) (toInteger(arg1) - toInteger(arg2));
+            } else if (arg1 instanceof String && arg2 instanceof String) {
+                return ((String) arg1).compareTo((String) arg2);
+            } else if (arg1 instanceof Date && arg2 instanceof Date) {
+                return (Date) arg1 < (Date) arg2 ? -1 : 1;
+            } else if (arg1 instanceof Time && arg2 instanceof Time) {
+                return (Time) arg1 < (Time) arg2 ? -1 : 1;
+            } else if (arg1 instanceof DateTime && arg2 instanceof DateTime) {
+                return (DateTime) arg1 < (DateTime) arg2 ? -1 : 1;
+            } else if (arg1 instanceof Comparable && arg2 instanceof Comparable) {
+                return ((Comparable) arg1).compareTo(arg2);
+            } else {
                 return 0;
             }
         }
@@ -7695,28 +7634,25 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Func fn = toFunc(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     fn.run(obj);
                 }
-            }
-            else if(isSetLike(arg2)) {
+            } else if (isSetLike(arg2)) {
                 Set<String> mSet = toSet(arg2);
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     fn.run(obj);
                 }
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     fn.run(val, key);
                 }
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mList = toCharList(arg2);
-                for(String obj : mList) {
+                for (String obj : mList) {
                     fn.run(obj);
                 }
             }
@@ -7736,72 +7672,66 @@ public class R implements Func.IPackage {
         }
 
         private Object filter(Func pred, Object target) {
-            if(isListLike(target)) {
+            if (isListLike(target)) {
                 List<Object> mList = toList(target);
                 List<Object> newList = new List<Object>();
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(accept(pass)) {
+                    if (accept(pass)) {
                         newList.add(obj);
                     }
                 }
                 return newList;
-            }
-            else if(isSetLike(target)) {
+            } else if (isSetLike(target)) {
                 Set<String> mSet = toSet(target);
                 Set<String> newSet = new Set<String>();
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(accept(pass)) {
+                    if (accept(pass)) {
                         newSet.add(obj);
                     }
                 }
                 return newSet;
-            }
-            else if(isMapLike(target)) {
+            } else if (isMapLike(target)) {
                 Map<String, Object> mMap = toMap(target);
                 Map<String, Object> newMap = new Map<String, Object>();
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     Boolean pass = toBoolean(pred.run(val, key));
-                    if(accept(pass)) {
+                    if (accept(pass)) {
                         newMap.put(key, val);
                     }
                 }
                 return newMap;
-            }
-            else if(isStringLike(target)) {
+            } else if (isStringLike(target)) {
                 List<String> mList = toCharList(target);
                 List<String> newList = new List<String>();
-                for(String obj : mList) {
+                for (String obj : mList) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(accept(pass)) {
+                    if (accept(pass)) {
                         newList.add(obj);
                     }
                 }
                 return String.join(newList, '');
-            }
-            else {
+            } else {
                 return target;
             }
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isStringLike(arg1)) {
+            if (isStringLike(arg1)) {
                 String field = toString(arg1);
                 return filter(
                     R.has.apply(field),
                     arg2
                 );
-            }
-            else if(isFuncLike(arg1)) {
+            } else if (isFuncLike(arg1)) {
                 Func pred = toFunc(arg1);
                 return filter(
                     pred,
                     arg2
                 );
-            }
-            else if(isMapLike(arg1)) {
+            } else if (isMapLike(arg1)) {
                 Map<String, Object> data = toMap(arg1);
                 return filter(
                     R.whereEq.apply(data),
@@ -7830,40 +7760,36 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg1, Object arg2) {
             Func fn = toFunc(arg1);
 
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
                 List<Object> newList = new List<Object>();
-                for(Object obj: mList) {
+                for (Object obj : mList) {
                     newList.add(fn.run(obj));
                 }
                 return newList;
-            }
-            else if(isSetLike(arg2)) {
+            } else if (isSetLike(arg2)) {
                 Set<String> mSet = toSet(arg2);
                 Set<String> newSet = new Set<String>();
-                for(String obj: mSet) {
+                for (String obj : mSet) {
                     newSet.add(toString(fn.run(obj)));
                 }
                 return newSet;
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
                 Map<String, Object> newMap = new Map<String, Object>();
-                for(String key: mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     newMap.put(key, fn.run(val, key));
                 }
                 return newMap;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mList = toCharList(arg2);
                 List<String> newList = new List<String>();
-                for(String obj: mList) {
+                for (String obj : mList) {
                     newList.add(toString(fn.run(obj)));
                 }
                 return String.join(newList, '');
-            }
-            else {
+            } else {
                 return arg2;
             }
         }
@@ -7874,7 +7800,7 @@ public class R implements Func.IPackage {
             Func fnKey = toFunc(arg1);
             Map<String, Object> mMap = toMap(arg2);
             Map<String, Object> newMap = new Map<String, Object>();
-            for(String key : mMap.keySet()) {
+            for (String key : mMap.keySet()) {
                 Object val = mMap.get(key);
                 String newKey = toString(fnKey.run(val, key));
                 newMap.put(newKey, val);
@@ -7888,7 +7814,7 @@ public class R implements Func.IPackage {
             Func fnValue = toFunc(arg2);
             Map<String, Object> mMap = toMap(arg3);
             Map<String, Object> newMap = new Map<String, Object>();
-            for(String key : mMap.keySet()) {
+            for (String key : mMap.keySet()) {
                 Object val = mMap.get(key);
                 String newKey = toString(fnKey.run(val, key));
                 Object newValue = fnValue.run(val, key);
@@ -7906,24 +7832,22 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             String field = toString(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
                 List<Object> newList = new List<Object>();
-                for(Object obj: mList) {
+                for (Object obj : mList) {
                     newList.add(R.path.run(field, obj));
                 }
                 return newList;
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
                 Map<String, Object> newMap = new Map<String, Object>();
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     newMap.put(key, R.path.run(field, val, key));
                 }
                 return newMap;
-            }
-            else {
+            } else {
                 return arg2;
             }
         }
@@ -7937,28 +7861,25 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg1, Object arg2, Object arg3) {
             Func reducer = toFunc(arg1);
             Object acc = arg2;
-            if(isListLike(arg3)) {
+            if (isListLike(arg3)) {
                 List<Object> mList = toList(arg3);
-                for(Object obj: mList) {
+                for (Object obj : mList) {
                     acc = reducer.run(acc, obj);
                 }
-            }
-            else if(isSetLike(arg3)) {
+            } else if (isSetLike(arg3)) {
                 Set<String> mSet = toSet(arg3);
-                for(String obj: mSet) {
+                for (String obj : mSet) {
                     acc = reducer.run(acc, obj);
                 }
-            }
-            else if(isMapLike(arg3)) {
+            } else if (isMapLike(arg3)) {
                 Map<String, Object> mMap = toMap(arg3);
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     acc = reducer.run(acc, new Pair(key, val));
                 }
-            }
-            else if(isStringLike(arg3)) {
+            } else if (isStringLike(arg3)) {
                 List<String> mChars = toCharList(arg3);
-                for(String mChar : mChars) {
+                for (String mChar : mChars) {
                     acc = reducer.run(acc, mChar);
                 }
             }
@@ -7975,30 +7896,29 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg1, Object arg2) {
             Integer first = toInteger(arg1);
             Integer last = null;
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
                 Integer size = mList.size();
                 first = getIndexInRange(first, size);
                 last = size;
                 List<Object> newList = new List<Object>();
-                if(first > last) {
+                if (first > last) {
                     return newList;
                 }
-                for(Integer i = first; i < last; i++) {
+                for (Integer i = first; i < last; i++) {
                     newList.add(mList.get(i));
                 }
                 return newList;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
                 Integer size = mCharList.size();
                 first = getIndexInRange(first, size);
                 last = size;
                 List<String> newCharList = new List<String>();
-                if(first > last) {
+                if (first > last) {
                     return '';
                 }
-                for(Integer i = first; i < last; i++) {
+                for (Integer i = first; i < last; i++) {
                     newCharList.add(mCharList.get(i));
                 }
                 return String.join(newCharList, '');
@@ -8010,32 +7930,31 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg1, Object arg2, Object arg3) {
             Integer first = toInteger(arg1);
             Integer last = toInteger(arg2);
-            if(isListLike(arg3)) {
+            if (isListLike(arg3)) {
                 List<Object> mList = toList(arg3);
                 Integer size = mList.size();
                 first = getIndexInRange(first, size);
                 last = getIndexInRange(last, size);
                 last = last > size ? size : last;
                 List<Object> newList = new List<Object>();
-                if(first > last) {
+                if (first > last) {
                     return newList;
                 }
-                for(Integer i = first; i < last; i++) {
+                for (Integer i = first; i < last; i++) {
                     newList.add(mList.get(i));
                 }
                 return newList;
-            }
-            else if(isStringLike(arg3)) {
+            } else if (isStringLike(arg3)) {
                 List<String> mCharList = toCharList(arg3);
                 Integer size = mCharList.size();
                 first = getIndexInRange(first, size);
                 last = getIndexInRange(last, size);
                 last = last > size ? size : last;
                 List<String> newCharList = new List<String>();
-                if(first > last) {
+                if (first > last) {
                     return '';
                 }
-                for(Integer i = first; i < last; i++) {
+                for (Integer i = first; i < last; i++) {
                     newCharList.add(mCharList.get(i));
                 }
                 return String.join(newCharList, '');
@@ -8052,64 +7971,56 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2, Object arg3) {
             Boolean fromRight = toBoolean(arg1);
-            if(isNumber(arg2)) {
+            if (isNumber(arg2)) {
                 Integer num = toInteger(arg2);
                 return fromRight ?
-                    R.slice.run(-num, arg3):
+                    R.slice.run(-num, arg3) :
                     R.slice.run(0, num, arg3);
-            }
-            else {
+            } else {
                 Func pred = toFunc(arg2);
-                if(isListLike(arg3)) {
+                if (isListLike(arg3)) {
                     List<Object> mList = toList(arg3);
                     List<Object> newList = new List<Object>();
-                    if(fromRight) {
-                        for(Integer i = mList.size() - 1 ; i >= 0; i--) {
+                    if (fromRight) {
+                        for (Integer i = mList.size() - 1; i >= 0; i--) {
                             Boolean pass = toBoolean(pred.run(mList.get(i)));
-                            if(pass) {
+                            if (pass) {
                                 newList.add(mList.get(i));
-                            }
-                            else {
-                                newList = (List<Object>)R.reverse.run(newList);
+                            } else {
+                                newList = (List<Object>) R.reverse.run(newList);
                                 break;
                             }
                         }
-                    }
-                    else {
-                        for(Integer i = 0; i < mList.size(); i++) {
+                    } else {
+                        for (Integer i = 0; i < mList.size(); i++) {
                             Boolean pass = toBoolean(pred.run(mList.get(i)));
-                            if(pass) {
+                            if (pass) {
                                 newList.add(mList.get(i));
-                            }
-                            else {
+                            } else {
                                 break;
                             }
                         }
                     }
                     return newList;
-                }
-                else if(isStringLike(arg3)) {
+                } else if (isStringLike(arg3)) {
                     List<String> mCharList = toCharList(arg3);
                     List<String> newCharList = new List<String>();
-                    if(fromRight) {
-                        for(Integer i = mCharList.size() - 1 ; i >= 0; i--) {
+                    if (fromRight) {
+                        for (Integer i = mCharList.size() - 1; i >= 0; i--) {
                             Boolean pass = toBoolean(pred.run(mCharList.get(i)));
-                            if(pass) {
+                            if (pass) {
                                 newCharList.add(mCharList.get(i));
-                            }
-                            else {
+                            } else {
                                 newCharList = toStringList(R.reverse.run(newCharList));
                                 break;
                             }
                         }
-                    }
-                    else {
-                        for(Integer i = 0; i < mCharList.size(); i++) {
+                    } else {
+                        for (Integer i = 0; i < mCharList.size(); i++) {
                             Boolean pass = toBoolean(pred.run(mCharList.get(i)));
-                            if(pass) {
+                            if (pass) {
                                 newCharList.add(mCharList.get(i));
-                            }
-                            else {
+                            } else {
                                 break;
                             }
                         }
@@ -8129,71 +8040,67 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2, Object arg3) {
             Boolean fromRight = toBoolean(arg1);
-            if(isNumber(arg2)) {
+            if (isNumber(arg2)) {
                 Integer num = toInteger(arg2);
                 return fromRight ?
-                    R.slice.run(0, -num, arg3):
+                    R.slice.run(0, -num, arg3) :
                     R.slice.run(num, arg3);
-            }
-            else {
+            } else {
                 Func pred = toFunc(arg2);
-                if(isListLike(arg3)) {
+                if (isListLike(arg3)) {
                     List<Object> mList = toList(arg3);
                     List<Object> newList = new List<Object>();
-                    if(fromRight) {
+                    if (fromRight) {
                         Integer i = mList.size() - 1;
-                        for( ; i >= 0; i--) {
+                        for (; i >= 0; i--) {
                             Boolean pass = toBoolean(pred.run(mList.get(i)));
-                            if(!pass) {
+                            if (!pass) {
                                 break;
                             }
                         }
-                        for( ; i >= 0; i-- ) {
+                        for (; i >= 0; i--) {
                             newList.add(mList.get(i));
                         }
 
-                        newList = (List<Object>)R.reverse.run(newList);
-                    }
-                    else {
+                        newList = (List<Object>) R.reverse.run(newList);
+                    } else {
                         Integer i = 0;
-                        for( ; i < mList.size(); i++) {
+                        for (; i < mList.size(); i++) {
                             Boolean pass = toBoolean(pred.run(mList.get(i)));
-                            if(!pass) {
+                            if (!pass) {
                                 break;
                             }
                         }
-                        for( ; i < mList.size(); i++) {
+                        for (; i < mList.size(); i++) {
                             newList.add(mList.get(i));
                         }
                     }
                     return newList;
-                }
-                else if(isStringLike(arg3)) {
+                } else if (isStringLike(arg3)) {
                     List<String> mCharList = toCharList(arg3);
                     List<String> newCharList = new List<String>();
-                    if(fromRight) {
+                    if (fromRight) {
                         Integer i = mCharList.size() - 1;
-                        for( ; i >= 0; i--) {
+                        for (; i >= 0; i--) {
                             Boolean pass = toBoolean(pred.run(mCharList.get(i)));
-                            if(!pass) {
+                            if (!pass) {
                                 break;
                             }
                         }
-                        for( ; i >= 0; i-- ) {
+                        for (; i >= 0; i--) {
                             newCharList.add(mCharList.get(i));
                         }
 
                         newCharList = toStringList(R.reverse.run(newCharList));
-                    }
-                    else {
+                    } else {
                         Integer i = 0;
-                        for( ; i < mCharList.size(); i++) {
+                        for (; i < mCharList.size(); i++) {
                             Boolean pass = toBoolean(pred.run(mCharList.get(i)));
-                            if(!pass) {
+                            if (!pass) {
                                 break;
                             }
                         }
-                        for( ; i < mCharList.size(); i++) {
+                        for (; i < mCharList.size(); i++) {
                             newCharList.add(mCharList.get(i));
                         }
                     }
@@ -8211,18 +8118,17 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(isListLike(arg)) {
+            if (isListLike(arg)) {
                 List<Object> mList = toList(arg);
                 List<Object> newList = new List<Object>();
-                for(Integer i = mList.size() - 1; i >= 0; i--) {
+                for (Integer i = mList.size() - 1; i >= 0; i--) {
                     newList.add(mList.get(i));
                 }
                 return newList;
-            }
-            else if(isStringLike(arg)) {
+            } else if (isStringLike(arg)) {
                 List<String> mCharList = toCharList(arg);
                 List<String> newCharList = new List<String>();
-                for(Integer i = mCharList.size() - 1; i >= 0; i--) {
+                for (Integer i = mCharList.size() - 1; i >= 0; i--) {
                     newCharList.add(mCharList.get(i));
                 }
                 return String.join(newCharList, '');
@@ -8239,28 +8145,27 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Func comparator = toFunc(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
                 List<ComparableWrapper> wrappers = new List<ComparableWrapper>();
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     wrappers.add(new ComparableWrapper(obj, comparator));
                 }
                 wrappers.sort();
                 List<Object> newList = new List<Object>();
-                for(ComparableWrapper wrapper : wrappers) {
+                for (ComparableWrapper wrapper : wrappers) {
                     newList.add(wrapper.getVal());
                 }
                 return newList;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
                 List<ComparableWrapper> wrappers = new List<ComparableWrapper>();
-                for(String obj : mCharList) {
+                for (String obj : mCharList) {
                     wrappers.add(new ComparableWrapper(obj, comparator));
                 }
                 wrappers.sort();
                 List<String> newCharList = new List<String>();
-                for(ComparableWrapper wrapper : wrappers) {
+                for (ComparableWrapper wrapper : wrappers) {
                     newCharList.add(toString(wrapper.getVal()));
                 }
                 return String.join(newCharList, '');
@@ -8276,13 +8181,12 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(isListLike(arg)) {
+            if (isListLike(arg)) {
                 List<Object> mList = toList(arg);
                 List<Object> newList = new List<Object>(mList);
                 newList.sort();
                 return newList;
-            }
-            else if(isStringLike(arg)) {
+            } else if (isStringLike(arg)) {
                 List<String> mCharList = toCharList(arg);
                 List<String> newCharList = new List<String>(mCharList);
                 newCharList.sort();
@@ -8300,39 +8204,36 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Object target = arg1;
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     Boolean matches = toBoolean(equals(obj, target));
-                    if(matches) {
+                    if (matches) {
                         return true;
                     }
                 }
-            }
-            else if(isSetLike(arg2)) {
+            } else if (isSetLike(arg2)) {
                 Set<String> mSet = toSet(arg2);
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     Boolean matches = toBoolean(equals(obj, target));
-                    if(matches) {
+                    if (matches) {
                         return true;
                     }
                 }
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     Boolean matches = toBoolean(equals(val, target));
-                    if(matches) {
+                    if (matches) {
                         return true;
                     }
                 }
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mChars = toCharList(arg2);
-                for(String mChar : mChars) {
+                for (String mChar : mChars) {
                     Boolean matches = toBoolean(equals(mChar, target));
-                    if(matches) {
+                    if (matches) {
                         return true;
                     }
                 }
@@ -8350,39 +8251,36 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg1, Object arg2, Object arg3) {
             Func pred = toFunc(arg1);
             Object target = arg2;
-            if(isListLike(arg3)) {
+            if (isListLike(arg3)) {
                 List<Object> mList = toList(arg3);
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     Boolean matches = toBoolean(pred.run(obj, target));
-                    if(matches) {
+                    if (matches) {
                         return true;
                     }
                 }
-            }
-            else if(isSetLike(arg3)) {
+            } else if (isSetLike(arg3)) {
                 Set<String> mSet = toSet(arg3);
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     Boolean matches = toBoolean(pred.run(obj, target));
-                    if(matches) {
+                    if (matches) {
                         return true;
                     }
                 }
-            }
-            else if(isMapLike(arg3)) {
+            } else if (isMapLike(arg3)) {
                 Map<String, Object> mMap = toMap(arg3);
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     Boolean matches = toBoolean(pred.run(val, target));
-                    if(matches) {
+                    if (matches) {
                         return true;
                     }
                 }
-            }
-            else if(isStringLike(arg3)) {
+            } else if (isStringLike(arg3)) {
                 List<String> mChars = toCharList(arg3);
-                for(String mChar : mChars) {
+                for (String mChar : mChars) {
                     Boolean matches = toBoolean(pred.run(mChar, target));
-                    if(matches) {
+                    if (matches) {
                         return true;
                     }
                 }
@@ -8426,9 +8324,9 @@ public class R implements Func.IPackage {
             Set<Object> mSet = new Set<Object>();
             List<Object> newList = new List<Object>();
 
-            for(Object obj : mList) {
+            for (Object obj : mList) {
                 Boolean exists = mSet.contains(obj);
-                if(!exists) {
+                if (!exists) {
                     mSet.add(obj);
                     newList.add(obj);
                 }
@@ -8444,55 +8342,53 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isListLike(arg1) && isListLike(arg2)) {
+            if (isListLike(arg1) && isListLike(arg2)) {
                 List<Object> mList1 = toList(arg1);
                 List<Object> mList2 = toList(arg2);
                 List<Object> newList = new List<Object>();
-                for(Object obj : mList2) {
+                for (Object obj : mList2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newList));
-                    if(!exists) {
+                    if (!exists) {
                         newList.add(obj);
                     }
                 }
-                for(Object obj : mList1) {
+                for (Object obj : mList1) {
                     Boolean exists = toBoolean(R.contains.run(obj, newList));
-                    if(!exists) {
+                    if (!exists) {
                         newList.add(obj);
                     }
                 }
                 return newList;
-            }
-            else if(isSetLike(arg1) && isSetLike(arg2)) {
+            } else if (isSetLike(arg1) && isSetLike(arg2)) {
                 Set<String> mSet1 = toSet(arg1);
                 Set<String> mSet2 = toSet(arg2);
                 Set<String> newSet = new Set<String>();
-                for(String obj : mSet2) {
+                for (String obj : mSet2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newSet));
-                    if(!exists) {
+                    if (!exists) {
                         newSet.add(obj);
                     }
                 }
-                for(String obj : mSet1) {
+                for (String obj : mSet1) {
                     Boolean exists = toBoolean(R.contains.run(obj, newSet));
-                    if(!exists) {
+                    if (!exists) {
                         newSet.add(obj);
                     }
                 }
                 return newSet;
-            }
-            else if(isStringLike(arg1) && isStringLike(arg2)) {
+            } else if (isStringLike(arg1) && isStringLike(arg2)) {
                 List<String> mCharList1 = toCharList(arg1);
                 List<String> mCharList2 = toCharList(arg2);
                 List<String> newCharList = new List<String>();
-                for(String obj : mCharList2) {
+                for (String obj : mCharList2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newCharList));
-                    if(!exists) {
+                    if (!exists) {
                         newCharList.add(obj);
                     }
                 }
-                for(String obj : mCharList1) {
+                for (String obj : mCharList1) {
                     Boolean exists = toBoolean(R.contains.run(obj, newCharList));
-                    if(!exists) {
+                    if (!exists) {
                         newCharList.add(obj);
                     }
                 }
@@ -8509,61 +8405,59 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isListLike(arg1) && isListLike(arg2)) {
+            if (isListLike(arg1) && isListLike(arg2)) {
                 List<Object> mList1 = toList(arg1);
                 List<Object> mList2 = toList(arg2);
                 List<Object> newList = new List<Object>();
-                for(Object obj : mList2) {
+                for (Object obj : mList2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newList));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mList1));
-                    if(!exists && existsInOther) {
+                    if (!exists && existsInOther) {
                         newList.add(obj);
                     }
                 }
-                for(Object obj : mList1) {
+                for (Object obj : mList1) {
                     Boolean exists = toBoolean(R.contains.run(obj, newList));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mList2));
-                    if(!exists && existsInOther) {
+                    if (!exists && existsInOther) {
                         newList.add(obj);
                     }
                 }
                 return newList;
-            }
-            else if(isSetLike(arg1) && isSetLike(arg2)) {
+            } else if (isSetLike(arg1) && isSetLike(arg2)) {
                 Set<String> mSet1 = toSet(arg1);
                 Set<String> mSet2 = toSet(arg2);
                 Set<String> newSet = new Set<String>();
-                for(String obj : mSet2) {
+                for (String obj : mSet2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newSet));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mSet1));
-                    if(!exists && existsInOther) {
+                    if (!exists && existsInOther) {
                         newSet.add(obj);
                     }
                 }
-                for(String obj : mSet1) {
+                for (String obj : mSet1) {
                     Boolean exists = toBoolean(R.contains.run(obj, newSet));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mSet2));
-                    if(!exists && existsInOther) {
+                    if (!exists && existsInOther) {
                         newSet.add(obj);
                     }
                 }
                 return newSet;
-            }
-            else if(isStringLike(arg1) && isStringLike(arg2)) {
+            } else if (isStringLike(arg1) && isStringLike(arg2)) {
                 List<String> mCharList1 = toCharList(arg1);
                 List<String> mCharList2 = toCharList(arg2);
                 List<String> newCharList = new List<String>();
-                for(String obj : mCharList2) {
+                for (String obj : mCharList2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newCharList));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mCharList1));
-                    if(!exists && existsInOther) {
+                    if (!exists && existsInOther) {
                         newCharList.add(obj);
                     }
                 }
-                for(String obj : mCharList1) {
+                for (String obj : mCharList1) {
                     Boolean exists = toBoolean(R.contains.run(obj, newCharList));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mCharList2));
-                    if(!exists && existsInOther) {
+                    if (!exists && existsInOther) {
                         newCharList.add(obj);
                     }
                 }
@@ -8580,61 +8474,59 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isListLike(arg1) && isListLike(arg2)) {
+            if (isListLike(arg1) && isListLike(arg2)) {
                 List<Object> mList1 = toList(arg1);
                 List<Object> mList2 = toList(arg2);
                 List<Object> newList = new List<Object>();
-                for(Object obj : mList2) {
+                for (Object obj : mList2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newList));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mList1));
-                    if(!exists && !existsInOther) {
+                    if (!exists && !existsInOther) {
                         newList.add(obj);
                     }
                 }
-                for(Object obj : mList1) {
+                for (Object obj : mList1) {
                     Boolean exists = toBoolean(R.contains.run(obj, newList));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mList2));
-                    if(!exists && !existsInOther) {
+                    if (!exists && !existsInOther) {
                         newList.add(obj);
                     }
                 }
                 return newList;
-            }
-            else if(isSetLike(arg1) && isSetLike(arg2)) {
+            } else if (isSetLike(arg1) && isSetLike(arg2)) {
                 Set<String> mSet1 = toSet(arg1);
                 Set<String> mSet2 = toSet(arg2);
                 Set<String> newSet = new Set<String>();
-                for(String obj : mSet2) {
+                for (String obj : mSet2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newSet));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mSet1));
-                    if(!exists && !existsInOther) {
+                    if (!exists && !existsInOther) {
                         newSet.add(obj);
                     }
                 }
-                for(String obj : mSet1) {
+                for (String obj : mSet1) {
                     Boolean exists = toBoolean(R.contains.run(obj, newSet));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mSet2));
-                    if(!exists && !existsInOther) {
+                    if (!exists && !existsInOther) {
                         newSet.add(obj);
                     }
                 }
                 return newSet;
-            }
-            else if(isStringLike(arg1) && isStringLike(arg2)) {
+            } else if (isStringLike(arg1) && isStringLike(arg2)) {
                 List<String> mCharList1 = toCharList(arg1);
                 List<String> mCharList2 = toCharList(arg2);
                 List<String> newCharList = new List<String>();
-                for(String obj : mCharList2) {
+                for (String obj : mCharList2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newCharList));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mCharList1));
-                    if(!exists && !existsInOther) {
+                    if (!exists && !existsInOther) {
                         newCharList.add(obj);
                     }
                 }
-                for(String obj : mCharList1) {
+                for (String obj : mCharList1) {
                     Boolean exists = toBoolean(R.contains.run(obj, newCharList));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mCharList2));
-                    if(!exists && !existsInOther) {
+                    if (!exists && !existsInOther) {
                         newCharList.add(obj);
                     }
                 }
@@ -8651,40 +8543,38 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isListLike(arg1) && isListLike(arg2)) {
+            if (isListLike(arg1) && isListLike(arg2)) {
                 List<Object> mList1 = toList(arg1);
                 List<Object> mList2 = toList(arg2);
                 List<Object> newList = new List<Object>();
-                for(Object obj : mList2) {
+                for (Object obj : mList2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newList));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mList1));
-                    if(!exists && !existsInOther) {
+                    if (!exists && !existsInOther) {
                         newList.add(obj);
                     }
                 }
                 return newList;
-            }
-            else if(isSetLike(arg1) && isSetLike(arg2)) {
+            } else if (isSetLike(arg1) && isSetLike(arg2)) {
                 Set<String> mSet1 = toSet(arg1);
                 Set<String> mSet2 = toSet(arg2);
                 Set<String> newSet = new Set<String>();
-                for(String obj : mSet2) {
+                for (String obj : mSet2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newSet));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mSet1));
-                    if(!exists && !existsInOther) {
+                    if (!exists && !existsInOther) {
                         newSet.add(obj);
                     }
                 }
                 return newSet;
-            }
-            else if(isStringLike(arg1) && isStringLike(arg2)) {
+            } else if (isStringLike(arg1) && isStringLike(arg2)) {
                 List<String> mCharList1 = toCharList(arg1);
                 List<String> mCharList2 = toCharList(arg2);
                 List<String> newCharList = new List<String>();
-                for(String obj : mCharList2) {
+                for (String obj : mCharList2) {
                     Boolean exists = toBoolean(R.contains.run(obj, newCharList));
                     Boolean existsInOther = toBoolean(R.contains.run(obj, mCharList1));
-                    if(!exists && !existsInOther) {
+                    if (!exists && !existsInOther) {
                         newCharList.add(obj);
                     }
                 }
@@ -8703,14 +8593,13 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg1, Object arg2, Object arg3) {
             Func fn = toFunc(arg1);
             Integer index = toInteger(arg2);
-            if(isListLike(arg3)) {
+            if (isListLike(arg3)) {
                 List<Object> mList = toList(arg3);
                 List<Object> newList = new List<Object>(mList);
                 Object val = newList.get(index);
                 newList.set(index, fn.run(val));
                 return newList;
-            }
-            else if(isStringLike(arg3)) {
+            } else if (isStringLike(arg3)) {
                 List<String> mCharList = toCharList(arg3);
                 List<String> newCharList = new List<String>(mCharList);
                 String val = newCharList.get(index);
@@ -8729,42 +8618,39 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Func pred = toFunc(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(!pass) {
+                    if (!pass) {
                         return false;
                     }
                 }
                 return true;
-            }
-            else if(isSetLike(arg2)) {
+            } else if (isSetLike(arg2)) {
                 Set<String> mSet = toSet(arg2);
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(!pass) {
+                    if (!pass) {
                         return false;
                     }
                 }
                 return true;
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     Boolean pass = toBoolean(pred.run(val, key));
-                    if(!pass) {
+                    if (!pass) {
                         return false;
                     }
                 }
                 return true;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
-                for(String obj : mCharList) {
+                for (String obj : mCharList) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(!pass) {
+                    if (!pass) {
                         return false;
                     }
                 }
@@ -8782,42 +8668,39 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Func pred = toFunc(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(pass) {
+                    if (pass) {
                         return true;
                     }
                 }
                 return false;
-            }
-            else if(isSetLike(arg2)) {
+            } else if (isSetLike(arg2)) {
                 Set<String> mSet = toSet(arg2);
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(pass) {
+                    if (pass) {
                         return true;
                     }
                 }
                 return false;
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     Boolean pass = toBoolean(pred.run(val, key));
-                    if(pass) {
+                    if (pass) {
                         return true;
                     }
                 }
                 return false;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
-                for(String obj : mCharList) {
+                for (String obj : mCharList) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(pass) {
+                    if (pass) {
                         return true;
                     }
                 }
@@ -8835,42 +8718,39 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Func pred = toFunc(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(pass) {
+                    if (pass) {
                         return false;
                     }
                 }
                 return true;
-            }
-            else if(isSetLike(arg2)) {
+            } else if (isSetLike(arg2)) {
                 Set<String> mSet = toSet(arg2);
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(pass) {
+                    if (pass) {
                         return false;
                     }
                 }
                 return true;
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     Boolean pass = toBoolean(pred.run(val, key));
-                    if(pass) {
+                    if (pass) {
                         return false;
                     }
                 }
                 return true;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
-                for(String obj : mCharList) {
+                for (String obj : mCharList) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(pass) {
+                    if (pass) {
                         return false;
                     }
                 }
@@ -8887,14 +8767,13 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 Object val = arg1;
                 List<Object> mList = toList(arg2);
                 List<Object> newList = new List<Object>(mList);
                 newList.add(val);
                 return newList;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 String val = toString(arg1);
                 List<String> mCharList = toCharList(arg2);
                 List<String> newCharList = new List<String>(mCharList);
@@ -8912,15 +8791,14 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 Object val = arg1;
                 List<Object> mList = toList(arg2);
                 List<Object> newList = new List<Object>();
                 newList.add(val);
                 newList.addAll(mList);
                 return newList;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 String val = toString(arg1);
                 List<String> mCharList = toCharList(arg2);
                 List<String> newCharList = new List<String>();
@@ -8936,16 +8814,14 @@ public class R implements Func.IPackage {
     private class ApplySpecFunc extends Func {
         private Map<String, Object> applySpec(Map<String, Object> spec, List<Object> args) {
             Map<String, Object> ret = new Map<String, Object>();
-            for(String key : spec.keySet()) {
+            for (String key : spec.keySet()) {
                 Object specVal = spec.get(key);
-                if(isFuncLike(specVal)) {
+                if (isFuncLike(specVal)) {
                     Func specFn = toFunc(specVal);
                     ret.put(key, specFn.runN(args));
-                }
-                else if(isMapLike(specVal)) {
+                } else if (isMapLike(specVal)) {
                     ret.put(key, applySpec(toMap(specVal), args));
-                }
-                else {
+                } else {
                     ret.put(key, specVal);
                 }
             }
@@ -8966,7 +8842,7 @@ public class R implements Func.IPackage {
             List<Object> newArgs = slice(1, args);
             List<Object> newList = new List<Object>();
 
-            for(Func fn : funcs) {
+            for (Func fn : funcs) {
                 newList.add(fn.runN(newArgs));
             }
 
@@ -8980,31 +8856,28 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2, Object arg3) {
-            if(isListLike(arg3)) {
+            if (isListLike(arg3)) {
                 Integer index = toInteger(arg1);
                 Object val = arg2;
                 List<Object> mList = toList(arg3);
                 List<Object> newList = new List<Object>(mList);
                 newList.set(index, val);
                 return newList;
-            }
-            else if(isSObjectLike(arg3)) {
+            } else if (isSObjectLike(arg3)) {
                 String key = toString(arg1);
                 Object val = arg2;
                 SObject obj = toSObject(arg3);
-                SObject newObj = (SObject)doClone(obj);
+                SObject newObj = (SObject) doClone(obj);
                 newObj.put(key, val);
                 return newObj;
-            }
-            else if(isMapLike(arg3)) {
+            } else if (isMapLike(arg3)) {
                 String key = toString(arg1);
                 Object val = arg2;
                 Map<String, Object> mMap = toMap(arg3);
                 Map<String, Object> newMap = new Map<String, Object>(mMap);
                 newMap.put(key, val);
                 return newMap;
-            }
-            else if(isStringLike(arg3)) {
+            } else if (isStringLike(arg3)) {
                 Integer index = toInteger(arg1);
                 String val = toString(arg2);
                 List<String> mCharList = toCharList(arg3);
@@ -9023,13 +8896,11 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2, Object arg3) {
-            if(compare(arg1, arg3) > 0) {
+            if (compare(arg1, arg3) > 0) {
                 return arg1;
-            }
-            else if(compare(arg3, arg2) > 0) {
+            } else if (compare(arg3, arg2) > 0) {
                 return arg2;
-            }
-            else {
+            } else {
                 return arg3;
             }
         }
@@ -9041,22 +8912,17 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(isListLike(arg)) {
+            if (isListLike(arg)) {
                 return new List<Object>(toList(arg));
-            }
-            else if(isSetLike(arg)) {
+            } else if (isSetLike(arg)) {
                 return new Set<String>(toSet(arg));
-            }
-            else if(isSObjectLike(arg)) {
+            } else if (isSObjectLike(arg)) {
                 return toSObject(arg).clone(true, true, true, true);
-            }
-            else if(isMapLike(arg)) {
+            } else if (isMapLike(arg)) {
                 return new Map<String, Object>(toMap(arg));
-            }
-            else if(isStringLike(arg)) {
+            } else if (isStringLike(arg)) {
                 return toString(arg);
-            }
-            else {
+            } else {
                 return arg;
             }
         }
@@ -9068,28 +8934,25 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isListLike(arg1) && isListLike(arg2)) {
+            if (isListLike(arg1) && isListLike(arg2)) {
                 List<Object> mList1 = toList(arg1);
                 List<Object> mList2 = toList(arg2);
                 List<Object> newList = new List<Object>(mList2);
                 newList.addAll(mList1);
                 return newList;
-            }
-            else if(isSetLike(arg1) && isSetLike(arg2)) {
+            } else if (isSetLike(arg1) && isSetLike(arg2)) {
                 Set<String> mSet1 = toSet(arg1);
                 Set<String> mSet2 = toSet(arg2);
                 Set<String> newSet = new Set<String>(mSet2);
                 newSet.addAll(mSet1);
                 return newSet;
-            }
-            else if(isMapLike(arg1) && isMapLike(arg2)) {
+            } else if (isMapLike(arg1) && isMapLike(arg2)) {
                 Map<String, Object> mMap1 = toMap(arg1);
                 Map<String, Object> mMap2 = toMap(arg2);
                 Map<String, Object> newMap = new Map<String, Object>(mMap2);
                 newMap.putAll(mMap1);
                 return newMap;
-            }
-            else if(isStringLike(arg1) && isStringLike(arg2)) {
+            } else if (isStringLike(arg1) && isStringLike(arg2)) {
                 String s1 = toString(arg1);
                 String s2 = toString(arg2);
                 return s2 + s1;
@@ -9107,36 +8970,34 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg1, Object arg2) {
             Func fn = toFunc(arg1);
             Map<String, Integer> countMap = new Map<String, Integer>();
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     String key = toString(fn.run(obj));
                     Integer count = countMap.get(key);
-                    if(count == null) {
+                    if (count == null) {
                         count = 0;
                     }
                     count += 1;
                     countMap.put(key, count);
                 }
-            }
-            else if(isSetLike(arg2)) {
+            } else if (isSetLike(arg2)) {
                 Set<String> mSet = toSet(arg2);
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     String key = toString(fn.run(obj));
                     Integer count = countMap.get(key);
-                    if(count == null) {
+                    if (count == null) {
                         count = 0;
                     }
                     count += 1;
                     countMap.put(key, count);
                 }
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
-                for(String obj : mCharList) {
+                for (String obj : mCharList) {
                     String key = toString(fn.run(obj));
                     Integer count = countMap.get(key);
-                    if(count == null) {
+                    if (count == null) {
                         count = 0;
                     }
                     count += 1;
@@ -9156,36 +9017,34 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg1, Object arg2) {
             Func fn = toFunc(arg1);
             Map<String, List<Object>> groupMap = new Map<String, List<Object>>();
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     String key = toString(fn.run(obj));
                     List<Object> mGroup = groupMap.get(key);
-                    if(mGroup == null) {
+                    if (mGroup == null) {
                         mGroup = new List<Object>();
                     }
                     mGroup.add(obj);
                     groupMap.put(key, mGroup);
                 }
-            }
-            else if(isSetLike(arg2)) {
+            } else if (isSetLike(arg2)) {
                 Set<String> mSet = toSet(arg2);
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     String key = toString(fn.run(obj));
                     List<Object> mGroup = groupMap.get(key);
-                    if(mGroup == null) {
+                    if (mGroup == null) {
                         mGroup = new List<Object>();
                     }
                     mGroup.add(obj);
                     groupMap.put(key, mGroup);
                 }
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
-                for(String obj : mCharList) {
+                for (String obj : mCharList) {
                     String key = toString(fn.run(obj));
                     List<Object> mGroup = groupMap.get(key);
-                    if(mGroup == null) {
+                    if (mGroup == null) {
                         mGroup = new List<Object>();
                     }
                     mGroup.add(obj);
@@ -9205,23 +9064,21 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg1, Object arg2) {
             Func fn = toFunc(arg1);
             Map<String, Object> indexMap = new Map<String, Object>();
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     String key = toString(fn.run(obj));
                     indexMap.put(key, obj);
                 }
-            }
-            else if(isSetLike(arg2)) {
+            } else if (isSetLike(arg2)) {
                 Set<String> mSet = toSet(arg2);
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     String key = toString(fn.run(obj));
                     indexMap.put(key, obj);
                 }
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
-                for(String obj : mCharList) {
+                for (String obj : mCharList) {
                     String key = toString(fn.run(obj));
                     indexMap.put(key, obj);
                 }
@@ -9247,28 +9104,25 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 Integer index = toInteger(arg1);
                 List<Object> mList = toList(arg2);
                 List<Object> newList = new List<Object>(mList);
                 newList.set(index, null);
                 return newList;
-            }
-            else if(isSObjectLike(arg2)) {
+            } else if (isSObjectLike(arg2)) {
                 String key = toString(arg1);
                 SObject obj = toSObject(arg2);
-                SObject newObj = (SObject)doClone(obj);
+                SObject newObj = (SObject) doClone(obj);
                 newObj.put(key, null);
                 return newObj;
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 String key = toString(arg1);
                 Map<String, Object> mMap = toMap(arg2);
                 Map<String, Object> newMap = new Map<String, Object>(mMap);
                 newMap.remove(key);
                 return newMap;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 Integer index = toInteger(arg1);
                 List<String> mCharList = toCharList(arg2);
                 List<String> newCharList = new List<String>(mCharList);
@@ -9286,21 +9140,20 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isListLike(arg1) && isListLike(arg2)) {
+            if (isListLike(arg1) && isListLike(arg2)) {
                 List<Object> mList1 = toList(arg1);
                 List<Object> mList2 = toList(arg2);
-                if(mList1.size() > mList2.size()) {
+                if (mList1.size() > mList2.size()) {
                     return false;
                 }
-                for(Integer i = 0; i < mList1.size(); i++) {
-                    if(!equals(mList1.get(i), mList2.get(i))) {
+                for (Integer i = 0; i < mList1.size(); i++) {
+                    if (!equals(mList1.get(i), mList2.get(i))) {
                         return false;
                     }
                 }
 
                 return true;
-            }
-            else if(isStringLike(arg1) && isStringLike(arg2)) {
+            } else if (isStringLike(arg1) && isStringLike(arg2)) {
                 String s1 = toString(arg1);
                 String s2 = toString(arg2);
                 return s2.startsWith(s1);
@@ -9316,21 +9169,20 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isListLike(arg1) && isListLike(arg2)) {
+            if (isListLike(arg1) && isListLike(arg2)) {
                 List<Object> mList1 = toList(arg1);
                 List<Object> mList2 = toList(arg2);
-                if(mList1.size() > mList2.size()) {
+                if (mList1.size() > mList2.size()) {
                     return false;
                 }
-                for(Integer i = 0; i < mList1.size(); i++) {
-                    if(!equals(mList1.get(mList1.size() - 1 - i), mList2.get(mList2.size() - 1 - i))) {
+                for (Integer i = 0; i < mList1.size(); i++) {
+                    if (!equals(mList1.get(mList1.size() - 1 - i), mList2.get(mList2.size() - 1 - i))) {
                         return false;
                     }
                 }
 
                 return true;
-            }
-            else if(isStringLike(arg1) && isStringLike(arg2)) {
+            } else if (isStringLike(arg1) && isStringLike(arg2)) {
                 String s1 = toString(arg1);
                 String s2 = toString(arg2);
                 return s2.endsWith(s1);
@@ -9347,19 +9199,17 @@ public class R implements Func.IPackage {
 
         private Map<String, Object> applySpec(Map<String, Object> spec, Map<String, Object> data) {
             Map<String, Object> ret = new Map<String, Object>();
-            for(String key : data.keySet()) {
+            for (String key : data.keySet()) {
                 Object val = data.get(key);
                 Object specVal = spec.get(key);
-                if(isFuncLike(specVal)) {
+                if (isFuncLike(specVal)) {
                     Func specFn = toFunc(specVal);
                     ret.put(key, specFn.run(val));
-                }
-                else if(isMapLike(specVal) && isMapLike(val)) {
+                } else if (isMapLike(specVal) && isMapLike(val)) {
                     Map<String, Object> specMap = toMap(specVal);
                     Map<String, Object> valMap = toMap(val);
                     ret.put(key, applySpec(specMap, valMap));
-                }
-                else {
+                } else {
                     ret.put(key, val);
                 }
             }
@@ -9385,47 +9235,44 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Func pred = toFunc(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
-                mList = reverse ? (List<Object>)R.reverse.run(mList) : mList;
-                for(Object obj : mList) {
+                mList = reverse ? (List<Object>) R.reverse.run(mList) : mList;
+                for (Object obj : mList) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(pass) {
+                    if (pass) {
                         return obj;
                     }
                 }
 
                 return null;
-            }
-            else if(isSetLike(arg2)) {
+            } else if (isSetLike(arg2)) {
                 Set<String> mSet = toSet(arg2);
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(pass) {
+                    if (pass) {
                         return obj;
                     }
                 }
 
                 return null;
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     Boolean pass = toBoolean(pred.run(val, key));
-                    if(pass) {
+                    if (pass) {
                         return new Pair(key, val);
                     }
                 }
 
                 return null;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<Object> mCharList = toCharList(arg2);
-                mCharList = reverse ? (List<Object>)R.reverse.run(mCharList) : mCharList;
-                for(Object mChar : mCharList) {
+                mCharList = reverse ? (List<Object>) R.reverse.run(mCharList) : mCharList;
+                for (Object mChar : mCharList) {
                     Boolean pass = toBoolean(pred.run(mChar));
-                    if(pass) {
+                    if (pass) {
                         return mChar;
                     }
                 }
@@ -9447,53 +9294,49 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Func pred = toFunc(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
-                if(!reverse) {
-                    for(Integer i = 0; i < mList.size(); i++) {
+                if (!reverse) {
+                    for (Integer i = 0; i < mList.size(); i++) {
                         Boolean pass = toBoolean(pred.run(mList.get(i)));
-                        if(pass) {
+                        if (pass) {
                             return i;
                         }
                     }
-                }
-                else {
-                    for(Integer i = mList.size() - 1; i >= 0; i--) {
+                } else {
+                    for (Integer i = mList.size() - 1; i >= 0; i--) {
                         Boolean pass = toBoolean(pred.run(mList.get(i)));
-                        if(pass) {
+                        if (pass) {
                             return i;
                         }
                     }
                 }
 
                 return -1;
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     Boolean pass = toBoolean(pred.run(val, key));
-                    if(pass) {
+                    if (pass) {
                         return key;
                     }
                 }
 
                 return null;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<Object> mCharList = toCharList(arg2);
-                if(!reverse) {
-                    for(Integer i = 0; i < mCharList.size(); i++) {
+                if (!reverse) {
+                    for (Integer i = 0; i < mCharList.size(); i++) {
                         Boolean pass = toBoolean(pred.run(mCharList.get(i)));
-                        if(pass) {
+                        if (pass) {
                             return i;
                         }
                     }
-                }
-                else {
-                    for(Integer i = mCharList.size() - 1; i >= 0; i--) {
+                } else {
+                    for (Integer i = mCharList.size() - 1; i >= 0; i--) {
                         Boolean pass = toBoolean(pred.run(mCharList.get(i)));
-                        if(pass) {
+                        if (pass) {
                             return i;
                         }
                     }
@@ -9514,12 +9357,11 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg) {
             List<Object> mList = toList(arg);
             List<Object> newList = new List<Object>();
-            for(Object obj : mList) {
-                if(isListLike(obj)) {
+            for (Object obj : mList) {
+                if (isListLike(obj)) {
                     List<Object> subList = toList(obj);
                     newList.addAll(subList);
-                }
-                else {
+                } else {
                     newList.add(obj);
                 }
             }
@@ -9534,22 +9376,20 @@ public class R implements Func.IPackage {
         }
 
         private Object flatten(Object target) {
-            if(isListLike(target)) {
+            if (isListLike(target)) {
                 List<Object> mList = toList(target);
                 List<Object> newList = new List<Object>();
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     Object flattened = flatten(obj);
-                    if(isListLike(flattened)) {
+                    if (isListLike(flattened)) {
                         newList.addAll(toList(flattened));
-                    }
-                    else {
+                    } else {
                         newList.add(flattened);
                     }
                 }
 
                 return newList;
-            }
-            else {
+            } else {
                 return target;
             }
         }
@@ -9577,7 +9417,7 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg) {
             List<Pair> pairs = toPairList(arg);
             Map<String, Object> newMap = new Map<String, Object>();
-            for(Pair p : pairs) {
+            for (Pair p : pairs) {
                 newMap.put(toString(p.fst), p.snd);
             }
 
@@ -9593,7 +9433,7 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg) {
             Map<String, Object> mMap = toMap(arg);
             List<Object> newPairs = new List<Object>();
-            for(String key : mMap.keySet()) {
+            for (String key : mMap.keySet()) {
                 Object val = mMap.get(key);
                 newPairs.add(new Pair(key, val));
             }
@@ -9608,11 +9448,10 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(isListLike(arg)) {
+            if (isListLike(arg)) {
                 List<Object> mList = toList(arg);
                 return getNthElement(0, mList);
-            }
-            else if(isStringLike(arg)) {
+            } else if (isStringLike(arg)) {
                 List<String> mCharList = toCharList(arg);
                 return getNthElement(0, mCharList);
             }
@@ -9627,11 +9466,10 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(isListLike(arg)) {
+            if (isListLike(arg)) {
                 List<Object> mList = toList(arg);
                 return getNthElement(mList.size() - 1, mList);
-            }
-            else if(isStringLike(arg)) {
+            } else if (isStringLike(arg)) {
                 List<String> mCharList = toCharList(arg);
                 return getNthElement(mCharList.size() - 1, mCharList);
             }
@@ -9646,11 +9484,10 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(isListLike(arg)) {
+            if (isListLike(arg)) {
                 List<Object> mList = toList(arg);
                 return slice(0, mList.size() - 1, mList);
-            }
-            else if(isStringLike(arg)) {
+            } else if (isStringLike(arg)) {
                 List<String> mCharList = toCharList(arg);
                 return String.join(slice(0, mCharList.size() - 1, mCharList), '');
             }
@@ -9665,11 +9502,10 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(isListLike(arg)) {
+            if (isListLike(arg)) {
                 List<Object> mList = toList(arg);
                 return slice(1, mList);
-            }
-            else if(isStringLike(arg)) {
+            } else if (isStringLike(arg)) {
                 List<String> mCharList = toCharList(arg);
                 return String.join(slice(1, mCharList), '');
             }
@@ -9689,28 +9525,26 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg1, Object arg2) {
             Object target = arg1;
 
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
-                if(!reverse) {
-                    for(Integer i = 0; i < mList.size(); i++) {
-                        if(equals(target, mList.get(i))) {
+                if (!reverse) {
+                    for (Integer i = 0; i < mList.size(); i++) {
+                        if (equals(target, mList.get(i))) {
+                            return i;
+                        }
+                    }
+
+                    return -1;
+                } else {
+                    for (Integer i = mList.size() - 1; i >= 0; i--) {
+                        if (equals(target, mList.get(i))) {
                             return i;
                         }
                     }
 
                     return -1;
                 }
-                else {
-                    for(Integer i = mList.size() - 1; i >= 0; i--) {
-                        if(equals(target, mList.get(i))) {
-                            return i;
-                        }
-                    }
-
-                    return -1;
-                }
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 String str = toString(arg2);
                 return reverse ?
                     str.indexOf(toString(target)) :
@@ -9728,14 +9562,13 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2, Object arg3) {
             Integer index = toInteger(arg1);
-            if(isListLike(arg3)) {
+            if (isListLike(arg3)) {
                 Object val = arg2;
                 List<Object> mList = toList(arg3);
                 List<Object> newList = new List<Object>(mList);
                 newList.add(index, val);
                 return newList;
-            }
-            else if(isStringLike(arg3)) {
+            } else if (isStringLike(arg3)) {
                 String val = toString(arg2);
                 List<String> mCharList = toCharList(arg3);
                 List<String> newCharList = new List<String>(mCharList);
@@ -9754,16 +9587,15 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2, Object arg3) {
             Integer index = toInteger(arg1);
-            if(isListLike(arg3) && isListLike(arg2)) {
+            if (isListLike(arg3) && isListLike(arg2)) {
                 List<Object> targetList = toList(arg2);
                 List<Object> mList = toList(arg3);
                 List<Object> newList = new List<Object>(mList);
-                for(Integer i = 0; i < targetList.size(); i++) {
+                for (Integer i = 0; i < targetList.size(); i++) {
                     newList.add(index + i, targetList.get(i));
                 }
                 return newList;
-            }
-            else if(isStringLike(arg3) && isStringLike(arg2)) {
+            } else if (isStringLike(arg3) && isStringLike(arg2)) {
                 String val = toString(arg2);
                 List<String> mCharList = toCharList(arg3);
                 List<String> newCharList = new List<String>(mCharList);
@@ -9784,21 +9616,20 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(isMapLike(arg)) {
+            if (isMapLike(arg)) {
                 Map<String, Object> mMap = toMap(arg);
                 Map<String, Object> newMap = new Map<String, Object>();
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
-                    if(overrideValue) {
-                        if(val != null) {
+                    if (overrideValue) {
+                        if (val != null) {
                             newMap.put(toString(val), key);
                         }
-                    }
-                    else {
-                        if(val != null) {
+                    } else {
+                        if (val != null) {
                             String newKey = toString(val);
-                            List<Object> mList = (List<Object>)newMap.get(newKey);
-                            if(mList == null) {
+                            List<Object> mList = (List<Object>) newMap.get(newKey);
+                            if (mList == null) {
                                 mList = new List<Object>();
                             }
                             mList.add(key);
@@ -9821,11 +9652,10 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             String separator = toString(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
                 return String.join(mList, separator);
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
                 return String.join(mCharList, separator);
             }
@@ -9840,7 +9670,7 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(isMapLike(arg)) {
+            if (isMapLike(arg)) {
                 Map<String, Object> mMap = toMap(arg);
                 return mMap.keySet();
             }
@@ -9855,7 +9685,7 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(isMapLike(arg)) {
+            if (isMapLike(arg)) {
                 Map<String, Object> mMap = toMap(arg);
                 return mMap.values();
             }
@@ -9876,16 +9706,16 @@ public class R implements Func.IPackage {
                 return null;
             }
             Pattern ptn = patternCache.get(regex);
-            if(ptn == null) {
+            if (ptn == null) {
                 ptn = Pattern.compile(regex);
                 patternCache.put(regex, ptn);
             }
             Matcher matcher = ptn.matcher(input);
             List<String> groups = new List<String>();
-            if(matcher.matches()) {
+            if (matcher.matches()) {
                 groups.add(matcher.group(0));
 
-                for(Integer i = 1; i <= matcher.groupCount(); i++) {
+                for (Integer i = 1; i <= matcher.groupCount(); i++) {
                     groups.add(matcher.group(i));
                 }
             }
@@ -9934,17 +9764,15 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg1, Object arg2) {
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
                 Integer index = toInteger(arg1);
                 return index >= 0 && index < mList.size() ? mList.get(index) : null;
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
                 String key = toString(arg1);
                 return mMap.get(key);
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
                 Integer index = toInteger(arg1);
                 return index >= 0 && index < mCharList.size() ? mCharList.get(index) : null;
@@ -9961,34 +9789,32 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             List<Object> keyList = toList(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
                 List<Object> newList = new List<Object>();
-                for(Object key : keyList) {
+                for (Object key : keyList) {
                     Integer index = toInteger(key);
-                    if(index >= 0 && index < mList.size()) {
+                    if (index >= 0 && index < mList.size()) {
                         newList.add(mList.get(index));
                     }
                 }
 
                 return newList;
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
                 Map<String, Object> newMap = new Map<String, Object>();
-                for(Object key : keyList) {
+                for (Object key : keyList) {
                     String keyStr = toString(key);
                     newMap.put(keyStr, mMap.get(keyStr));
                 }
 
                 return newMap;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
                 List<String> newCharList = new List<String>();
-                for(Object key : keyList) {
+                for (Object key : keyList) {
                     Integer index = toInteger(key);
-                    if(index >= 0 && index < mCharList.size()) {
+                    if (index >= 0 && index < mCharList.size()) {
                         newCharList.add(mCharList.get(index));
                     }
                 }
@@ -10007,36 +9833,34 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             List<Object> keyList = toList(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
                 List<Object> newList = new List<Object>();
                 List<Integer> indexList = toIntegerList(keyList);
-                for(Integer i = 0; i < mList.size(); i++) {
-                    if(!indexList.contains(i)) {
+                for (Integer i = 0; i < mList.size(); i++) {
+                    if (!indexList.contains(i)) {
                         newList.add(mList.get(i));
                     }
                 }
 
                 return newList;
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
                 Map<String, Object> newMap = new Map<String, Object>();
-                for(Object key : mMap.keySet()) {
+                for (Object key : mMap.keySet()) {
                     String keyStr = toString(key);
-                    if(!keyList.contains(key)) {
+                    if (!keyList.contains(key)) {
                         newMap.put(keyStr, mMap.get(keyStr));
                     }
                 }
 
                 return newMap;
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
                 List<String> newCharList = new List<String>();
                 List<Integer> indexList = toIntegerList(keyList);
-                for(Integer i = 0; i < mCharList.size(); i++) {
-                    if(!indexList.contains(i)) {
+                for (Integer i = 0; i < mCharList.size(); i++) {
+                    if (!indexList.contains(i)) {
                         newCharList.add(mCharList.get(i));
                     }
                 }
@@ -10055,65 +9879,58 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Func pred = toFunc(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
                 List<Object> fstList = new List<Object>();
                 List<Object> sndList = new List<Object>();
-                for(Object obj : mList) {
+                for (Object obj : mList) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(pass) {
+                    if (pass) {
                         fstList.add(obj);
-                    }
-                    else {
+                    } else {
                         sndList.add(obj);
                     }
                 }
 
                 return new Pair(fstList, sndList);
-            }
-            else if(isSetLike(arg2)) {
+            } else if (isSetLike(arg2)) {
                 Set<String> mSet = toSet(arg2);
                 Set<String> fstSet = new Set<String>();
                 Set<String> sndSet = new Set<String>();
-                for(String obj : mSet) {
+                for (String obj : mSet) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(pass) {
+                    if (pass) {
                         fstSet.add(obj);
-                    }
-                    else {
+                    } else {
                         sndSet.add(obj);
                     }
                 }
 
                 return new Pair(fstSet, sndSet);
-            }
-            else if(isMapLike(arg2)) {
+            } else if (isMapLike(arg2)) {
                 Map<String, Object> mMap = toMap(arg2);
                 Map<String, Object> fstMap = new Map<String, Object>();
                 Map<String, Object> sndMap = new Map<String, Object>();
-                for(String key : mMap.keySet()) {
+                for (String key : mMap.keySet()) {
                     Object val = mMap.get(key);
                     Boolean pass = toBoolean(pred.run(val, key));
-                    if(pass) {
+                    if (pass) {
                         fstMap.put(key, val);
-                    }
-                    else {
+                    } else {
                         sndMap.put(key, val);
                     }
                 }
 
                 return new Pair(fstMap, sndMap);
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
                 List<String> fstCharList = new List<String>();
                 List<String> sndCharList = new List<String>();
-                for(String obj : mCharList) {
+                for (String obj : mCharList) {
                     Boolean pass = toBoolean(pred.run(obj));
-                    if(pass) {
+                    if (pass) {
                         fstCharList.add(obj);
-                    }
-                    else {
+                    } else {
                         sndCharList.add(obj);
                     }
                 }
@@ -10129,7 +9946,7 @@ public class R implements Func.IPackage {
         public override Object execN(List<Object> args) {
             List<Decimal> decimalList = toDecimalList(args);
             Decimal total = 1;
-            for(Decimal num : decimalList) {
+            for (Decimal num : decimalList) {
                 total *= num;
             }
 
@@ -10146,7 +9963,7 @@ public class R implements Func.IPackage {
             List<String> fields = toStringList(arg1);
             List<Object> mList = toList(arg2);
             List<Object> newList = new List<Object>();
-            for(Object obj : mList) {
+            for (Object obj : mList) {
                 newList.add(R.pick.run(fields, obj));
             }
 
@@ -10163,8 +9980,8 @@ public class R implements Func.IPackage {
             Decimal d1 = toDecimal(arg1);
             Decimal d2 = toDecimal(arg2);
             List<Decimal> newList = new List<Decimal>();
-            if(d1 < d2) {
-                for(Decimal i = d1; i < d2; i++) {
+            if (d1 < d2) {
+                for (Decimal i = d1; i < d2; i++) {
                     newList.add(i);
                 }
             }
@@ -10181,22 +9998,21 @@ public class R implements Func.IPackage {
         public override Object exec(Object arg1, Object arg2, Object arg3) {
             Integer first = toInteger(arg1);
             Integer count = toInteger(arg2);
-            if(isListLike(arg3)) {
+            if (isListLike(arg3)) {
                 List<Object> mList = toList(arg3);
                 List<Object> newList = new List<Object>();
-                for(Integer i = 0; i < mList.size(); i++) {
-                    if(i < first || i >= first + count) {
+                for (Integer i = 0; i < mList.size(); i++) {
+                    if (i < first || i >= first + count) {
                         newList.add(mList.get(i));
                     }
                 }
 
                 return newList;
-            }
-            else if(isStringLike(arg3)) {
+            } else if (isStringLike(arg3)) {
                 List<String> mCharList = toCharList(arg3);
                 List<String> newCharList = new List<String>();
-                for(Integer i = 0; i < mCharList.size(); i++) {
-                    if(i < first || i >= first + count) {
+                for (Integer i = 0; i < mCharList.size(); i++) {
+                    if (i < first || i >= first + count) {
                         newCharList.add(mCharList.get(i));
                     }
                 }
@@ -10217,7 +10033,7 @@ public class R implements Func.IPackage {
             Integer count = toInteger(arg1);
             Object val = arg2;
             List<Object> newList = new List<Object>();
-            for(Integer i = 0; i < count; i++) {
+            for (Integer i = 0; i < count; i++) {
                 newList.add(doClone(val));
             }
 
@@ -10234,7 +10050,7 @@ public class R implements Func.IPackage {
             Integer count = toInteger(arg1);
             Func fn = toFunc(arg2);
             List<Object> newList = new List<Object>();
-            for(Integer i = 0; i < count; i++) {
+            for (Integer i = 0; i < count; i++) {
                 newList.add(fn.run(i));
             }
 
@@ -10255,10 +10071,9 @@ public class R implements Func.IPackage {
             String replacement = toString(arg2);
             String target = toString(arg3);
 
-            if(isGlobal) {
+            if (isGlobal) {
                 return target.replaceAll(pattern, replacement);
-            }
-            else {
+            } else {
                 return target.replaceFirst(pattern, replacement);
             }
         }
@@ -10334,21 +10149,20 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2, Object arg3) {
             Integer index = toInteger(arg1);
-            if(isListLike(arg3)) {
+            if (isListLike(arg3)) {
                 Object val = arg2;
                 List<Object> mList = toList(arg3);
                 List<Object> newList = new List<Object>(mList);
-                if(index >= 0 && index < mList.size()) {
+                if (index >= 0 && index < mList.size()) {
                     newList.set(index, val);
                 }
 
                 return newList;
-            }
-            else if(isStringLike(arg3)) {
+            } else if (isStringLike(arg3)) {
                 String val = toString(arg2);
                 List<String> mCharList = toCharList(arg3);
                 List<String> newCharList = new List<String>(mCharList);
-                if(index >= 0 && index < mCharList.size()) {
+                if (index >= 0 && index < mCharList.size()) {
                     newCharList.set(index, val);
                 }
 
@@ -10371,19 +10185,18 @@ public class R implements Func.IPackage {
             List<Object> mList1 = toList(arg1);
             List<Object> mList2 = toList(arg2);
             Integer length = mList1.size() < mList2.size() ? mList1.size() : mList2.size();
-            if(toObject) {
+            if (toObject) {
                 Map<String, Object> newMap = new Map<String, Object>();
-                for(Integer i = 0; i < length; i++) {
+                for (Integer i = 0; i < length; i++) {
                     Object obj1 = mList1.get(i);
                     Object obj2 = mList2.get(i);
                     newMap.put(toString(obj1), obj2);
                 }
 
                 return newMap;
-            }
-            else {
+            } else {
                 List<Object> newList = new List<Object>();
-                for(Integer i = 0; i < length; i++) {
+                for (Integer i = 0; i < length; i++) {
                     Object obj1 = mList1.get(i);
                     Object obj2 = mList2.get(i);
                     newList.add(new Pair(obj1, obj2));
@@ -10400,12 +10213,12 @@ public class R implements Func.IPackage {
         }
 
         private Integer randomInt(Integer max) {
-            return (Integer)(Math.random() * max);
+            return (Integer) (Math.random() * max);
         }
 
         private List<Object> shuffle(List<Object> mList) {
             List<Object> newList = new List<Object>(mList);
-            for(Integer i = newList.size() - 1; i >= 1; i--) {
+            for (Integer i = newList.size() - 1; i >= 1; i--) {
                 Integer j = randomInt(i);
                 Object val = newList.get(i);
                 newList.set(i, newList.get(j));
@@ -10415,11 +10228,10 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(isListLike(arg)) {
+            if (isListLike(arg)) {
                 List<Object> mList = toList(arg);
                 return shuffle(mList);
-            }
-            else if(isStringLike(arg)) {
+            } else if (isStringLike(arg)) {
                 List<String> mCharList = toCharList(arg);
                 return String.join(shuffle(mCharList), '');
             }
@@ -10434,9 +10246,9 @@ public class R implements Func.IPackage {
         }
 
         private List<Object> sample(Integer size, List<Object> mList) {
-            List<Object> shuffledList = (List<Object>)R.shuffle.run(mList);
+            List<Object> shuffledList = (List<Object>) R.shuffle.run(mList);
             List<Object> newList = new List<Object>();
-            for(Integer i = 0; i < size && i < shuffledList.size(); i++) {
+            for (Integer i = 0; i < size && i < shuffledList.size(); i++) {
                 newList.add(shuffledList.get(i));
             }
 
@@ -10445,11 +10257,10 @@ public class R implements Func.IPackage {
 
         public override Object exec(Object arg1, Object arg2) {
             Integer size = toInteger(arg1);
-            if(isListLike(arg2)) {
+            if (isListLike(arg2)) {
                 List<Object> mList = toList(arg2);
                 return sample(size, mList);
-            }
-            else if(isStringLike(arg2)) {
+            } else if (isStringLike(arg2)) {
                 List<String> mCharList = toCharList(arg2);
                 return String.join(sample(size, mCharList), '');
             }
@@ -10482,16 +10293,13 @@ public class R implements Func.IPackage {
             String fill = toString(arg2);
             String target = toString(arg3);
 
-            if(pd == Padding.Both) {
+            if (pd == Padding.Both) {
                 return target.center(length, fill);
-            }
-            else if(pd == Padding.Left) {
+            } else if (pd == Padding.Left) {
                 return target.leftPad(length, fill);
-            }
-            else if(pd == Padding.Right) {
+            } else if (pd == Padding.Right) {
                 return target.rightPad(length, fill);
-            }
-            else {
+            } else {
                 return arg3;
             }
         }
@@ -10515,11 +10323,10 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg instanceof SObject) {
-                insert (SObject)arg;
-            }
-            else if(arg instanceof List<SObject>) {
-                insert (List<SObject>)arg;
+            if (arg instanceof SObject) {
+                insert (SObject) arg;
+            } else if (arg instanceof List<SObject>) {
+                insert (List<SObject>) arg;
             }
 
             return arg;
@@ -10532,11 +10339,10 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg instanceof SObject) {
-                update (SObject)arg;
-            }
-            else if(arg instanceof List<SObject>) {
-                update (List<SObject>)arg;
+            if (arg instanceof SObject) {
+                update (SObject) arg;
+            } else if (arg instanceof List<SObject>) {
+                update (List<SObject>) arg;
             }
 
             return arg;
@@ -10549,11 +10355,10 @@ public class R implements Func.IPackage {
         }
 
         public override Object exec(Object arg) {
-            if(arg instanceof SObject) {
-                delete (SObject)arg;
-            }
-            else if(arg instanceof List<SObject>) {
-                delete (List<SObject>)arg;
+            if (arg instanceof SObject) {
+                delete (SObject) arg;
+            } else if (arg instanceof List<SObject>) {
+                delete (List<SObject>) arg;
             }
 
             return arg;
