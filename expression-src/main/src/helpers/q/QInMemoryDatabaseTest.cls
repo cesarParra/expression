@@ -18,6 +18,17 @@ private class QInMemoryDatabaseTest {
         Account result = (Account) results[0];
     }
 
-    // Sets an account Id on the account when inserted
+    @IsTest
+    static void setsAnIdToTheRecordWhenInsertingIt() {
+        // Given a database with an account record
+        QInMemoryDatabase db = QInMemoryDatabase.getInstance();
+        Account a = new Account(Name = 'Test Account');
+        db.doInsert(a);
+
+        // Then the account has an Id
+        Assert.isNotNull(a.Id);
+    }
+
+    // can insert multiple records at a time
     // can select for a specific SObjecttype when there is more than one SObject type in the db
 }

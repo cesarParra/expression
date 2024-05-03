@@ -17,7 +17,8 @@ public with sharing class QInMemoryDatabase implements QDatabase {
         return recordsInTheDatabase;
     }
 
-    public void doInsert(Account account) {
-        recordsInTheDatabase.add(account);
+    public void doInsert(Account record) {
+        record.Id = IdGenerator.generate(Account.SObjectType);
+        recordsInTheDatabase.add(record);
     }
 }
