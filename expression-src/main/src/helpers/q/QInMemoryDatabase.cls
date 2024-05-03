@@ -37,8 +37,8 @@ public with sharing class QInMemoryDatabase implements QDatabase {
         R builtR = R.of(recordsInTheDatabase)
             .filter(R.isOfSObjectType.apply(sObjectType));
 
-        if (!query.orders.isEmpty()) {
-
+        for (QOrder order : query.orders) {
+            builtR = builtR.sortBy((Func) R.ascend.run(R.prop.apply(order.field)));
         }
 
         return builtR;

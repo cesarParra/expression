@@ -31,6 +31,7 @@ private class QSalesforceDatabaseTest {
         String expected = 'SELECT Id FROM Account ORDER BY Name ASC NULLS LAST, BillingCountry DESC';
         System.assertEquals(expected, query, 'It should output a query with orders.');
     }
+    
 //
 //    @IsTest
 //    static void testAddCondition1() {
