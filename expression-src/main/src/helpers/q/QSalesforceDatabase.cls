@@ -58,7 +58,7 @@ public with sharing class QSalesforceDatabase implements QDatabase {
         List<String> orderList = new List<String>();
 
         for (QOrder order : query.orders) {
-            orderList.add(order.build());
+            orderList.add(buildQOrder(order));
         }
 
         if (!query.orders.isEmpty()) {
@@ -66,5 +66,23 @@ public with sharing class QSalesforceDatabase implements QDatabase {
         } else {
             return '';
         }
+    }
+
+    private String buildQOrder(QOrder order) {
+        String orderString = order.field;
+
+        if (order.sortValue == QOrder.SortOrder.ASCENDING) {
+            orderString += ' ASC';
+        } else {
+            orderString += ' DESC';
+        }
+
+        if (order.nullsValue != null && order.nullsValue == QOrder.NullsOrder.FIRST) {
+            orderString += ' NULLS FIRST';
+        } else if (order.nullsValue != null && order.nullsValue == QOrder.NullsOrder.LAST) {
+            orderString += ' NULLS LAST';
+        }
+
+        return orderString;
     }
 }

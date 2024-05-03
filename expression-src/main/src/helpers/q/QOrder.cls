@@ -12,9 +12,9 @@ public class QOrder {
         FIRST, LAST
     }
 
-    private final String field;
-    private SortOrder sortValue;
-    private NullsOrder nullsValue;
+    public final String field;
+    public SortOrder sortValue;
+    public NullsOrder nullsValue;
 
     public QOrder(String field) {
         this.field = field;
@@ -44,23 +44,5 @@ public class QOrder {
     public QOrder nullsLast() {
         this.nullsValue = NullsOrder.LAST;
         return this;
-    }
-
-    public String build() {
-        String orderString = field;
-
-        if (sortValue == SortOrder.ASCENDING) {
-            orderString += ' ASC';
-        } else {
-            orderString += ' DESC';
-        }
-
-        if (nullsValue != null && nullsValue == NullsOrder.FIRST) {
-            orderString += ' NULLS FIRST';
-        } else if (nullsValue != null && nullsValue == NullsOrder.LAST) {
-            orderString += ' NULLS LAST';
-        }
-
-        return orderString;
     }
 }

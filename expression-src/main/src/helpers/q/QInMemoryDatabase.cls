@@ -34,7 +34,13 @@ public with sharing class QInMemoryDatabase implements QDatabase {
 
     private R fromQ(Q query) {
         SObjectType sObjectType = getSObjectTypeFromQ(query);
-        return R.of(recordsInTheDatabase)
+        R builtR = R.of(recordsInTheDatabase)
             .filter(R.isOfSObjectType.apply(sObjectType));
+
+        if (!query.orders.isEmpty()) {
+
+        }
+
+        return builtR;
     }
 }

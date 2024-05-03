@@ -20,19 +20,17 @@ private class QSalesforceDatabaseTest {
         String expected = 'SELECT CreatedById, Description, Owner.Email FROM Account';
         System.assertEquals(expected, query, 'It should output a query with a SELECT.');
     }
-//
-//    @IsTest
-//    static void testAddOrders() {
-//        String query =
-//            new Q(Account.SObjectType)
-//                .add(Q.orderBy('Name').nullsLast())
-//                .add(Q.orderBy('BillingCountry').descending())
-//                .build();
-//
-//        String expected = 'SELECT Id FROM Account ORDER BY Name ASC NULLS LAST, BillingCountry DESC';
-//        System.assertEquals(expected, query, 'It should output a query with orders.');
-//        Database.query(query);
-//    }
+
+    @IsTest
+    static void testAddOrders() {
+        String query =
+            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+                .add(Q.orderBy('Name').nullsLast())
+                .add(Q.orderBy('BillingCountry').descending()));
+
+        String expected = 'SELECT Id FROM Account ORDER BY Name ASC NULLS LAST, BillingCountry DESC';
+        System.assertEquals(expected, query, 'It should output a query with orders.');
+    }
 //
 //    @IsTest
 //    static void testAddCondition1() {
