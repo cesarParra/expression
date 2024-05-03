@@ -1,9 +1,15 @@
 @IsTest
 private class QInMemoryDatabaseTest {
+    private static final QDB db;
+
+    static {
+        QDB.memory();
+        db = QDB.getInstance();
+    }
+
     @IsTest
     static void canGetAllRecordsForAnSObjectType() {
         // Given a database with an account record
-        QInMemoryDatabase db = QInMemoryDatabase.getInstance();
         Account a = new Account(Name = 'Test Account');
         db.doInsert(a);
 
@@ -20,7 +26,6 @@ private class QInMemoryDatabaseTest {
     @IsTest
     static void setsAnIdToTheRecordWhenInsertingIt() {
         // Given a database with an account record
-        QInMemoryDatabase db = QInMemoryDatabase.getInstance();
         Account a = new Account(Name = 'Test Account');
         db.doInsert(a);
 
@@ -31,7 +36,6 @@ private class QInMemoryDatabaseTest {
     @IsTest
     static void canInsertMultipleRecordsAtAtime() {
         // Given a database with an account record
-        QInMemoryDatabase db = QInMemoryDatabase.getInstance();
         Account a = new Account(Name = 'Test Account');
         Account b = new Account(Name = 'Test Account 2');
         db.doInsert(new List<Account>{
@@ -51,7 +55,6 @@ private class QInMemoryDatabaseTest {
     @IsTest
     static void canSelectForASpecificSObjectType() {
         // Given a database with an account record
-        QInMemoryDatabase db = QInMemoryDatabase.getInstance();
         Account a = new Account(Name = 'Test Account');
         db.doInsert(a);
 
@@ -72,7 +75,6 @@ private class QInMemoryDatabaseTest {
     @IsTest
     static void canOrderByAField() {
         // Given a database with multiple account records
-        QInMemoryDatabase db = QInMemoryDatabase.getInstance();
         Account b = new Account(Name = 'Account B');
         Account a = new Account(Name = 'Account A');
         db.doInsert(new List<Account>{
@@ -93,7 +95,6 @@ private class QInMemoryDatabaseTest {
     @IsTest
     static void canOrderByAField_specifyAscending() {
         // Given a database with multiple account records
-        QInMemoryDatabase db = QInMemoryDatabase.getInstance();
         Account b = new Account(Name = 'Account B');
         Account a = new Account(Name = 'Account A');
         db.doInsert(new List<Account>{
@@ -114,7 +115,6 @@ private class QInMemoryDatabaseTest {
     @IsTest
     static void canOrderByAField_specifyDescending() {
         // Given a database with multiple account records
-        QInMemoryDatabase db = QInMemoryDatabase.getInstance();
         Account b = new Account(Name = 'Account B');
         Account a = new Account(Name = 'Account A');
         db.doInsert(new List<Account>{

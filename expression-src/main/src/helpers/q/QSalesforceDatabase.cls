@@ -1,5 +1,5 @@
-public with sharing class QSalesforceDatabase implements QDatabase {
-    public List<SObject> run(Q query) {
+public with sharing class QSalesforceDatabase extends QDB {
+    public override List<SObject> run(Q query) {
         return null;
     }
 
@@ -84,5 +84,13 @@ public with sharing class QSalesforceDatabase implements QDatabase {
         }
 
         return orderString;
+    }
+
+    public override void doInsert(SObject record) {
+        throw new QDBException('Not implemented');
+    }
+
+    public override void doInsert(List<SObject> records) {
+        throw new QDBException('Not implemented');
     }
 }
