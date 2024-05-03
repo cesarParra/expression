@@ -21,4 +21,10 @@ public with sharing class QInMemoryDatabase implements QDatabase {
         record.Id = IdGenerator.generate(Account.SObjectType);
         recordsInTheDatabase.add(record);
     }
+
+    public void doInsert(List<Account> records) {
+        for (Account record : records) {
+            doInsert(record);
+        }
+    }
 }
