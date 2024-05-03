@@ -3472,6 +3472,8 @@ public class R implements Func.IPackage {
      * */
     public static Func ascend = new AscendFunc();
 
+    public static Func ascendNullsFirst = new AscendNullsFirstFunc();
+
     /**
      * Convert a function into an descending comparator
      *
@@ -5998,6 +6000,34 @@ public class R implements Func.IPackage {
         }
     }
 
+    private class FuncSortDirectionWithNullSupport extends Func {
+        private Func fn;
+        private Boolean isAscend;
+        private Boolean nullsFirst;
+
+        public FuncSortDirectionWithNullSupport(Func fn, Boolean isAscend, Boolean nullsFirst) {
+            this.fn = fn;
+            this.isAscend = isAscend;
+            this.nullsFirst = nullsFirst;
+        }
+
+        public override Object exec(Object arg1, Object arg2) {
+            Object val1 = this.fn.run(arg1);
+            Object val2 = this.fn.run(arg2);
+
+            if (val1 == null && val2 == null) {
+                return 0;
+            } else if (val1 == null) {
+                return this.nullsFirst ? -1 : 1;
+            } else if (val2 == null) {
+                return this.nullsFirst ? 1 : -1;
+            }
+
+            Integer ret = toInteger(R.compare.run(val1, val2));
+            return this.isAscend ? ret : -ret;
+        }
+    }
+
     private class FuncCascade extends Func {
         private List<Func> funcs;
 
@@ -7606,6 +7636,18 @@ public class R implements Func.IPackage {
             Func fn = toFunc(arg);
 
             return new FuncSortDirection(fn, true);
+        }
+    }
+
+    private class AscendNullsFirstFunc extends Func {
+        public AscendNullsFirstFunc() {
+            super(1);
+        }
+
+        public override Object exec(Object arg) {
+            Func fn = toFunc(arg);
+
+            return new FuncSortDirectionWithNullSupport(fn, true, true);
         }
     }
 

@@ -27,7 +27,9 @@ public with sharing class QInMemoryDatabase extends QDB {
             .filter(R.isOfSObjectType.apply(sObjectType));
 
         for (QOrder order : query.orders) {
-            Func direction = order.sortValue == QOrder.SortOrder.ASCENDING ? R.ascend : R.descend;
+            Func direction = order.sortValue == QOrder.SortOrder.ASCENDING ?
+                order.nullsValue == QOrder.NullsOrder.LAST ? R.ascend : R.ascendNullsFirst :
+                R.descend;
             builtR = builtR.sortBy((Func) direction.run(R.prop.apply(order.field)));
         }
 

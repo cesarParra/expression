@@ -1,6 +1,6 @@
 public with sharing class QSalesforceDatabase extends QDB {
     public override List<SObject> run(Q query) {
-        return null;
+        throw new QDBException('Not implemented');
     }
 
     public String build(Q query) {
