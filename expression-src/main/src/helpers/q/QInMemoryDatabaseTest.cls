@@ -49,6 +49,24 @@ private class QInMemoryDatabaseTest {
         Assert.areEqual(2, results.size());
     }
 
-    // can insert multiple records at a time
-    // can select for a specific SObjecttype when there is more than one SObject type in the db
+    @IsTest
+    static void canSelectForASpecificSObjectType() {
+        // Given a database with an account record
+        QInMemoryDatabase db = QInMemoryDatabase.getInstance();
+        Account a = new Account(Name = 'Test Account');
+        db.doInsert(a);
+
+        // And a contact record
+        Contact c = new Contact(LastName = 'Test Contact');
+        db.doInsert(c);
+
+        // And a Q that selects all accounts
+        Q query = new Q(Account.SObjectType);
+
+        // When the query is executed
+        List<SObject> results = db.run(query);
+
+        // Then the account is returned
+        Assert.areEqual(1, results.size());
+    }
 }
