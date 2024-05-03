@@ -14,15 +14,7 @@ public with sharing class QInMemoryDatabase implements QDatabase {
     }
 
     public List<SObject> run(Q query) {
-        SObjectType sObjectType = getSObjectTypeFromQ(query);
-
-        return R.of(recordsInTheDatabase)
-            .filter(R.isOfSObjectType.apply(sObjectType))
-            .toSObjectList();
-    }
-
-    private static SObjectType getSObjectTypeFromQ(Q query) {
-        return ((SObject) Type.forName(query.fromText).newInstance()).getSObjectType();
+        return fromQ(query).toSObjectList();
     }
 
     public void doInsert(SObject record) {
@@ -34,5 +26,15 @@ public with sharing class QInMemoryDatabase implements QDatabase {
         for (SObject record : records) {
             doInsert(record);
         }
+    }
+
+    private static SObjectType getSObjectTypeFromQ(Q query) {
+        return ((SObject) Type.forName(query.fromText).newInstance()).getSObjectType();
+    }
+
+    private R fromQ(Q query) {
+        SObjectType sObjectType = getSObjectTypeFromQ(query);
+        return R.of(recordsInTheDatabase)
+            .filter(R.isOfSObjectType.apply(sObjectType));
     }
 }
