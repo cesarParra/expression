@@ -18,7 +18,7 @@ public inherited sharing abstract class QRunner {
 
     private with sharing class WithSharingRunner extends QRunner {
         public override List<SObject> run(Q query) {
-            return Database.query(query.build(), AccessLevel.USER_MODE);
+            return Database.query(new QSalesforceDatabase().build(query), AccessLevel.USER_MODE);
         }
 
         public override List<SObject> runRaw(String query) {
@@ -28,7 +28,7 @@ public inherited sharing abstract class QRunner {
 
     private without sharing class WithoutSharingRunner extends QRunner {
         public override List<SObject> run(Q query) {
-            return Database.query(query.build(), AccessLevel.SYSTEM_MODE);
+            return Database.query(new QSalesforceDatabase().build(query), AccessLevel.SYSTEM_MODE);
         }
 
         public override List<SObject> runRaw(String query) {
