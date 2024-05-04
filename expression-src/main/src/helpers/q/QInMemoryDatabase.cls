@@ -32,6 +32,7 @@ public with sharing class QInMemoryDatabase extends QDB {
 
         ExpressionBuilder exprBuilder = new ExpressionBuilder();
 
+        System.debug('recordsInTheDatabase: ' + recordsInTheDatabase);
         for (QICondition condition : query.conditions) {
             exprBuilder.condition(condition);
         }
@@ -91,11 +92,15 @@ public with sharing class QInMemoryDatabase extends QDB {
         private Object formatFieldValue(Object val) {
             if (val instanceof String) {
                 return '"' + val + '"';
+            } else if (val instanceof Date) {
+                Date castDate = (Date) val;
+                return 'DATE(' + castDate.year() + ',' + castDate.month() + ',' + castDate.day() + ')';
             }
             return val;
         }
 
         public String build() {
+            System.debug('Expression: ' + expr);
             return expr;
         }
     }

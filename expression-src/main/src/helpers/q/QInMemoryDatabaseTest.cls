@@ -377,8 +377,47 @@ private class QInMemoryDatabaseTest {
         Assert.areEqual(20, results[0].get('NumberOfEmployees'));
     }
 
+    @IsTest
+    static void canQueryUsingACondition_comparingDatesThatAreEqual() {
+        Date date1 = Date.newInstance(2020, 1, 1);
+        Date date2 = Date.newInstance(2020, 1, 2);
+
+        Contact contact1 = new Contact(FirstName = 'Person 1', Birthdate = date1);
+        Contact contact2 = new Contact(FirstName = 'Person 2', Birthdate = date2);
+        db.doInsert(new List<Contact>{
+            contact1, contact2
+        });
+
+        Q query = new Q(Contact.SObjectType)
+            .add(Q.condition('Birthdate').equalsTo(date1));
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.areEqual(contact1, results[0]);
+    }
+
+    @IsTest
+    static void canQueryUsingACondition_comparingDatesThatAreNotEqual() {
+        Date date1 = Date.newInstance(2020, 1, 1);
+        Date date2 = Date.newInstance(2020, 1, 2);
+
+        Contact contact1 = new Contact(FirstName = 'Person 1', Birthdate = date1);
+        Contact contact2 = new Contact(FirstName = 'Person 2', Birthdate = date2);
+        db.doInsert(new List<Contact>{
+            contact1, contact2
+        });
+
+        Q query = new Q(Contact.SObjectType)
+            .add(Q.condition('Birthdate').notEqualsTo(date1));
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.areEqual(contact2, results[0]);
+    }
+
     // Conditions
-    // Equals (date)
     // Not equals (date)
     // Equals (datetime)
     // Not equals (datetime)
