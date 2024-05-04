@@ -584,6 +584,26 @@ private class QInMemoryDatabaseTest {
         Assert.isTrue(results.contains(account3));
     }
 
+    @IsTest
+    static void canQueryUsingACondition_isNotIn() {
+        Account account1 = new Account(Name = 'Test Account 1');
+        Account account2 = new Account(Name = 'Test Account 2');
+        Account account3 = new Account(Name = 'Test Account 3');
+        db.doInsert(new List<Account>{
+            account1, account2, account3
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.condition('Name').isNotIn(new List<String>{
+                'Test Account 1', 'Test Account 3'
+            }));
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.isTrue(results.contains(account2));
+    }
+
     // Conditions
     // not in
     // includes

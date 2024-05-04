@@ -103,6 +103,9 @@ public with sharing class QInMemoryDatabase extends QDB {
                 when IS_IN {
                     expr += '-> WHERE(CONTAINS(' + formatFieldValue(cond.fieldValue) + ',' + cond.field + '))';
                 }
+                when NOT_IN {
+                    expr += '-> WHERE(NOT(CONTAINS(' + formatFieldValue(cond.fieldValue) + ',' + cond.field + ')))';
+                }
                 when else {
                     throw new QDBException('Operator ' + cond.operatorValue + ' is not supported in InMemoryDatabase');
                 }
