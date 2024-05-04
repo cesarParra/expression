@@ -13,9 +13,7 @@ public virtual class QCondition implements QICondition {
         GREATER_OR_EQUAL,
         IS_LIKE,
         IS_IN,
-        NOT_IN,
-        INCLUDES,
-        EXCLUDES
+        NOT_IN
     }
 
     public ComparisonOperator operatorValue;

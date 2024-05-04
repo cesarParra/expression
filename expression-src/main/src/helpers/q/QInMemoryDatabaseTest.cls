@@ -603,9 +603,4 @@ private class QInMemoryDatabaseTest {
         Assert.areEqual(1, results.size());
         Assert.isTrue(results.contains(account2));
     }
-
-    // Conditions
-    // not in
-    // includes
-    // excludes
 }
