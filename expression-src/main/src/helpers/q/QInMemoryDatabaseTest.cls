@@ -192,8 +192,27 @@ private class QInMemoryDatabaseTest {
         Assert.isNull(results[1].get('NumberOfEmployees'));
     }
 
+    @IsTest
+    static void canOrderByAField_descending_nullsLast() {
+        // Given a database with multiple account records
+        Account b = new Account(Name = 'Account B', NumberOfEmployees = 10);
+        Account a = new Account(Name = 'Account A', NumberOfEmployees = null);
+        db.doInsert(new List<Account>{
+            a, b
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.orderBy('NumberOfEmployees').descending().nullsLast());
+
+        // When the query is executed
+        List<SObject> results = db.run(query);
+
+        // Then the accounts are returned in order
+        Assert.areEqual(10, results[0].get('NumberOfEmployees'));
+        Assert.isNull(results[1].get('NumberOfEmployees'));
+    }
+
     // Order by
-    // single field descending nulls last
     // multiple fields
     // multiple fields with nulls first
     // multiple fields with nulls last

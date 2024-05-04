@@ -29,7 +29,7 @@ public with sharing class QInMemoryDatabase extends QDB {
         for (QOrder order : query.orders) {
             Func direction = order.sortValue == QOrder.SortOrder.ASCENDING ?
                 order.nullsValue == QOrder.NullsOrder.LAST ? R.ascendNullsLast : R.ascendNullsFirst :
-                R.descendNullsFirst;
+                order.nullsValue == QOrder.NullsOrder.LAST ? R.descendNullsLast : R.descendNullsFirst;
             builtR = builtR.sortBy((Func) direction.run(R.prop.apply(order.field)));
         }
 

@@ -3491,6 +3491,8 @@ public class R implements Func.IPackage {
 
     public static Func descendNullsFirst = new DescendNullsFirstFunc();
 
+    public static Func descendNullsLast = new DescendNullsLastFunc();
+
     /**
      * Combine the comparator functions into one
      *
@@ -7688,6 +7690,18 @@ public class R implements Func.IPackage {
             Func fn = toFunc(arg);
 
             return new FuncSortDirectionWithNullSupport(fn, false, true);
+        }
+    }
+
+    private class DescendNullsLastFunc extends Func {
+        public DescendNullsLastFunc() {
+            super(1);
+        }
+
+        public override Object exec(Object arg) {
+            Func fn = toFunc(arg);
+
+            return new FuncSortDirectionWithNullSupport(fn, false, false);
         }
     }
 
