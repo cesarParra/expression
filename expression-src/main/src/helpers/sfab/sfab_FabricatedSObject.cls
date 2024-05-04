@@ -1,30 +1,38 @@
 public virtual class sfab_FabricatedSObject {
-
     private Type sType;
-    @testVisible private Map<String,sfab_FabricatedSObjectNode> nodes = new Map<String,sfab_FabricatedSObjectNode>();
+    @testVisible private Map<String, sfab_FabricatedSObjectNode> nodes = new Map<String, sfab_FabricatedSObjectNode>();
 
     sfab_ObjectDescriber objectDescriber = new sfab_ObjectDescriber();
 
-    public class FieldDoesNotExistException extends Exception {}
-    public class ParentRelationshipDoesNotExistException extends Exception {}
-    public class ChildRelationshipDoesNotExistException extends Exception {}
+    public class FieldDoesNotExistException extends Exception {
+    }
+    public class ParentRelationshipDoesNotExistException extends Exception {
+    }
+    public class ChildRelationshipDoesNotExistException extends Exception {
+    }
 
-    public class FieldIsNotSimpleFieldException extends Exception {}
-    public class FieldIsNotParentRelationshipException extends Exception {}
-    public class FieldIsNotChildRelationshipException extends Exception {}
+    public class FieldIsNotSimpleFieldException extends Exception {
+    }
+    public class FieldIsNotParentRelationshipException extends Exception {
+    }
+    public class FieldIsNotChildRelationshipException extends Exception {
+    }
 
-    public class FieldIsADifferentTypeException extends Exception {}
+    public class FieldIsADifferentTypeException extends Exception {
+    }
 
-    public class ParentRelationshipObjectCannotBeAutoCreatedException extends Exception {}
+    public class ParentRelationshipObjectCannotBeAutoCreatedException extends Exception {
+    }
 
-    public class NodeNotSetException extends Exception {}
+    public class NodeNotSetException extends Exception {
+    }
 
     /**
     * Constructs a FabricatedSObject of the given type.
     *
     * @param Type - The type of SObject to be fabricated (e.g. Contact.class)
     */
-    public sfab_FabricatedSObject( Type sType ) {
+    public sfab_FabricatedSObject(Type sType) {
         this.sType = sType;
     }
 
@@ -34,7 +42,7 @@ public virtual class sfab_FabricatedSObject {
     * @param Type - The type of SObject to be fabricated (e.g. Contact.class)
     * @param Map<Schema.SObjectField,Object> - The fields to set on this object, with the desired values
     */
-    public sfab_FabricatedSObject( Type sType, Map<Schema.SObjectField, Object> fields ) {
+    public sfab_FabricatedSObject(Type sType, Map<Schema.SObjectField, Object> fields) {
         this(sType);
         set(fields);
     }
@@ -59,11 +67,11 @@ public virtual class sfab_FabricatedSObject {
     }
 
     @testVisible
-    protected sfab_FabricatedSObject( Type sType, List<sfab_FabricatedSObjectNode> nodes ) {
+    protected sfab_FabricatedSObject(Type sType, List<sfab_FabricatedSObjectNode> nodes) {
         this.sType = sType;
-        this.nodes = new Map<String,sfab_FabricatedSObjectNode>();
-        for ( sfab_FabricatedSObjectNode node : nodes ) {
-            setNode( node.getName(), node );
+        this.nodes = new Map<String, sfab_FabricatedSObjectNode>();
+        for (sfab_FabricatedSObjectNode node : nodes) {
+            setNode(node.getName(), node);
         }
     }
 
@@ -77,8 +85,8 @@ public virtual class sfab_FabricatedSObject {
     * @param Object - The value that the field should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    public sfab_FabricatedSObject set( Schema.SObjectField field, Object value) {
-        return setField( field, value );
+    public sfab_FabricatedSObject set(Schema.SObjectField field, Object value) {
+        return setField(field, value);
     }
 
     /**
@@ -96,7 +104,7 @@ public virtual class sfab_FabricatedSObject {
     * @param Object - The value that the field should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    public sfab_FabricatedSObject set( String fieldName, Object value ) {
+    public sfab_FabricatedSObject set(String fieldName, Object value) {
 
         // This looks like it duplicates the overloading of 'set', but unfortunately Apex determines the method to call
         // based on the static type of a parameter rather than the dynamic type.
@@ -104,15 +112,15 @@ public virtual class sfab_FabricatedSObject {
         // defined version of an overloaded method even when a more specific type matches for a given value.
         // This means that 'setParentField' will always call this version of the overloaded method regardless
         // of the contents of the value parameter.  So we need to manually check the instance type in the code.
-        if ( value instanceOf List<sfab_FabricatedSObject> ) {
-            return setChildren( fieldName, (List<sfab_FabricatedSObject>)value );
+        if (value instanceOf List<sfab_FabricatedSObject>) {
+            return setChildren(fieldName, (List<sfab_FabricatedSObject>) value);
         }
 
-        if ( value instanceOf sfab_FabricatedSObject ) {
-            return setParent( fieldName, (sfab_FabricatedSObject)value );
+        if (value instanceOf sfab_FabricatedSObject) {
+            return setParent(fieldName, (sfab_FabricatedSObject) value);
         }
 
-        return setField( fieldName, value );
+        return setField(fieldName, value);
     }
 
     /**
@@ -125,8 +133,8 @@ public virtual class sfab_FabricatedSObject {
     * @param sfab_FabricatedSObject - The object that the relationship should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    public sfab_FabricatedSObject set( String relationshipName, sfab_FabricatedSObject fabricatedParent ) {
-        return setParent( relationshipName, fabricatedParent );
+    public sfab_FabricatedSObject set(String relationshipName, sfab_FabricatedSObject fabricatedParent) {
+        return setParent(relationshipName, fabricatedParent);
     }
 
     /**
@@ -139,8 +147,8 @@ public virtual class sfab_FabricatedSObject {
     * @param List<sfab_FabricatedSObject> - The objects that the relationship should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    public sfab_FabricatedSObject set( String relationshipName, List<sfab_FabricatedSObject> fabricatedChildren ) {
-        return setChildren( relationshipName, fabricatedChildren );
+    public sfab_FabricatedSObject set(String relationshipName, List<sfab_FabricatedSObject> fabricatedChildren) {
+        return setChildren(relationshipName, fabricatedChildren);
     }
 
     /**
@@ -153,8 +161,8 @@ public virtual class sfab_FabricatedSObject {
     * @param sfab_FabricatedSObject - The object to add to the child relationship's list
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    public sfab_FabricatedSObject add( String relationshipName, sfab_FabricatedSObject fabricatedChild ) {
-        return addChild( relationshipName, fabricatedChild );
+    public sfab_FabricatedSObject add(String relationshipName, sfab_FabricatedSObject fabricatedChild) {
+        return addChild(relationshipName, fabricatedChild);
     }
 
     /**
@@ -164,9 +172,9 @@ public virtual class sfab_FabricatedSObject {
     * @param Object - The value that the field should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    public sfab_FabricatedSObject set( Map<Schema.SObjectField, Object> fields ) {
-        for ( Schema.SObjectField field : fields.keySet() ) {
-            setField( field, fields.get( field ) );
+    public sfab_FabricatedSObject set(Map<Schema.SObjectField, Object> fields) {
+        for (Schema.SObjectField field : fields.keySet()) {
+            setField(field, fields.get(field));
         }
         return this;
     }
@@ -186,10 +194,10 @@ public virtual class sfab_FabricatedSObject {
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     *
     */
-    public sfab_FabricatedSObject set( Map<String, Object> fields ) {
+    public sfab_FabricatedSObject set(Map<String, Object> fields) {
         for (String fieldName : fields.keySet()) {
-            Object value = fields.get( fieldName );
-            set( fieldName, fields.get(fieldName) );
+            Object value = fields.get(fieldName);
+            set(fieldName, fields.get(fieldName));
         }
         return this;
     }
@@ -203,8 +211,8 @@ public virtual class sfab_FabricatedSObject {
     * @param Object - The value that the field should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    public sfab_FabricatedSObject setField( Schema.SObjectField field, Object value ) {
-        return setDirectField( field.getDescribe().getName(), value );
+    public sfab_FabricatedSObject setField(Schema.SObjectField field, Object value) {
+        return setDirectField(field.getDescribe().getName(), value);
     }
 
     /**
@@ -216,11 +224,11 @@ public virtual class sfab_FabricatedSObject {
     * @param Object - The value that the field should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    public sfab_FabricatedSObject setField( String fieldName, Object value ) {
-        if ( new sfab_FieldNameSplitter( fieldName ).isAParentNavigation() ) {
-            return setParentField( fieldName, value );
+    public sfab_FabricatedSObject setField(String fieldName, Object value) {
+        if (new sfab_FieldNameSplitter(fieldName).isAParentNavigation()) {
+            return setParentField(fieldName, value);
         }
-        return setDirectField( fieldName, value );
+        return setDirectField(fieldName, value);
     }
 
     /**
@@ -233,11 +241,11 @@ public virtual class sfab_FabricatedSObject {
     * @param sfab_FabricatedSObject - The object that the relationship should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    public sfab_FabricatedSObject setParent( String relationshipName, sfab_FabricatedSObject fabricatedParent ) {
-        if ( new sfab_FieldNameSplitter( relationshipName ).isAParentNavigation() ) {
-            return setParentField( relationshipName, fabricatedParent );
+    public sfab_FabricatedSObject setParent(String relationshipName, sfab_FabricatedSObject fabricatedParent) {
+        if (new sfab_FieldNameSplitter(relationshipName).isAParentNavigation()) {
+            return setParentField(relationshipName, fabricatedParent);
         }
-        return setDirectParent( relationshipName, fabricatedParent );
+        return setDirectParent(relationshipName, fabricatedParent);
     }
 
     /**
@@ -250,11 +258,11 @@ public virtual class sfab_FabricatedSObject {
     * @param List<sfab_FabricatedSObject> - The objects that the relationship should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    public sfab_FabricatedSObject setChildren( String relationshipName, List<sfab_FabricatedSObject> fabricatedChildren ) {
-        if ( new sfab_FieldNameSplitter( relationshipName ).isAParentNavigation() ) {
-            return setParentField( relationshipName, fabricatedChildren );
+    public sfab_FabricatedSObject setChildren(String relationshipName, List<sfab_FabricatedSObject> fabricatedChildren) {
+        if (new sfab_FieldNameSplitter(relationshipName).isAParentNavigation()) {
+            return setParentField(relationshipName, fabricatedChildren);
         }
-        return setDirectChildren( relationshipName, fabricatedChildren );
+        return setDirectChildren(relationshipName, fabricatedChildren);
     }
 
     /**
@@ -267,17 +275,17 @@ public virtual class sfab_FabricatedSObject {
     * @param sfab_FabricatedSObject - The object to add to the child relationship's list
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    public sfab_FabricatedSObject addChild( String relationshipName, sfab_FabricatedSObject fabricatedChild ) {
+    public sfab_FabricatedSObject addChild(String relationshipName, sfab_FabricatedSObject fabricatedChild) {
 
-        if ( new sfab_FieldNameSplitter( relationshipName ).isAParentNavigation() ) {
-            addParentChild( relationshipName, fabricatedChild );
+        if (new sfab_FieldNameSplitter(relationshipName).isAParentNavigation()) {
+            addParentChild(relationshipName, fabricatedChild);
         } else {
-            childFieldIsChildRelationship( relationshipName );
-            checkTypeIsValidForChildRelationship( relationshipName, fabricatedChild );
-            if ( !nodeExists( relationshipName ) ) {
-                setNode( relationshipName, new sfab_ChildRelationshipNode( relationshipName ) );
+            childFieldIsChildRelationship(relationshipName);
+            checkTypeIsValidForChildRelationship(relationshipName, fabricatedChild);
+            if (!nodeExists(relationshipName)) {
+                setNode(relationshipName, new sfab_ChildRelationshipNode(relationshipName));
             }
-            getChildRelationshipNode( relationshipName ).addChild( fabricatedChild );
+            getChildRelationshipNode(relationshipName).addChild(fabricatedChild);
         }
         return this;
     }
@@ -288,8 +296,8 @@ public virtual class sfab_FabricatedSObject {
     * @return SObject - The built SObject
     */
     public SObject toSObject() {
-        SObject newObject = (SObject)JSON.deserialize(JSON.serialize(serialize()), sType);
-        postBuildProcess( newObject );
+        SObject newObject = (SObject) JSON.deserialize(JSON.serialize(serialize()), sType);
+        postBuildProcess(newObject);
         return newObject;
     }
 
@@ -297,9 +305,9 @@ public virtual class sfab_FabricatedSObject {
     * An internal method that should not be called directly.
     * Is public because of the requirement to call it from other outer classes within the library
     */
-    public void postBuildProcess( SObject objectToProcess ) {
-        for ( String nodeName : nodes.keySet() ) {
-            nodes.get( nodeName ).postBuildProcess( objectToProcess );
+    public void postBuildProcess(SObject objectToProcess) {
+        for (String nodeName : nodes.keySet()) {
+            nodes.get(nodeName).postBuildProcess(objectToProcess);
         }
     }
 
@@ -320,7 +328,7 @@ public virtual class sfab_FabricatedSObject {
     * @return String - The name of the SObject Type
     */
     public String getSobjectName() {
-        return String.valueOf( sType );
+        return String.valueOf(sType);
     }
 
     /**
@@ -330,18 +338,18 @@ public virtual class sfab_FabricatedSObject {
     * @param String - The name of the field to split and defaul
     * @return Map<String,String> - The
     */
-    private sfab_FieldNameSplitter defaultParentField( String fieldName ) {
+    private sfab_FieldNameSplitter defaultParentField(String fieldName) {
 
-        sfab_FieldNameSplitter fieldNameSplitter = new sfab_FieldNameSplitter( fieldName );
+        sfab_FieldNameSplitter fieldNameSplitter = new sfab_FieldNameSplitter(fieldName);
         String parentFieldName = fieldNameSplitter.getParentFieldName();
 
-        checkFieldIsParentRelationship( parentFieldName );
+        checkFieldIsParentRelationship(parentFieldName);
 
-        if ( ! nodeExists( parentFieldName ) ) {
+        if (!nodeExists(parentFieldName)) {
             try {
-                set( parentFieldName, objectDescriber.buildFabricatedObjectForRelationship( getSobjectName(), parentFieldName ) );
-            } catch ( Exception e ) {
-                throw new ParentRelationshipObjectCannotBeAutoCreatedException( 'Could not auto-assign an object for the field ' + fieldName + ': ' + e.getMessage() );
+                set(parentFieldName, objectDescriber.buildFabricatedObjectForRelationship(getSobjectName(), parentFieldName));
+            } catch (Exception e) {
+                throw new ParentRelationshipObjectCannotBeAutoCreatedException('Could not auto-assign an object for the field ' + fieldName + ': ' + e.getMessage());
             }
         }
 
@@ -357,24 +365,24 @@ public virtual class sfab_FabricatedSObject {
     * @param Object - The value that the field should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    private sfab_FabricatedSObject setDirectField( String fieldName, Object value ) {
+    private sfab_FabricatedSObject setDirectField(String fieldName, Object value) {
 
-        Schema.SobjectField theField = objectDescriber.getField( getSObjectName(), fieldName );
+        Schema.SobjectField theField = objectDescriber.getField(getSObjectName(), fieldName);
 
-        if ( theField == null ) {
+        if (theField == null) {
 
-            if ( objectDescriber.objectHasParentRelationshipNamed( getSobjectName(), fieldName ) ) {
-                throw new FieldIsNotSimpleFieldException( 'The field '+ getSobjectName() +'.' + fieldName + ' cannot to set to a primitive, it is a parent relationship field' );
+            if (objectDescriber.objectHasParentRelationshipNamed(getSobjectName(), fieldName)) {
+                throw new FieldIsNotSimpleFieldException('The field ' + getSobjectName() + '.' + fieldName + ' cannot to set to a primitive, it is a parent relationship field');
             }
 
-            if ( objectDescriber.objectHasChildRelationshipNamed( getSObjectName(), fieldName ) ) {
-                throw new FieldIsNotSimpleFieldException( 'The field '+ getSobjectName() +'.' + fieldName + ' cannot to set to a primitive, it is a child relationship field' );
+            if (objectDescriber.objectHasChildRelationshipNamed(getSObjectName(), fieldName)) {
+                throw new FieldIsNotSimpleFieldException('The field ' + getSobjectName() + '.' + fieldName + ' cannot to set to a primitive, it is a child relationship field');
             }
 
-            throw new FieldDoesNotExistException( 'The field ' + getSobjectName() + '.' + fieldName + ' does not exist' );
+            throw new FieldDoesNotExistException('The field ' + getSobjectName() + '.' + fieldName + ' does not exist');
         }
 
-        return setNode( fieldName, new sfab_FieldValuePairNode( theField, value ) );
+        return setNode(fieldName, new sfab_FieldValuePairNode(theField, value));
     }
 
     /**
@@ -385,10 +393,10 @@ public virtual class sfab_FabricatedSObject {
     * @param sfab_FabricatedSObject - The object that the relationship should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    private sfab_FabricatedSObject setDirectParent( String relationshipName, sfab_FabricatedSObject fabricatedParent ) {
-        checkFieldIsParentRelationship( relationshipName );
-        checkTypeIsValidForParentRelationship( relationshipName, fabricatedParent );
-        return setNode( relationshipName, new sfab_ParentRelationshipNode(relationshipName, fabricatedParent));
+    private sfab_FabricatedSObject setDirectParent(String relationshipName, sfab_FabricatedSObject fabricatedParent) {
+        checkFieldIsParentRelationship(relationshipName);
+        checkTypeIsValidForParentRelationship(relationshipName, fabricatedParent);
+        return setNode(relationshipName, new sfab_ParentRelationshipNode(relationshipName, fabricatedParent));
     }
 
     /**
@@ -399,19 +407,19 @@ public virtual class sfab_FabricatedSObject {
     * @param List<sfab_FabricatedSObject> - The objects that the relationship should be set to
     * @return sfab_FabricatedSObject - This, allowing for a fluent interface
     */
-    private sfab_FabricatedSObject setDirectChildren( String relationshipName, List<sfab_FabricatedSObject> fabricatedChildren ) {
-        childFieldIsChildRelationship( relationshipName );
-        checkTypeIsValidForChildRelationship( relationshipName, fabricatedChildren );
-        return setNode( relationshipName, new sfab_ChildRelationshipNode( relationshipName, fabricatedChildren ) );
+    private sfab_FabricatedSObject setDirectChildren(String relationshipName, List<sfab_FabricatedSObject> fabricatedChildren) {
+        childFieldIsChildRelationship(relationshipName);
+        checkTypeIsValidForChildRelationship(relationshipName, fabricatedChildren);
+        return setNode(relationshipName, new sfab_ChildRelationshipNode(relationshipName, fabricatedChildren));
     }
 
     /**
     * Internal method that should not be called directly.
     * Ensures that the field on the parent record specified in the field name is set to the specified value
     */
-    private sfab_FabricatedSObject setParentField( String fieldName, Object value ) {
-        sfab_FieldNameSplitter fields = defaultParentField( fieldName );
-        getParentRelationshipNode( fields.getParentFieldName() ).set( fields.getChildFieldName(), value );
+    private sfab_FabricatedSObject setParentField(String fieldName, Object value) {
+        sfab_FieldNameSplitter fields = defaultParentField(fieldName);
+        getParentRelationshipNode(fields.getParentFieldName()).set(fields.getChildFieldName(), value);
         return this;
     }
 
@@ -419,9 +427,9 @@ public virtual class sfab_FabricatedSObject {
     * Internal method that should not be called directly.
     * Ensures that the child relationship on the parent record specified in the field name has the specified object added
     */
-    private sfab_FabricatedSObject addParentChild( String fieldName, sfab_FabricatedSObject fabricatedChild ) {
-        sfab_FieldNameSplitter fields = defaultParentField( fieldName );
-        getParentRelationshipNode( fields.getParentFieldName() ).add( fields.getChildFieldName(), fabricatedChild );
+    private sfab_FabricatedSObject addParentChild(String fieldName, sfab_FabricatedSObject fabricatedChild) {
+        sfab_FieldNameSplitter fields = defaultParentField(fieldName);
+        getParentRelationshipNode(fields.getParentFieldName()).add(fields.getChildFieldName(), fabricatedChild);
         return this;
     }
 
@@ -429,16 +437,16 @@ public virtual class sfab_FabricatedSObject {
     * Internal method that should not be called directly.
     * Checks that the specied node exists and is set to a value
     */
-    private Boolean nodeExists( String nodeName ) {
-        return nodes.containsKey( nodeName );
+    private Boolean nodeExists(String nodeName) {
+        return nodes.containsKey(nodeName);
     }
 
     /**
     * Internal method that should not be called directly.
     * Sets the specified node to the specified value
     */
-    private sfab_FabricatedSObject setNode( String nodeName, sfab_FabricatedSObjectNode node ) {
-        nodes.put( nodeName, node );
+    private sfab_FabricatedSObject setNode(String nodeName, sfab_FabricatedSObjectNode node) {
+        nodes.put(nodeName, node);
         return this;
     }
 
@@ -446,35 +454,35 @@ public virtual class sfab_FabricatedSObject {
     * Internal method that should not be called directly.
     * Gets the current value of the specified node, throwing an excepton if it is not set
     */
-    private sfab_FabricatedSObjectNode getNode( String nodeName ) {
-        if ( ! nodeExists( nodeName ) ) {
-            throw new NodeNotSetException( 'Attempt to get the value of node "' + nodeName + '" when it was not set' );
+    private sfab_FabricatedSObjectNode getNode(String nodeName) {
+        if (!nodeExists(nodeName)) {
+            throw new NodeNotSetException('Attempt to get the value of node "' + nodeName + '" when it was not set');
         }
-        return nodes.get( nodeName );
+        return nodes.get(nodeName);
     }
 
     /**
     * Internal method that should not be called directly.
     * Gets value of the specified field node, throwing an excepton if it is not set to a sfab_FieldValuePairNode
     */
-    private sfab_FieldValuePairNode getFieldNode( String fieldName ) {
-        return ((sfab_FieldValuePairNode)getNode( fieldName ));
+    private sfab_FieldValuePairNode getFieldNode(String fieldName) {
+        return ((sfab_FieldValuePairNode) getNode(fieldName));
     }
 
     /**
     * Internal method that should not be called directly.
     * Gets value of the specified parent relationship node, throwing an excepton if it is not set to a sfab_ParentRelationshipNode
     */
-    private sfab_ParentRelationshipNode getParentRelationshipNode( String relationshipName ) {
-        return ((sfab_ParentRelationshipNode)getNode( relationshipName ));
+    private sfab_ParentRelationshipNode getParentRelationshipNode(String relationshipName) {
+        return ((sfab_ParentRelationshipNode) getNode(relationshipName));
     }
 
     /**
     * Internal method that should not be called directly.
     * Gets value of the specified parent relationship node, throwing an excepton if it is not set to a sfab_ChildRelationshipNode
     */
-    private sfab_ChildRelationshipNode getChildRelationshipNode( String relationshipName ) {
-        return ((sfab_ChildRelationshipNode)getNode( relationshipName ));
+    private sfab_ChildRelationshipNode getChildRelationshipNode(String relationshipName) {
+        return ((sfab_ChildRelationshipNode) getNode(relationshipName));
     }
 
     /**
@@ -482,8 +490,8 @@ public virtual class sfab_FabricatedSObject {
     * Gets the field value of the specified field.
     */
     @testVisible
-    private Object getFieldValue( String fieldName ) {
-        return getFieldNode( fieldName )?.getValue();
+    private Object getFieldValue(String fieldName) {
+        return getFieldNode(fieldName)?.getValue();
     }
 
     /**
@@ -491,8 +499,8 @@ public virtual class sfab_FabricatedSObject {
     * Gets the parent fabricated object of the specified parent relationship field
     */
     @testVisible
-    private sfab_FabricatedSObject getParent( String relationshipName ) {
-        return getParentRelationshipNode( relationshipName )?.getParent();
+    private sfab_FabricatedSObject getParent(String relationshipName) {
+        return getParentRelationshipNode(relationshipName)?.getParent();
     }
 
     /**
@@ -500,8 +508,8 @@ public virtual class sfab_FabricatedSObject {
     * Gets the child fabricated objects of the specified child relationship field
     */
     @testVisible
-    private List<sfab_FabricatedSObject> getChildren( String relationshipName ) {
-        return getChildRelationshipNode( relationshipName )?.getChildren();
+    private List<sfab_FabricatedSObject> getChildren(String relationshipName) {
+        return getChildRelationshipNode(relationshipName)?.getChildren();
     }
 
     /**
@@ -509,8 +517,8 @@ public virtual class sfab_FabricatedSObject {
     * Gets the number of child fabricated objects held in the specified child relationship field
     */
     @testVisible
-    private Integer getNumberOfChildren( String relationshipName ) {
-        return getChildRelationshipNode( relationshipName )?.getNumberOfChildren();
+    private Integer getNumberOfChildren(String relationshipName) {
+        return getChildRelationshipNode(relationshipName)?.getNumberOfChildren();
     }
 
     /**
@@ -526,15 +534,15 @@ public virtual class sfab_FabricatedSObject {
     * Internal method that should not be called directly.
     * Checks if the field with the given name is a parent relationship, throwing an exception if not
     */
-    private void checkFieldIsParentRelationship( String parentFieldName ) {
+    private void checkFieldIsParentRelationship(String parentFieldName) {
 
-        if ( !objectDescriber.objectHasParentRelationshipNamed( getSobjectName(), parentFieldName ) ) {
-            if (  objectDescriber.objectHasSimpleFieldNamed( getSobjectName(), parentFieldName )
-                || objectDescriber.objectHasChildRelationshipNamed( getSobjectName(), parentFieldName ) ) {
-                throw new FieldIsNotParentRelationshipException( 'The field ' + getSobjectName() + '.' + parentFieldName + ' is not a parent relationship' );
+        if (!objectDescriber.objectHasParentRelationshipNamed(getSobjectName(), parentFieldName)) {
+            if (objectDescriber.objectHasSimpleFieldNamed(getSobjectName(), parentFieldName)
+                || objectDescriber.objectHasChildRelationshipNamed(getSobjectName(), parentFieldName)) {
+                throw new FieldIsNotParentRelationshipException('The field ' + getSobjectName() + '.' + parentFieldName + ' is not a parent relationship');
             }
 
-            throw new ParentRelationshipDoesNotExistException( 'The parent relationship ' + getSobjectName() + '.' + parentFieldName + ' does not exist' );
+            throw new ParentRelationshipDoesNotExistException('The parent relationship ' + getSobjectName() + '.' + parentFieldName + ' does not exist');
         }
     }
 
@@ -543,10 +551,10 @@ public virtual class sfab_FabricatedSObject {
     * Checks if the field with the given name is a parent relationship for an sobject of the same type as the given Fabricated SObject
     */
     // TODO: push into sfab_ParentRelationshipNode?
-    private void checkTypeIsValidForParentRelationship( String relationshipName, sfab_FabricatedSObject fabricatedParent  ){
-        List<String> validObjectTypes = objectDescriber.getObjectTypesForParentRelationship( getSobjectName(), relationshipName );
-        if ( ! validObjectTypes.contains( fabricatedParent.getSobjectName() ) ) {
-            throw new FieldIsADifferentTypeException( 'The field ' + getSobjectName() + '.' + relationshipName + ' is ' + String.join( validObjectTypes, ',' ) + ', not ' + fabricatedParent.getSobjectName() );
+    private void checkTypeIsValidForParentRelationship(String relationshipName, sfab_FabricatedSObject fabricatedParent) {
+        List<String> validObjectTypes = objectDescriber.getObjectTypesForParentRelationship(getSobjectName(), relationshipName);
+        if (!validObjectTypes.contains(fabricatedParent.getSobjectName())) {
+            throw new FieldIsADifferentTypeException('The field ' + getSobjectName() + '.' + relationshipName + ' is ' + String.join(validObjectTypes, ',') + ', not ' + fabricatedParent.getSobjectName());
         }
     }
 
@@ -555,10 +563,10 @@ public virtual class sfab_FabricatedSObject {
     * Checks if the field with the given name is a child relationship for an sobject of the same type as the given Fabricated SObject
     */
     // TODO: push into sfab_ChildRelationshipNode?
-    private void checkTypeIsValidForChildRelationship( String relationshipName, sfab_FabricatedSObject fabricatedChild  ){
-        String validObjectType = objectDescriber.getObjectTypeForChildRelationship( getSobjectName(), relationshipName );
-        if ( validObjectType != fabricatedChild.getSobjectName() ) {
-            throw new FieldIsADifferentTypeException( 'The relationship ' + getSobjectName() + '.' + relationshipName + ' is ' + validObjectType + ', not ' + fabricatedChild.getSobjectName() );
+    private void checkTypeIsValidForChildRelationship(String relationshipName, sfab_FabricatedSObject fabricatedChild) {
+        String validObjectType = objectDescriber.getObjectTypeForChildRelationship(getSobjectName(), relationshipName);
+        if (validObjectType != fabricatedChild.getSobjectName()) {
+            throw new FieldIsADifferentTypeException('The relationship ' + getSobjectName() + '.' + relationshipName + ' is ' + validObjectType + ', not ' + fabricatedChild.getSobjectName());
         }
     }
 
@@ -567,9 +575,9 @@ public virtual class sfab_FabricatedSObject {
     * Checks if the field with the given name is a child relationship for an sobject of the same type as the given Fabricated SObject
     */
     // TODO: push into sfab_ChildRelationshipNode?
-    private void checkTypeIsValidForChildRelationship( String relationshipName, List<sfab_FabricatedSObject> fabricatedChildren  ){
-        for ( sfab_FabricatedSObject thisChild : fabricatedChildren ) {
-            checkTypeIsValidForChildRelationship( relationshipName, thisChild );
+    private void checkTypeIsValidForChildRelationship(String relationshipName, List<sfab_FabricatedSObject> fabricatedChildren) {
+        for (sfab_FabricatedSObject thisChild : fabricatedChildren) {
+            checkTypeIsValidForChildRelationship(relationshipName, thisChild);
         }
     }
 
@@ -577,15 +585,15 @@ public virtual class sfab_FabricatedSObject {
     * Internal method that should not be called directly.
     * Checks if the fields with the given name is a child relationship, throwing an exception if not
     */
-    private void childFieldIsChildRelationship( String childRelationshipName ) {
+    private void childFieldIsChildRelationship(String childRelationshipName) {
 
-        if ( !objectDescriber.objectHasChildRelationshipNamed( getSobjectName(), childRelationshipName ) ) {
-            if (  objectDescriber.objectHasSimpleFieldNamed( getSobjectName(), childRelationshipName )
-                || objectDescriber.objectHasParentRelationshipNamed( getSobjectName(), childRelationshipName ) ) {
-                throw new FieldIsNotChildRelationshipException( 'The field ' + getSobjectName() + '.' + childRelationshipName + ' is not a child relationship' );
+        if (!objectDescriber.objectHasChildRelationshipNamed(getSobjectName(), childRelationshipName)) {
+            if (objectDescriber.objectHasSimpleFieldNamed(getSobjectName(), childRelationshipName)
+                || objectDescriber.objectHasParentRelationshipNamed(getSobjectName(), childRelationshipName)) {
+                throw new FieldIsNotChildRelationshipException('The field ' + getSobjectName() + '.' + childRelationshipName + ' is not a child relationship');
             }
 
-            throw new ChildRelationshipDoesNotExistException( 'The child relationship ' + getSobjectName() + '.' + childRelationshipName + ' does not exist' );
+            throw new ChildRelationshipDoesNotExistException('The child relationship ' + getSobjectName() + '.' + childRelationshipName + ' does not exist');
         }
     }
 
@@ -597,7 +605,7 @@ public virtual class sfab_FabricatedSObject {
 
         private String fullFieldName;
 
-        public sfab_FieldNameSplitter( String fullFieldName ) {
+        public sfab_FieldNameSplitter(String fullFieldName) {
             this.fullFieldName = fullFieldName;
         }
 
@@ -606,7 +614,7 @@ public virtual class sfab_FabricatedSObject {
         * Returns the parent field component of the current field name
         */
         public String getParentFieldName() {
-            return fullFieldName.substringBefore( '.' );
+            return fullFieldName.substringBefore('.');
         }
 
         /**
@@ -614,7 +622,7 @@ public virtual class sfab_FabricatedSObject {
         * Returns the child field component of the current field name
         */
         public String getChildFieldName() {
-            return fullFieldName.substringAfter( '.' );
+            return fullFieldName.substringAfter('.');
         }
 
         /**
@@ -622,7 +630,7 @@ public virtual class sfab_FabricatedSObject {
         * States if the current field name represents a navigation to a parent field
         */
         public Boolean isAParentNavigation() {
-            return fullFieldName.contains( '.' );
+            return fullFieldName.contains('.');
         }
     }
 }

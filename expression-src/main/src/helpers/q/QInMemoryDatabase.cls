@@ -1,22 +1,27 @@
 @IsTest
 public with sharing class QInMemoryDatabase extends QDB {
-    private final Map<Id, SObject> recordsInTheDatabase = new Map<Id, SObject>();
+    private final Map<Id, sfab_FabricatedSObject> recordsInTheDatabase = new Map<Id, sfab_FabricatedSObject>();
 
     public override List<SObject> run(Q query) {
         return fromQ(query);
     }
 
     public override void doInsert(SObject record) {
-        record.Id = IdGenerator.generate(record.getSObjectType());
+        sfab_FabricatedSObject fabricatedRecord = new sfab_FabricatedSObject(
+            Type.forName(record.getSObjectType().getDescribe().getName()),
+            record.getPopulatedFieldsAsMap()
+        );
 
-        resolveChildRelationships(record);
-
-        recordsInTheDatabase.put(record.Id, record);
+        Id generatedId = IdGenerator.generate(record.getSObjectType());
+        record.Id = generatedId;
+        fabricatedRecord.set('Id', generatedId);
+        resolveChildRelationships(fabricatedRecord, record);
+        recordsInTheDatabase.put(generatedId, fabricatedRecord);
     }
 
-    private void resolveChildRelationships(SObject record) {
-        Map<String, Object> populatedFields = record.getPopulatedFieldsAsMap();
-        SObjectType sType = record.getSObjectType();
+    private void resolveChildRelationships(sfab_FabricatedSObject fabricatedRecord, SObject originalRecord) {
+        Map<String, Object> populatedFields = originalRecord.getPopulatedFieldsAsMap();
+        SObjectType sType = originalRecord.getSObjectType();
         Map<String, SObjectField> fieldsForType = sType.getDescribe().fields.getMap();
 
         // Extract only the fields that are a reference to a parent (i.e. fields with Ids)
@@ -25,8 +30,8 @@ public with sharing class QInMemoryDatabase extends QDB {
             SObjectField field = fieldsForType.get(currentPopulatedField);
             if (field.getDescribe().getType() == DisplayType.REFERENCE) {
                 // Make sure that the Id that is being referenced is actually in the database
-                if (!recordsInTheDatabase.containsKey((Id) record.get(field))) {
-                    throw new QDBException('The Id ' + record.get(field) + ' is not in the database');
+                if (!recordsInTheDatabase.containsKey((Id) originalRecord.get(field))) {
+                    throw new QDBException('The Id ' + originalRecord.get(field) + ' is not in the database');
                 }
 
                 referenceFields.add(field);
@@ -35,7 +40,7 @@ public with sharing class QInMemoryDatabase extends QDB {
 
         Map<SObjectField, SObjectType> parentTypeOfReferenceField = new Map<SObjectField, SObjectType>();
         for (SObjectField currentField : referenceFields) {
-            parentTypeOfReferenceField.put(currentField, ((Id) record.get(currentField)).getSobjectType());
+            parentTypeOfReferenceField.put(currentField, ((Id) originalRecord.get(currentField)).getSobjectType());
         }
 
         for (SObjectField currentField : parentTypeOfReferenceField.keySet()) {
@@ -44,13 +49,8 @@ public with sharing class QInMemoryDatabase extends QDB {
             for (ChildRelationship currentRelationship : relationships) {
                 if (currentRelationship.getField() == currentField) {
                     String relationshipName = currentRelationship.getRelationshipName();
-                    SObject parentRecord = recordsInTheDatabase.get((Id) record.get(currentField));
-                    List<SObject> childrenForReference = (List<SObject>) parentRecord.getSObjects(relationshipName);
-                    if (childrenForReference == null) {
-                        childrenForReference = new List<SObject>();
-                    }
-                    childrenForReference.add(record);
-                    parentRecord.put(relationshipName, childrenForReference);
+                    sfab_FabricatedSObject parentRecord = recordsInTheDatabase.get((Id) originalRecord.get(currentField));
+                    parentRecord.addChild(relationshipName, fabricatedRecord);
                 }
             }
         }
@@ -69,7 +69,8 @@ public with sharing class QInMemoryDatabase extends QDB {
     private List<SObject> fromQ(Q query) {
         SObjectType sObjectType = getSObjectTypeFromQ(query);
         List<SObject> filteredRecordsForSObject = new List<SObject>();
-        for (SObject record : recordsInTheDatabase.values()) {
+        for (sfab_FabricatedSObject fabRecord : recordsInTheDatabase.values()) {
+            SObject record = (SObject) fabRecord.toSObject();
             if (record.getSObjectType() == sObjectType) {
                 filteredRecordsForSObject.add(record);
             }
