@@ -77,6 +77,9 @@ public with sharing class QInMemoryDatabase extends QDB {
                 when EQUALS {
                     expr += '-> WHERE(' + cond.field + ' == ' + cond.fieldValue + ')';
                 }
+                when NOT_EQUALS {
+                    expr += '-> WHERE(' + cond.field + ' != ' + cond.fieldValue + ')';
+                }
                 when else {
                     throw new QDBException('Operator ' + cond.operatorValue + ' is not supported in InMemoryDatabase');
                 }

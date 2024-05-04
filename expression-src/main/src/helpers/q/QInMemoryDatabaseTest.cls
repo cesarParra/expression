@@ -292,28 +292,32 @@ private class QInMemoryDatabaseTest {
         Assert.areEqual('Account without Billing Country', results[0].get('Name'));
     }
 
-//    @IsTest
-//    static void canQueryUsingACondition() {
-//        Account accountWithBillingCountry = new Account(Name = 'Account with Billing Country', BillingCountry = 'USA');
-//        Account accountWithoutBillingCountry = new Account(Name = 'Account without Billing Country');
-//        db.doInsert(new List<Account>{
-//            accountWithBillingCountry, accountWithoutBillingCountry
-//        });
-//
-//        Q query = new Q(Account.SObjectType)
-//            .add(Q.condition('BillingCountry').isNotNull());
-//
-//        List<SObject> results = db.run(query);
-//
-//        Assert.areEqual(1, results.size());
-//        Assert.areEqual('Account with Billing Country', results[0].get('Name'));
-//    }
+    @IsTest
+    static void canQueryUsingACondition_isNotNull() {
+        Account accountWithBillingCountry = new Account(Name = 'Account with Billing Country', BillingCountry = 'USA');
+        Account accountWithoutBillingCountry = new Account(Name = 'Account without Billing Country');
+        db.doInsert(new List<Account>{
+            accountWithBillingCountry, accountWithoutBillingCountry
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.condition('BillingCountry').isNotNull());
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.areEqual('Account with Billing Country', results[0].get('Name'));
+    }
 
     // Conditions
-    // is null
-    // is not null
-    // Equals
-    // Not equals
+    // Equals (number)
+    // Not equals (number)
+    // Equals (string)
+    // Not equals (string)
+    // Equals (date)
+    // Not equals (date)
+    // Equals (datetime)
+    // Not equals (datetime)
     // less than
     // less than or equal
     // greater than
