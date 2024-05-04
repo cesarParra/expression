@@ -457,8 +457,24 @@ private class QInMemoryDatabaseTest {
         Assert.areEqual(asset2, results[0]);
     }
 
+    @IsTest
+    static void canQueryUsingACondition_lessThan() {
+        Account account1 = new Account(Name = 'Test Account', NumberOfEmployees = 10);
+        Account account2 = new Account(Name = 'Test Account 2', NumberOfEmployees = 20);
+        db.doInsert(new List<Account>{
+            account1, account2
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.condition('NumberOfEmployees').isLessThan(20));
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.areEqual(10, results[0].get('NumberOfEmployees'));
+    }
+
     // Conditions
-    // Not equals (datetime)
     // less than
     // less than or equal
     // greater than
