@@ -691,25 +691,16 @@ private class QInMemoryDatabaseTest {
         Account childAccount = new Account(Name = 'Child', ParentId = parentAccount.Id);
         db.doInsert(childAccount);
 
-        Q allAccounts = new Q(Account.SObjectType);
-        List<Account> results = db.run(allAccounts);
-        for (Account a : results) {
-            System.debug('----');
-            System.debug(a);
-            System.debug(a.ChildAccounts);
-            System.debug('----');
-        }
+        Q queryWithSub = new Q(Account.SObjectType)
+            .addSubquery(new Q('ChildAccounts'));
 
-//        Q queryWithSub = new Q(Account.SObjectType)
-//            .addSubquery(new Q('ChildAccounts'));
-//
-//        List<Account> results = db.run(queryWithSub);
-//
-//        Assert.areEqual(2, results.size());
-//
-//        Map<Id, Account> accountsById = new Map<Id, Account>(results);
-//        Account requeriedParent = accountsById.get(parentAccount.Id);
-//        Assert.areEqual(1, requeriedParent.ChildAccounts.size());
+        List<Account> results = db.run(queryWithSub);
+
+        Assert.areEqual(2, results.size());
+
+        Map<Id, Account> accountsById = new Map<Id, Account>(results);
+        Account requeriedParent = accountsById.get(parentAccount.Id);
+        Assert.areEqual(1, requeriedParent.ChildAccounts.size());
     }
 
     // TODO: Also adds parent relationships to the __r or the parent SOBject
