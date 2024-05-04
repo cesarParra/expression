@@ -1,6 +1,6 @@
 @IsTest
 public with sharing class QInMemoryDatabase extends QDB {
-    private final List<SObject> recordsInTheDatabase = new List<SObject>();
+    private final Map<Id, SObject> recordsInTheDatabase = new Map<Id, SObject>();
 
     public override List<SObject> run(Q query) {
         return fromQ(query);
@@ -8,7 +8,52 @@ public with sharing class QInMemoryDatabase extends QDB {
 
     public override void doInsert(SObject record) {
         record.Id = IdGenerator.generate(record.getSObjectType());
-        recordsInTheDatabase.add(record);
+
+        resolveChildRelationships(record);
+
+        recordsInTheDatabase.put(record.Id, record);
+    }
+
+    private void resolveChildRelationships(SObject record) {
+        Map<String, Object> populatedFields = record.getPopulatedFieldsAsMap();
+        SObjectType sType = record.getSObjectType();
+        Map<String, SObjectField> fieldsForType = sType.getDescribe().fields.getMap();
+
+        // Extract only the fields that are a reference to a parent (i.e. fields with Ids)
+        List<SObjectField> referenceFields = new List<SObjectField>();
+        for (String currentPopulatedField : populatedFields.keySet()) {
+            SObjectField field = fieldsForType.get(currentPopulatedField);
+            if (field.getDescribe().getType() == DisplayType.REFERENCE) {
+                // Make sure that the Id that is being referenced is actually in the database
+                if (!recordsInTheDatabase.containsKey((Id) record.get(field))) {
+                    throw new QDBException('The Id ' + record.get(field) + ' is not in the database');
+                }
+
+                referenceFields.add(field);
+            }
+        }
+
+        Map<SObjectField, SObjectType> parentTypeOfReferenceField = new Map<SObjectField, SObjectType>();
+        for (SObjectField currentField : referenceFields) {
+            parentTypeOfReferenceField.put(currentField, ((Id) record.get(currentField)).getSobjectType());
+        }
+
+        for (SObjectField currentField : parentTypeOfReferenceField.keySet()) {
+            SObjectType referenceType = parentTypeOfReferenceField.get(currentField);
+            List<ChildRelationship> relationships = referenceType.getDescribe().getChildRelationships();
+            for (ChildRelationship currentRelationship : relationships) {
+                if (currentRelationship.getField() == currentField) {
+                    String relationshipName = currentRelationship.getRelationshipName();
+                    SObject parentRecord = recordsInTheDatabase.get((Id) record.get(currentField));
+                    List<SObject> childrenForReference = (List<SObject>) parentRecord.getSObjects(relationshipName);
+                    if (childrenForReference == null) {
+                        childrenForReference = new List<SObject>();
+                    }
+                    childrenForReference.add(record);
+                    parentRecord.put(relationshipName, childrenForReference);
+                }
+            }
+        }
     }
 
     public override void doInsert(List<SObject> records) {
@@ -24,7 +69,7 @@ public with sharing class QInMemoryDatabase extends QDB {
     private List<SObject> fromQ(Q query) {
         SObjectType sObjectType = getSObjectTypeFromQ(query);
         List<SObject> filteredRecordsForSObject = new List<SObject>();
-        for (SObject record : recordsInTheDatabase) {
+        for (SObject record : recordsInTheDatabase.values()) {
             if (record.getSObjectType() == sObjectType) {
                 filteredRecordsForSObject.add(record);
             }
