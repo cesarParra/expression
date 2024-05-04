@@ -254,6 +254,24 @@ private class QInMemoryDatabaseTest {
         Assert.areEqual(10, results[1].get('NumberOfEmployees'));
     }
 
-    // Order by
-    // multiple fields with nulls last
+    @IsTest
+    static void canOrderByMultipleFields_nullsLast() {
+        // Given a database with multiple account records
+        Account a = new Account(Name = 'Account A', NumberOfEmployees = 10);
+        Account b = new Account(Name = 'Account A', NumberOfEmployees = null);
+        db.doInsert(new List<Account>{
+            b, a
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.orderBy('Name'))
+            .add(Q.orderBy('NumberOfEmployees').nullsLast());
+
+        // When the query is executed
+        List<SObject> results = db.run(query);
+
+        // Then the accounts are returned in order
+        Assert.areEqual(10, results[0].get('NumberOfEmployees'));
+        Assert.isNull(results[1].get('NumberOfEmployees'));
+    }
 }
