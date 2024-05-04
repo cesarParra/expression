@@ -88,7 +88,9 @@ public with sharing class QInMemoryDatabase extends QDB {
                     conditions.add(conditionStringBuilder(cond));
                 }
 
-                String orGroup = 'OR(';
+                String operatorAsString = castedCondition.operator == QConditionGroup.Operator.AND_GROUP ? 'AND' : 'OR';
+
+                String orGroup = operatorAsString + '(';
                 for (String cond : conditions) {
                     orGroup += cond + ',';
                 }
@@ -170,7 +172,6 @@ public with sharing class QInMemoryDatabase extends QDB {
         }
 
         public String build() {
-            System.debug('Expression: ' + expr);
             return expr;
         }
     }

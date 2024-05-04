@@ -661,4 +661,25 @@ private class QInMemoryDatabaseTest {
         Assert.isTrue(results.contains(account1));
         Assert.isTrue(results.contains(account3));
     }
+
+    @IsTest
+    static void canAddAndGroup() {
+        Account account1 = new Account(Name = 'Test Account 1', NumberOfEmployees = 10, BillingCountry = 'USA');
+        Account account2 = new Account(Name = 'Test Account 2', NumberOfEmployees = 20, BillingCountry = 'USA');
+        Account account3 = new Account(Name = 'Test Account 3', NumberOfEmployees = 30, BillingCountry = 'Canada');
+        db.doInsert(new List<Account>{
+            account1, account2, account3
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.andGroup()
+                .add(Q.condition('NumberOfEmployees').isLessThan(20))
+                .add(Q.condition('BillingCountry').equalsTo('USA'))
+            );
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.isTrue(results.contains(account1));
+    }
 }
