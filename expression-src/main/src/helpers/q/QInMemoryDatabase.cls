@@ -95,12 +95,14 @@ public with sharing class QInMemoryDatabase extends QDB {
             } else if (val instanceof Date) {
                 Date castDate = (Date) val;
                 return 'DATE(' + castDate.year() + ',' + castDate.month() + ',' + castDate.day() + ')';
+            } else if (val instanceof Datetime) {
+                Datetime castDatetime = (Datetime) val;
+                return 'DATETIME(' + castDatetime.year() + ',' + castDatetime.month() + ',' + castDatetime.day() + ',' + castDatetime.hour() + ',' + castDatetime.minute() + ',' + castDatetime.second() + ')';
             }
             return val;
         }
 
         public String build() {
-            System.debug('Expression: ' + expr);
             return expr;
         }
     }

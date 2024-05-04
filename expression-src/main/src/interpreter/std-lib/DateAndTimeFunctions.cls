@@ -8,6 +8,7 @@ public with sharing class DateAndTimeFunctions {
     private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
         'ADDMONTHS' => new DateAndTimeFunctions.AddMonthsFn(),
         'DATE' => new DateAndTimeFunctions.DateFn(),
+        'DATETIME' => new DateAndTimeFunctions.DatetimeFn(),
         'DAY' => new DateAndTimeFunctions.DayFn(),
         'DAYOFYEAR' => new DateAndTimeFunctions.DayOfYearFn(),
         'NOW' => new DateAndTimeFunctions.NowFn(),
@@ -109,6 +110,60 @@ public with sharing class DateAndTimeFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(3);
+        }
+    }
+
+    private class DatetimeFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object year = evaluate(arguments.get(0));
+            if (!(year instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "DATETIME" function: the argument must evaluate to a number value.'
+                );
+            }
+            Object month = evaluate(arguments.get(1));
+            if (!(month instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "DATETIME"" function: the argument must evaluate to a number value.'
+                );
+            }
+            Object day = evaluate(arguments.get(2));
+            if (!(day instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "DATETIME" function: the argument must evaluate to a number value.'
+                );
+            }
+            Object hour = evaluate(arguments.get(3));
+            if (!(hour instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "DATETIME" function: the argument must evaluate to a number value.'
+                );
+            }
+            Object minute = evaluate(arguments.get(4));
+            if (!(minute instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "DATETIME" function: the argument must evaluate to a number value.'
+                );
+            }
+            Object second = evaluate(arguments.get(5));
+            if (!(second instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "DATETIME" function: the argument must evaluate to a number value.'
+                );
+            }
+
+            return Datetime.newInstance(
+                Integer.valueOf(year),
+                Integer.valueOf(month),
+                Integer.valueOf(day),
+                Integer.valueOf(hour),
+                Integer.valueOf(minute),
+                Integer.valueOf(second)
+            );
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(6);
         }
     }
 
