@@ -92,6 +92,14 @@ public with sharing class QInMemoryDatabase extends QDB {
                 when GREATER_OR_EQUAL {
                     expr += '-> WHERE(' + cond.field + ' >= ' + formatFieldValue(cond.fieldValue) + ')';
                 }
+                when IS_LIKE {
+                    // Check that the field is a string
+                    if (cond.fieldValue instanceof String) {
+                        expr += '-> WHERE(LIKE(' + cond.field + ',' + formatFieldValue(cond.fieldValue) + '))';
+                    } else {
+                        throw new QDBException('IS LIKE operator can only be used with String fields');
+                    }
+                }
                 when else {
                     throw new QDBException('Operator ' + cond.operatorValue + ' is not supported in InMemoryDatabase');
                 }

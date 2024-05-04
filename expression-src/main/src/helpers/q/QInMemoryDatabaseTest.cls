@@ -529,8 +529,41 @@ private class QInMemoryDatabaseTest {
         Assert.isTrue(results.contains(account3));
     }
 
+    @IsTest
+    static void canQueryUsingACondition_isLike_percentWildcard() {
+        Account account1 = new Account(Name = 'Someone');
+        Account account2 = new Account(Name = 'Someone Else');
+        db.doInsert(new List<Account>{
+            account1, account2
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.condition('Name').isLike('%Else'));
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.areEqual('Someone Else', results[0].get('Name'));
+    }
+
+    @IsTest
+    static void canQueryUsingACondition_isLike_underscoreWildcard() {
+        Account account1 = new Account(Name = 'Someone');
+        Account account2 = new Account(Name = 'Someone Else');
+        db.doInsert(new List<Account>{
+            account1, account2
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.condition('Name').isLike('Someone _lse'));
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.areEqual('Someone Else', results[0].get('Name'));
+    }
+
     // Conditions
-    // greater than or equal
     // is like
     // is in
     // not in
