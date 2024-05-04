@@ -650,22 +650,15 @@ public with sharing class CollectionFunctions {
             }
         }
 
-        public Integer compareTo(Object param1) {
-            if (param1 instanceof ComparableMaps) {
-                if (mapOrSObjectVal instanceof Map<Object, Object>) {
-                    return compareToAsMaps((Map<Object, Object>) mapOrSObjectVal, param1, position);
-                } else {
-                    return compareToAsSObjects((SObject) mapOrSObjectVal, param1);
-                }
+        public Integer compareTo(Object compareTo) {
+            if (compareTo instanceof ComparableMaps) {
+                ComparableMaps other = (ComparableMaps) compareTo;
+                return doCompare(getValue(), other.getValue(), position);
             }
             return 0;
         }
 
-        private Integer compareToAsMaps(Map<Object, Object> mapVal, Object param1, NullsPosition position) {
-            Object thisValue = mapVal.get(keyToSortBy);
-            ComparableMaps other = (ComparableMaps) param1;
-            Object otherValue = ((Map<Object, Object>) other.mapOrSObjectVal).get(keyToSortBy);
-
+        private Integer doCompare(Object thisValue, Object otherValue, NullsPosition position) {
             if (thisValue == otherValue) {
                 return 0;
             }
@@ -676,25 +669,6 @@ public with sharing class CollectionFunctions {
 
             if (otherValue == null) {
                 return position == NullsPosition.NULLS_FIRST ? 1 : -1;
-            }
-
-            List<Object> values = new List<Object>{
-                thisValue, otherValue
-            };
-            values.sort();
-            if (values.get(0) == thisValue) {
-                return -1;
-            }
-            return 1;
-        }
-
-        private Integer compareToAsSObjects(SObject sobjectVal, Object param1) {
-            Object thisValue = sobjectVal.get((String) keyToSortBy);
-            ComparableMaps other = (ComparableMaps) param1;
-            Object otherValue = ((SObject) other.mapOrSObjectVal).get((String) keyToSortBy);
-
-            if (thisValue == otherValue) {
-                return 0;
             }
 
             List<Object> values = new List<Object>{
