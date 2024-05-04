@@ -1,3 +1,6 @@
+// TODO: Now that we have a @Context variable that can accept a list of SObjects, there's a lot of code
+// here that is using QUERY that we should be able to refactor to just use in-memory objects
+
 @IsTest
 private class CollectionFunctionsTest {
     @IsTest
@@ -295,8 +298,6 @@ private class CollectionFunctionsTest {
         Assert.areEqual(1, ((Map<Object, Object>) result[2]).get('b'));
     }
 
-    // TODO: Same treatment but with SObjects
-
     @IsTest
     private static void canSortBySObjectField() {
         Account account1 = new Account(Name = 'A');
@@ -316,21 +317,23 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
-    private static void canSortBySObjectFieldInDescendingOrder() {
-        Account account1 = new Account(Name = 'A');
-        Account account2 = new Account(Name = 'C');
-        Account account3 = new Account(Name = 'B');
+    private static void canSortSObjectByField_nullsArePlacedFirstByDefault() {
+        Account account1 = new Account(Name = 'A', NumberOfEmployees = 10);
+        Account account2 = new Account(Name = 'B', NumberOfEmployees = 20);
+        Account account3 = new Account(Name = 'C', NumberOfEmployees = 30);
+        Account account4 = new Account(Name = 'D', NumberOfEmployees = null);
 
         insert new List<SObject>{
-            account1, account2, account3
+            account1, account2, account3, account4
         };
 
-        List<Object> result = (List<Object>) Evaluator.run('QUERY(Account["Name"]) -> SORT("Name", "desc")');
+        List<Object> result = (List<Object>) Evaluator.run('Query(Account["Name", "NumberOfEmployees"]) -> SORT("NumberOfEmployees")');
 
-        Assert.areEqual(3, result.size());
-        Assert.areEqual('C', ((Account) result[0]).Name);
-        Assert.areEqual('B', ((Account) result[1]).Name);
-        Assert.areEqual('A', ((Account) result[2]).Name);
+        Assert.areEqual(4, result.size());
+        Assert.isNull(((Account) result[0]).NumberOfEmployees);
+        Assert.areEqual(10, ((Account) result[1]).NumberOfEmployees);
+        Assert.areEqual(20, ((Account) result[2]).NumberOfEmployees);
+        Assert.areEqual(30, ((Account) result[3]).NumberOfEmployees);
     }
 
     @IsTest
@@ -352,23 +355,101 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
-    private static void canSortSObjectByField_nullsArePlacedLast() {
-        Account account1 = new Account(Name = 'A', NumberOfEmployees = 10);
-        Account account2 = new Account(Name = 'B', NumberOfEmployees = 20);
-        Account account3 = new Account(Name = 'C', NumberOfEmployees = 30);
-        Account account4 = new Account(Name = 'D', NumberOfEmployees = null);
+    private static void canSortBySObjectField_ascending_specifyingNullsFirst() {
+        Account account1 = new Account(Name = 'A');
+        Account account2 = new Account(Name = 'C');
+        Account account3 = new Account(Name = 'B');
+        Account account4 = new Account(Name = null);
 
-        insert new List<SObject>{
+        List<Account> accounts = new List<Account>{
             account1, account2, account3, account4
         };
 
-        List<Object> result = (List<Object>) Evaluator.run('Query(Account["Name", "NumberOfEmployees"]) -> SORT("NumberOfEmployees")');
+        List<Object> result = (List<Object>) Evaluator.run('@Context -> SORT("Name", "asc", "nulls_first")', accounts);
+
+        Assert.areEqual(4, result.size());
+        Assert.isNull(((Account) result[0]).Name);
+        Assert.areEqual('A', ((Account) result[1]).Name);
+        Assert.areEqual('B', ((Account) result[2]).Name);
+        Assert.areEqual('C', ((Account) result[3]).Name);
+    }
+
+    @IsTest
+    private static void canSortBySObjectField_ascending_specifyingNullsLast() {
+        Account account1 = new Account(Name = 'A');
+        Account account2 = new Account(Name = 'C');
+        Account account3 = new Account(Name = 'B');
+        Account account4 = new Account(Name = null);
+
+        List<Account> accounts = new List<Account>{
+            account1, account2, account3, account4
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('@Context -> SORT("Name", "asc", "nulls_last")', accounts);
 
         Assert.areEqual(4, result.size());
         Assert.areEqual('A', ((Account) result[0]).Name);
         Assert.areEqual('B', ((Account) result[1]).Name);
         Assert.areEqual('C', ((Account) result[2]).Name);
-        Assert.areEqual('D', ((Account) result[3]).Name);
+        Assert.isNull(((Account) result[3]).Name);
+    }
+
+    @IsTest
+    private static void canSortBySObjectFieldInDescendingOrder() {
+        Account account1 = new Account(Name = 'A');
+        Account account2 = new Account(Name = 'C');
+        Account account3 = new Account(Name = 'B');
+
+        insert new List<SObject>{
+            account1, account2, account3
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('QUERY(Account["Name"]) -> SORT("Name", "desc")');
+
+        Assert.areEqual(3, result.size());
+        Assert.areEqual('C', ((Account) result[0]).Name);
+        Assert.areEqual('B', ((Account) result[1]).Name);
+        Assert.areEqual('A', ((Account) result[2]).Name);
+    }
+
+    @IsTest
+    private static void canSortBySObjectField_descending_specifyingNullsFirst() {
+        Account account1 = new Account(Name = 'A');
+        Account account2 = new Account(Name = 'C');
+        Account account3 = new Account(Name = 'B');
+        Account account4 = new Account(Name = null);
+
+        List<Account> accounts = new List<Account>{
+            account1, account2, account3, account4
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('@Context -> SORT("Name", "desc", "nulls_first")', accounts);
+
+        Assert.areEqual(4, result.size());
+        Assert.isNull(((Account) result[0]).Name);
+        Assert.areEqual('C', ((Account) result[1]).Name);
+        Assert.areEqual('B', ((Account) result[2]).Name);
+        Assert.areEqual('A', ((Account) result[3]).Name);
+    }
+
+    @IsTest
+    private static void canSortBySObjectField_descending_specifyingNullsLast() {
+        Account account1 = new Account(Name = 'A');
+        Account account2 = new Account(Name = 'C');
+        Account account3 = new Account(Name = 'B');
+        Account account4 = new Account(Name = null);
+
+        List<Account> accounts = new List<Account>{
+            account1, account2, account3, account4
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('@Context -> SORT("Name", "desc", "nulls_last")', accounts);
+
+        Assert.areEqual(4, result.size());
+        Assert.areEqual('C', ((Account) result[0]).Name);
+        Assert.areEqual('B', ((Account) result[1]).Name);
+        Assert.areEqual('A', ((Account) result[2]).Name);
+        Assert.isNull(((Account) result[3]).Name);
     }
 
     @IsTest

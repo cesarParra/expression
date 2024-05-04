@@ -568,12 +568,6 @@ public with sharing class CollectionFunctions {
                         skippedToPutAtTheEnd.add(new ComparableMaps(mapVal, fieldToSortBy, position));
                         continue;
                     }
-                } else {
-                    SObject sobjectVal = (SObject) currentVal;
-                    if (sobjectVal.get(fieldToSortBy) == null) {
-                        skippedToPutAtTheEnd.add(new ComparableMaps(sobjectVal, fieldToSortBy, position));
-                        continue;
-                    }
                 }
 
                 comparableMaps.add(new ComparableMaps(currentVal, fieldToSortBy, position));
