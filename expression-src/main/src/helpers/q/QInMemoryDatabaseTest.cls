@@ -212,6 +212,27 @@ private class QInMemoryDatabaseTest {
         Assert.isNull(results[1].get('NumberOfEmployees'));
     }
 
+    @IsTest
+    static void canOrderByMultipleFields() {
+        // Given a database with multiple account records
+        Account b = new Account(Name = 'Account B', NumberOfEmployees = 10);
+        Account a = new Account(Name = 'Account A', NumberOfEmployees = 10);
+        db.doInsert(new List<Account>{
+            b, a
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.orderBy('NumberOfEmployees').descending())
+            .add(Q.orderBy('Name'));
+
+        // When the query is executed
+        List<SObject> results = db.run(query);
+
+        // Then the accounts are returned in order
+        Assert.areEqual('Account A', results[0].get('Name'));
+        Assert.areEqual('Account B', results[1].get('Name'));
+    }
+
     // Order by
     // multiple fields
     // multiple fields with nulls first
