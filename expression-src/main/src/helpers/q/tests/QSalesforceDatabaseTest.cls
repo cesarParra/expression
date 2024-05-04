@@ -51,18 +51,16 @@ private class QSalesforceDatabaseTest {
         String expected = 'SELECT Id FROM Account WHERE Name LIKE \'%Acme%\'';
         System.assertEquals(expected, query, 'It should output a query with a condition.');
     }
-//
-//    @IsTest
-//    static void testAddLimit() {
-//        String query =
-//            new Q(Account.SObjectType)
-//                .addLimit(5)
-//                .build();
-//
-//        String expected = 'SELECT Id FROM Account LIMIT 5';
-//        System.assertEquals(expected, query, 'It should output a query with a LIMIT.');
-//        Database.query(query);
-//    }
+
+    @IsTest
+    static void testAddLimit() {
+        String query =
+            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+                .addLimit(5));
+
+        String expected = 'SELECT Id FROM Account LIMIT 5';
+        System.assertEquals(expected, query, 'It should output a query with a LIMIT.');
+    }
 //
 //    @IsTest
 //    static void testAddOffset() {
