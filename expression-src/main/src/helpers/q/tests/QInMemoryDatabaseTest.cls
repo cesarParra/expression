@@ -746,28 +746,28 @@ private class QInMemoryDatabaseTest {
         Assert.areEqual('Parent', childWithAParent.Parent.Name);
     }
 
-//    @IsTest
-//    static void canAddFiltersToTheSubquery() {
-//        Account parentAccount = new Account(Name = 'Parent');
-//        db.doInsert(parentAccount);
-//
-//        Account childAccount1 = new Account(Name = 'Child', ParentId = parentAccount.Id);
-//        Account childAccount2 = new Account(Name = 'Child 2', ParentId = parentAccount.Id);
-//        db.doInsert(new List<Account>{
-//            childAccount1, childAccount2
-//        });
-//
-//        Q queryWithSub = new Q(Account.SObjectType)
-//            .addSubquery(new Q('ChildAccounts')
-//                .add(Q.condition('Name').equalsTo('Child'))
-//            );
-//
-//        List<Account> results = db.run(queryWithSub);
-//
-//        Assert.areEqual(3, results.size());
-//
-//        Map<Id, Account> accountsByIds = new Map<Id, Account>(results);
-//        Account requeriedParent = accountsByIds.get(parentAccount.Id);
-//        Assert.areEqual(1, requeriedParent.ChildAccounts.size());
-//    }
+    @IsTest
+    static void canAddFiltersToTheSubquery() {
+        Account parentAccount = new Account(Name = 'Parent');
+        db.doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child', ParentId = parentAccount.Id);
+        Account childAccount2 = new Account(Name = 'Child 2', ParentId = parentAccount.Id);
+        db.doInsert(new List<Account>{
+            childAccount1, childAccount2
+        });
+
+        Q queryWithSub = new Q(Account.SObjectType)
+            .addSubquery(new Q('ChildAccounts')
+                .add(Q.condition('Name').equalsTo('Child'))
+            );
+
+        List<Account> results = db.run(queryWithSub);
+
+        Assert.areEqual(3, results.size());
+
+        Map<Id, Account> accountsByIds = new Map<Id, Account>(results);
+        Account requeriedParent = accountsByIds.get(parentAccount.Id);
+        Assert.areEqual(1, requeriedParent.ChildAccounts.size());
+    }
 }

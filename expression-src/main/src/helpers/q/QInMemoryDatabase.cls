@@ -3,7 +3,15 @@ public with sharing class QInMemoryDatabase extends QDB {
     private final Map<Id, sfab_FabricatedSObject> recordsInTheDatabase = new Map<Id, sfab_FabricatedSObject>();
 
     public override List<SObject> run(Q query) {
-        return fromQ(query);
+        SObjectType sObjectType = getSObjectTypeFromQ(query);
+        List<SObject> filteredRecordsForSObject = new List<SObject>();
+        for (sfab_FabricatedSObject fabRecord : recordsInTheDatabase.values()) {
+            SObject record = (SObject) fabRecord.toSObject();
+            if (record.getSObjectType() == sObjectType) {
+                filteredRecordsForSObject.add(record);
+            }
+        }
+        return fromQ(query, filteredRecordsForSObject);
     }
 
     public override void doInsert(SObject record) {
@@ -71,16 +79,7 @@ public with sharing class QInMemoryDatabase extends QDB {
         return ((SObject) Type.forName(query.fromText).newInstance()).getSObjectType();
     }
 
-    private List<SObject> fromQ(Q query) {
-        SObjectType sObjectType = getSObjectTypeFromQ(query);
-        List<SObject> filteredRecordsForSObject = new List<SObject>();
-        for (sfab_FabricatedSObject fabRecord : recordsInTheDatabase.values()) {
-            SObject record = (SObject) fabRecord.toSObject();
-            if (record.getSObjectType() == sObjectType) {
-                filteredRecordsForSObject.add(record);
-            }
-        }
-
+    private List<SObject> fromQ(Q query, List<SObject> recordsToFilterFrom) {
         ExpressionBuilder exprBuilder = new ExpressionBuilder();
 
         for (QICondition condition : query.conditions) {
@@ -99,9 +98,34 @@ public with sharing class QInMemoryDatabase extends QDB {
             exprBuilder.addLimit(query.numberOfRows);
         }
 
-        Object result = Evaluator.run(exprBuilder.build(), filteredRecordsForSObject);
+        Object result = Evaluator.run(exprBuilder.build(), recordsToFilterFrom);
 
-        return castToSObjectList((List<Object>) result);
+        List<SObject> resultRecords = castToSObjectList((List<Object>) result);
+        if (query.subQueries.isEmpty()) {
+            return resultRecords;
+        }
+        
+        List<SObject> recordsWithFilteredSubqueries = new List<SObject>();
+        for (Q subQuery : query.subQueries) {
+            String relationshipName = subQuery.fromText;
+            for (SObject currentResultRecord : resultRecords) {
+                List<SObject> unfilteredChildren = (List<SObject>) currentResultRecord.getSObjects(relationshipName);
+                System.debug('Unfiltered children: ' + unfilteredChildren);
+                List<SObject> filteredChildren = fromQ(subQuery, unfilteredChildren ?? new List<SObject>());
+                system.debug('Filtered children: ' + filteredChildren);
+
+                // Find the original sfab for this record so that we can set new child relationships
+                sfab_FabricatedSObject originalRecord = recordsInTheDatabase.get(currentResultRecord.Id).clone();
+                List<sfab_FabricatedSObject> originalChildrenFiltered = new List<sfab_FabricatedSObject>();
+                for (SObject child : filteredChildren) {
+                    originalChildrenFiltered.add(recordsInTheDatabase.get(child.Id));
+                }
+                originalRecord.setChildren(relationshipName, originalChildrenFiltered);
+                recordsWithFilteredSubqueries.add(originalRecord.toSObject());
+            }
+        }
+
+        return recordsWithFilteredSubqueries;
     }
 
     private static List<SObject> castToSObjectList(List<Object> objects) {
@@ -223,6 +247,7 @@ public with sharing class QInMemoryDatabase extends QDB {
         }
 
         public String build() {
+            System.debug('Expression: ' + expr);
             return expr;
         }
     }
