@@ -40,6 +40,10 @@ public with sharing class QInMemoryDatabase extends QDB {
             exprBuilder.orderBy(order);
         }
 
+        if (query.numberOfRowsToSkip != null) {
+            exprBuilder.addOffset(query.numberOfRowsToSkip);
+        }
+
         if (query.numberOfRows != null) {
             exprBuilder.addLimit(query.numberOfRows);
         }
@@ -120,6 +124,11 @@ public with sharing class QInMemoryDatabase extends QDB {
 
         public ExpressionBuilder addLimit(Integer numberToLimitTo) {
             expr += '-> TAKE(' + numberToLimitTo + ')';
+            return this;
+        }
+
+        public ExpressionBuilder addOffset(Integer numberToOffset) {
+            expr += '-> SKIP(' + numberToOffset + ')';
             return this;
         }
 

@@ -620,4 +620,23 @@ private class QInMemoryDatabaseTest {
 
         Assert.areEqual(2, results.size());
     }
+
+    @IsTest
+    static void canAddOffset() {
+        Account account1 = new Account(Name = 'Test Account 1');
+        Account account2 = new Account(Name = 'Test Account 2');
+        Account account3 = new Account(Name = 'Test Account 3');
+        db.doInsert(new List<Account>{
+            account1, account2, account3
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .addOffset(1);
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(2, results.size());
+        Assert.isTrue(results.contains(account2));
+        Assert.isTrue(results.contains(account3));
+    }
 }

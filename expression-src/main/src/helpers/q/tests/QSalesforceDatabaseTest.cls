@@ -61,18 +61,16 @@ private class QSalesforceDatabaseTest {
         String expected = 'SELECT Id FROM Account LIMIT 5';
         System.assertEquals(expected, query, 'It should output a query with a LIMIT.');
     }
-//
-//    @IsTest
-//    static void testAddOffset() {
-//        String query =
-//            new Q(Account.SObjectType)
-//                .addOffset(5)
-//                .build();
-//
-//        String expected = 'SELECT Id FROM Account OFFSET 5';
-//        System.assertEquals(expected, query, 'It should output a query with an OFFSET.');
-//        Database.query(query);
-//    }
+
+    @IsTest
+    static void testAddOffset() {
+        String query =
+            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+                .addOffset(5));
+
+        String expected = 'SELECT Id FROM Account OFFSET 5';
+        System.assertEquals(expected, query, 'It should output a query with an OFFSET.');
+    }
 
     //
 //    @IsTest
