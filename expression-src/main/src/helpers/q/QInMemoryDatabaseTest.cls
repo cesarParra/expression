@@ -510,6 +510,25 @@ private class QInMemoryDatabaseTest {
         Assert.areEqual(20, results[0].get('NumberOfEmployees'));
     }
 
+    @IsTest
+    static void canQueryUsingACondition_greaterThanOrEqualTo() {
+        Account account1 = new Account(Name = 'Test Account', NumberOfEmployees = 10);
+        Account account2 = new Account(Name = 'Test Account 2', NumberOfEmployees = 20);
+        Account account3 = new Account(Name = 'Test Account 3', NumberOfEmployees = 30);
+        db.doInsert(new List<Account>{
+            account1, account2, account3
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.condition('NumberOfEmployees').isGreaterOrEquals(20));
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(2, results.size());
+        Assert.isTrue(results.contains(account2));
+        Assert.isTrue(results.contains(account3));
+    }
+
     // Conditions
     // greater than or equal
     // is like
