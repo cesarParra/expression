@@ -343,9 +343,41 @@ private class QInMemoryDatabaseTest {
         Assert.areEqual('Test Account 2', results[0].get('Name'));
     }
 
+    @IsTest
+    static void canQueryUsingACondition_comparingNumbersThatAreEqual() {
+        Account account1 = new Account(Name = 'Test Account', NumberOfEmployees = 10);
+        Account account2 = new Account(Name = 'Test Account 2', NumberOfEmployees = 20);
+        db.doInsert(new List<Account>{
+            account1, account2
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.condition('NumberOfEmployees').equalsTo(10));
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.areEqual(10, results[0].get('NumberOfEmployees'));
+    }
+
+    @IsTest
+    static void canQueryUsingACondition_comparingNumbersThatAreNotEqual() {
+        Account account1 = new Account(Name = 'Test Account', NumberOfEmployees = 10);
+        Account account2 = new Account(Name = 'Test Account 2', NumberOfEmployees = 20);
+        db.doInsert(new List<Account>{
+            account1, account2
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.condition('NumberOfEmployees').notEqualsTo(10));
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.areEqual(20, results[0].get('NumberOfEmployees'));
+    }
+
     // Conditions
-    // Equals (number)
-    // Not equals (number)
     // Equals (date)
     // Not equals (date)
     // Equals (datetime)
