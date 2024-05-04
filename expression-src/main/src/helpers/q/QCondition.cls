@@ -18,23 +18,24 @@ public virtual class QCondition implements QICondition {
         EXCLUDES
     }
 
-    private ComparisonOperator operatorValue;
+    public ComparisonOperator operatorValue;
 
-    private final String field {
-        private get {
+    public final String field {
+        get {
             return String.escapeSingleQuotes(field);
         }
         private set;
     }
 
-    private Object fieldValue {
-        private get {
+    public Object fieldValue {
+        get {
             return formatFieldValue(fieldValue);
         }
         private set {
             fieldValue = value;
         }
     }
+
     public QCondition(String field) {
         this.field = field;
     }
@@ -127,40 +128,5 @@ public virtual class QCondition implements QICondition {
         this.operatorValue = ComparisonOperator.NOT_EQUALS;
         this.fieldValue = null;
         return this;
-    }
-
-    public String build() {
-        switch on operatorValue {
-            when EQUALS {
-                return field + ' = ' + fieldValue;
-            }
-            when NOT_EQUALS {
-                return field + ' != ' + fieldValue;
-            }
-            when LESS_THAN {
-                return field + ' < ' + fieldValue;
-            }
-            when LESS_OR_EQUAL {
-                return field + ' <= ' + fieldValue;
-            }
-            when GREATER_THAN {
-                return field + ' > ' + fieldValue;
-            }
-            when GREATER_OR_EQUAL {
-                return field + ' >= ' + fieldValue;
-            }
-            when IS_LIKE {
-                return field + ' LIKE ' + fieldValue;
-            }
-            when IS_IN {
-                return field + ' IN (' + fieldValue + ')';
-            }
-            when NOT_IN {
-                return field + ' NOT IN (' + fieldValue + ')';
-            }
-            when else {
-                return '';
-            }
-        }
     }
 }

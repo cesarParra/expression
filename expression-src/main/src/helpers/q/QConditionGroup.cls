@@ -5,9 +5,9 @@
  */
 public abstract class QConditionGroup implements QICondition {
 
-    protected List<QICondition> conditions { get; set; }
+    public List<QICondition> conditions { get; set; }
 
-    protected String operator;
+    public String operator;
 
     public QConditionGroup(String operator) {
         this(new List<QICondition>(), operator);
@@ -21,19 +21,5 @@ public abstract class QConditionGroup implements QICondition {
     public QConditionGroup add(QICondition condition) {
         this.conditions.add(condition);
         return this;
-    }
-
-    public String build() {
-
-        String value = '';
-
-        for (QICondition condition : conditions) {
-            if (String.isNotEmpty(value)) {
-                value += ' ' + operator + ' ';
-            }
-            value += condition.build();
-        }
-
-        return '(' + value + ')';
     }
 }

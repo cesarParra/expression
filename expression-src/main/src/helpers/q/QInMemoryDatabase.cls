@@ -3,7 +3,7 @@ public with sharing class QInMemoryDatabase extends QDB {
     private final List<SObject> recordsInTheDatabase = new List<SObject>();
 
     public override List<SObject> run(Q query) {
-        return fromQ(query).toSObjectList();
+        return fromQ(query);
     }
 
     public override void doInsert(SObject record) {
@@ -21,18 +21,49 @@ public with sharing class QInMemoryDatabase extends QDB {
         return ((SObject) Type.forName(query.fromText).newInstance()).getSObjectType();
     }
 
-    private R fromQ(Q query) {
+    private List<SObject> fromQ(Q query) {
         SObjectType sObjectType = getSObjectTypeFromQ(query);
-        R builtR = R.of(recordsInTheDatabase)
-            .filter(R.isOfSObjectType.apply(sObjectType));
-
-        for (QOrder order : query.orders) {
-            Func direction = order.sortValue == QOrder.SortOrder.ASCENDING ?
-                order.nullsValue == QOrder.NullsOrder.LAST ? R.ascendNullsLast : R.ascendNullsFirst :
-                order.nullsValue == QOrder.NullsOrder.LAST ? R.descendNullsLast : R.descendNullsFirst;
-            builtR = builtR.sortBy((Func) direction.run(R.prop.apply(order.field)));
+        List<SObject> filteredRecordsForSObject = new List<SObject>();
+        for (SObject record : recordsInTheDatabase) {
+            if (record.getSObjectType() == sObjectType) {
+                filteredRecordsForSObject.add(record);
+            }
         }
 
-        return builtR;
+        ExpressionBuilder exprBuilder = new ExpressionBuilder();
+
+        for (QOrder order : query.orders) {
+            exprBuilder.orderBy(order);
+        }
+
+        Object result = Evaluator.run(exprBuilder.build(), filteredRecordsForSObject);
+
+        return castToSObjectList((List<Object>) result);
+    }
+
+    private static List<SObject> castToSObjectList(List<Object> objects) {
+        List<SObject> sObjects = new List<SObject>();
+        for (Object obj : objects) {
+            sObjects.add((SObject) obj);
+        }
+        return sObjects;
+    }
+
+    private class ExpressionBuilder {
+        private String expr;
+
+        public ExpressionBuilder() {
+            this.expr = '@Context';
+        }
+
+        public ExpressionBuilder orderBy(QOrder order) {
+            String direction = order.sortValue == QOrder.SortOrder.ASCENDING ? '"ASC"' : '"DESC"';
+            expr += '-> SORT(' + order.field + ',' + direction + ')';
+            return this;
+        }
+
+        public String build() {
+            return expr;
+        }
     }
 }

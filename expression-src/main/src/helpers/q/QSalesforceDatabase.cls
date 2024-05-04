@@ -44,7 +44,7 @@ public with sharing class QSalesforceDatabase extends QDB {
         List<String> condList = new List<String>();
 
         for (QICondition cond : query.conditions) {
-            condList.add(cond.build());
+            condList.add(buildQCondition(cond));
         }
 
         if (!query.conditions.isEmpty()) {
@@ -84,6 +84,55 @@ public with sharing class QSalesforceDatabase extends QDB {
         }
 
         return orderString;
+    }
+
+    private String buildQCondition(QICondition condition) {
+        String value = '';
+        if (condition instanceof QConditionGroup) {
+            QConditionGroup conditionGroup = (QConditionGroup) condition;
+            for (QICondition subCondition : conditionGroup.conditions) {
+                if (String.isNotEmpty(value)) {
+                    value += ' ' + conditionGroup.operator + ' ';
+                }
+                value += buildQCondition(subCondition);
+            }
+
+            return '(' + value + ')';
+        } else {
+            QCondition cond = (QCondition) condition;
+            switch on cond.operatorValue {
+                when EQUALS {
+                    return cond.field + ' = ' + cond.fieldValue;
+                }
+                when NOT_EQUALS {
+                    return cond.field + ' != ' + cond.fieldValue;
+                }
+                when LESS_THAN {
+                    return cond.field + ' < ' + cond.fieldValue;
+                }
+                when LESS_OR_EQUAL {
+                    return cond.field + ' <= ' + cond.fieldValue;
+                }
+                when GREATER_THAN {
+                    return cond.field + ' > ' + cond.fieldValue;
+                }
+                when GREATER_OR_EQUAL {
+                    return cond.field + ' >= ' + cond.fieldValue;
+                }
+                when IS_LIKE {
+                    return cond.field + ' LIKE ' + cond.fieldValue;
+                }
+                when IS_IN {
+                    return cond.field + ' IN (' + cond.fieldValue + ')';
+                }
+                when NOT_IN {
+                    return cond.field + ' NOT IN (' + cond.fieldValue + ')';
+                }
+                when else {
+                    return '';
+                }
+            }
+        }
     }
 
     public override void doInsert(SObject record) {

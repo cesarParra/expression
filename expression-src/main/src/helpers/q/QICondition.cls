@@ -4,5 +4,4 @@
  * @since 2020-02-04
  */
 public interface QICondition {
-    String build();
 }

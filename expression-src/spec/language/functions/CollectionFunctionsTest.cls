@@ -235,12 +235,55 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void canSortAListOfMapByAFieldInAscendingOrderSpecifyingNullsFirst() {
+        List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"a": null}, {"a": 1}], "a", "asc", "nulls_first")');
+        Assert.areEqual(4, result.size());
+        Assert.isNull(((Map<Object, Object>) result[0]).get('a'));
+        Assert.areEqual(1, ((Map<Object, Object>) result[1]).get('a'));
+        Assert.areEqual(2, ((Map<Object, Object>) result[2]).get('a'));
+        Assert.areEqual(3, ((Map<Object, Object>) result[3]).get('a'));
+    }
+
+    @IsTest
+    private static void canSortAListOfMapByAFieldInAscendingOrderSpecifyingNullsLast() {
+        List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"a": null}, {"a": 1}], "a", "asc", "nulls_last")');
+
+        Assert.areEqual(4, result.size());
+        Assert.areEqual(1, ((Map<Object, Object>) result[0]).get('a'));
+        Assert.areEqual(2, ((Map<Object, Object>) result[1]).get('a'));
+        Assert.areEqual(3, ((Map<Object, Object>) result[2]).get('a'));
+        Assert.isNull(((Map<Object, Object>) result[3]).get('a'));
+    }
+
+    @IsTest
     private static void canSortAListOfMapByAFieldInDescendingOrder() {
         List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"a": 1}], "a", "desc")');
         Assert.areEqual(3, result.size());
         Assert.areEqual(3, ((Map<Object, Object>) result[0]).get('a'));
         Assert.areEqual(2, ((Map<Object, Object>) result[1]).get('a'));
         Assert.areEqual(1, ((Map<Object, Object>) result[2]).get('a'));
+    }
+
+    @IsTest
+    private static void canSortAListOfMapByAFieldInDescendingOrderSpecifyingNullsFirst() {
+        List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"a": null}, {"a": 1}], "a", "desc", "nulls_first")');
+
+        Assert.areEqual(4, result.size());
+        Assert.isNull(((Map<Object, Object>) result[0]).get('a'));
+        Assert.areEqual(3, ((Map<Object, Object>) result[1]).get('a'));
+        Assert.areEqual(2, ((Map<Object, Object>) result[2]).get('a'));
+        Assert.areEqual(1, ((Map<Object, Object>) result[3]).get('a'));
+    }
+
+    @IsTest
+    private static void canSortAListOfMapByAFieldInDescendingOrderSpecifyingNullsLast() {
+        List<Object> result = (List<Object>) Evaluator.run('SORT([{"a": 3}, {"a": 2}, {"a": null}, {"a": 1}], "a", "desc", "nulls_last")');
+
+        Assert.areEqual(4, result.size());
+        Assert.areEqual(3, ((Map<Object, Object>) result[0]).get('a'));
+        Assert.areEqual(2, ((Map<Object, Object>) result[1]).get('a'));
+        Assert.areEqual(1, ((Map<Object, Object>) result[2]).get('a'));
+        Assert.isNull(((Map<Object, Object>) result[3]).get('a'));
     }
 
     @IsTest
@@ -251,6 +294,8 @@ private class CollectionFunctionsTest {
         Assert.areEqual(3, ((Map<Object, Object>) result[1]).get('a'));
         Assert.areEqual(1, ((Map<Object, Object>) result[2]).get('b'));
     }
+
+    // TODO: Same treatment but with SObjects
 
     @IsTest
     private static void canSortBySObjectField() {

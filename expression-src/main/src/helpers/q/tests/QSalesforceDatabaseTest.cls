@@ -31,19 +31,16 @@ private class QSalesforceDatabaseTest {
         String expected = 'SELECT Id FROM Account ORDER BY Name ASC NULLS LAST, BillingCountry DESC';
         System.assertEquals(expected, query, 'It should output a query with orders.');
     }
-    
-//
-//    @IsTest
-//    static void testAddCondition1() {
-//        String query =
-//            new Q(Account.SObjectType)
-//                .add(Q.condition('BillingCountry').isNotNull())
-//                .build();
-//
-//        String expected = 'SELECT Id FROM Account WHERE BillingCountry != null';
-//        System.assertEquals(expected, query, 'It should output a query with a condition.');
-//        Database.query(query);
-//    }
+
+    @IsTest
+    static void testAddCondition1() {
+        String query =
+            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+                .add(Q.condition('BillingCountry').isNotNull()));
+
+        String expected = 'SELECT Id FROM Account WHERE BillingCountry != null';
+        System.assertEquals(expected, query, 'It should output a query with a condition.');
+    }
 //
 //    @IsTest
 //    static void testAddCondition2() {

@@ -497,6 +497,29 @@ public with sharing class CollectionFunctions {
                 }
             }
 
+            // Forth argument is optional, describes whether to sort by nulls first or nulls last.
+            Object evaluatedPosition;
+            if (arguments.size() > 3) {
+                evaluatedPosition = evaluate(arguments.get(3));
+                if (!(evaluatedPosition instanceof String)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "SORT" function: the forth argument must evaluate to a string.'
+                    );
+                }
+
+                // Expect the string to be either 'NULLS_FIRST' or 'NULLS_LAST'
+                if (!((String) evaluatedPosition).equalsIgnoreCase('NULLS_FIRST') && !((String) evaluatedPosition).equalsIgnoreCase('NULLS_LAST')) {
+                    throw new FunctionExecutionException(
+                        'Error executing "SORT" function: the forth argument must be either "NULLS_FIRST" or "NULLS_LAST".'
+                    );
+                }
+            }
+
+            String nullsPositionAsString = (String) evaluatedPosition;
+            // If none is defined, default to NULLS_FIRST
+            NullsPosition position = nullsPositionAsString == null ? NullsPosition.NULLS_FIRST :
+                nullsPositionAsString.equalsIgnoreCase('NULLS_FIRST') ? NullsPosition.NULLS_FIRST : NullsPosition.NULLS_LAST;
+
             // If the list is empty, return early
             List<Object> listVal = CollectionUtils.toObjectList((Iterable<Object>) listObj);
             if (listVal.isEmpty()) {
@@ -504,19 +527,19 @@ public with sharing class CollectionFunctions {
             }
 
             // If no extra arguments were provided, just sort the list
-            if (fieldToSortBy == null && direction == null) {
+            if (fieldToSortBy == null && direction == null && evaluatedPosition == null) {
                 listVal.sort();
                 return listVal;
             }
 
             // If each element in the list is a map, sort by the field
             if (listVal.get(0) instanceof Map<Object, Object>) {
-                return doSort(listVal, (String) fieldToSortBy, (String) direction);
+                return doSort(listVal, (String) fieldToSortBy, (String) direction, position);
             }
 
             // If each element in the list is an sobject, sort by the field
             if (listVal.get(0) instanceof SObject) {
-                return doSort(listVal, (String) fieldToSortBy, (String) direction);
+                return doSort(listVal, (String) fieldToSortBy, (String) direction, position);
             }
 
             // Otherwise, throw an error
@@ -526,14 +549,14 @@ public with sharing class CollectionFunctions {
         }
 
         public override Arity getArity() {
-            return Arity.between(1, 3);
+            return Arity.between(1, 4);
         }
 
         public override Boolean needsChildrenResolution() {
             return true;
         }
 
-        private List<Object> doSort(List<Object> listVal, String fieldToSortBy, String direction) {
+        private List<Object> doSort(List<Object> listVal, String fieldToSortBy, String direction, NullsPosition position) {
             List<ComparableMaps> comparableMaps = new List<ComparableMaps>();
             // There seems to be an Apex bug where maps with null keys are not sorted properly when calling
             // sort, so we need to skip them and put them at the end of the list manually.
@@ -542,30 +565,56 @@ public with sharing class CollectionFunctions {
                 if (currentVal instanceof Map<Object, Object>) {
                     Map<Object, Object> mapVal = (Map<Object, Object>) currentVal;
                     if (!mapVal.containsKey(fieldToSortBy)) {
-                        skippedToPutAtTheEnd.add(new ComparableMaps(mapVal, fieldToSortBy));
+                        skippedToPutAtTheEnd.add(new ComparableMaps(mapVal, fieldToSortBy, position));
                         continue;
                     }
                 } else {
                     SObject sobjectVal = (SObject) currentVal;
                     if (sobjectVal.get(fieldToSortBy) == null) {
-                        skippedToPutAtTheEnd.add(new ComparableMaps(sobjectVal, fieldToSortBy));
+                        skippedToPutAtTheEnd.add(new ComparableMaps(sobjectVal, fieldToSortBy, position));
                         continue;
                     }
                 }
 
-                comparableMaps.add(new ComparableMaps(currentVal, fieldToSortBy));
+                comparableMaps.add(new ComparableMaps(currentVal, fieldToSortBy, position));
             }
             comparableMaps.sort();
             comparableMaps.addAll(skippedToPutAtTheEnd);
 
             if (direction != null && direction.equalsIgnoreCase('DESC')) {
-                comparableMaps = reverse(comparableMaps);
+                comparableMaps = reverse(comparableMaps, position);
             }
             List<Object> result = new List<Object>();
             for (ComparableMaps comparableMap : comparableMaps) {
                 result.add(comparableMap.mapOrSObjectVal);
             }
             return result;
+        }
+
+        private List<ComparableMaps> reverse(List<ComparableMaps> listVal, NullsPosition position) {
+            List<ComparableMaps> reversed = new List<ComparableMaps>();
+            List<ComparableMaps> nullValues = new List<ComparableMaps>();
+            for (ComparableMaps comparableMap : listVal) {
+                if (comparableMap.getValue() == null) {
+                    nullValues.add(comparableMap);
+                } else {
+                    reversed.add(comparableMap);
+                }
+            }
+
+            reversed = reverse(reversed);
+
+            if (position == NullsPosition.NULLS_FIRST) {
+                List<ComparableMaps> newList = new List<ComparableMaps>();
+                newList.addAll(nullValues);
+                newList.addAll(reversed);
+                return newList;
+            } else {
+                List<ComparableMaps> newList = new List<ComparableMaps>();
+                newList.addAll(reversed);
+                newList.addAll(nullValues);
+                return newList;
+            }
         }
 
         private List<ComparableMaps> reverse(List<ComparableMaps> listVal) {
@@ -577,19 +626,34 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    private enum NullsPosition {
+        NULLS_FIRST,
+        NULLS_LAST
+    }
+
     private class ComparableMaps implements Comparable {
         private final Object mapOrSObjectVal;
         private final Object keyToSortBy;
+        private final NullsPosition position;
 
-        public ComparableMaps(Object mapOrSObjectVal, Object keyToSortBy) {
+        public ComparableMaps(Object mapOrSObjectVal, Object keyToSortBy, NullsPosition position) {
             this.mapOrSObjectVal = mapOrSObjectVal;
             this.keyToSortBy = keyToSortBy;
+            this.position = position;
+        }
+
+        public Object getValue() {
+            if (mapOrSObjectVal instanceof Map<Object, Object>) {
+                return ((Map<Object, Object>) mapOrSObjectVal).get(keyToSortBy);
+            } else {
+                return ((SObject) mapOrSObjectVal).get((String) keyToSortBy);
+            }
         }
 
         public Integer compareTo(Object param1) {
             if (param1 instanceof ComparableMaps) {
                 if (mapOrSObjectVal instanceof Map<Object, Object>) {
-                    return compareToAsMaps((Map<Object, Object>) mapOrSObjectVal, param1);
+                    return compareToAsMaps((Map<Object, Object>) mapOrSObjectVal, param1, position);
                 } else {
                     return compareToAsSObjects((SObject) mapOrSObjectVal, param1);
                 }
@@ -597,13 +661,21 @@ public with sharing class CollectionFunctions {
             return 0;
         }
 
-        private Integer compareToAsMaps(Map<Object, Object> mapVal, Object param1) {
+        private Integer compareToAsMaps(Map<Object, Object> mapVal, Object param1, NullsPosition position) {
             Object thisValue = mapVal.get(keyToSortBy);
             ComparableMaps other = (ComparableMaps) param1;
             Object otherValue = ((Map<Object, Object>) other.mapOrSObjectVal).get(keyToSortBy);
 
             if (thisValue == otherValue) {
                 return 0;
+            }
+
+            if (thisValue == null) {
+                return position == NullsPosition.NULLS_FIRST ? -1 : 1;
+            }
+
+            if (otherValue == null) {
+                return position == NullsPosition.NULLS_FIRST ? 1 : -1;
             }
 
             List<Object> values = new List<Object>{
