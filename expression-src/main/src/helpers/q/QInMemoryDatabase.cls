@@ -32,6 +32,10 @@ public with sharing class QInMemoryDatabase extends QDB {
 
         ExpressionBuilder exprBuilder = new ExpressionBuilder();
 
+        for (QICondition condition : query.conditions) {
+            exprBuilder.condition(condition);
+        }
+
         for (QOrder order : query.orders) {
             exprBuilder.orderBy(order);
         }
@@ -60,6 +64,24 @@ public with sharing class QInMemoryDatabase extends QDB {
             String direction = order.sortValue == QOrder.SortOrder.ASCENDING ? '"ASC"' : '"DESC"';
             String nullDirection = order.nullsValue == QOrder.NullsOrder.FIRST ? '"NULLS_FIRST"' : '"NULLS_LAST"';
             expr += '-> SORT(' + order.field + ',' + direction + ',' + nullDirection + ')';
+            return this;
+        }
+
+        public ExpressionBuilder condition(QICondition condition) {
+            if (condition instanceof QConditionGroup) {
+                throw new QDBException('QConditionGroup is not supported in InMemoryDatabase just yet');
+            }
+
+            QCondition cond = (QCondition) condition;
+            switch on cond.operatorValue {
+                when EQUALS {
+                    expr += '-> WHERE(' + cond.field + ' == ' + cond.fieldValue + ')';
+                }
+                when else {
+                    throw new QDBException('Operator ' + cond.operatorValue + ' is not supported in InMemoryDatabase');
+                }
+            }
+
             return this;
         }
 

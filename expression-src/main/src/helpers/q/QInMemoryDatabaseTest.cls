@@ -275,6 +275,23 @@ private class QInMemoryDatabaseTest {
         Assert.isNull(results[1].get('NumberOfEmployees'));
     }
 
+    @IsTest
+    static void canQueryUsingACondition_isNull() {
+        Account accountWithBillingCountry = new Account(Name = 'Account with Billing Country', BillingCountry = 'USA');
+        Account accountWithoutBillingCountry = new Account(Name = 'Account without Billing Country');
+        db.doInsert(new List<Account>{
+            accountWithBillingCountry, accountWithoutBillingCountry
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.condition('BillingCountry').isNull());
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.areEqual('Account without Billing Country', results[0].get('Name'));
+    }
+
 //    @IsTest
 //    static void canQueryUsingACondition() {
 //        Account accountWithBillingCountry = new Account(Name = 'Account with Billing Country', BillingCountry = 'USA');
@@ -291,4 +308,19 @@ private class QInMemoryDatabaseTest {
 //        Assert.areEqual(1, results.size());
 //        Assert.areEqual('Account with Billing Country', results[0].get('Name'));
 //    }
+
+    // Conditions
+    // is null
+    // is not null
+    // Equals
+    // Not equals
+    // less than
+    // less than or equal
+    // greater than
+    // greater than or equal
+    // is like
+    // is in
+    // not in
+    // includes
+    // excludes
 }
