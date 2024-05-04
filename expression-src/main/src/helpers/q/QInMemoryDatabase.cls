@@ -53,11 +53,8 @@ public with sharing class QInMemoryDatabase extends QDB {
                     // Creating a new fabricated record with the parent record as the parent. We can't store
                     // the original reference because that will create a circular reference, which will
                     // cause a stack overflow error when serializing the object.
-                    fabricatedRecord.setParent(currentField.getDescribe().getRelationshipName(),
-                        new sfab_FabricatedSObject(
-                            Type.forName(referenceType.getDescribe().getName()),
-                            parentRecord.toSObject().getPopulatedFieldsAsMap()
-                        ));
+                    fabricatedRecord.set(currentField.getDescribe().getRelationshipName(),
+                        parentRecord.shallowClone());
                     parentRecord.addChild(relationshipName, fabricatedRecord);
                 }
             }

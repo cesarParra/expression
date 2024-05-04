@@ -66,6 +66,17 @@ public virtual class sfab_FabricatedSObject {
         set(fields);
     }
 
+    public sfab_FabricatedSObject shallowClone() {
+        // Clones all populated fields except the child relationhips
+        List<sfab_FabricatedSObjectNode> nodes = new List<sfab_FabricatedSObjectNode>();
+        for (sfab_FabricatedSObjectNode node : this.nodes.values()) {
+            if (!(node instanceof sfab_ChildRelationshipNode)) {
+                nodes.add(node);
+            }
+        }
+        return new sfab_FabricatedSObject(sType, nodes);
+    }
+
     @testVisible
     protected sfab_FabricatedSObject(Type sType, List<sfab_FabricatedSObjectNode> nodes) {
         this.sType = sType;
