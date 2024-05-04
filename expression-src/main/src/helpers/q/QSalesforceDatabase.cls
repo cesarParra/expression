@@ -102,36 +102,60 @@ public with sharing class QSalesforceDatabase extends QDB {
             QCondition cond = (QCondition) condition;
             switch on cond.operatorValue {
                 when EQUALS {
-                    return cond.field + ' = ' + cond.fieldValue;
+                    return cond.field + ' = ' + formatFieldValue(cond.fieldValue);
                 }
                 when NOT_EQUALS {
-                    return cond.field + ' != ' + cond.fieldValue;
+                    return cond.field + ' != ' + formatFieldValue(cond.fieldValue);
                 }
                 when LESS_THAN {
-                    return cond.field + ' < ' + cond.fieldValue;
+                    return cond.field + ' < ' + formatFieldValue(cond.fieldValue);
                 }
                 when LESS_OR_EQUAL {
-                    return cond.field + ' <= ' + cond.fieldValue;
+                    return cond.field + ' <= ' + formatFieldValue(cond.fieldValue);
                 }
                 when GREATER_THAN {
-                    return cond.field + ' > ' + cond.fieldValue;
+                    return cond.field + ' > ' + formatFieldValue(cond.fieldValue);
                 }
                 when GREATER_OR_EQUAL {
-                    return cond.field + ' >= ' + cond.fieldValue;
+                    return cond.field + ' >= ' + formatFieldValue(cond.fieldValue);
                 }
                 when IS_LIKE {
-                    return cond.field + ' LIKE ' + cond.fieldValue;
+                    return cond.field + ' LIKE ' + formatFieldValue(cond.fieldValue);
                 }
                 when IS_IN {
-                    return cond.field + ' IN (' + cond.fieldValue + ')';
+                    return cond.field + ' IN (' + formatFieldValue(cond.fieldValue) + ')';
                 }
                 when NOT_IN {
-                    return cond.field + ' NOT IN (' + cond.fieldValue + ')';
+                    return cond.field + ' NOT IN (' + formatFieldValue(cond.fieldValue) + ')';
                 }
                 when else {
                     return '';
                 }
             }
+        }
+    }
+
+    private Object formatFieldValue(Object val) {
+        if (val instanceof List<Object>) {
+            List<String> values = new List<String>();
+            for (Object value : (List<Object>) val) {
+                if (value instanceof String) {
+                    values.add('\'' + String.escapeSingleQuotes((String) value) + '\'');
+                } else {
+                    values.add((String) value);
+                }
+            }
+            return String.join(values, ', ');
+        }
+        if (val instanceof String) {
+            return '\'' + String.escapeSingleQuotes((String) val) + '\'';
+        } else if (val instanceof Date) {
+            String dateString = String.valueOf(val);
+            return dateString.substring(0, dateString.indexOf(' '));
+        } else if (val instanceof Datetime) {
+            return ((Datetime) val).formatGmt('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'');
+        } else {
+            return val;
         }
     }
 

@@ -75,10 +75,10 @@ public with sharing class QInMemoryDatabase extends QDB {
             QCondition cond = (QCondition) condition;
             switch on cond.operatorValue {
                 when EQUALS {
-                    expr += '-> WHERE(' + cond.field + ' == ' + cond.fieldValue + ')';
+                    expr += '-> WHERE(' + cond.field + ' == ' + formatFieldValue(cond.fieldValue) + ')';
                 }
                 when NOT_EQUALS {
-                    expr += '-> WHERE(' + cond.field + ' != ' + cond.fieldValue + ')';
+                    expr += '-> WHERE(' + cond.field + ' != ' + formatFieldValue(cond.fieldValue) + ')';
                 }
                 when else {
                     throw new QDBException('Operator ' + cond.operatorValue + ' is not supported in InMemoryDatabase');
@@ -86,6 +86,13 @@ public with sharing class QInMemoryDatabase extends QDB {
             }
 
             return this;
+        }
+
+        private Object formatFieldValue(Object val) {
+            if (val instanceof String) {
+                return '"' + val + '"';
+            }
+            return val;
         }
 
         public String build() {

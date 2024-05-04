@@ -309,6 +309,23 @@ private class QInMemoryDatabaseTest {
         Assert.areEqual('Account with Billing Country', results[0].get('Name'));
     }
 
+    @IsTest
+    static void canQueryUsingACondition_comparingStringsThatAreEqual() {
+        Account account1 = new Account(Name = 'Test Account');
+        Account account2 = new Account(Name = 'Test Account 2');
+        db.doInsert(new List<Account>{
+            account1, account2
+        });
+
+        Q query = new Q(Account.SObjectType)
+            .add(Q.condition('Name').equalsTo('Test Account'));
+
+        List<SObject> results = db.run(query);
+
+        Assert.areEqual(1, results.size());
+        Assert.areEqual('Test Account', results[0].get('Name'));
+    }
+
     // Conditions
     // Equals (number)
     // Not equals (number)
