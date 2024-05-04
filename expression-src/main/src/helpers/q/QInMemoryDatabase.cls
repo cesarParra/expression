@@ -100,6 +100,9 @@ public with sharing class QInMemoryDatabase extends QDB {
                         throw new QDBException('IS LIKE operator can only be used with String fields');
                     }
                 }
+                when IS_IN {
+                    expr += '-> WHERE(CONTAINS(' + formatFieldValue(cond.fieldValue) + ',' + cond.field + '))';
+                }
                 when else {
                     throw new QDBException('Operator ' + cond.operatorValue + ' is not supported in InMemoryDatabase');
                 }
@@ -117,6 +120,14 @@ public with sharing class QInMemoryDatabase extends QDB {
             } else if (val instanceof Datetime) {
                 Datetime castDatetime = (Datetime) val;
                 return 'DATETIME(' + castDatetime.year() + ',' + castDatetime.month() + ',' + castDatetime.day() + ',' + castDatetime.hour() + ',' + castDatetime.minute() + ',' + castDatetime.second() + ')';
+            } else if (val instanceof List<Object>) {
+                String formattedList = '[';
+                for (Object obj : (List<Object>) val) {
+                    formattedList += formatFieldValue(obj) + ',';
+                }
+                formattedList = formattedList.removeEnd(',');
+                formattedList += ']';
+                return formattedList;
             }
             return val;
         }
