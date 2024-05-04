@@ -32,7 +32,6 @@ public with sharing class QInMemoryDatabase extends QDB {
 
         ExpressionBuilder exprBuilder = new ExpressionBuilder();
 
-        System.debug('recordsInTheDatabase: ' + recordsInTheDatabase);
         for (QICondition condition : query.conditions) {
             exprBuilder.condition(condition);
         }
@@ -86,6 +85,9 @@ public with sharing class QInMemoryDatabase extends QDB {
                 }
                 when LESS_OR_EQUAL {
                     expr += '-> WHERE(' + cond.field + ' <= ' + formatFieldValue(cond.fieldValue) + ')';
+                }
+                when GREATER_THAN {
+                    expr += '-> WHERE(' + cond.field + ' > ' + formatFieldValue(cond.fieldValue) + ')';
                 }
                 when else {
                     throw new QDBException('Operator ' + cond.operatorValue + ' is not supported in InMemoryDatabase');
