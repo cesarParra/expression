@@ -703,5 +703,25 @@ private class QInMemoryDatabaseTest {
         Assert.areEqual(1, requeriedParent.ChildAccounts.size());
     }
 
-    // TODO: Also adds parent relationships to the __r or the parent SOBject
+    @IsTest
+    static void canReferenceAParentObject() {
+        Account parentAccount = new Account(Name = 'Parent');
+        db.doInsert(parentAccount);
+
+        Account childAccount = new Account(Name = 'Child', ParentId = parentAccount.Id);
+        db.doInsert(childAccount);
+
+        Q queryWithSub = new Q(Account.SObjectType)
+            .selectField('Parent.Name');
+
+        List<Account> results = db.run(queryWithSub);
+
+        Assert.areEqual(2, results.size());
+
+        Map<Id, Account> accountsByIds = new Map<Id, Account>(results);
+        Account childWithAParent = accountsByIds.get(childAccount.Id);
+        Assert.areEqual('Parent', childWithAParent.Parent.Name);
+    }
+
+    // TODO: Full subquery check
 }
