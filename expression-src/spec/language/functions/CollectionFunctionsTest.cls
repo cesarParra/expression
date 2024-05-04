@@ -304,9 +304,9 @@ private class CollectionFunctionsTest {
         Account account2 = new Account(Name = 'C');
         Account account3 = new Account(Name = 'B');
 
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             account1, account2, account3
-        };
+        });
 
         List<Object> result = (List<Object>) Evaluator.run('QUERY(Account[Name]) -> SORT("Name")');
 
@@ -323,9 +323,9 @@ private class CollectionFunctionsTest {
         Account account3 = new Account(Name = 'C', NumberOfEmployees = 30);
         Account account4 = new Account(Name = 'D', NumberOfEmployees = null);
 
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             account1, account2, account3, account4
-        };
+        });
 
         List<Object> result = (List<Object>) Evaluator.run('Query(Account["Name", "NumberOfEmployees"]) -> SORT("NumberOfEmployees")');
 
@@ -342,9 +342,9 @@ private class CollectionFunctionsTest {
         Account account2 = new Account(Name = 'C');
         Account account3 = new Account(Name = 'B');
 
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             account1, account2, account3
-        };
+        });
 
         List<Object> result = (List<Object>) Evaluator.run('QUERY(Account[Name]) -> SORT("Name", "asc")');
 
@@ -400,9 +400,9 @@ private class CollectionFunctionsTest {
         Account account2 = new Account(Name = 'C');
         Account account3 = new Account(Name = 'B');
 
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             account1, account2, account3
-        };
+        });
 
         List<Object> result = (List<Object>) Evaluator.run('QUERY(Account["Name"]) -> SORT("Name", "desc")');
 
@@ -455,13 +455,13 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void fieldResolutionWorksWhenUsingTheSortFunction() {
         Account parentAccount = new Account(Name = 'Parent');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 20);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 10);
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             childAccount1, childAccount2
-        };
+        });
 
         List<Object> result = (List<Object>) Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc")', parentAccount.Id);
 
@@ -505,7 +505,7 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void getFunctionReturnsAField() {
         Account account = new Account(Name = 'Test');
-        insert account;
+        QDB.getInstance().doInsert(account);
 
         String formula = 'QUERY(Account["Name"]) -> FIRST() -> GET("Name")';
         Object result = Evaluator.run(formula);
@@ -567,15 +567,19 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void whereFunctionAllowsToFilterByFieldsOnChildRecords_usingId() {
         Account parentAccount = new Account(Name = 'Parent');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             childAccount1, childAccount2
-        };
+        });
 
-        List<Object> result = (List<Object>) Evaluator.run('WHERE(ChildAccounts, NumberOfEmployees > 10)', parentAccount.Id);
+        List<SObject> requiredRecords = QDB.getInstance().run(new Q(Account.SObjectType).addSubquery(
+            new Q('ChildAccounts')
+        ));
+
+        List<Object> result = (List<Object>) Evaluator.run('WHERE(ChildAccounts, NumberOfEmployees > 10)', requiredRecords[0]);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(20, ((Account) result[0]).NumberOfEmployees);
@@ -584,13 +588,13 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void combiningWhereAndMap() {
         Account parentAccount = new Account(Name = 'Parent');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             childAccount1, childAccount2
-        };
+        });
 
         List<Object> result = (List<Object>) Evaluator.run('MAP(WHERE(ChildAccounts, NumberOfEmployees > 10), Name)', parentAccount.Id);
 
@@ -601,13 +605,16 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void combiningWhereAndMap_withRelationshipsBetweenDifferentSObjectTypes() {
         Account parentAccount = new Account(Name = 'Parent');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Contact childContact = new Contact(LastName = 'Child', AccountId = parentAccount.Id);
-        insert childContact;
+        QDB.getInstance().doInsert(childContact);
 
-        String expr = 'MAP(WHERE(Contacts, BEGINS(LastName, "C")), Name)';
-        List<Object> result = (List<Object>) Evaluator.run(expr, parentAccount.Id);
+        String expr = 'MAP(WHERE(Contacts, BEGINS(LastName, "C")), LastName)';
+        List<SObject> records = QDB.getInstance().run(new Q(Account.SObjectType).addSubquery(
+            new Q('Contacts')
+        ));
+        List<Object> result = (List<Object>) Evaluator.run(expr, records[0]);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Child', result[0]);
@@ -616,14 +623,14 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void nestingWheres() {
         Account parentAccount = new Account(Name = 'Parent');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
         Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30, AnnualRevenue = 300);
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             childAccount1, childAccount2, childAccount3
-        };
+        });
 
         List<Object> result = (List<Object>) Evaluator.run('MAP(WHERE(WHERE(ChildAccounts, NumberOfEmployees > 10), AnnualRevenue > 200), Name)', parentAccount.Id);
 
@@ -671,17 +678,21 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void reduceWorksWithSObjectExpressions() {
         Account parentAccount = new Account(Name = 'Parent');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
         Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30, AnnualRevenue = 300);
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             childAccount1, childAccount2, childAccount3
-        };
+        });
+
+        List<SObject> requiredRecords = QDB.getInstance().run(new Q(Account.SObjectType).addSubquery(
+            new Q('ChildAccounts')
+        ));
 
         String formula = 'REDUCE(ChildAccounts, NumberOfEmployees + $accumulator, 0)';
-        Object result = Evaluator.run(formula, parentAccount.Id);
+        Object result = Evaluator.run(formula, requiredRecords[0]);
 
         Assert.areEqual(60, result);
     }
@@ -689,14 +700,14 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void reduceToMap() {
         Account parentAccount = new Account(Name = 'Parent');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
         Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30, AnnualRevenue = 300);
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             childAccount1, childAccount2, childAccount3
-        };
+        });
 
         String formula = 'REDUCE(ChildAccounts, ' +
             '{"employees": NumberOfEmployees + GET($accumulator, "employees"), "revenue": AnnualRevenue + GET($accumulator, "revenue")}, ' +

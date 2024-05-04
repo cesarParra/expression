@@ -14,6 +14,10 @@ public with sharing class QInMemoryDatabase extends QDB {
         return fromQ(query, filteredRecordsForSObject);
     }
 
+    public override List<SObject> runRaw(String query) {
+        throw new QDBException('Raw queries are not supported in InMemoryDatabase');
+    }
+
     public override void doInsert(SObject record) {
         sfab_FabricatedSObject fabricatedRecord = new sfab_FabricatedSObject(
             Type.forName(record.getSObjectType().getDescribe().getName()),
@@ -104,7 +108,7 @@ public with sharing class QInMemoryDatabase extends QDB {
         if (query.subQueries.isEmpty()) {
             return resultRecords;
         }
-        
+
         List<SObject> recordsWithFilteredSubqueries = new List<SObject>();
         for (Q subQuery : query.subQueries) {
             String relationshipName = subQuery.fromText;
@@ -120,7 +124,18 @@ public with sharing class QInMemoryDatabase extends QDB {
                 for (SObject child : filteredChildren) {
                     originalChildrenFiltered.add(recordsInTheDatabase.get(child.Id));
                 }
-                originalRecord.setChildren(relationshipName, originalChildrenFiltered);
+
+                // TODO: I consider this to be a bug in sfab, since it should not be such a baby
+                // to not understand the relationship just because of the casing.
+                String correctRelationshipName; // The relationship name that is actually in the database (regarless of casing)
+                for (ChildRelationship relationship : currentResultRecord.getSObjectType().getDescribe().getChildRelationships()) {
+                    if (relationshipName.equalsIgnoreCase(relationship.getRelationshipName())) {
+                        correctRelationshipName = relationship.getRelationshipName();
+                        break;
+                    }
+                }
+
+                originalRecord.setChildren(correctRelationshipName, originalChildrenFiltered);
                 recordsWithFilteredSubqueries.add(originalRecord.toSObject());
             }
         }

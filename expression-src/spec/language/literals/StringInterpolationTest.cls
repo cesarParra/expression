@@ -24,7 +24,7 @@ private class StringInterpolationTest {
     @IsTest
     static void canReferenceSObjectFieldsInsideInterpolations() {
         Account anyRecord = new Account(Name = 'John');
-        insert anyRecord;
+        QDB.getInstance().doInsert(anyRecord);
 
         String expression = '"Hello ${Name}"';
         Object result = Evaluator.run(expression, anyRecord.Id);

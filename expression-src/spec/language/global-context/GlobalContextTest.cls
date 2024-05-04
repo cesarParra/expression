@@ -3,7 +3,7 @@ private class GlobalContextTest {
     @IsTest
     private static void canUseARecordIdAsContext() {
         Account accountRecord = new Account(Name = 'Test');
-        insert accountRecord;
+        QDB.getInstance().doInsert(accountRecord);
 
         Object result = Evaluator.run('Name', accountRecord.Id);
 
@@ -13,7 +13,7 @@ private class GlobalContextTest {
     @IsTest
     private static void canUseARecordIdAsContext_runningWithoutSharing() {
         Account accountRecord = new Account(Name = 'Test');
-        insert accountRecord;
+        QDB.getInstance().doInsert(accountRecord);
 
         Object result = Evaluator.run('Name', accountRecord.Id, new Configuration().respectSharing(false));
 
@@ -22,8 +22,9 @@ private class GlobalContextTest {
 
     @IsTest
     private static void usingARecordIdAsTheContextConsumesAQuery() {
+        QDB.salesforce();
         Account accountRecord = new Account(Name = 'Test');
-        insert accountRecord;
+        QDB.getInstance().doInsert(accountRecord);
 
         Integer queriesConsumedBefore = Limits.getQueries();
         Evaluator.run('Name', accountRecord.Id);
@@ -50,13 +51,13 @@ private class GlobalContextTest {
     @IsTest
     private static void canUseARecordIdAsContextToGetAggregateInformationFromChildren() {
         Account parentAccount = new Account(Name = 'Parent');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             childAccount1, childAccount2
-        };
+        });
 
         Object revenueByEmployee = Evaluator.run('AVERAGE(MAP(ChildAccounts, AnnualRevenue)) / AVERAGE(MAP(ChildAccounts, NumberOfEmployees))',
             parentAccount.Id);
@@ -67,13 +68,13 @@ private class GlobalContextTest {
     @IsTest
     private static void canUseARecordIdAsContextToGetAggregateInformationFromChildren_withNullValues() {
         Account parentAccount = new Account(Name = 'Parent');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = null);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             childAccount1, childAccount2
-        };
+        });
 
         Decimal revenueByEmployee = (Decimal) Evaluator.run('AVERAGE(MAP(ChildAccounts, AnnualRevenue)) / AVERAGE(MAP(ChildAccounts, NumberOfEmployees))',
             parentAccount.Id);
@@ -160,13 +161,13 @@ private class GlobalContextTest {
     @IsTest
     private static void canExtractDataDirectlyFromChildren() {
         Account parentAccount = new Account(Name = 'Parent');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             childAccount1, childAccount2
-        };
+        });
 
         Object result = Evaluator.run('SIZE(ChildAccounts)', parentAccount.Id);
 
@@ -176,13 +177,13 @@ private class GlobalContextTest {
     @IsTest
     private static void shouldBeAbleToAccessDataFromParentWhenMappingAChildRelationshipList_idAsContext() {
         Account parentAccount = new Account(Name = 'Parent');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
         Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
-        insert new List<SObject>{
+        QDB.getInstance().doInsert(new List<SObject>{
             childAccount1, childAccount2
-        };
+        });
 
         List<Object> result = (List<Object>) Evaluator.run(
             'MAP(ChildAccounts, {"parentName": Parent.Name, "numberOfEmployees": NumberOfEmployees})',
@@ -198,10 +199,10 @@ private class GlobalContextTest {
     @IsTest
     private static void theIdIsNotReferencedTwiceInTheQueryWhenReferenced() {
         Account parentAccount = new Account(Name = 'ACME');
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Account childAccount = new Account(Name = 'ACME Child', ParentId = parentAccount.Id);
-        insert childAccount;
+        QDB.getInstance().doInsert(childAccount);
 
         Object result = Evaluator.run('map(ChildAccounts, Id)', parentAccount.Id);
 

@@ -87,10 +87,10 @@ public class TestDataUnitOfWork {
 
     public virtual class SimpleDML implements IDML {
         public virtual void dmlInsert(List<SObject> objList) {
-            insert objList;
+            QDB.getInstance().doInsert(objList);
         }
         public virtual void dmlUpdate(List<SObject> objList) {
-            update objList;
+            throw new QDB.QDBException('SimpleDML does not support update');
         }
     }
 

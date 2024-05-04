@@ -1,5 +1,6 @@
 public virtual with sharing class CustomFunctionRepository {
-    protected CustomFunctionRepository() {}
+    protected CustomFunctionRepository() {
+    }
 
     @TestVisible private static CustomFunctionRepository mockInstance;
     public static CustomFunctionRepository getInstance() {
@@ -32,7 +33,7 @@ public virtual with sharing class CustomFunctionRepository {
         Q query = new Q(Expression_Function__mdt.SObjectType)
             .selectField('Apex_Class__c')
             .add(Q.condition('DeveloperName').equalsTo(functionName));
-        return QRunner.getInstance().run(query);
+        return QDB.getInstance().run(query);
     }
 
     public class CustomFunctionException extends Exception {

@@ -1,5 +1,9 @@
 @IsTest
 private class QueryTest {
+    static {
+        QDB.salesforce();
+    }
+
     private class FluentDataBuilder {
         private final List<SObject> registeredRecords = new List<SObject>();
 
@@ -888,8 +892,8 @@ private class QueryTest {
             EventTestRecord.build().withAStartTimeOf(Date.newInstance(2021, 1, 1)))
             .inTheDatabase();
 
-       String expr = 'QUERY(Event(where: StartDateTime > DATETIMEVALUE("2020-01-01 00:00:00")) [Id, StartDateTime])';
-         List<Event> result = (List<Event>) Evaluator.run(expr);
+        String expr = 'QUERY(Event(where: StartDateTime > DATETIMEVALUE("2020-01-01 00:00:00")) [Id, StartDateTime])';
+        List<Event> result = (List<Event>) Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
     }
@@ -900,8 +904,8 @@ private class QueryTest {
             EventTestRecord.build().withAStartTimeOf(Date.newInstance(2021, 1, 1)))
             .inTheDatabase();
 
-       String expr = 'QUERY(Event(where: StartDateTime < NOW()) [Id, StartDateTime])';
-         List<Event> result = (List<Event>) Evaluator.run(expr);
+        String expr = 'QUERY(Event(where: StartDateTime < NOW()) [Id, StartDateTime])';
+        List<Event> result = (List<Event>) Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
     }
@@ -912,8 +916,8 @@ private class QueryTest {
             ContactTestRecord.build().bornOn(Date.newInstance(2021, 1, 1))
         ).inTheDatabase();
 
-       String expr = 'QUERY(Contact(where: Birthdate > DATE(2020, 1, 1)) [Id, Birthdate])';
-         List<Contact> result = (List<Contact>) Evaluator.run(expr);
+        String expr = 'QUERY(Contact(where: Birthdate > DATE(2020, 1, 1)) [Id, Birthdate])';
+        List<Contact> result = (List<Contact>) Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
     }

@@ -1,6 +1,30 @@
-public with sharing class QSalesforceDatabase extends QDB {
-    public override List<SObject> run(Q query) {
-        throw new QDBException('Not implemented');
+public inherited sharing abstract class QSalesforceDatabase extends QDB {
+    public static QSalesforceDatabase getInstance() {
+        if (QRunner.evaluationSharingMode == Configuration.SharingMode.WITH) {
+            return new WithSharingRunner();
+        } else {
+            return new WithoutSharingRunner();
+        }
+    }
+
+    private with sharing class WithSharingRunner extends QSalesforceDatabase {
+        public override List<SObject> run(Q query) {
+            return Database.query(build(query), AccessLevel.USER_MODE);
+        }
+
+        public override List<SObject> runRaw(String query) {
+            return Database.query(query, AccessLevel.USER_MODE);
+        }
+    }
+
+    private without sharing class WithoutSharingRunner extends QSalesforceDatabase {
+        public override List<SObject> run(Q query) {
+            return Database.query(build(query), AccessLevel.SYSTEM_MODE);
+        }
+
+        public override List<SObject> runRaw(String query) {
+            return Database.query(query, AccessLevel.SYSTEM_MODE);
+        }
     }
 
     public String build(Q query) {
@@ -173,10 +197,10 @@ public with sharing class QSalesforceDatabase extends QDB {
     }
 
     public override void doInsert(SObject record) {
-        throw new QDBException('Not implemented');
+        insert record;
     }
 
     public override void doInsert(List<SObject> records) {
-        throw new QDBException('Not implemented');
+        insert records;
     }
 }

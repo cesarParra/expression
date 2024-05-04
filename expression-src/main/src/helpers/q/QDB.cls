@@ -1,14 +1,14 @@
-public abstract class QDB {
+public inherited sharing abstract class QDB {
     protected QDB() {
     }
 
-    private static QDB instance;
+    @TestVisible private static QDB instance;
     public static QDB getInstance() {
         if (instance == null) {
             if (Test.isRunningTest()) {
                 instance = new QInMemoryDatabase();
             } else {
-                instance = new QSalesforceDatabase();
+                instance = QSalesforceDatabase.getInstance();
             }
         }
         return instance;
@@ -19,7 +19,7 @@ public abstract class QDB {
     }
 
     public static void salesforce() {
-        setInstance(new QSalesforceDatabase());
+        setInstance(QSalesforceDatabase.getInstance());
     }
 
     private static void setInstance(QDB instance) {
@@ -27,6 +27,8 @@ public abstract class QDB {
     }
 
     public abstract List<SObject> run(Q query);
+
+    public abstract List<SObject> runRaw(String query);
 
     public abstract void doInsert(SObject record);
 

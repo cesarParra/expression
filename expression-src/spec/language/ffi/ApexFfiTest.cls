@@ -38,13 +38,13 @@ private class ApexFfiTest {
 
     @IsTest
     private static void canInvokeCustomFunctions() {
-        QRunner.mockRunner = new FakeExpressionFunctionRunner();
+        QDB.instance = new FakeExpressionFunctionRunner();
         String formula = 'CUSTOMFUNCTION()';
         Object result = Evaluator.run(formula);
         Assert.areEqual('Test', result);
     }
 
-    private class FakeExpressionFunctionRunner extends QRunner {
+    private class FakeExpressionFunctionRunner extends QDB {
         public override List<SObject> run(Q query) {
             return new List<Expression_Function__mdt>{
                 new Expression_Function__mdt(
@@ -55,6 +55,12 @@ private class ApexFfiTest {
 
         public override List<SObject> runRaw(String query) {
             return new List<SObject>();
+        }
+
+        public override void doInsert(SObject record) {
+        }
+
+        public override void doInsert(List<SObject> records) {
         }
     }
 

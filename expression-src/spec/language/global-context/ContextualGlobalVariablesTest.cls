@@ -1,5 +1,10 @@
 @IsTest
 private class ContextualGlobalVariablesTest {
+    static {
+        // Force the real database to be used for these tests.
+        QDB.salesforce();
+    }
+
     @IsTest
     private static void theIdIsAccessibleAsAContextVariable_singleId() {
         String expression = '@Id';

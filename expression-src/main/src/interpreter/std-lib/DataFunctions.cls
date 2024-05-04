@@ -89,7 +89,7 @@ public with sharing class DataFunctions {
                 throw new FunctionExecutionException('First argument to RAW_QUERY must be a string');
             }
             String query = (String) queryObj;
-            return QRunner.getInstance().runRaw(query);
+            return QDB.getInstance().runRaw(query);
         }
 
         public override Arity getArity() {

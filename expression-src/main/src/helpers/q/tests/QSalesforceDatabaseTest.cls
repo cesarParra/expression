@@ -3,7 +3,7 @@ private class QSalesforceDatabaseTest {
     @IsTest
     static void testConstructor() {
         String query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType));
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType));
 
         String expected = 'SELECT Id FROM Account';
         Assert.areEqual(expected, query, 'It should output a default query.');
@@ -12,7 +12,7 @@ private class QSalesforceDatabaseTest {
     @IsTest
     static void testSelectFieldsUsingSetString() {
         String query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType)
                 .selectFields(new Set<String>{
                     'CreatedById', 'Description', 'Owner.Email'
                 }));
@@ -24,7 +24,7 @@ private class QSalesforceDatabaseTest {
     @IsTest
     static void testAddOrders() {
         String query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType)
                 .add(Q.orderBy('Name').nullsLast())
                 .add(Q.orderBy('BillingCountry').descending()));
 
@@ -35,7 +35,7 @@ private class QSalesforceDatabaseTest {
     @IsTest
     static void testAddCondition1() {
         String query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType)
                 .add(Q.condition('BillingCountry').isNotNull()));
 
         String expected = 'SELECT Id FROM Account WHERE BillingCountry != null';
@@ -45,7 +45,7 @@ private class QSalesforceDatabaseTest {
     @IsTest
     static void testAddCondition2() {
         String query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType)
                 .add(Q.condition('Name').isLike('%Acme%')));
 
         String expected = 'SELECT Id FROM Account WHERE Name LIKE \'%Acme%\'';
@@ -55,7 +55,7 @@ private class QSalesforceDatabaseTest {
     @IsTest
     static void testAddLimit() {
         String query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType)
                 .addLimit(5));
 
         String expected = 'SELECT Id FROM Account LIMIT 5';
@@ -65,7 +65,7 @@ private class QSalesforceDatabaseTest {
     @IsTest
     static void testAddOffset() {
         String query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType)
                 .addOffset(5));
 
         String expected = 'SELECT Id FROM Account OFFSET 5';
@@ -75,7 +75,7 @@ private class QSalesforceDatabaseTest {
     @IsTest
     static void testOrGroup() {
         String query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType)
                 .add(Q.orGroup()
                     .add(Q.condition('Name').equalsTo('test'))
                     .add(Q.condition('Name').equalsTo('test'))
@@ -89,7 +89,7 @@ private class QSalesforceDatabaseTest {
         conditions.add(Q.condition('Name').equalsTo('test'));
         QOrGroup sbOrGroup = new QOrGroup(conditions);
         query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType)
                 .add(sbOrGroup));
 
         String expected2 = 'SELECT Id FROM Account WHERE (Name = \'test\' OR Name = \'test\')';
@@ -99,7 +99,7 @@ private class QSalesforceDatabaseTest {
     @IsTest
     static void testAndGroup() {
         String query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType)
                 .add(Q.andGroup()
                     .add(Q.condition('Name').equalsTo('test'))
                     .add(Q.condition('Name').equalsTo('test'))
@@ -113,7 +113,7 @@ private class QSalesforceDatabaseTest {
         conditions.add(Q.condition('Name').equalsTo('test'));
         QAndGroup sbAndGroup = new QAndGroup(conditions);
         query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType)
                 .add(sbAndGroup));
 
         String expected2 = 'SELECT Id FROM Account WHERE (Name = \'test\' AND Name = \'test\')';
@@ -123,7 +123,7 @@ private class QSalesforceDatabaseTest {
     @IsTest
     static void testAddSubQuery() {
         String query =
-            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+            QSalesforceDatabase.getInstance().build(new Q(Account.SObjectType)
                 .addSubquery(new Q('Contacts')));
 
         String expected = 'SELECT (SELECT Id FROM Contacts) FROM Account';
