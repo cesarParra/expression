@@ -58,7 +58,8 @@ public with sharing class QInMemoryDatabase extends QDB {
 
         public ExpressionBuilder orderBy(QOrder order) {
             String direction = order.sortValue == QOrder.SortOrder.ASCENDING ? '"ASC"' : '"DESC"';
-            expr += '-> SORT(' + order.field + ',' + direction + ')';
+            String nullDirection = order.nullsValue == QOrder.NullsOrder.FIRST ? '"NULLS_FIRST"' : '"NULLS_LAST"';
+            expr += '-> SORT(' + order.field + ',' + direction + ',' + nullDirection + ')';
             return this;
         }
 
