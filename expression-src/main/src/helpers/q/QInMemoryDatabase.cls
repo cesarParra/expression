@@ -40,6 +40,10 @@ public with sharing class QInMemoryDatabase extends QDB {
             exprBuilder.orderBy(order);
         }
 
+        if (query.numberOfRows != null) {
+            exprBuilder.addLimit(query.numberOfRows);
+        }
+
         Object result = Evaluator.run(exprBuilder.build(), filteredRecordsForSObject);
 
         return castToSObjectList((List<Object>) result);
@@ -111,6 +115,11 @@ public with sharing class QInMemoryDatabase extends QDB {
                 }
             }
 
+            return this;
+        }
+
+        public ExpressionBuilder addLimit(Integer numberToLimitTo) {
+            expr += '-> TAKE(' + numberToLimitTo + ')';
             return this;
         }
 
