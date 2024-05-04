@@ -4,18 +4,21 @@
  * @since 2020-02-04
  */
 public abstract class QConditionGroup implements QICondition {
+    public enum Operator {
+        AND_GROUP, OR_GROUP
+    }
 
     public List<QICondition> conditions { get; set; }
 
-    public String operator;
+    public Operator operator;
 
-    public QConditionGroup(String operator) {
-        this(new List<QICondition>(), operator);
+    public QConditionGroup(Operator op) {
+        this(new List<QICondition>(), op);
     }
 
-    public QConditionGroup(List<QICondition> conditions, String operator) {
+    public QConditionGroup(List<QICondition> conditions, Operator op) {
         this.conditions = conditions;
-        this.operator = operator;
+        this.operator = op;
     }
 
     public QConditionGroup add(QICondition condition) {

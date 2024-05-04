@@ -90,9 +90,10 @@ public with sharing class QSalesforceDatabase extends QDB {
         String value = '';
         if (condition instanceof QConditionGroup) {
             QConditionGroup conditionGroup = (QConditionGroup) condition;
+            String operatorAsString = toStringOperator(conditionGroup);
             for (QICondition subCondition : conditionGroup.conditions) {
                 if (String.isNotEmpty(value)) {
-                    value += ' ' + conditionGroup.operator + ' ';
+                    value += ' ' + operatorAsString + ' ';
                 }
                 value += buildQCondition(subCondition);
             }
@@ -133,6 +134,18 @@ public with sharing class QSalesforceDatabase extends QDB {
                 }
             }
         }
+    }
+
+    private static String toStringOperator(QConditionGroup conditionGroup) {
+        switch on conditionGroup.operator {
+            when AND_GROUP {
+                return 'AND';
+            }
+            when OR_GROUP {
+                return 'OR';
+            }
+        }
+        throw new QDBException('Unreachable code');
     }
 
     private Object formatFieldValue(Object val) {

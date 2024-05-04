@@ -72,47 +72,30 @@ private class QSalesforceDatabaseTest {
         System.assertEquals(expected, query, 'It should output a query with an OFFSET.');
     }
 
-    //
-//    @IsTest
-//    static void testAddSubQuery() {
-//        String query =
-//            new Q(Account.SObjectType)
-//                .addSubquery(new Q('Contacts'))
-//                .build();
-//
-//        String expected = 'SELECT (SELECT Id FROM Contacts) FROM Account';
-//        System.assertEquals(expected, query, 'It should output a query with subquery.');
-//        Database.query(query);
-//    }
+    @IsTest
+    static void testOrGroup() {
+        String query =
+            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+                .add(Q.orGroup()
+                    .add(Q.condition('Name').equalsTo('test'))
+                    .add(Q.condition('Name').equalsTo('test'))
+                ));
 
-//
-//    @IsTest
-//    static void testOrGroup() {
-//        String query =
-//            new Q(Account.SObjectType)
-//                .add(Q.orGroup()
-//                    .add(Q.condition('Name').equalsTo('test'))
-//                    .add(Q.condition('Name').equalsTo('test'))
-//                )
-//                .build();
-//
-//        String expected = 'SELECT Id FROM Account WHERE (Name = \'test\' OR Name = \'test\')';
-//        System.assertEquals(expected, query, 'It should output a query with a condition group.');
-//        Database.query(query);
-//
-//        List<QCondition> conditions = new List<QCondition>();
-//        conditions.add(Q.condition('Name').equalsTo('test'));
-//        conditions.add(Q.condition('Name').equalsTo('test'));
-//        QOrGroup sbOrGroup = new QOrGroup(conditions);
-//        query =
-//            new Q(Account.SObjectType)
-//                .add(sbOrGroup)
-//                .build();
-//
-//        String expected2 = 'SELECT Id FROM Account WHERE (Name = \'test\' OR Name = \'test\')';
-//        System.assertEquals(expected2, query, 'It should output a query with a condition group.');
-//        Database.query(query);
-//    }
+        String expected = 'SELECT Id FROM Account WHERE (Name = \'test\' OR Name = \'test\')';
+        System.assertEquals(expected, query, 'It should output a query with a condition group.');
+        Database.query(query);
+
+        List<QCondition> conditions = new List<QCondition>();
+        conditions.add(Q.condition('Name').equalsTo('test'));
+        conditions.add(Q.condition('Name').equalsTo('test'));
+        QOrGroup sbOrGroup = new QOrGroup(conditions);
+        query =
+            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+                .add(sbOrGroup));
+
+        String expected2 = 'SELECT Id FROM Account WHERE (Name = \'test\' OR Name = \'test\')';
+        System.assertEquals(expected2, query, 'It should output a query with a condition group.');
+    }
 //
 //    @IsTest
 //    static void testAndGroup() {
@@ -139,6 +122,19 @@ private class QSalesforceDatabaseTest {
 //
 //        String expected2 = 'SELECT Id FROM Account WHERE (Name = \'test\' AND Name = \'test\')';
 //        System.assertEquals(expected2, query, 'It should output a query with a condition group.');
+//        Database.query(query);
+//    }
+
+    //
+//    @IsTest
+//    static void testAddSubQuery() {
+//        String query =
+//            new Q(Account.SObjectType)
+//                .addSubquery(new Q('Contacts'))
+//                .build();
+//
+//        String expected = 'SELECT (SELECT Id FROM Contacts) FROM Account';
+//        System.assertEquals(expected, query, 'It should output a query with subquery.');
 //        Database.query(query);
 //    }
 }

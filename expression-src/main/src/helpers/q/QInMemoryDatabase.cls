@@ -76,50 +76,66 @@ public with sharing class QInMemoryDatabase extends QDB {
         }
 
         public ExpressionBuilder condition(QICondition condition) {
+            expr += '-> WHERE(' + conditionStringBuilder(condition) + ')';
+            return this;
+        }
+
+        public String conditionStringBuilder(QICondition condition) {
             if (condition instanceof QConditionGroup) {
-                throw new QDBException('QConditionGroup is not supported in InMemoryDatabase just yet');
+                List<String> conditions = new List<String>();
+                QConditionGroup castedCondition = (QConditionGroup) condition;
+                for (QICondition cond : castedCondition.conditions) {
+                    conditions.add(conditionStringBuilder(cond));
+                }
+
+                String orGroup = 'OR(';
+                for (String cond : conditions) {
+                    orGroup += cond + ',';
+                }
+                orGroup = orGroup.removeEnd(',');
+                orGroup += ')';
+
+                return orGroup;
             }
 
             QCondition cond = (QCondition) condition;
             switch on cond.operatorValue {
                 when EQUALS {
-                    expr += '-> WHERE(' + cond.field + ' == ' + formatFieldValue(cond.fieldValue) + ')';
+                    return cond.field + ' == ' + formatFieldValue(cond.fieldValue);
                 }
                 when NOT_EQUALS {
-                    expr += '-> WHERE(' + cond.field + ' != ' + formatFieldValue(cond.fieldValue) + ')';
+                    return cond.field + ' != ' + formatFieldValue(cond.fieldValue);
                 }
                 when LESS_THAN {
-                    expr += '-> WHERE(' + cond.field + ' < ' + formatFieldValue(cond.fieldValue) + ')';
+                    return cond.field + ' < ' + formatFieldValue(cond.fieldValue);
                 }
                 when LESS_OR_EQUAL {
-                    expr += '-> WHERE(' + cond.field + ' <= ' + formatFieldValue(cond.fieldValue) + ')';
+                    return cond.field + ' <= ' + formatFieldValue(cond.fieldValue);
                 }
                 when GREATER_THAN {
-                    expr += '-> WHERE(' + cond.field + ' > ' + formatFieldValue(cond.fieldValue) + ')';
+                    return cond.field + ' > ' + formatFieldValue(cond.fieldValue);
                 }
                 when GREATER_OR_EQUAL {
-                    expr += '-> WHERE(' + cond.field + ' >= ' + formatFieldValue(cond.fieldValue) + ')';
+                    return cond.field + ' >= ' + formatFieldValue(cond.fieldValue);
                 }
                 when IS_LIKE {
                     // Check that the field is a string
                     if (cond.fieldValue instanceof String) {
-                        expr += '-> WHERE(LIKE(' + cond.field + ',' + formatFieldValue(cond.fieldValue) + '))';
+                        return 'LIKE(' + cond.field + ',' + formatFieldValue(cond.fieldValue) + ')';
                     } else {
                         throw new QDBException('IS LIKE operator can only be used with String fields');
                     }
                 }
                 when IS_IN {
-                    expr += '-> WHERE(CONTAINS(' + formatFieldValue(cond.fieldValue) + ',' + cond.field + '))';
+                    return 'CONTAINS(' + formatFieldValue(cond.fieldValue) + ',' + cond.field + ')';
                 }
                 when NOT_IN {
-                    expr += '-> WHERE(NOT(CONTAINS(' + formatFieldValue(cond.fieldValue) + ',' + cond.field + ')))';
+                    return 'NOT(CONTAINS(' + formatFieldValue(cond.fieldValue) + ',' + cond.field + '))';
                 }
                 when else {
                     throw new QDBException('Operator ' + cond.operatorValue + ' is not supported in InMemoryDatabase');
                 }
             }
-
-            return this;
         }
 
         public ExpressionBuilder addLimit(Integer numberToLimitTo) {
@@ -154,6 +170,7 @@ public with sharing class QInMemoryDatabase extends QDB {
         }
 
         public String build() {
+            System.debug('Expression: ' + expr);
             return expr;
         }
     }
