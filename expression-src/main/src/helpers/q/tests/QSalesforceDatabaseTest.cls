@@ -41,18 +41,16 @@ private class QSalesforceDatabaseTest {
         String expected = 'SELECT Id FROM Account WHERE BillingCountry != null';
         System.assertEquals(expected, query, 'It should output a query with a condition.');
     }
-//
-//    @IsTest
-//    static void testAddCondition2() {
-//        String query =
-//            new Q(Account.SObjectType)
-//                .add(Q.condition('Name').isLike('%Acme%'))
-//                .build();
-//
-//        String expected = 'SELECT Id FROM Account WHERE Name LIKE \'%Acme%\'';
-//        System.assertEquals(expected, query, 'It should output a query with a condition.');
-//        Database.query(query);
-//    }
+
+    @IsTest
+    static void testAddCondition2() {
+        String query =
+            new QSalesforceDatabase().build(new Q(Account.SObjectType)
+                .add(Q.condition('Name').isLike('%Acme%')));
+
+        String expected = 'SELECT Id FROM Account WHERE Name LIKE \'%Acme%\'';
+        System.assertEquals(expected, query, 'It should output a query with a condition.');
+    }
 //
 //    @IsTest
 //    static void testAddLimit() {
