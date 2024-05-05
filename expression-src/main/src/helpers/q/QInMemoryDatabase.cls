@@ -109,14 +109,16 @@ public with sharing class QInMemoryDatabase extends QDB {
             return resultRecords;
         }
 
+        return filterChildrenBySubqueries(query, resultRecords);
+    }
+
+    private List<SObject> filterChildrenBySubqueries(Q query, List<SObject> resultRecords) {
         List<SObject> recordsWithFilteredSubqueries = new List<SObject>();
         for (Q subQuery : query.subQueries) {
             String relationshipName = subQuery.FromText;
             for (SObject currentResultRecord : resultRecords) {
                 List<SObject> unfilteredChildren = (List<SObject>) currentResultRecord.getSObjects(relationshipName);
-                System.debug('Unfiltered children: ' + unfilteredChildren);
                 List<SObject> filteredChildren = fromQ(subQuery, unfilteredChildren ?? new List<SObject>());
-                System.debug('Filtered children: ' + filteredChildren);
 
                 // Find the original sfab for this record so that we can set new child relationships
                 sfab.FabricatedSObject originalRecord = recordsInTheDatabase.get(currentResultRecord.Id).clone();
@@ -125,17 +127,10 @@ public with sharing class QInMemoryDatabase extends QDB {
                     originalChildrenFiltered.add(recordsInTheDatabase.get(child.Id));
                 }
 
-                // TODO: I consider this to be a bug in sfab, since it should not be such a baby
-                // to not understand the relationship just because of the casing.
-                String correctRelationshipName; // The relationship name that is actually in the database (regarless of casing)
-                for (ChildRelationship relationship : currentResultRecord.getSObjectType().getDescribe().getChildRelationships()) {
-                    if (relationshipName.equalsIgnoreCase(relationship.getRelationshipName())) {
-                        correctRelationshipName = relationship.getRelationshipName();
-                        break;
-                    }
-                }
-
-                originalRecord.setChildren(correctRelationshipName, originalChildrenFiltered);
+                originalRecord.setChildren(
+                    SchemaUtils.getValidChildRelationshipName(relationshipName, currentResultRecord.getSObjectType()),
+                    originalChildrenFiltered
+                );
                 recordsWithFilteredSubqueries.add(originalRecord.toSObject());
             }
         }
@@ -159,9 +154,9 @@ public with sharing class QInMemoryDatabase extends QDB {
         }
 
         public ExpressionBuilder orderBy(QOrder order) {
-            String direction = order.sortValue == QOrder.SortOrder.ASCENDING ? '"ASC"' : '"DESC"';
-            String nullDirection = order.nullsValue == QOrder.NullsOrder.FIRST ? '"NULLS_FIRST"' : '"NULLS_LAST"';
-            expr += '-> SORT(' + order.field + ',' + direction + ',' + nullDirection + ')';
+            String direction = order.SortValue == QOrder.SortOrder.ASCENDING ? '"ASC"' : '"DESC"';
+            String nullDirection = order.NullsOrderValue == QOrder.NullsOrder.FIRST ? '"NULLS_FIRST"' : '"NULLS_LAST"';
+            expr += '-> SORT(' + order.Field + ',' + direction + ',' + nullDirection + ')';
             return this;
         }
 
@@ -262,7 +257,6 @@ public with sharing class QInMemoryDatabase extends QDB {
         }
 
         public String build() {
-            System.debug('Expression: ' + expr);
             return expr;
         }
     }
