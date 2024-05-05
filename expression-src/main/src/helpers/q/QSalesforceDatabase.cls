@@ -82,7 +82,7 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
         List<String> orderList = new List<String>();
 
         for (QOrder order : query.orders) {
-            orderList.add(buildQOrder(order));
+            orderList.add(new QOrderBuilder().build(order));
         }
 
         if (!query.orders.isEmpty()) {
@@ -92,22 +92,24 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
         }
     }
 
-    private static String buildQOrder(QOrder order) {
-        String orderString = order.Field;
+    public class QOrderBuilder {
+        public String build(QOrder order) {
+            String orderString = order.Field;
 
-        if (order.SortValue == QOrder.SortOrder.ASCENDING) {
-            orderString += ' ASC';
-        } else {
-            orderString += ' DESC';
+            if (order.SortValue == QOrder.SortOrder.ASCENDING) {
+                orderString += ' ASC';
+            } else {
+                orderString += ' DESC';
+            }
+
+            if (order.NullsOrderValue != null && order.NullsOrderValue == QOrder.NullsOrder.FIRST) {
+                orderString += ' NULLS FIRST';
+            } else if (order.NullsOrderValue != null && order.NullsOrderValue == QOrder.NullsOrder.LAST) {
+                orderString += ' NULLS LAST';
+            }
+
+            return orderString;
         }
-
-        if (order.NullsOrderValue != null && order.NullsOrderValue == QOrder.NullsOrder.FIRST) {
-            orderString += ' NULLS FIRST';
-        } else if (order.NullsOrderValue != null && order.NullsOrderValue == QOrder.NullsOrder.LAST) {
-            orderString += ' NULLS LAST';
-        }
-
-        return orderString;
     }
 
     public class QCOnditionBuilder {
