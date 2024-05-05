@@ -80,7 +80,7 @@ public with sharing class QInMemoryDatabase extends QDB {
     }
 
     private static SObjectType getSObjectTypeFromQ(Q query) {
-        return ((SObject) Type.forName(query.fromText).newInstance()).getSObjectType();
+        return ((SObject) Type.forName(query.FromText).newInstance()).getSObjectType();
     }
 
     private List<SObject> fromQ(Q query, List<SObject> recordsToFilterFrom) {
@@ -94,24 +94,24 @@ public with sharing class QInMemoryDatabase extends QDB {
             exprBuilder.orderBy(order);
         }
 
-        if (query.numberOfRowsToSkip != null) {
-            exprBuilder.addOffset(query.numberOfRowsToSkip);
+        if (query.NumberOfRowsToSkip != null) {
+            exprBuilder.addOffset(query.NumberOfRowsToSkip);
         }
 
-        if (query.numberOfRows != null) {
-            exprBuilder.addLimit(query.numberOfRows);
+        if (query.NumberOfRowsToQuery != null) {
+            exprBuilder.addLimit(query.NumberOfRowsToQuery);
         }
 
         Object result = Evaluator.run(exprBuilder.build(), recordsToFilterFrom);
-
         List<SObject> resultRecords = castToSObjectList((List<Object>) result);
+
         if (query.subQueries.isEmpty()) {
             return resultRecords;
         }
 
         List<SObject> recordsWithFilteredSubqueries = new List<SObject>();
         for (Q subQuery : query.subQueries) {
-            String relationshipName = subQuery.fromText;
+            String relationshipName = subQuery.FromText;
             for (SObject currentResultRecord : resultRecords) {
                 List<SObject> unfilteredChildren = (List<SObject>) currentResultRecord.getSObjects(relationshipName);
                 System.debug('Unfiltered children: ' + unfilteredChildren);

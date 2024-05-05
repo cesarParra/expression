@@ -31,7 +31,7 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
         List<String> queryParts = new List<String>();
 
         queryParts.add(buildSelect(query));
-        queryParts.add('FROM ' + query.fromText);
+        queryParts.add('FROM ' + query.FromText);
 
         if (!query.conditions.isEmpty()) {
             queryParts.add(buildConditions(query));
@@ -41,12 +41,12 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
             queryParts.add(buildOrderBy(query));
         }
 
-        if (query.numberOfRows != null) {
-            queryParts.add('LIMIT ' + query.numberOfRows);
+        if (query.NumberOfRowsToQuery != null) {
+            queryParts.add('LIMIT ' + query.NumberOfRowsToQuery);
         }
 
-        if (query.numberOfRowsToSkip != null) {
-            queryParts.add('OFFSET ' + query.numberOfRowsToSkip);
+        if (query.NumberOfRowsToSkip != null) {
+            queryParts.add('OFFSET ' + query.NumberOfRowsToSkip);
         }
 
         return String.join(queryParts, ' ');

@@ -1,12 +1,11 @@
 /**
  * @description Q is used to build SOQL statements
  * @author Jean-Philippe Monette
- * @since 2017-03-21
  */
 public class Q {
-    public final String fromText;
-    public Integer numberOfRows;
-    public Integer numberOfRowsToSkip;
+    public final String FromText { get; private set; }
+    public Integer NumberOfRowsToQuery { get; private set; }
+    public Integer NumberOfRowsToSkip { get; private set; }
 
     public final Set<String> fieldList = new Set<String>();
     public final List<QOrder> orders = new List<QOrder>();
@@ -14,13 +13,12 @@ public class Q {
     public final List<Q> subQueries = new List<Q>();
 
     public Q(SObjectType fromType) {
-        this.fromText = String.valueOf(fromType);
+        this.FromText = String.valueOf(fromType);
     }
 
-    public Q(String fromText) {
-        this.fromText = fromText;
+    public Q(String FromText) {
+        this.FromText = FromText;
     }
-
 
     public static QOrder orderBy(String fieldName) {
         QOrder od = new QOrder(fieldName);
@@ -60,12 +58,12 @@ public class Q {
     }
 
     public Q addLimit(Integer i) {
-        this.numberOfRows = i;
+        this.NumberOfRowsToQuery = i;
         return this;
     }
 
     public Q addOffset(Integer i) {
-        this.numberOfRowsToSkip = i;
+        this.NumberOfRowsToSkip = i;
         return this;
     }
 
