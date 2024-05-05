@@ -4,36 +4,25 @@
  * @since 2020-02-04
  */
 public abstract class QConditionGroup implements QICondition {
-
-    protected List<QICondition> conditions { get; set; }
-
-    protected String operator;
-
-    public QConditionGroup(String operator) {
-        this(new List<QICondition>(), operator);
+    public enum Operator {
+        AND_GROUP, OR_GROUP
     }
 
-    public QConditionGroup(List<QICondition> conditions, String operator) {
-        this.conditions = conditions;
-        this.operator = operator;
+    public List<QICondition> Conditions { get; protected set; }
+
+    public Operator Operator { get; protected set; }
+
+    public QConditionGroup(Operator op) {
+        this(new List<QICondition>(), op);
+    }
+
+    public QConditionGroup(List<QICondition> Conditions, Operator op) {
+        this.Conditions = Conditions;
+        this.Operator = op;
     }
 
     public QConditionGroup add(QICondition condition) {
-        this.conditions.add(condition);
+        this.Conditions.add(condition);
         return this;
-    }
-
-    public String build() {
-
-        String value = '';
-
-        for (QICondition condition : conditions) {
-            if (String.isNotEmpty(value)) {
-                value += ' ' + operator + ' ';
-            }
-            value += condition.build();
-        }
-
-        return '(' + value + ')';
     }
 }

@@ -27,7 +27,7 @@ private class PlaygroundControllerTest {
     @IsTest
     static void validatesAValidExpressionWithAnId() {
         Account testAccount = new Account(Name = 'Test');
-        insert testAccount;
+        QDB.getInstance().doInsert(testAccount);
 
         PlaygroundController.Result result = PlaygroundController.validate(
             'Name',
@@ -43,9 +43,9 @@ private class PlaygroundControllerTest {
     static void validatesAnExpressionWithManyIdsSeparatedByComma() {
         Account testAccount1 = new Account(Name = 'Test');
         Account testAccount2 = new Account(Name = 'Test');
-        insert new List<Account>{
+        QDB.getInstance().doInsert(new List<Account>{
             testAccount1, testAccount2
-        };
+        });
 
         PlaygroundController.Result result = PlaygroundController.validate(
             'MAP(@Context, Name)',

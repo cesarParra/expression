@@ -1,7 +1,12 @@
 {
   "orgName": "Expression Dev",
   "edition": "Developer",
-  "features": ["EnableSetPasswordInApi", "Communities", "Sites"],
+  "features": [
+    "EnableSetPasswordInApi",
+    "Communities",
+    "Sites",
+    "AuthorApex"
+  ],
   "settings": {
     "experienceBundleSettings": {
       "enableExperienceBundleMetadata": true

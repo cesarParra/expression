@@ -6,6 +6,12 @@ private class DateAndTimeFunctionsTest {
     }
 
     @IsTest
+    private static void dateTimeEvaluatesToADatetime() {
+        Assert.areEqual(Datetime.newInstance(2015, 1, 1, 0, 0, 0),
+            Evaluator.run('DATETIME(2015, 1, 1, 0, 0, 0)'));
+    }
+
+    @IsTest
     private static void addMonthsFunctionAddsMonths() {
         Assert.areEqual(Date.newInstance(2015, 2, 1), Evaluator.run('ADDMONTHS(DATE(2015, 1, 1), 1)'));
     }

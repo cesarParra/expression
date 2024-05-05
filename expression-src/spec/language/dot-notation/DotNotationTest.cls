@@ -39,16 +39,16 @@ private class DotNotationTest {
     @IsTest
     private static void dotNotationThroughMultipleLevelsUsingId() {
         Account greatGrandParent = new Account(Name = 'GreatGrandParent');
-        insert greatGrandParent;
+        QDB.getInstance().doInsert(greatGrandParent);
 
         Account grandParentAccount = new Account(Name = 'GrandParent', ParentId = greatGrandParent.Id);
-        insert grandParentAccount;
+        QDB.getInstance().doInsert(grandParentAccount);
 
         Account parentAccount = new Account(Name = 'Parent', ParentId = grandParentAccount.Id);
-        insert parentAccount;
+        QDB.getInstance().doInsert(parentAccount);
 
         Contact childContact = new Contact(LastName = 'Child', AccountId = parentAccount.Id);
-        insert childContact;
+        QDB.getInstance().doInsert(childContact);
 
         Object result = Evaluator.run('Account.Parent.Parent.Name', childContact.Id);
 

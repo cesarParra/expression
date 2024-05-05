@@ -221,9 +221,9 @@ export const data = [
       {
         "name": "SORT",
         "autoCompleteValue": "SORT(",
-        "description": "Sorts a list.<br/>Accepts at least one argument: the list to sort.<br/>When sorting a list of Maps or a list of SObjects,<br/>two additional arguments can be provided: the field to sort by and the sort direction.<br/>The field to sort can either be a field name as a merge field (field name without quotes), or an expression that evaluates to a string<br/>representing the field name. Merge fields are only supported when sorting SObjects and are useful to get the framework to automatically<br/>query the field for you.<br/>Note: The merge field must be a field on the SObject being sorted itself, not a relationship field.<br/>The sort direction can either be the literal string (requires quotes) `ASC` or `DESC`.",
+        "description": "Sorts a list.<br/>Accepts at least one argument: the list to sort.<br/>When sorting a list of Maps or a list of SObjects,<br/>three additional arguments can be provided: the field to sort by, the sort direction, and the position of nulls<br/>(nulls first or nulls last).<br/>The field to sort can either be a field name as a merge field (field name without quotes), or an expression that evaluates to a string<br/>representing the field name. Merge fields are only supported when sorting SObjects and are useful to get the framework to automatically<br/>query the field for you.<br/>Note: The merge field must be a field on the SObject being sorted itself, not a relationship field.<br/>The sort direction can either be the literal string (requires quotes) `ASC` or `DESC`.<br/>The position of nulls can either be the literal string (requires quotes) `NULLS_FIRST` or `NULLS_LAST`.",
         "examples": [
-          "SORT([{ \"a\": 3 }, { \"a\": 2 }, { \"a\": 1 }], \"a\", \"DESC\") // [{ \"a\": 3 }, { \"a\": 2 }, { \"a\": 1 }]"
+          "SORT([{ \"a\": 3 }, { \"a\": 2 }, { \"a\": 1 }], \"a\", \"DESC\") // [{ \"a\": 3 }, { \"a\": 2 }, { \"a\": 1 }]\nSORT([SObject1, SObject2, SObject3], \"Name\", \"ASC\", \"NULLS_LAST\") // [SObject1, SObject2, SObject3]"
         ],
         "icon": "utility:justify_text"
       },
@@ -324,6 +324,15 @@ export const data = [
         "description": "Returns a date value from the provided year, month, and day values.<br/>Accepts 3 arguments: the year, month, and day.",
         "examples": [
           "DATE(2020, 1, 1) // 2020-01-01"
+        ],
+        "icon": "utility:date_input"
+      },
+      {
+        "name": "DATETIME",
+        "autoCompleteValue": "DATETIME(",
+        "description": "Returns a datetime value from the provided year, month, day, hour, minute, and second values.<br/>Accepts 6 arguments: the year, month, day, hour, minute, and second.",
+        "examples": [
+          "DATETIME(2020, 1, 1, 12, 0, 0) // 2020-01-01 12:00:00"
         ],
         "icon": "utility:date_input"
       },

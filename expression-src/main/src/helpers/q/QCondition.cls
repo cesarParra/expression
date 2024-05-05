@@ -13,154 +13,94 @@ public virtual class QCondition implements QICondition {
         GREATER_OR_EQUAL,
         IS_LIKE,
         IS_IN,
-        NOT_IN,
-        INCLUDES,
-        EXCLUDES
+        NOT_IN
     }
 
-    private ComparisonOperator operatorValue;
+    public ComparisonOperator OperatorValue { get; private set; }
 
-    private final String field {
-        private get {
-            return String.escapeSingleQuotes(field);
+    public final String Field {
+        get {
+            return String.escapeSingleQuotes(Field);
         }
         private set;
     }
 
-    private Object fieldValue {
-        private get {
-            return formatFieldValue(fieldValue);
+    public Object FieldValue {
+        get {
+            return FieldValue;
         }
         private set {
-            fieldValue = value;
+            FieldValue = value;
         }
-    }
-    public QCondition(String field) {
-        this.field = field;
     }
 
-    protected virtual Object formatFieldValue(Object val) {
-        if (val instanceof List<Object>) {
-            List<String> values = new List<String>();
-            for (Object value : (List<Object>) val) {
-                if (value instanceof String) {
-                    values.add('\'' + String.escapeSingleQuotes((String) value) + '\'');
-                } else {
-                    values.add((String) value);
-                }
-            }
-            return String.join(values, ', ');
-        }
-        if (val instanceof String) {
-            return '\'' + String.escapeSingleQuotes((String) val) + '\'';
-        } else if (val instanceof Date) {
-            String dateString = String.valueOf(val);
-            return dateString.substring(0, dateString.indexOf(' '));
-        } else if (val instanceof Datetime) {
-            return ((Datetime) val).formatGmt('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'');
-        } else {
-            return val;
-        }
+    public QCondition(String Field) {
+        this.Field = Field;
     }
 
     public QCondition equalsTo(Object value) {
-        this.operatorValue = ComparisonOperator.EQUALS;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.EQUALS;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition notEqualsTo(Object value) {
-        this.operatorValue = ComparisonOperator.NOT_EQUALS;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.NOT_EQUALS;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isLessThan(Object value) {
-        this.operatorValue = ComparisonOperator.LESS_THAN;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.LESS_THAN;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isLessOrEquals(Object value) {
-        this.operatorValue = ComparisonOperator.LESS_OR_EQUAL;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.LESS_OR_EQUAL;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isGreaterThan(Object value) {
-        this.operatorValue = ComparisonOperator.GREATER_THAN;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.GREATER_THAN;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isGreaterOrEquals(Object value) {
-        this.operatorValue = ComparisonOperator.GREATER_OR_EQUAL;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.GREATER_OR_EQUAL;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isLike(String value) {
-        this.operatorValue = ComparisonOperator.IS_LIKE;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.IS_LIKE;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isIn(List<Object> values) {
-        this.operatorValue = ComparisonOperator.IS_IN;
-        this.fieldValue = values;
+        this.OperatorValue = ComparisonOperator.IS_IN;
+        this.FieldValue = values;
         return this;
     }
 
     public QCondition isNotIn(List<Object> values) {
-        this.operatorValue = ComparisonOperator.NOT_IN;
-        this.fieldValue = values;
+        this.OperatorValue = ComparisonOperator.NOT_IN;
+        this.FieldValue = values;
         return this;
     }
 
     public QCondition isNull() {
-        this.operatorValue = ComparisonOperator.EQUALS;
-        this.fieldValue = null;
+        this.OperatorValue = ComparisonOperator.EQUALS;
+        this.FieldValue = null;
         return this;
     }
 
     public QCondition isNotNull() {
-        this.operatorValue = ComparisonOperator.NOT_EQUALS;
-        this.fieldValue = null;
+        this.OperatorValue = ComparisonOperator.NOT_EQUALS;
+        this.FieldValue = null;
         return this;
-    }
-
-    public String build() {
-        switch on operatorValue {
-            when EQUALS {
-                return field + ' = ' + fieldValue;
-            }
-            when NOT_EQUALS {
-                return field + ' != ' + fieldValue;
-            }
-            when LESS_THAN {
-                return field + ' < ' + fieldValue;
-            }
-            when LESS_OR_EQUAL {
-                return field + ' <= ' + fieldValue;
-            }
-            when GREATER_THAN {
-                return field + ' > ' + fieldValue;
-            }
-            when GREATER_OR_EQUAL {
-                return field + ' >= ' + fieldValue;
-            }
-            when IS_LIKE {
-                return field + ' LIKE ' + fieldValue;
-            }
-            when IS_IN {
-                return field + ' IN (' + fieldValue + ')';
-            }
-            when NOT_IN {
-                return field + ' NOT IN (' + fieldValue + ')';
-            }
-            when else {
-                return '';
-            }
-        }
     }
 }

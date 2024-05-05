@@ -5,9 +5,9 @@
  */
 public class QAndGroup extends QConditionGroup {
     public QAndGroup() {
-        super('AND');
+        super(QConditionGroup.Operator.AND_GROUP);
     }
     public QAndGroup(List<QICondition> conditions) {
-        super(conditions, 'AND');
+        super(conditions, QConditionGroup.Operator.AND_GROUP);
     }
 }
