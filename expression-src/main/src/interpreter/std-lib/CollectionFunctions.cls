@@ -436,7 +436,8 @@ public with sharing class CollectionFunctions {
      * @description Sorts a list.
      * Accepts at least one argument: the list to sort.
      * When sorting a list of Maps or a list of SObjects,
-     * two additional arguments can be provided: the field to sort by and the sort direction.
+     * three additional arguments can be provided: the field to sort by, the sort direction, and the position of nulls
+     * (nulls first or nulls last).
      *
      * The field to sort can either be a field name as a merge field (field name without quotes), or an expression that evaluates to a string
      * representing the field name. Merge fields are only supported when sorting SObjects and are useful to get the framework to automatically
@@ -445,9 +446,12 @@ public with sharing class CollectionFunctions {
      * Note: The merge field must be a field on the SObject being sorted itself, not a relationship field.
      *
      * The sort direction can either be the literal string (requires quotes) `ASC` or `DESC`.
+     * The position of nulls can either be the literal string (requires quotes) `NULLS_FIRST` or `NULLS_LAST`.
      * @function SORT
      * @example
-      * SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a", "DESC") // [{ "a": 3 }, { "a": 2 }, { "a": 1 }]   */
+     * SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a", "DESC") // [{ "a": 3 }, { "a": 2 }, { "a": 1 }]
+     * SORT([SObject1, SObject2, SObject3], "Name", "ASC", "NULLS_LAST") // [SObject1, SObject2, SObject3]
+     **/
     private class SortFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list

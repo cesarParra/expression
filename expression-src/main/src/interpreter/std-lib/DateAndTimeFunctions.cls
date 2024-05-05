@@ -113,6 +113,14 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
+    /**
+     * @description Returns a datetime value from the provided year, month, day, hour, minute, and second values.
+     *
+     * Accepts 6 arguments: the year, month, day, hour, minute, and second.
+     * @function DATETIME
+     * @example
+     * DATETIME(2020, 1, 1, 12, 0, 0) // 2020-01-01 12:00:00
+     */
     private class DatetimeFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object year = evaluate(arguments.get(0));
