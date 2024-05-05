@@ -534,15 +534,6 @@ public virtual class sfab_FabricatedSObject {
 
     /**
     * Internal method that should not be called directly.
-    * Gets the total number of nodes (being fields and relationships) that are set on this object
-    */
-    @testVisible
-    private Integer getNumberOfNodes() {
-        return nodes.size();
-    }
-
-    /**
-    * Internal method that should not be called directly.
     * Checks if the field with the given name is a parent relationship, throwing an exception if not
     */
     private void checkFieldIsParentRelationship(String parentFieldName) {
