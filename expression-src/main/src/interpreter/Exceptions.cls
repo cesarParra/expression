@@ -12,11 +12,11 @@ public with sharing class Exceptions {
         public override String getMessage() {
             return
                 this.getType() + ' Error: ' + '\n' +
-                this.message + '\n' +
-                'Line: ' + this.position.lineStart + ' Column: ' + this.position.columnStart;
+                    this.message + '\n' +
+                    'Line: ' + this.position.lineStart + ' Column: ' + this.position.columnStart;
         }
 
-        public virtual String toString() {
+        public virtual override String toString() {
             return this.getMessage();
         }
 

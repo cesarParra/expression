@@ -1,11 +1,11 @@
 @IsTest
 public with sharing class QInMemoryDatabase extends QDB {
-    private final Map<Id, sfab_FabricatedSObject> recordsInTheDatabase = new Map<Id, sfab_FabricatedSObject>();
+    private final Map<Id, sfab.sfab_FabricatedSObject> recordsInTheDatabase = new Map<Id, sfab.sfab_FabricatedSObject>();
 
     public override List<SObject> run(Q query) {
         SObjectType sObjectType = getSObjectTypeFromQ(query);
         List<SObject> filteredRecordsForSObject = new List<SObject>();
-        for (sfab_FabricatedSObject fabRecord : recordsInTheDatabase.values()) {
+        for (sfab.sfab_FabricatedSObject fabRecord : recordsInTheDatabase.values()) {
             SObject record = (SObject) fabRecord.toSObject();
             if (record.getSObjectType() == sObjectType) {
                 filteredRecordsForSObject.add(record);
@@ -19,7 +19,7 @@ public with sharing class QInMemoryDatabase extends QDB {
     }
 
     public override void doInsert(SObject record) {
-        sfab_FabricatedSObject fabricatedRecord = new sfab_FabricatedSObject(
+        sfab.sfab_FabricatedSObject fabricatedRecord = new sfab.sfab_FabricatedSObject(
             Type.forName(record.getSObjectType().getDescribe().getName()),
             record.getPopulatedFieldsAsMap()
         );
@@ -31,7 +31,7 @@ public with sharing class QInMemoryDatabase extends QDB {
         recordsInTheDatabase.put(generatedId, fabricatedRecord);
     }
 
-    private void resolveChildRelationships(sfab_FabricatedSObject fabricatedRecord, SObject originalRecord) {
+    private void resolveChildRelationships(sfab.sfab_FabricatedSObject fabricatedRecord, SObject originalRecord) {
         Map<String, Object> populatedFields = originalRecord.getPopulatedFieldsAsMap();
         SObjectType sType = originalRecord.getSObjectType();
         Map<String, SObjectField> fieldsForType = sType.getDescribe().fields.getMap();
@@ -61,7 +61,7 @@ public with sharing class QInMemoryDatabase extends QDB {
             for (ChildRelationship currentRelationship : relationships) {
                 if (currentRelationship.getField() == currentField) {
                     String relationshipName = currentRelationship.getRelationshipName();
-                    sfab_FabricatedSObject parentRecord = recordsInTheDatabase.get((Id) originalRecord.get(currentField));
+                    sfab.sfab_FabricatedSObject parentRecord = recordsInTheDatabase.get((Id) originalRecord.get(currentField));
                     // Creating a new fabricated record with the parent record as the parent. We can't store
                     // the original reference because that will create a circular reference, which will
                     // cause a stack overflow error when serializing the object.
@@ -116,11 +116,11 @@ public with sharing class QInMemoryDatabase extends QDB {
                 List<SObject> unfilteredChildren = (List<SObject>) currentResultRecord.getSObjects(relationshipName);
                 System.debug('Unfiltered children: ' + unfilteredChildren);
                 List<SObject> filteredChildren = fromQ(subQuery, unfilteredChildren ?? new List<SObject>());
-                system.debug('Filtered children: ' + filteredChildren);
+                System.debug('Filtered children: ' + filteredChildren);
 
                 // Find the original sfab for this record so that we can set new child relationships
-                sfab_FabricatedSObject originalRecord = recordsInTheDatabase.get(currentResultRecord.Id).clone();
-                List<sfab_FabricatedSObject> originalChildrenFiltered = new List<sfab_FabricatedSObject>();
+                sfab.sfab_FabricatedSObject originalRecord = recordsInTheDatabase.get(currentResultRecord.Id).clone();
+                List<sfab.sfab_FabricatedSObject> originalChildrenFiltered = new List<sfab.sfab_FabricatedSObject>();
                 for (SObject child : filteredChildren) {
                     originalChildrenFiltered.add(recordsInTheDatabase.get(child.Id));
                 }
