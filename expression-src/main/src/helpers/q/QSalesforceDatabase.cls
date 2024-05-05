@@ -115,7 +115,7 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
         if (condition instanceof QConditionGroup) {
             QConditionGroup conditionGroup = (QConditionGroup) condition;
             String operatorAsString = toStringOperator(conditionGroup);
-            for (QICondition subCondition : conditionGroup.conditions) {
+            for (QICondition subCondition : conditionGroup.Conditions) {
                 if (String.isNotEmpty(value)) {
                     value += ' ' + operatorAsString + ' ';
                 }
@@ -125,33 +125,33 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
             return '(' + value + ')';
         } else {
             QCondition cond = (QCondition) condition;
-            switch on cond.operatorValue {
+            switch on cond.OperatorValue {
                 when EQUALS {
-                    return cond.field + ' = ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' = ' + formatFieldValue(cond.FieldValue);
                 }
                 when NOT_EQUALS {
-                    return cond.field + ' != ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' != ' + formatFieldValue(cond.FieldValue);
                 }
                 when LESS_THAN {
-                    return cond.field + ' < ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' < ' + formatFieldValue(cond.FieldValue);
                 }
                 when LESS_OR_EQUAL {
-                    return cond.field + ' <= ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' <= ' + formatFieldValue(cond.FieldValue);
                 }
                 when GREATER_THAN {
-                    return cond.field + ' > ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' > ' + formatFieldValue(cond.FieldValue);
                 }
                 when GREATER_OR_EQUAL {
-                    return cond.field + ' >= ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' >= ' + formatFieldValue(cond.FieldValue);
                 }
                 when IS_LIKE {
-                    return cond.field + ' LIKE ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' LIKE ' + formatFieldValue(cond.FieldValue);
                 }
                 when IS_IN {
-                    return cond.field + ' IN (' + formatFieldValue(cond.fieldValue) + ')';
+                    return cond.Field + ' IN (' + formatFieldValue(cond.FieldValue) + ')';
                 }
                 when NOT_IN {
-                    return cond.field + ' NOT IN (' + formatFieldValue(cond.fieldValue) + ')';
+                    return cond.Field + ' NOT IN (' + formatFieldValue(cond.FieldValue) + ')';
                 }
                 when else {
                     return '';
@@ -161,7 +161,7 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
     }
 
     private static String toStringOperator(QConditionGroup conditionGroup) {
-        switch on conditionGroup.operator {
+        switch on conditionGroup.Operator {
             when AND_GROUP {
                 return 'AND';
             }

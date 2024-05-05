@@ -8,21 +8,21 @@ public abstract class QConditionGroup implements QICondition {
         AND_GROUP, OR_GROUP
     }
 
-    public List<QICondition> conditions { get; set; }
+    public List<QICondition> Conditions { get; protected set; }
 
-    public Operator operator;
+    public Operator Operator { get; protected set; }
 
     public QConditionGroup(Operator op) {
         this(new List<QICondition>(), op);
     }
 
-    public QConditionGroup(List<QICondition> conditions, Operator op) {
-        this.conditions = conditions;
-        this.operator = op;
+    public QConditionGroup(List<QICondition> Conditions, Operator op) {
+        this.Conditions = Conditions;
+        this.Operator = op;
     }
 
     public QConditionGroup add(QICondition condition) {
-        this.conditions.add(condition);
+        this.Conditions.add(condition);
         return this;
     }
 }

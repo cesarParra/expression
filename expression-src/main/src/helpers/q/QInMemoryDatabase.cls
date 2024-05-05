@@ -174,11 +174,11 @@ public with sharing class QInMemoryDatabase extends QDB {
             if (condition instanceof QConditionGroup) {
                 List<String> conditions = new List<String>();
                 QConditionGroup castedCondition = (QConditionGroup) condition;
-                for (QICondition cond : castedCondition.conditions) {
+                for (QICondition cond : castedCondition.Conditions) {
                     conditions.add(conditionStringBuilder(cond));
                 }
 
-                String operatorAsString = castedCondition.operator == QConditionGroup.Operator.AND_GROUP ? 'AND' : 'OR';
+                String operatorAsString = castedCondition.Operator == QConditionGroup.Operator.AND_GROUP ? 'AND' : 'OR';
 
                 String orGroup = operatorAsString + '(';
                 for (String cond : conditions) {
@@ -191,41 +191,41 @@ public with sharing class QInMemoryDatabase extends QDB {
             }
 
             QCondition cond = (QCondition) condition;
-            switch on cond.operatorValue {
+            switch on cond.OperatorValue {
                 when EQUALS {
-                    return cond.field + ' == ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' == ' + formatFieldValue(cond.FieldValue);
                 }
                 when NOT_EQUALS {
-                    return cond.field + ' != ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' != ' + formatFieldValue(cond.FieldValue);
                 }
                 when LESS_THAN {
-                    return cond.field + ' < ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' < ' + formatFieldValue(cond.FieldValue);
                 }
                 when LESS_OR_EQUAL {
-                    return cond.field + ' <= ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' <= ' + formatFieldValue(cond.FieldValue);
                 }
                 when GREATER_THAN {
-                    return cond.field + ' > ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' > ' + formatFieldValue(cond.FieldValue);
                 }
                 when GREATER_OR_EQUAL {
-                    return cond.field + ' >= ' + formatFieldValue(cond.fieldValue);
+                    return cond.Field + ' >= ' + formatFieldValue(cond.FieldValue);
                 }
                 when IS_LIKE {
                     // Check that the field is a string
-                    if (cond.fieldValue instanceof String) {
-                        return 'LIKE(' + cond.field + ',' + formatFieldValue(cond.fieldValue) + ')';
+                    if (cond.FieldValue instanceof String) {
+                        return 'LIKE(' + cond.Field + ',' + formatFieldValue(cond.FieldValue) + ')';
                     } else {
                         throw new QDBException('IS LIKE operator can only be used with String fields');
                     }
                 }
                 when IS_IN {
-                    return 'CONTAINS(' + formatFieldValue(cond.fieldValue) + ',' + cond.field + ')';
+                    return 'CONTAINS(' + formatFieldValue(cond.FieldValue) + ',' + cond.Field + ')';
                 }
                 when NOT_IN {
-                    return 'NOT(CONTAINS(' + formatFieldValue(cond.fieldValue) + ',' + cond.field + '))';
+                    return 'NOT(CONTAINS(' + formatFieldValue(cond.FieldValue) + ',' + cond.Field + '))';
                 }
                 when else {
-                    throw new QDBException('Operator ' + cond.operatorValue + ' is not supported in InMemoryDatabase');
+                    throw new QDBException('Operator ' + cond.OperatorValue + ' is not supported in InMemoryDatabase');
                 }
             }
         }

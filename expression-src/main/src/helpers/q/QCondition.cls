@@ -16,91 +16,91 @@ public virtual class QCondition implements QICondition {
         NOT_IN
     }
 
-    public ComparisonOperator operatorValue;
+    public ComparisonOperator OperatorValue { get; private set; }
 
-    public final String field {
+    public final String Field {
         get {
-            return String.escapeSingleQuotes(field);
+            return String.escapeSingleQuotes(Field);
         }
         private set;
     }
 
-    public Object fieldValue {
+    public Object FieldValue {
         get {
-            return fieldValue;
+            return FieldValue;
         }
         private set {
-            fieldValue = value;
+            FieldValue = value;
         }
     }
 
-    public QCondition(String field) {
-        this.field = field;
+    public QCondition(String Field) {
+        this.Field = Field;
     }
 
     public QCondition equalsTo(Object value) {
-        this.operatorValue = ComparisonOperator.EQUALS;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.EQUALS;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition notEqualsTo(Object value) {
-        this.operatorValue = ComparisonOperator.NOT_EQUALS;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.NOT_EQUALS;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isLessThan(Object value) {
-        this.operatorValue = ComparisonOperator.LESS_THAN;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.LESS_THAN;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isLessOrEquals(Object value) {
-        this.operatorValue = ComparisonOperator.LESS_OR_EQUAL;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.LESS_OR_EQUAL;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isGreaterThan(Object value) {
-        this.operatorValue = ComparisonOperator.GREATER_THAN;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.GREATER_THAN;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isGreaterOrEquals(Object value) {
-        this.operatorValue = ComparisonOperator.GREATER_OR_EQUAL;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.GREATER_OR_EQUAL;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isLike(String value) {
-        this.operatorValue = ComparisonOperator.IS_LIKE;
-        this.fieldValue = value;
+        this.OperatorValue = ComparisonOperator.IS_LIKE;
+        this.FieldValue = value;
         return this;
     }
 
     public QCondition isIn(List<Object> values) {
-        this.operatorValue = ComparisonOperator.IS_IN;
-        this.fieldValue = values;
+        this.OperatorValue = ComparisonOperator.IS_IN;
+        this.FieldValue = values;
         return this;
     }
 
     public QCondition isNotIn(List<Object> values) {
-        this.operatorValue = ComparisonOperator.NOT_IN;
-        this.fieldValue = values;
+        this.OperatorValue = ComparisonOperator.NOT_IN;
+        this.FieldValue = values;
         return this;
     }
 
     public QCondition isNull() {
-        this.operatorValue = ComparisonOperator.EQUALS;
-        this.fieldValue = null;
+        this.OperatorValue = ComparisonOperator.EQUALS;
+        this.FieldValue = null;
         return this;
     }
 
     public QCondition isNotNull() {
-        this.operatorValue = ComparisonOperator.NOT_EQUALS;
-        this.fieldValue = null;
+        this.OperatorValue = ComparisonOperator.NOT_EQUALS;
+        this.FieldValue = null;
         return this;
     }
 }
