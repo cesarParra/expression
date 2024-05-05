@@ -93,17 +93,17 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
     }
 
     private static String buildQOrder(QOrder order) {
-        String orderString = order.field;
+        String orderString = order.Field;
 
-        if (order.sortValue == QOrder.SortOrder.ASCENDING) {
+        if (order.SortValue == QOrder.SortOrder.ASCENDING) {
             orderString += ' ASC';
         } else {
             orderString += ' DESC';
         }
 
-        if (order.nullsValue != null && order.nullsValue == QOrder.NullsOrder.FIRST) {
+        if (order.NullsOrderValue != null && order.NullsOrderValue == QOrder.NullsOrder.FIRST) {
             orderString += ' NULLS FIRST';
-        } else if (order.nullsValue != null && order.nullsValue == QOrder.NullsOrder.LAST) {
+        } else if (order.NullsOrderValue != null && order.NullsOrderValue == QOrder.NullsOrder.LAST) {
             orderString += ' NULLS LAST';
         }
 
