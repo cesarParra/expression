@@ -314,14 +314,6 @@ public with sharing class sfab {
             return fieldName;
         }
 
-        public Integer getNumberOfChildren() {
-            return children.size();
-        }
-
-        public List<sfab_FabricatedSObject> getChildren() {
-            return children;
-        }
-
         public Map<String, Object> serialize() {
             List<Map<String, Object>> serializedChildren = new List<Map<String, Object>>();
 
@@ -359,7 +351,7 @@ public with sharing class sfab {
     public class sfab_FabricatedSObjectNodeStub implements sfab_FabricatedSObjectNode {
         public Boolean serializeInvoked = false;
         public Map<String, Object> serializedNode;
-        private String name;
+        private final String name;
 
         public sfab_FabricatedSObjectNodeStub(String name) {
             serializedNode = new Map<String, Object>();
@@ -384,8 +376,8 @@ public with sharing class sfab {
     }
 
     public class sfab_FabricatedSObjectStub extends sfab_FabricatedSObject {
-        private Map<String, Object> serializedMap;
-        @testVisible private Boolean serializeInvoked = false;
+        private final Map<String, Object> serializedMap;
+        @TestVisible private Boolean serializeInvoked = false;
 
         public sfab_FabricatedSObjectStub(Type sType) {
             super(sType);
@@ -404,8 +396,8 @@ public with sharing class sfab {
     }
 
     public class sfab_FieldValuePairNode implements sfab_FabricatedSObjectNode {
-        @testVisible protected Schema.SObjectField field;
-        @testVisible protected Object value;
+        @TestVisible protected Schema.SObjectField field;
+        @TestVisible protected Object value;
 
         public sfab_FieldValuePairNode(Schema.SObjectField field, Object value) {
             this.field = field;
@@ -414,10 +406,6 @@ public with sharing class sfab {
 
         public String getName() {
             return field?.getDescribe().getName();
-        }
-
-        public Object getValue() {
-            return value;
         }
 
         public Map<String, Object> serialize() {
@@ -433,9 +421,9 @@ public with sharing class sfab {
         public void postBuildProcess(Object objectToProcess) {
             if (fieldIsBlob()) {
                 Blob valueToSet;
-                if (value instanceOf Blob) {
+                if (value instanceof Blob) {
                     valueToSet = (Blob) value;
-                } else if (value instanceOf String) {
+                } else if (value instanceof String) {
                     valueToSet = Blob.valueOf((String) value);
                 }
                 ((SObject) objectToProcess).put(field, valueToSet);
@@ -447,7 +435,7 @@ public with sharing class sfab {
         }
     }
 
-    static Map<String, SingleObjectDescriber> singleObjectDescribers = new Map<String, SingleObjectDescriber>();
+    static final Map<String, SingleObjectDescriber> singleObjectDescribers = new Map<String, SingleObjectDescriber>();
 
     public with sharing class sfab_ObjectDescriber {
 
@@ -517,8 +505,8 @@ public with sharing class sfab {
     }
 
     public class sfab_ParentRelationshipNode implements sfab_FabricatedSObjectNode {
-        @testVisible private String fieldName;
-        @testVisible private sfab_FabricatedSObject parent;
+        @TestVisible private String fieldName;
+        @TestVisible private sfab_FabricatedSObject parent;
 
         public sfab_ParentRelationshipNode(String fieldName, sfab_FabricatedSObject parent) {
             this.fieldName = fieldName;
@@ -527,10 +515,6 @@ public with sharing class sfab {
 
         public String getName() {
             return fieldName;
-        }
-
-        public sfab_FabricatedSObject getParent() {
-            return parent;
         }
 
         public sfab_FabricatedSObject set(String fieldName, Object value) {
@@ -553,49 +537,32 @@ public with sharing class sfab {
 
     }
 
-    /**
-    * Internal class that interprets a field name and determines
-    * if it represents a parent.child specification
-    */
-    class sfab_FieldNameSplitter {
-
-        private String fullFieldName;
+    private class sfab_FieldNameSplitter {
+        private final String fullFieldName;
 
         public sfab_FieldNameSplitter(String fullFieldName) {
             this.fullFieldName = fullFieldName;
         }
 
-        /**
-        * Internal method that should not be called directly.
-        * Returns the parent field component of the current field name
-        */
         public String getParentFieldName() {
             return fullFieldName.substringBefore('.');
         }
 
-        /**
-        * Internal method that should not be called directly.
-        * Returns the child field component of the current field name
-        */
         public String getChildFieldName() {
             return fullFieldName.substringAfter('.');
         }
 
-        /**
-        * Internal method that should not be called directly.
-        * States if the current field name represents a navigation to a parent field
-        */
         public Boolean isAParentNavigation() {
             return fullFieldName.contains('.');
         }
     }
 
     public class SingleObjectDescriber {
-        private String objectName;
+        private final String objectName;
 
         Boolean fieldsInitialised = false;
 
-        private Schema.DescribeSObjectResult objectDescribe {
+        private final Schema.DescribeSObjectResult objectDescribe {
             get {
                 if (objectDescribe == null) {
                     objectDescribe = Schema.getGlobalDescribe()
@@ -620,7 +587,7 @@ public with sharing class sfab {
             set;
         }
 
-        private Map<String, ParentRelationship> parentRelationships {
+        private final Map<String, ParentRelationship> parentRelationships {
             get {
                 if (parentRelationships == null) {
                     parentRelationships = new Map<String, ParentRelationship>();
@@ -641,7 +608,7 @@ public with sharing class sfab {
             set;
         }
 
-        private Map<String, ChildRelationship> childRelationships {
+        private final Map<String, ChildRelationship> childRelationships {
             get {
                 if (childRelationships == null) {
 
@@ -772,7 +739,8 @@ public with sharing class sfab {
         }
 
         public Boolean isValid() {
-            return fieldDescribe?.getReferenceTo()?.size() > 0;
+            Integer size = fieldDescribe?.getReferenceTo()?.size();
+            return size != null && size > 0;
         }
 
         private Boolean isPolymorphic() {
