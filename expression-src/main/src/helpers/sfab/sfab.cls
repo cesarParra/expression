@@ -82,7 +82,6 @@ public with sharing class sfab {
 
         public sfab_FabricatedSObject set(Map<String, Object> fields) {
             for (String fieldName : fields.keySet()) {
-                Object value = fields.get(fieldName);
                 set(fieldName, fields.get(fieldName));
             }
             return this;
@@ -230,36 +229,12 @@ public with sharing class sfab {
             return nodes.get(nodeName);
         }
 
-        private sfab_FieldValuePairNode getFieldNode(String fieldName) {
-            return ((sfab_FieldValuePairNode) getNode(fieldName));
-        }
-
         private sfab_ParentRelationshipNode getParentRelationshipNode(String relationshipName) {
             return ((sfab_ParentRelationshipNode) getNode(relationshipName));
         }
 
         private sfab_ChildRelationshipNode getChildRelationshipNode(String relationshipName) {
             return ((sfab_ChildRelationshipNode) getNode(relationshipName));
-        }
-
-        @TestVisible
-        private Object getFieldValue(String fieldName) {
-            return getFieldNode(fieldName)?.getValue();
-        }
-
-        @TestVisible
-        private sfab_FabricatedSObject getParent(String relationshipName) {
-            return getParentRelationshipNode(relationshipName)?.getParent();
-        }
-
-        @TestVisible
-        private List<sfab_FabricatedSObject> getChildren(String relationshipName) {
-            return getChildRelationshipNode(relationshipName)?.getChildren();
-        }
-
-        @TestVisible
-        private Integer getNumberOfChildren(String relationshipName) {
-            return getChildRelationshipNode(relationshipName)?.getNumberOfChildren();
         }
 
         private void checkFieldIsParentRelationship(String parentFieldName) {
@@ -317,8 +292,8 @@ public with sharing class sfab {
     public class NodeNotSetException extends Exception {}
 
     public class sfab_ChildRelationshipNode implements sfab_FabricatedSObjectNode {
-        @testVisible private String fieldName;
-        @testVisible private List<sfab_FabricatedSObject> children;
+        @TestVisible private String fieldName;
+        @TestVisible private List<sfab_FabricatedSObject> children;
 
         public sfab_ChildRelationshipNode(String fieldName) {
             this.fieldName = fieldName;
