@@ -1,6 +1,6 @@
 public inherited sharing abstract class QSalesforceDatabase extends QDB {
     public static QSalesforceDatabase getInstance() {
-        if (QRunner.evaluationSharingMode == Configuration.SharingMode.WITH) {
+        if (QDB.evaluationSharingMode == Configuration.SharingMode.WITH) {
             return new WithSharingRunner();
         } else {
             return new WithoutSharingRunner();
@@ -78,7 +78,7 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
         }
     }
 
-    private String buildOrderBy(Q query) {
+    private static String buildOrderBy(Q query) {
         List<String> orderList = new List<String>();
 
         for (QOrder order : query.orders) {
@@ -92,7 +92,7 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
         }
     }
 
-    private String buildQOrder(QOrder order) {
+    private static String buildQOrder(QOrder order) {
         String orderString = order.field;
 
         if (order.sortValue == QOrder.SortOrder.ASCENDING) {
@@ -172,7 +172,7 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
         throw new QDBException('Unreachable code');
     }
 
-    private Object formatFieldValue(Object val) {
+    private static Object formatFieldValue(Object val) {
         if (val instanceof List<Object>) {
             List<String> values = new List<String>();
             for (Object value : (List<Object>) val) {

@@ -65,10 +65,6 @@ public with sharing class sfab {
             return setParent(relationshipName, fabricatedParent);
         }
 
-        public FabricatedSObject set(String relationshipName, List<FabricatedSObject> fabricatedChildren) {
-            return setChildren(relationshipName, fabricatedChildren);
-        }
-
         public FabricatedSObject add(String relationshipName, FabricatedSObject fabricatedChild) {
             return addChild(relationshipName, fabricatedChild);
         }

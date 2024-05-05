@@ -241,10 +241,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>QRunner</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>SalesOrderLinePricingService</apexClass>
         <enabled>true</enabled>
     </classAccesses>

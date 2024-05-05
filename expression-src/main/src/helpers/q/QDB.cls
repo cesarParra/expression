@@ -1,4 +1,6 @@
 public inherited sharing abstract class QDB {
+    public static Configuration.SharingMode evaluationSharingMode;
+
     protected QDB() {
     }
 

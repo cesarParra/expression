@@ -74,7 +74,7 @@ private class sfabTest {
     private static void toSObject_expectSerializeInvokedOnNodes() {
         sfab.FabricatedSObjectNodeStub node1 = new sfab.FabricatedSObjectNodeStub('node1');
         sfab.FabricatedSObjectNodeStub node2 = new sfab.FabricatedSObjectNodeStub('node2');
-        SObject sObj = new sfab.FabricatedSObject(Account.class, new List<sfab.FabricatedSObjectNode>{
+        new sfab.FabricatedSObject(Account.class, new List<sfab.FabricatedSObjectNode>{
             node1, node2
         }).toSObject();
         System.assert(node1.serializeInvoked);
@@ -881,7 +881,7 @@ private class sfabTest {
 
         String exceptionMessage;
         try {
-            sfab.FabricatedSObject fabricatedObject = new sfab.ObjectDescriber()
+            new sfab.ObjectDescriber()
                 .buildFabricatedObjectForRelationship('Contact', 'Invalid');
         } catch (sfab.ParentRelationshipDoesNotExistException e) {
             exceptionMessage = e.getMessage();
@@ -891,10 +891,9 @@ private class sfabTest {
 
     @IsTest
     private static void buildFabricatedObjectForRelationship_whenGivenAnInvalidObject_expectAnException() {
-
         String exceptionMessage;
         try {
-            sfab.FabricatedSObject fabricatedObject = new sfab.ObjectDescriber()
+            new sfab.ObjectDescriber()
                 .buildFabricatedObjectForRelationship('Invalid', 'Account');
         } catch (sfab.ParentRelationshipDoesNotExistException e) {
             exceptionMessage = e.getMessage();
@@ -904,10 +903,9 @@ private class sfabTest {
 
     @IsTest
     private static void buildFabricatedObjectForRelationship_whenGivenANullRelationship_expectAnException() {
-
         String exceptionMessage;
         try {
-            sfab.FabricatedSObject fabricatedObject = new sfab.ObjectDescriber()
+            new sfab.ObjectDescriber()
                 .buildFabricatedObjectForRelationship('Contact', null);
         } catch (sfab.ParentRelationshipDoesNotExistException e) {
             exceptionMessage = e.getMessage();
@@ -917,10 +915,9 @@ private class sfabTest {
 
     @IsTest
     private static void buildFabricatedObjectForRelationship_whenGivenANullObject_expectAnException() {
-
         String exceptionMessage;
         try {
-            sfab.FabricatedSObject fabricatedObject = new sfab.ObjectDescriber()
+            new sfab.ObjectDescriber()
                 .buildFabricatedObjectForRelationship(null, 'Account');
         } catch (sfab.ParentRelationshipDoesNotExistException e) {
             exceptionMessage = e.getMessage();

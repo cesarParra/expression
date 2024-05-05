@@ -6,11 +6,14 @@
 
     @IsTest(SeeAllData=true) static void testSave() {
         // Modify the test to query for a portal user that exists in your org
-        List<User> existingPortalUsers = [SELECT Id, ProfileId, UserRoleId FROM User WHERE UserRoleId <> NULL AND UserType='CustomerSuccess'];
+        List<User> existingPortalUsers = [SELECT Id, ProfileId, UserRoleId FROM User WHERE UserRoleId <> NULL AND UserType = 'CustomerSuccess'];
 
         if (existingPortalUsers.isEmpty()) {
-            User currentUser = [select id, title, firstname, lastname, email, phone, mobilephone, fax, street, city, state, postalcode, country
-                                FROM User WHERE id =: UserInfo.getUserId()];
+            User currentUser = [
+                SELECT Id, Title, FirstName, LastName, Email, Phone, MobilePhone, Fax, Street, City, State, PostalCode, Country
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
+            ];
             MyProfilePageController controller = new MyProfilePageController();
             System.assertEquals(currentUser.Id, controller.getUser().Id, 'Did not successfully load the current user');
             System.assert(controller.getIsEdit() == false, 'isEdit should default to false');
@@ -26,8 +29,8 @@
             controller.save();
             System.assert(controller.getIsEdit() == false);
 
-            currentUser = [Select id, fax from User where id =: currentUser.Id];
-            System.assert(currentUser.fax == randFax);
+            currentUser = [SELECT Id, Fax FROM User WHERE Id = :currentUser.Id];
+            System.assert(currentUser.Fax == randFax);
         } else {
             User existingPortalUser = existingPortalUsers[0];
             String randFax = Math.rint(Math.random() * 1000) + '5551234';
@@ -48,8 +51,8 @@
             }
 
             // verify that the user was updated
-            existingPortalUser = [Select id, fax from User where id =: existingPortalUser.Id];
-            System.assert(existingPortalUser.fax == randFax);
+            existingPortalUser = [SELECT Id, Fax FROM User WHERE Id = :existingPortalUser.Id];
+            System.assert(existingPortalUser.Fax == randFax);
         }
     }
 }
