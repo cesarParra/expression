@@ -1,8 +1,7 @@
 public inherited sharing abstract class QDB {
     public static Configuration.SharingMode evaluationSharingMode;
 
-    protected QDB() {
-    }
+    protected QDB() {}
 
     @TestVisible private static QDB instance;
     public static QDB getInstance() {
@@ -36,6 +35,5 @@ public inherited sharing abstract class QDB {
 
     public abstract void doInsert(List<SObject> records);
 
-    public class QDBException extends Exception {
-    }
+    public class QDBException extends Exception {}
 }
