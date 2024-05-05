@@ -64,11 +64,11 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
         }
     }
 
-    private String buildConditions(Q query) {
+    private static String buildConditions(Q query) {
         List<String> condList = new List<String>();
 
         for (QICondition cond : query.conditions) {
-            condList.add(buildQCondition(cond));
+            condList.add(new QCOnditionBuilder().build(cond));
         }
 
         if (!query.conditions.isEmpty()) {
@@ -110,51 +110,53 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
         return orderString;
     }
 
-    private String buildQCondition(QICondition condition) {
-        String value = '';
-        if (condition instanceof QConditionGroup) {
-            QConditionGroup conditionGroup = (QConditionGroup) condition;
-            String operatorAsString = toStringOperator(conditionGroup);
-            for (QICondition subCondition : conditionGroup.Conditions) {
-                if (String.isNotEmpty(value)) {
-                    value += ' ' + operatorAsString + ' ';
+    public class QCOnditionBuilder {
+        public String build(QICondition condition) {
+            String value = '';
+            if (condition instanceof QConditionGroup) {
+                QConditionGroup conditionGroup = (QConditionGroup) condition;
+                String operatorAsString = toStringOperator(conditionGroup);
+                for (QICondition subCondition : conditionGroup.Conditions) {
+                    if (String.isNotEmpty(value)) {
+                        value += ' ' + operatorAsString + ' ';
+                    }
+                    value += build(subCondition);
                 }
-                value += buildQCondition(subCondition);
-            }
 
-            return '(' + value + ')';
-        } else {
-            QCondition cond = (QCondition) condition;
-            switch on cond.OperatorValue {
-                when EQUALS {
-                    return cond.Field + ' = ' + formatFieldValue(cond.FieldValue);
-                }
-                when NOT_EQUALS {
-                    return cond.Field + ' != ' + formatFieldValue(cond.FieldValue);
-                }
-                when LESS_THAN {
-                    return cond.Field + ' < ' + formatFieldValue(cond.FieldValue);
-                }
-                when LESS_OR_EQUAL {
-                    return cond.Field + ' <= ' + formatFieldValue(cond.FieldValue);
-                }
-                when GREATER_THAN {
-                    return cond.Field + ' > ' + formatFieldValue(cond.FieldValue);
-                }
-                when GREATER_OR_EQUAL {
-                    return cond.Field + ' >= ' + formatFieldValue(cond.FieldValue);
-                }
-                when IS_LIKE {
-                    return cond.Field + ' LIKE ' + formatFieldValue(cond.FieldValue);
-                }
-                when IS_IN {
-                    return cond.Field + ' IN (' + formatFieldValue(cond.FieldValue) + ')';
-                }
-                when NOT_IN {
-                    return cond.Field + ' NOT IN (' + formatFieldValue(cond.FieldValue) + ')';
-                }
-                when else {
-                    return '';
+                return '(' + value + ')';
+            } else {
+                QCondition cond = (QCondition) condition;
+                switch on cond.OperatorValue {
+                    when EQUALS {
+                        return cond.Field + ' = ' + formatFieldValue(cond.FieldValue);
+                    }
+                    when NOT_EQUALS {
+                        return cond.Field + ' != ' + formatFieldValue(cond.FieldValue);
+                    }
+                    when LESS_THAN {
+                        return cond.Field + ' < ' + formatFieldValue(cond.FieldValue);
+                    }
+                    when LESS_OR_EQUAL {
+                        return cond.Field + ' <= ' + formatFieldValue(cond.FieldValue);
+                    }
+                    when GREATER_THAN {
+                        return cond.Field + ' > ' + formatFieldValue(cond.FieldValue);
+                    }
+                    when GREATER_OR_EQUAL {
+                        return cond.Field + ' >= ' + formatFieldValue(cond.FieldValue);
+                    }
+                    when IS_LIKE {
+                        return cond.Field + ' LIKE ' + formatFieldValue(cond.FieldValue);
+                    }
+                    when IS_IN {
+                        return cond.Field + ' IN (' + formatFieldValue(cond.FieldValue) + ')';
+                    }
+                    when NOT_IN {
+                        return cond.Field + ' NOT IN (' + formatFieldValue(cond.FieldValue) + ')';
+                    }
+                    when else {
+                        return '';
+                    }
                 }
             }
         }
