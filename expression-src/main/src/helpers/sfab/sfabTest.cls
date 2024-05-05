@@ -712,4 +712,309 @@ private class sfabTest {
         sfab.FieldValuePairNode node = new sfab.FieldValuePairNode(null, 'Foo');
         System.assertEquals(null, node.getName());
     }
+
+    @IsTest
+    private static void getField_whenGivenAFieldThatExist_expectTheField() {
+        SObjectField field = new sfab.ObjectDescriber()
+            .getField('Contact', 'Id');
+        System.assertEquals('Id', field.getDescribe().getName());
+    }
+
+    @IsTest
+    private static void getField_whenGivenAFieldThatDoesNotExist_expectNull() {
+        SObjectField field = new sfab.ObjectDescriber()
+            .getField('Contact', 'NotValid');
+        System.assertEquals(null, field);
+    }
+
+    @IsTest
+    private static void getField_whenGivenAnObjectThatDoesNotExist_expectNull() {
+        SObjectField field = new sfab.ObjectDescriber()
+            .getField('NotValid', 'Id');
+        System.assertEquals(null, field);
+    }
+
+    @IsTest
+    private static void objectHasSimpleFieldNamed_whenGivenASimpleField_expectTrue() {
+        Boolean simpleField = new sfab.ObjectDescriber()
+            .objectHasSimpleFieldNamed('Contact', 'AccountId');
+        System.assert(simpleField);
+    }
+
+    @IsTest
+    private static void objectHasSimpleFieldNamed_whenGivenParentRelationshipField_expectFalse() {
+        Boolean simpleField = new sfab.ObjectDescriber()
+            .objectHasSimpleFieldNamed('Contact', 'Account');
+        System.assert(!simpleField);
+    }
+
+    @IsTest
+    private static void objectHasSimpleFieldNamed_whenGivenChildRelationship_expectFalse() {
+        Boolean simpleField = new sfab.ObjectDescriber()
+            .objectHasSimpleFieldNamed('Account', 'Contacts');
+        System.assert(!simpleField);
+    }
+
+    @IsTest
+    private static void objectHasSimpleFieldNamed_whenGivenInvalidField_expectFalse() {
+        Boolean simpleField = new sfab.ObjectDescriber()
+            .objectHasSimpleFieldNamed('Account', 'NotAField');
+        System.assert(!simpleField);
+    }
+
+    @IsTest
+    private static void objectHasSimpleFieldNamed_whenGivenInvalidObject_expectFalse() {
+        Boolean simpleField = new sfab.ObjectDescriber()
+            .objectHasSimpleFieldNamed('NotAnObject', 'Id');
+        System.assert(!simpleField);
+    }
+
+    @IsTest
+    private static void objectHasSimpleFieldNamed_whenGivenANullObject_expectFalse() {
+        Boolean simpleField = new sfab.ObjectDescriber()
+            .objectHasSimpleFieldNamed(null, 'Id');
+        System.assert(!simpleField);
+    }
+
+    @IsTest
+    private static void objectHasSimpleFieldNamed_whenGivenANullField_expectFalse() {
+        Boolean simpleField = new sfab.ObjectDescriber()
+            .objectHasSimpleFieldNamed('Account', null);
+        System.assert(!simpleField);
+    }
+
+    @IsTest
+    private static void objectHasParentRelationshipNamed_whenGivenAValidRelationship_expectReturnTrue() {
+        Boolean hasParentRelationshipNamed = new sfab.ObjectDescriber()
+            .objectHasParentRelationshipNamed('Contact', 'Account');
+        System.assert(hasParentRelationshipNamed);
+    }
+
+    @IsTest
+    private static void objectHasParentRelationshipNamed_whenGivenAPolymorphicRelationship_expectReturnTrue() {
+        Boolean hasParentRelationshipNamed = new sfab.ObjectDescriber()
+            .objectHasParentRelationshipNamed('Task', 'Owner');
+        System.assert(hasParentRelationshipNamed);
+    }
+
+    @IsTest
+    private static void objectHasParentRelationshipNamed_whenGivenAnInvalidRelationship_expectReturnFalse() {
+        Boolean hasParentRelationshipNamed = new sfab.ObjectDescriber()
+            .objectHasParentRelationshipNamed('Contact', 'NotARelationship');
+        System.assert(!hasParentRelationshipNamed);
+    }
+
+    @IsTest
+    private static void objectHasParentRelationshipNamed_whenGivenAnInvalidObject_expectReturnFalse() {
+        Boolean hasParentRelationshipNamed = new sfab.ObjectDescriber()
+            .objectHasParentRelationshipNamed('NotAnObject', 'Account');
+        System.assert(!hasParentRelationshipNamed);
+    }
+
+    @IsTest
+    private static void objectHasParentRelationshipNamed_whenGivenANullObject_expectReturnFalse() {
+        Boolean hasParentRelationshipNamed = new sfab.ObjectDescriber()
+            .objectHasParentRelationshipNamed(null, 'Account');
+        System.assert(!hasParentRelationshipNamed);
+    }
+
+    @IsTest
+    private static void objectHasParentRelationshipNamed_whenGivenANullRelationship_expectReturnFalse() {
+        Boolean hasParentRelationshipNamed = new sfab.ObjectDescriber()
+            .objectHasParentRelationshipNamed('Contact', null);
+        System.assert(!hasParentRelationshipNamed);
+    }
+
+    @IsTest
+    private static void getObjectTypesForParentRelationship_whenGivenAParentRelationshipName_expectObjectItRelatesTo() {
+        List<String> targetObjectTypes = new sfab.ObjectDescriber()
+            .getObjectTypesForParentRelationship('Contact', 'Account');
+        System.assertEquals(1, targetObjectTypes.size());
+        System.assertEquals('Account', targetObjectTypes[0]);
+    }
+
+    @IsTest
+    private static void getObjectTypesForParentRelationship_whenGivenAPolymorphicParentRelationshipName_expectAllObjectsItRelatesTo() {
+        List<String> targetObjectTypes = new sfab.ObjectDescriber()
+            .getObjectTypesForParentRelationship('Task', 'Owner');
+        System.assertEquals(2, targetObjectTypes.size());
+        System.assertEquals('Group', targetObjectTypes[0]);
+        System.assertEquals('User', targetObjectTypes[1]);
+    }
+
+    @IsTest
+    private static void getObjectTypesForParentRelationship_whenGivenAnInvalidRelationshipName_expectEmptyList() {
+        List<String> targetObjectTypes = new sfab.ObjectDescriber()
+            .getObjectTypesForParentRelationship('Contact', 'AccountId');
+        System.assertEquals(0, targetObjectTypes.size());
+    }
+
+    @IsTest
+    private static void getObjectTypesForParentRelationship_whenGivenAnInvalidObjectName_expectEmptyList() {
+        List<String> targetObjectTypes = new sfab.ObjectDescriber()
+            .getObjectTypesForParentRelationship('Invalid', 'Account');
+        System.assertEquals(0, targetObjectTypes.size());
+    }
+
+    @IsTest
+    private static void buildFabricatedObjectForRelationship_whenGivenAValidRelationship_expectAFabObject() {
+        sfab.FabricatedSObject fabricatedObject = new sfab.ObjectDescriber()
+            .buildFabricatedObjectForRelationship('Contact', 'Owner');
+        System.assertEquals('User', fabricatedObject.getSobjectName());
+    }
+
+    @IsTest
+    private static void buildFabricatedObjectForRelationship_whenGivenAPolymorphicRelationship_expectAnException() {
+
+        String exceptionMessage;
+        try {
+            new sfab.ObjectDescriber()
+                .buildFabricatedObjectForRelationship('Task', 'Owner');
+        } catch (sfab.ParentRelationshipObjectCannotBeAutoCreatedException e) {
+            exceptionMessage = e.getMessage();
+        }
+        System.assertEquals('Cannot automatically create a Fabricated Object for the relationship Task.Owner as it is polymorphic and so not possible to automatically ascertain which SObject to use', exceptionMessage);
+    }
+
+    @IsTest
+    private static void buildFabricatedObjectForRelationship_whenGivenAnInvalidRelationship_expectAnException() {
+
+        String exceptionMessage;
+        try {
+            sfab.FabricatedSObject fabricatedObject = new sfab.ObjectDescriber()
+                .buildFabricatedObjectForRelationship('Contact', 'Invalid');
+        } catch (sfab.ParentRelationshipDoesNotExistException e) {
+            exceptionMessage = e.getMessage();
+        }
+        System.assertEquals('Cannot automatically create a Fabricated Object for the relationship Contact.Invalid because the relationship does not exist', exceptionMessage);
+    }
+
+    @IsTest
+    private static void buildFabricatedObjectForRelationship_whenGivenAnInvalidObject_expectAnException() {
+
+        String exceptionMessage;
+        try {
+            sfab.FabricatedSObject fabricatedObject = new sfab.ObjectDescriber()
+                .buildFabricatedObjectForRelationship('Invalid', 'Account');
+        } catch (sfab.ParentRelationshipDoesNotExistException e) {
+            exceptionMessage = e.getMessage();
+        }
+        System.assertEquals('Cannot automatically create a Fabricated Object for the relationship Invalid.Account because the object type does not exist', exceptionMessage);
+    }
+
+    @IsTest
+    private static void buildFabricatedObjectForRelationship_whenGivenANullRelationship_expectAnException() {
+
+        String exceptionMessage;
+        try {
+            sfab.FabricatedSObject fabricatedObject = new sfab.ObjectDescriber()
+                .buildFabricatedObjectForRelationship('Contact', null);
+        } catch (sfab.ParentRelationshipDoesNotExistException e) {
+            exceptionMessage = e.getMessage();
+        }
+        System.assertEquals('Cannot automatically create a Fabricated Object for the relationship because the relationship name has not been specified', exceptionMessage);
+    }
+
+    @IsTest
+    private static void buildFabricatedObjectForRelationship_whenGivenANullObject_expectAnException() {
+
+        String exceptionMessage;
+        try {
+            sfab.FabricatedSObject fabricatedObject = new sfab.ObjectDescriber()
+                .buildFabricatedObjectForRelationship(null, 'Account');
+        } catch (sfab.ParentRelationshipDoesNotExistException e) {
+            exceptionMessage = e.getMessage();
+        }
+        System.assertEquals('Cannot automatically create a Fabricated Object for the relationship because the object name has not been specified', exceptionMessage);
+    }
+
+    @IsTest
+    private static void objectHasChildRelationshipNamed_whenGivenAValidRelationship_expectReturnTrue() {
+        Boolean hasChildRelationshipNamed = new sfab.ObjectDescriber()
+            .objectHasChildRelationshipNamed('Account', 'Contacts');
+        System.assert(hasChildRelationshipNamed);
+    }
+
+    @IsTest
+    private static void objectHasChildRelationshipNamed_whenGivenAnInvalidRelationship_expectReturnFalse() {
+        Boolean hasChildRelationshipNamed = new sfab.ObjectDescriber()
+            .objectHasChildRelationshipNamed('Account', 'NotARelationship');
+        System.assert(!hasChildRelationshipNamed);
+    }
+
+    @IsTest
+    private static void objectHasChildRelationshipNamed_whenGivenAnInvalidObject_expectReturnFalse() {
+        Boolean hasChildRelationshipNamed = new sfab.ObjectDescriber()
+            .objectHasChildRelationshipNamed('NotAnObject', 'Account');
+        System.assert(!hasChildRelationshipNamed);
+    }
+
+    @IsTest
+    private static void objectHasChildRelationshipNamed_whenGivenANullObject_expectReturnFalse() {
+        Boolean hasChildRelationshipNamed = new sfab.ObjectDescriber()
+            .objectHasChildRelationshipNamed(null, 'Account');
+        System.assert(!hasChildRelationshipNamed);
+    }
+
+    @IsTest
+    private static void objectHasChildRelationshipNamed_whenGivenANullRelationship_expectReturnFalse() {
+        Boolean hasChildRelationshipNamed = new sfab.ObjectDescriber()
+            .objectHasChildRelationshipNamed('Contact', null);
+        System.assert(!hasChildRelationshipNamed);
+    }
+
+    @IsTest
+    private static void getObjectTypeForChildRelationship_whenGivenAChildRelationshipName_expectObjectItRelatesTo() {
+        String targetObjectType = new sfab.ObjectDescriber()
+            .getObjectTypeForChildRelationship('Account', 'Contacts');
+        System.assertEquals('Contact', targetObjectType);
+    }
+
+    @IsTest
+    private static void getObjectTypeForChildRelationship_whenGivenAnInvalidRelationshipName_expectNull() {
+        String targetObjectType = new sfab.ObjectDescriber()
+            .getObjectTypeForChildRelationship('Account', 'Contactylike');
+        System.assertEquals(null, targetObjectType);
+    }
+
+    @IsTest
+    private static void getObjectTypeForChildRelationship_whenGivenAnInvalidObjectName_expectNull() {
+        String targetObjectType = new sfab.ObjectDescriber()
+            .getObjectTypeForChildRelationship('Invalid', 'Account');
+        System.assertEquals(null, targetObjectType);
+    }
+
+    @IsTest
+    private static void serialize_expectSerializeInvokedOnParent() {
+        sfab.FabricatedSObjectStub fabricatedParent = new sfab.FabricatedSObjectStub(Account.class);
+        sfab.ParentRelationshipNode node = new sfab.ParentRelationshipNode('Account__r', fabricatedParent);
+
+        node.serialize();
+
+        System.assert(fabricatedParent.serializeInvoked);
+    }
+
+    @IsTest
+    private static void serialize_expectSerializedParentMap() {
+        sfab.FabricatedSObjectStub fabricatedParent = new sfab.FabricatedSObjectStub(Account.class, new Map<String, Object>{
+            'Name' => 'Foo'
+        });
+        sfab.ParentRelationshipNode node = new sfab.ParentRelationshipNode('Account__r', fabricatedParent);
+
+        Map<String, Object> builtNode = node.serialize();
+
+        System.assertEquals(new Map<String, Object>{
+            'Account__r' => fabricatedParent.serialize()
+        }, builtNode);
+    }
+
+    @IsTest
+    private static void getName_expectParentReturned() {
+        sfab.FabricatedSObjectStub fabricatedParent = new sfab.FabricatedSObjectStub(Account.class, new Map<String, Object>{
+            'Name' => 'Foo'
+        });
+        sfab.ParentRelationshipNode node = new sfab.ParentRelationshipNode('Account__r', fabricatedParent);
+
+        System.assertEquals('Account__r', node.getName());
+    }
 }
