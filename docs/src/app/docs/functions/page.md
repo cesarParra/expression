@@ -85,7 +85,7 @@ Format: `CASE(expression,value1, result1, value2, result2,..., else_result)`
 ```apex
 Account testAccount = new Account(Rating = 'Hot');
 Object result = expression.Evaluator.run(
-    'CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")', 
+    'CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷")',
     testAccount); // "🔥"
 ```
 
@@ -176,8 +176,10 @@ expression.Evaluator.run('LEN("Hello World")'); // 11
 
 - `LIKE`
 
-Returns TRUE if a text field matches a given pattern. The pattern can include regular characters and wildcard characters.
-The supported wildcard characters are the percent sign (%), which matches zero or more characters, and the underscore (_),
+Returns TRUE if a text field matches a given pattern. The pattern can include regular characters and wildcard
+characters.
+The supported wildcard characters are the percent sign (%), which matches zero or more characters, and the
+underscore (_),
 which matches exactly one character.
 
 Accepts 2 arguments: the text to evaluate and the pattern to match.
@@ -277,7 +279,9 @@ Inserts a line break in a string of text.
 
 When no arguments are provided, it inserts a line break. When a number is provided, it inserts that number of line
 
-⚠️ Note that the inserted line break depends on the call context based on the [Request Quiddity](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_enum_System_Quiddity.htm). When called from
+⚠️ Note that the inserted line break depends on the call context based on
+the [Request Quiddity](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_enum_System_Quiddity.htm).
+When called from
 an Aura/LWC or Visualforce context it will insert a `<br>` tag, otherwise it will insert a newline character.
 
 ```apex
@@ -370,6 +374,16 @@ Accepts 3 arguments: the year, month, and day.
 
 ```apex
 expression.Evaluator.run('DATE(2020, 1, 1)'); // 2020-01-01
+```
+
+- `DATETIME`
+
+Returns a datetime value from the provided year, month, day, hour, minute, and second values.
+
+Accepts 6 arguments: the year, month, day, hour, minute, and second.
+
+```apex
+expression.Evaluator.run('DATETIME(2020, 1, 1, 12, 0, 0)'); // 2020-01-01 12:00:00
 ```
 
 - `ADDMONTHS`
@@ -780,7 +794,8 @@ Accepts 2 arguments: List of objects and an expression to evaluate.
 Object result = expression.Evaluator.run('MAP(["a", "b", "c"], UPPER($current))'); // ["A", "B", "C"]
 ```
 
-To work with child records, you can specify the child relationship name as the first argument, and then the expression to evaluate on each
+To work with child records, you can specify the child relationship name as the first argument, and then the expression
+to evaluate on each
 child item as the second argument.
 
 > When referencing child data through the record Id endpoint, the framework will take care of any necessary
@@ -820,12 +835,14 @@ expression.Evaluator.run('RANGE(1, 3)'); // (1, 2, 3)
 
 - `REDUCE`
 
-Reduces a list to a single value using the first argument as the context, the second argument as the expression to evaluate,
+Reduces a list to a single value using the first argument as the context, the second argument as the expression to
+evaluate,
 and the third argument as the initial value.
 
 Accepts 3 arguments: List of objects, an expression to evaluate, and the initial value.
 
 Provides 2 special variables in the inner expression:
+
 - `$current` - the current item being iterated over
 - `$accumulator` - the current value of the accumulator that will be returned
 
@@ -863,15 +880,19 @@ Sorts a list.
 
 Accepts at least one argument: the list to sort.
 When sorting a list of Maps or a list of SObjects,
-two additional arguments can be provided: the field to sort by and the sort direction.
+three additional arguments can be provided: the field to sort by, the sort direction, and
+and the position of nulls (nulls first or nulls last).
 
-The field to sort can either be a field name as a merge field (field name without quotes), or an expression that evaluates to a string
-representing the field name. Merge fields are only supported when sorting SObjects and are useful to get the framework to automatically
+The field to sort can either be a field name as a merge field (field name without quotes), or an expression that
+evaluates to a string
+representing the field name. Merge fields are only supported when sorting SObjects and are useful to get the framework
+to automatically
 query the field for you.
 
 > The merge field must be a field on the SObject being sorted itself, not a relationship field.
 
 The sort direction can either be the literal string (requires quotes) `ASC` or `DESC`.
+The position of nulls can either be the literal string (requires quotes) `NULLS_FIRST` or `NULLS_LAST`.
 
 ```apex
 expression.Evaluator.run('SORT([3, 2, 1])'); // (1, 2, 3)
@@ -879,6 +900,7 @@ expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a")'); // 
 expression.Evaluator.run('SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a", "DESC")'); // ({ "a": 3 }, { "a": 2 }, { "a": 1 })
 expression.Evaluator.run('QUERY(Account["Name"]) -> SORT("Name")'); // ({"Name": "ACME"}, {"Name": "Another Account"})
 expression.Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc")', parentAccount.Id); // ({"NumberOfEmployees": 1}, {"NumberOfEmployees": 2})
+expression.Evaluator.run('SORT(ChildAccounts, NumberOfEmployees, "asc", "NULLS_LAST")', parentAccount.Id); // ({"NumberOfEmployees": 1}, {"NumberOfEmployees": 2}, {"NumberOfEmployees": null})
 ```
 
 - `SKIP`
@@ -1187,4 +1209,5 @@ Accepts 3 arguments: the first location, the second location, and the unit (eith
 ```apex
 expression.Evaluator.run('DISTANCE(LOCATION(37.7749, 122.4194), LOCATION(40.7128, 74.0060), "mi")'); // 2565.6985207767134
 ```
+
 ---
