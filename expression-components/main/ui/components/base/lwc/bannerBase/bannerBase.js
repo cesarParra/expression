@@ -15,7 +15,13 @@ export default class BannerBase extends LightningElement {
   @api
   dismissable = false;
 
+  _isHidden = false;
+
   get bannerClasses() {
+    if (this._isHidden) {
+      return 'hidden';
+    }
+
     const shared = 'start-0 z-50 flex justify-between w-full p-4 border-gray-200 bg-gray-50';
 
     return classNames(
@@ -25,5 +31,9 @@ export default class BannerBase extends LightningElement {
       {'bottom-0 border-t': this.stickyVariant === 'bottom'},
       {'border': this.stickyVariant === 'none'}
     );
+  }
+
+  hideBanner() {
+    this._isHidden = true;
   }
 }
