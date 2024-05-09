@@ -1,6 +1,6 @@
 <template>
     <div tabindex="-1"
-         class="fixed top-0 start-0 z-50 flex justify-between w-full p-4 border-b border-gray-200 bg-gray-50">
+         class={bannerClasses}>
         <div class="flex items-center mx-auto">
             <p class="flex items-center text-sm font-normal text-dxp-text-contrast">
                 <span>
@@ -8,7 +8,7 @@
                 </span>
             </p>
         </div>
-        <div class="flex items-center">
+        <div lwc:if={dismissable} class="flex items-center">
             <button type="button"
                     class="flex-shrink-0 inline-flex justify-center w-7 h-7 items-center
                     text-dxp-text-contrast hover:bg-gray-200 hover:text-dxp-text-contrast-3 rounded-lg text-sm p-1.5">

@@ -7,6 +7,12 @@ export default class Banner extends ExpressionSiteElement {
   @api previewContextId;
   @api expr;
   @api respectSharing;
+  @api stickyVariant;
+  @api dismissable;
+
+  get stickyVariantLowered() {
+    return this.stickyVariant?.toLowerCase();
+  }
 
   validate() {
     if (!this.computed) {
