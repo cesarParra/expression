@@ -1,0 +1,8 @@
+<template>
+    <c-expression-element-container cannot-show-preview={cannotShowPreview} error={error} loading={loading}>
+        <div if:true={ready}>
+            <c-banner-base content={computed} sticky-variant={stickyVariantLowered}
+                           dismissable={dismissable}></c-banner-base>
+        </div>
+    </c-expression-element-container>
+</template>

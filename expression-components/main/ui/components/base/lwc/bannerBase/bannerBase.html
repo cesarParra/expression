@@ -1,0 +1,25 @@
+<template>
+    <div tabindex="-1"
+         class={bannerClasses}>
+        <div class="flex items-center mx-auto">
+            <p class="flex items-center text-sm font-normal text-dxp-text-contrast">
+                <span>
+                    <lightning-formatted-rich-text value={content}></lightning-formatted-rich-text>
+                </span>
+            </p>
+        </div>
+        <div lwc:if={dismissable} class="flex items-center">
+            <button type="button"
+                    onclick={hideBanner}
+                    class="flex-shrink-0 inline-flex justify-center w-7 h-7 items-center
+                    text-dxp-text-contrast hover:bg-gray-200 hover:text-dxp-text-contrast-3 rounded-lg text-sm p-1.5">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                     viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close banner</span>
+            </button>
+        </div>
+    </div>
+</template>
