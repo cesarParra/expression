@@ -37,45 +37,6 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
     }
 
     /**
-     * @description Registers a custom TestDataBuilder for a specific SObjectType. The Type must be a class
-     *              that both extends SObjectTestDataBuilder and implements {@link ITestDataBuilder}.
-     *
-     *              Use this method to force the usage of your provided TestDataBuilder instead of letting the
-     *              `of` method automatically find a test data builder for it to use.
-     * @param objectType The SObjectType for the builder.
-     * @param builderType A class that both extends SObjectTestDataBuilder and implements {@link ITestDataBuilder}.
-     */
-    public static void registerBuilder(SObjectType objectType, Type builderType) {
-        builderCache.register(objectType, builderType);
-    }
-
-    /**
-     * @description Gets a record for the provided SObjectType. If a record has previously been created
-     *              for the provided SObjectType then it will be used, saving a trip to the database, otherwise
-     *              a new one will be created and the database will be called.
-     * @param objectType The SObjectType to get a record for.
-     * @return The SObject for the provided type.
-     */
-    public static SObject getAny(SObjectType objectType) {
-        SObject previouslyInserted = testDataHistory.getA(objectType);
-        if (previouslyInserted != null) {
-            return previouslyInserted;
-        }
-        return of(objectType).registerNewForInsert();
-    }
-
-    /**
-     * @description Returns any children record that might have been created through a `withChild` call
-     *              for the specified record Id.
-     * @param recordId The Id of the parent record.
-     * @param objectType The SObjectType for the children.
-     * @return A list with the children records.
-     */
-    public static List<SObject> getChildrenOfTypeById(Id recordId, SObjectType objectType) {
-        return testDataHistory.getChildrenOfByType(recordId, objectType);
-    }
-
-    /**
      * @description Commits all registered records to the database.
      */
     public static void commitRecords() {
@@ -111,15 +72,6 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
             uOW.registerRelationship(item.getRecord(), item.getRelationshipField(), item.getParentRecord());
         }
         uOW.commitWork();
-    }
-
-    /**
-     * @description Returns a new LateBinding instance of the specified SObjectType.
-     * @param objectType The SObjectType for the LateBinding instance.
-     * @return New LateBinding instance.
-     */
-    public static LateBinding lateBinding(SObjectType objectType) {
-        return new LateBinding(objectType);
     }
 
     /**
@@ -203,7 +155,7 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
                     // Skip any field that has been overridden through the custom value map
                     Object fieldValue = defaultValueMapCached.get(defaultField);
                     if (checkIfBinding(fieldValue)) {
-                        attemptAddBinding((LateBinding)fieldValue, currentRecord, defaultField, false);
+                        attemptAddBinding((LateBinding) fieldValue, currentRecord, defaultField, false);
                     }
                 }
             }
@@ -212,7 +164,7 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
                 if (customValueMap.get(customField) != null) {
                     Object fieldValue = customValueMap.get(customField);
                     if (checkIfBinding(fieldValue)) {
-                        attemptAddBinding((LateBinding)fieldValue, currentRecord, customField, true);
+                        attemptAddBinding((LateBinding) fieldValue, currentRecord, customField, true);
                     }
                 }
             }
@@ -228,7 +180,7 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
                 if (throwErrorIfRegistered) {
                     String errorMessage = 'The record {0} is already registered to a parent through the field {1}. ' +
                         'make sure to avoid registering a parent to a record that is being created through withChild for the same field';
-                    throw new SObjectTestDataBuilderException(String.format(errorMessage, new List<String> {
+                    throw new SObjectTestDataBuilderException(String.format(errorMessage, new List<String>{
                         String.valueOf(record),
                         relationshipField.getDescribe().getName()
                     }));
@@ -288,7 +240,7 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
     private void registerChildren(List<SObject> records) {
         for (SObject currentRecord : records) {
             for (ChildRelationship relationship : this.registeredRelationships) {
-                SObjectTestDataBuilder relationshipAsTestData = (SObjectTestDataBuilder)relationship.ChildBuilder;
+                SObjectTestDataBuilder relationshipAsTestData = (SObjectTestDataBuilder) relationship.ChildBuilder;
                 relationshipAsTestData.registerSObjects(1, relationship.RelationshipField, currentRecord);
             }
         }
@@ -325,7 +277,7 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
             if (builderType == null) {
                 return null;
             }
-            return (ITestDataBuilder)builderType.newInstance();
+            return (ITestDataBuilder) builderType.newInstance();
         }
 
         private void initializeCache() {
@@ -335,7 +287,7 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
                     Type currentClassType = Type.forName(currentClass.NamespacePrefix, currentClass.Name);
                     Object currentClassInstance = currentClassType.newInstance();
                     if (currentClassInstance instanceof ITestDataBuilder && currentClassInstance instanceof SObjectTestDataBuilder) {
-                        ITestDataBuilder builderInstance = (ITestDataBuilder)currentClassInstance;
+                        ITestDataBuilder builderInstance = (ITestDataBuilder) currentClassInstance;
                         this.register(builderInstance.getSObjectType(), currentClassType);
                     }
                 } catch (Exception e) {
@@ -400,14 +352,6 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
             }
         }
 
-        public SObject getA(SObjectType objectType) {
-            List<HistoryItem> historiesForType = recordsByType.get(objectType);
-            if (historiesForType != null) {
-                return historiesForType[0].getRecord();
-            }
-            return null;
-        }
-
         public Set<SObjectType> getSObjectTypes() {
             return this.recordsByType.keySet();
         }
@@ -444,21 +388,6 @@ public abstract class SObjectTestDataBuilder implements ITestDataCallback {
                 }
             }
             return items;
-        }
-
-        public List<SObject> getChildrenOfByType(Id recordId, SObjectType objectType) {
-            List<SObject> children = new List<SObject>();
-            List<HistoryItem> itemsByType = this.recordsByType.get(objectType);
-            if (itemsByType == null) {
-                // If no record of that type has been logged then there are no children.
-                return children;
-            }
-            for (HistoryItem item : itemsByType) {
-                if (item.getParentRecord()?.Id == recordId) {
-                    children.add(item.getRecord());
-                }
-            }
-            return children;
         }
 
         private void log(HistoryItem item) {
