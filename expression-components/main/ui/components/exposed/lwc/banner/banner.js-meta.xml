@@ -18,7 +18,7 @@
                       description="Formula expression to be evaluated." default=""/>
             <property name="respectSharing" type="Boolean" default="true" label="Respect Sharing"
                       description="Whether to run the evaluation with or without sharing."/>
-            <property name="stickyVariant" type="String" datasource="Top,Bottom,None"
+            <property name="stickyVariant" label="Sticky Variant" type="String" datasource="Top,Bottom,None"
                       description="Whether the banner should stick to the top or bottom of the page, or not at all."/>
             <property name="dismissable" type="Boolean" default="true" label="Dismissable"
                       description="Whether the banner can be dismissed by the user."/>

@@ -120,6 +120,10 @@
         "href": "/docs/components/stacked-avatars"
       },
       {
+        "title": "Banner",
+        "href": "/docs/components/banner"
+      },
+      {
         "title": "Button",
         "href": "/docs/components/button"
       },
