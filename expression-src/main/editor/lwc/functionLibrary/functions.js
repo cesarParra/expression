@@ -84,6 +84,15 @@ export const data = [
         "icon": "utility:justify_text"
       },
       {
+        "name": "FLATTEN",
+        "autoCompleteValue": "FLATTEN(",
+        "description": "Flattens a list of lists into a single list.<br/>Accepts 1 argument: the list of lists to flatten.",
+        "examples": [
+          "FLATTEN([[1, 2], [3, 4]]) // [1, 2, 3, 4]"
+        ],
+        "icon": "utility:justify_text"
+      },
+      {
         "name": "FOLLOWEDBY",
         "autoCompleteValue": "FOLLOWEDBY(",
         "description": "Appends a list to another list.<br/>Accepts 2 arguments: the list to append to and the list to append.",

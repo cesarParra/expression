@@ -696,6 +696,16 @@ Accepts 2 arguments: the list to append to and the list to append.
 expression.Evaluator.run('FOLLOWEDBY([1, 2, 3], [4, 5, 6])'); // (1, 2, 3, 4, 5, 6)
 ```
 
+- `FLATTEN`
+
+Flattens a list of lists into a single list.
+
+Accepts 1 argument: the list of lists to flatten.
+
+```apex
+expression.Evaluator.run('FLATTEN([[1, 2], [3, 4], [5, 6]])'); // (1, 2, 3, 4, 5, 6)
+```
+
 - `JOIN`
 
 Joins a list of values into a string using the specified delimiter.
