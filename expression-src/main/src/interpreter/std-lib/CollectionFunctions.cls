@@ -35,7 +35,8 @@ public with sharing class CollectionFunctions {
         'SKIPWHILE' => new SkipWhileFn(),
         'TAKE' => new TakeFn(),
         'TAKEWHILE' => new TakeWhileFn(),
-        'RANGE' => new RangeFn()
+        'RANGE' => new RangeFn(),
+        'FLATTEN' => new FlattenFn()
     };
 
     public class CollectionFunctionsProvider implements FunctionProvider {
@@ -1513,6 +1514,41 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+    }
+
+    /**
+     * @description Flattens a list of lists into a single list.
+     * Accepts 1 argument: the list of lists to flatten.
+     * @function FLATTEN
+     * @example
+     * FLATTEN([[1, 2], [3, 4]]) // [1, 2, 3, 4]
+     */
+    private class FlattenFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof Iterable<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "FLATTEN" function: the first argument must evaluate to an iterable.'
+                );
+            }
+
+            Iterable<Object> listVal = (Iterable<Object>) listObj;
+            List<Object> result = new List<Object>();
+            for (Object currentVal : listVal) {
+                if (currentVal instanceof Iterable<Object>) {
+                    for (Object innerVal : (Iterable<Object>) currentVal) {
+                        result.add(innerVal);
+                    }
+                } else {
+                    result.add(currentVal);
+                }
+            }
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
         }
     }
 }

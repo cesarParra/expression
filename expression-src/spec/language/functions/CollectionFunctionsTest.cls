@@ -1,6 +1,3 @@
-// TODO: Now that we have a @Context variable that can accept a list of SObjects, there's a lot of code
-// here that is using QUERY that we should be able to refactor to just use in-memory objects
-
 @IsTest
 private class CollectionFunctionsTest {
     @IsTest
@@ -1282,5 +1279,53 @@ private class CollectionFunctionsTest {
     private static void rangeReturnsAnEmptyListWhenTheFirstArgumentIsGreaterThanTheSecond() {
         List<Object> result = (List<Object>) Evaluator.run('RANGE(3, 1)');
         Assert.areEqual(0, result.size());
+    }
+
+    @IsTest
+    private static void flattenFunctionFlattensAListOfLists() {
+        List<Object> result = (List<Object>) Evaluator.run('FLATTEN([[1, 2], [3, 4]])');
+        Assert.areEqual(4, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+        Assert.areEqual(4, result[3]);
+    }
+
+    @IsTest
+    private static void flattenFunctionDoesNothingIfTheListIsAlreadyFlat() {
+        List<Object> result = (List<Object>) Evaluator.run('FLATTEN([1, 2, 3, 4])');
+        Assert.areEqual(4, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+        Assert.areEqual(4, result[3]);
+    }
+
+    @IsTest
+    private static void flattenFunctionFlattensAListOfListsAndObjects() {
+        List<Object> result = (List<Object>) Evaluator.run('FLATTEN([[1, 2], 3, 4])');
+        Assert.areEqual(4, result.size());
+        Assert.areEqual(1, result[0]);
+        Assert.areEqual(2, result[1]);
+        Assert.areEqual(3, result[2]);
+        Assert.areEqual(4, result[3]);
+    }
+
+    @IsTest
+    private static void flattenFunctionWorksWithSets() {
+        Map<String, Object> extraContext = new Map<String, Object>{
+            'extra' => new Set<Iterable<Integer>>{
+                new List<Integer>{1, 2}, new Set<Integer>{3, 4}
+            }
+        };
+
+        List<Object> result = (List<Object>) Evaluator.run('FLATTEN(@extra)',
+            new Configuration().withCustomContext(extraContext));
+
+        Assert.areEqual(4, result.size());
+        Assert.isTrue(result.contains(1));
+        Assert.isTrue(result.contains(2));
+        Assert.isTrue(result.contains(3));
+        Assert.isTrue(result.contains(4));
     }
 }
