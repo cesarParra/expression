@@ -28,7 +28,8 @@ global with sharing class Configuration {
     }
 
     global Configuration withCustomContext(Map<String, Object> objectsByStrings) {
-        this.customContext = objectsByStrings;
+        Map<String, Object> objectToSet = objectsByStrings ?? new Map<String, Object>();
+        this.customContext = objectToSet;
         return this;
     }
 

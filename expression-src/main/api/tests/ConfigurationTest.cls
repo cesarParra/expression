@@ -14,4 +14,10 @@ private class ConfigurationTest {
 
         Assert.isTrue(config.customContext.containsKey('foo'));
     }
+
+    @IsTest
+    static void customContextIsNeverNull() {
+        Configuration config = new Configuration().withCustomContext(null);
+        Assert.isTrue(config.customContext.isEmpty());
+    }
 }
