@@ -47,6 +47,9 @@ public with sharing abstract class EvaluatorResolver {
     }
 
     private static void addCustomContextVariablesToEnvironment(Configuration config) {
+        if (config?.customContext == null) {
+            return;
+        }
         for (String customVariableName : config.customContext.keySet()) {
             Environment.addGlobalContextVariable(customVariableName, config.customContext.get(customVariableName));
         }
