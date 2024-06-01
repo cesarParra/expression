@@ -1,168 +1,186 @@
 {
-  "type" : "sfdc_cms__view",
-  "title" : "ExpressionConf",
-  "contentBody" : {
-    "component" : {
-      "children" : [ {
-        "children" : [ {
-          "attributes" : {
-            "backgroundImageConfig" : "",
-            "backgroundImageOverlay" : "rgba(0,0,0,0)",
-            "sectionConfig" : "{\"UUID\":\"01c5ab86-ff98-431b-9b41-9781d5bdeb63\",\"columns\":[{\"UUID\":\"d737fd0f-1f9e-48d4-bcd4-c896f1798934\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}"
-          },
-          "children" : [ {
-            "children" : [ {
-              "attributes" : {
-                "expr" : "{     \"logo\": {         \"name\": \"Logo\",         \"imagePath\": $Resource.logo,         \"url\": \"/\"     },     \"menuItems\": [],     \"callToAction\": {         \"label\": \"Register Now!\",         \"url\": \"/\"     } }",
-                "respectSharing" : false
+  "type": "sfdc_cms__view",
+  "title": "ExpressionConf",
+  "contentBody": {
+    "component": {
+      "children": [
+        {
+          "children": [
+            {
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "sectionConfig": "{\"UUID\":\"01c5ab86-ff98-431b-9b41-9781d5bdeb63\",\"columns\":[{\"UUID\":\"d737fd0f-1f9e-48d4-bcd4-c896f1798934\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}"
               },
-              "definition" : "expression:navBar",
-              "id" : "441f2532-7721-4629-9712-b937d83c94fb",
-              "type" : "component"
-            }, {
-              "attributes" : {
-                "centerItems" : false,
-                "dxpStyle" : {
-                  "margin" : {
-                    "bottom" : "",
-                    "left" : "",
-                    "right" : "",
-                    "top" : ""
-                  },
-                  "padding" : {
-                    "bottom" : "",
-                    "left" : "200px",
-                    "right" : "200px",
-                    "top" : ""
-                  }
-                },
-                "expr" : "Query(     expression__Event__c(where: Name = \"ExpressionConf\", limit: 1)     [Id, Name, Tag_Line__c, Description__c] )  -> FIRST()  -> TRANSFORM(     {     \"title\": $source.expression__Tag_Line__c,     \"description\": SUBSTITUTE($source.expression__Description__c, \"\\n\", BR())     }  )",
-                "respectSharing" : false
+              "children": [
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "expr": "{     \"logo\": {         \"name\": \"Logo\",         \"imagePath\": $Resource.logo,         \"url\": \"/\"     },     \"menuItems\": [],     \"callToAction\": {         \"label\": \"Register Now!\",         \"url\": \"/\"     } }",
+                        "respectSharing": false
+                      },
+                      "definition": "c:navBar",
+                      "id": "441f2532-7721-4629-9712-b937d83c94fb",
+                      "type": "component"
+                    },
+                    {
+                      "attributes": {
+                        "centerItems": false,
+                        "dxpStyle": {
+                          "margin": {
+                            "bottom": "",
+                            "left": "",
+                            "right": "",
+                            "top": ""
+                          },
+                          "padding": {
+                            "bottom": "",
+                            "left": "200px",
+                            "right": "200px",
+                            "top": ""
+                          }
+                        },
+                        "expr": "Query(     expression__Event__c(where: Name = \"ExpressionConf\", limit: 1)     [Id, Name, Tag_Line__c, Description__c] )  -> FIRST()  -> TRANSFORM(     {     \"title\": $source.expression__Tag_Line__c,     \"description\": SUBSTITUTE($source.expression__Description__c, \"\\n\", BR())     }  )",
+                        "respectSharing": false
+                      },
+                      "definition": "c:hero",
+                      "id": "0e8c3e79-de83-4d54-a207-512face1d396",
+                      "type": "component"
+                    },
+                    {
+                      "attributes": {
+                        "color": "rgb(13, 10, 10)",
+                        "dxpStyle": {
+                          "margin": {
+                            "bottom": "",
+                            "left": "",
+                            "right": "",
+                            "top": "25px"
+                          }
+                        },
+                        "expr": "Query(expression__Event__c(where: Name = \"ExpressionConf\")     [Id, Name, Start_Date__c, End_Date__c] )  -> FIRST()  -> TRANSFORM(         \"\uD83D\uDCC5 ${TEXT(DAY($source.expression__Start_Date__c))} - ${DATETIMEFORMAT(DATETODATETIME($source.expression__End_Date__c), \"dd MMMM yyyy\")} ◆ \uD83D\uDDFA️Los Angeles, CA\"     )",
+                        "respectSharing": false,
+                        "textAlignment": "Center"
+                      },
+                      "definition": "c:textBlock",
+                      "id": "bc76549e-6f06-4e5e-b17a-80774ef89b8e",
+                      "type": "component"
+                    },
+                    {
+                      "attributes": {
+                        "dxpStyle": {
+                          "margin": {
+                            "bottom": "",
+                            "left": "",
+                            "right": "",
+                            "top": "50px"
+                          }
+                        },
+                        "expr": "{ \t\"stats\": [ \t\t{ \t\t\t\"label\": \"Speakers\", \t\t\t\"value\": TEXT(SIZE(QUERY(expression__Speaker__c))) \t\t},     {       \"label\": \"Days\",       \"value\":                  Query(expression__Event__c(where: Name = \"ExpressionConf\")                     [Name, Start_Date__c, End_Date__c]                 )                 -> FIRST()                 -> TRANSFORM(                     IF(                         ISBLANK($source),                          \"\",                          DAY($source.expression__End_Date__c)                         -                         DAY($source.expression__Start_Date__c)                     )                 )       }, \t\t{ \t\t\t\"label\": \"Venue\", \t\t\t\"value\": \"Staples Center\" \t\t}, \t\t{ \t\t\t\"label\": \"Location\", \t\t\t\"value\": \"Los Angeles\" \t\t} \t] }",
+                        "respectSharing": false
+                      },
+                      "definition": "c:stats",
+                      "id": "05bf6d04-2d22-4bd9-ad39-9321587e84cb",
+                      "type": "component"
+                    },
+                    {
+                      "attributes": {
+                        "dxpStyle": {
+                          "margin": {
+                            "bottom": "50px",
+                            "left": "",
+                            "right": "",
+                            "top": "100px"
+                          }
+                        },
+                        "expr": "LET(     {         \"$speakers\": Query(expression__Speaker__c(where: (expression__Event__r.Name = \"ExpressionConf\"))                     [                     \"Id\", \"Name\", \"Event__r.Name\",                      \"Person__r.Name\", \"Person__r.Title\",                     \"Person__r.PhotoUrl__c\", \"About__c\"                     ]                     )                     -> MAP(                         {                             \"name\": $current.Person__r.Name,                             \"title\": $current.Person__r.Title,                             \"imgUrl\": $current.Person__r.expression__PhotoUrl__c,                             \"about\": $current.expression__About__c                         }                     )     },     {         \"title\": \"Speakers\",         \"description\": \"Learn from the experts on the cutting-edge of technology.\",         \"people\": $speakers     })",
+                        "respectSharing": false
+                      },
+                      "definition": "c:people",
+                      "id": "4219a3e2-6b5d-491f-ae1e-ef9a63b757fa",
+                      "type": "component"
+                    },
+                    {
+                      "attributes": {
+                        "alignment": "center",
+                        "lineStyle": "solid",
+                        "size": 1,
+                        "width": 100
+                      },
+                      "definition": "dxp_base:horizontalLine",
+                      "id": "28bee451-d063-43e3-8243-794868676431",
+                      "type": "component"
+                    },
+                    {
+                      "attributes": {
+                        "dxpStyle": {
+                          "margin": {
+                            "bottom": "50px",
+                            "left": "",
+                            "right": "",
+                            "top": "50px"
+                          }
+                        },
+                        "expr": "{ \t\"tag\": \"Pricing\", \t\"title\": \"Choose the righ pass for you\", \t\"description\": \"Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et quasi iusto modi velit ut non voluptas in. Explicabo id ut laborum.\", \t\"plans\": Query(expression__Product__c(where: expression__Event__r.Name = \"ExpressionConf\")[\"Name\", \"Features__c\", \"Description__c\", \"Event__r.Name\"])     -> MAP(         {             \"name\": Name,             \"price\": GETLISTPRICE(Id),             \"action\": {                 \"label\": \"Register\", \t\t\t\t\t\t\t\t\"type\": \"action\", \t\t\t\t\t\t\t\t\"src\": $Action.Apex.CreateSalesOrder(Id), \t\t\t\t\t\t\t\t\"callback\": $Action.Lwc.GoToNamedPage( \t\t\t\t\t\t\t\t\t{ \t\t\t\t\t\t\t\t\t\t\"name\": \"checkout__c\", \t\t\t\t\t\t\t\t\t\t\"id\": $returnValue \t\t\t\t\t\t\t\t\t} \t\t\t\t\t\t\t\t)             },             \"description\": expression__Description__c,             \"features\": SPLIT(expression__Features__c, \"\\r\\n\")         }     )     -> SORT(\"price\") }",
+                        "respectSharing": false
+                      },
+                      "definition": "c:pricingTable",
+                      "id": "ce4a8451-9dad-44bb-a8df-fd56ea4027e9",
+                      "type": "component"
+                    },
+                    {
+                      "attributes": {
+                        "expr": "{   \"title\": \"Proudly Sponsored By\",   \"logos\": [     {       \"name\": \"Transistor\",       \"src\": \"https://tailwindui.com/img/logos/158x48/transistor-logo-gray-900.svg\"     }, { \"name\": \"Reform\", \"src\": \"https://tailwindui.com/img/logos/158x48/reform-logo-gray-900.svg\" }, { \"name\": \"Tuple\", \"src\": \"https://tailwindui.com/img/logos/158x48/tuple-logo-gray-900.svg\" }   ] }",
+                        "respectSharing": false
+                      },
+                      "definition": "c:logos",
+                      "id": "3b9f085c-fa42-4434-b1be-52b816d5151c",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "d737fd0f-1f9e-48d4-bcd4-c896f1798934",
+                  "name": "col1",
+                  "title": "Column 1",
+                  "type": "region"
+                }
+              ],
+              "definition": "community_layout:section",
+              "id": "01c5ab86-ff98-431b-9b41-9781d5bdeb63",
+              "type": "component"
+            }
+          ],
+          "id": "5820b569-0a06-4213-a086-741a96505bb3",
+          "name": "content",
+          "title": "Content",
+          "type": "region"
+        },
+        {
+          "children": [
+            {
+              "attributes": {
+                "customHeadTags": "",
+                "description": "",
+                "pageTitle": "ExpressionConf",
+                "recordId": "{!recordId}"
               },
-              "definition" : "expression:hero",
-              "id" : "0e8c3e79-de83-4d54-a207-512face1d396",
-              "type" : "component"
-            }, {
-              "attributes" : {
-                "color" : "rgb(13, 10, 10)",
-                "dxpStyle" : {
-                  "margin" : {
-                    "bottom" : "",
-                    "left" : "",
-                    "right" : "",
-                    "top" : "25px"
-                  }
-                },
-                "expr" : "Query(expression__Event__c(where: Name = \"ExpressionConf\")     [Id, Name, Start_Date__c, End_Date__c] )  -> FIRST()  -> TRANSFORM(         \"\uD83D\uDCC5 ${TEXT(DAY($source.expression__Start_Date__c))} - ${DATETIMEFORMAT(DATETODATETIME($source.expression__End_Date__c), \"dd MMMM yyyy\")} ◆ \uD83D\uDDFA️Los Angeles, CA\"     )",
-                "respectSharing" : false,
-                "textAlignment" : "Center"
-              },
-              "definition" : "expression:textBlock",
-              "id" : "bc76549e-6f06-4e5e-b17a-80774ef89b8e",
-              "type" : "component"
-            }, {
-              "attributes" : {
-                "dxpStyle" : {
-                  "margin" : {
-                    "bottom" : "",
-                    "left" : "",
-                    "right" : "",
-                    "top" : "50px"
-                  }
-                },
-                "expr" : "{ \t\"stats\": [ \t\t{ \t\t\t\"label\": \"Speakers\", \t\t\t\"value\": TEXT(SIZE(QUERY(expression__Speaker__c))) \t\t},     {       \"label\": \"Days\",       \"value\":                  Query(expression__Event__c(where: Name = \"ExpressionConf\")                     [Name, Start_Date__c, End_Date__c]                 )                 -> FIRST()                 -> TRANSFORM(                     IF(                         ISBLANK($source),                          \"\",                          DAY($source.expression__End_Date__c)                         -                         DAY($source.expression__Start_Date__c)                     )                 )       }, \t\t{ \t\t\t\"label\": \"Venue\", \t\t\t\"value\": \"Staples Center\" \t\t}, \t\t{ \t\t\t\"label\": \"Location\", \t\t\t\"value\": \"Los Angeles\" \t\t} \t] }",
-                "respectSharing" : false
-              },
-              "definition" : "expression:stats",
-              "id" : "05bf6d04-2d22-4bd9-ad39-9321587e84cb",
-              "type" : "component"
-            }, {
-              "attributes" : {
-                "dxpStyle" : {
-                  "margin" : {
-                    "bottom" : "50px",
-                    "left" : "",
-                    "right" : "",
-                    "top" : "100px"
-                  }
-                },
-                "expr" : "LET(     {         \"$speakers\": Query(expression__Speaker__c(where: (expression__Event__r.Name = \"ExpressionConf\"))                     [                     \"Id\", \"Name\", \"Event__r.Name\",                      \"Person__r.Name\", \"Person__r.Title\",                     \"Person__r.PhotoUrl__c\", \"About__c\"                     ]                     )                     -> MAP(                         {                             \"name\": $current.Person__r.Name,                             \"title\": $current.Person__r.Title,                             \"imgUrl\": $current.Person__r.expression__PhotoUrl__c,                             \"about\": $current.expression__About__c                         }                     )     },     {         \"title\": \"Speakers\",         \"description\": \"Learn from the experts on the cutting-edge of technology.\",         \"people\": $speakers     })",
-                "respectSharing" : false
-              },
-              "definition" : "expression:people",
-              "id" : "4219a3e2-6b5d-491f-ae1e-ef9a63b757fa",
-              "type" : "component"
-            }, {
-              "attributes" : {
-                "alignment" : "center",
-                "lineStyle" : "solid",
-                "size" : 1,
-                "width" : 100
-              },
-              "definition" : "dxp_base:horizontalLine",
-              "id" : "28bee451-d063-43e3-8243-794868676431",
-              "type" : "component"
-            }, {
-              "attributes" : {
-                "dxpStyle" : {
-                  "margin" : {
-                    "bottom" : "50px",
-                    "left" : "",
-                    "right" : "",
-                    "top" : "50px"
-                  }
-                },
-                "expr" : "{ \t\"tag\": \"Pricing\", \t\"title\": \"Choose the righ pass for you\", \t\"description\": \"Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et quasi iusto modi velit ut non voluptas in. Explicabo id ut laborum.\", \t\"plans\": Query(expression__Product__c(where: expression__Event__r.Name = \"ExpressionConf\")[\"Name\", \"Features__c\", \"Description__c\", \"Event__r.Name\"])     -> MAP(         {             \"name\": Name,             \"price\": GETLISTPRICE(Id),             \"action\": {                 \"label\": \"Register\", \t\t\t\t\t\t\t\t\"type\": \"action\", \t\t\t\t\t\t\t\t\"src\": $Action.Apex.CreateSalesOrder(Id), \t\t\t\t\t\t\t\t\"callback\": $Action.Lwc.GoToNamedPage( \t\t\t\t\t\t\t\t\t{ \t\t\t\t\t\t\t\t\t\t\"name\": \"checkout__c\", \t\t\t\t\t\t\t\t\t\t\"id\": $returnValue \t\t\t\t\t\t\t\t\t} \t\t\t\t\t\t\t\t)             },             \"description\": expression__Description__c,             \"features\": SPLIT(expression__Features__c, \"\\r\\n\")         }     )     -> SORT(\"price\") }",
-                "respectSharing" : false
-              },
-              "definition" : "expression:pricingTable",
-              "id" : "ce4a8451-9dad-44bb-a8df-fd56ea4027e9",
-              "type" : "component"
-            }, {
-              "attributes" : {
-                "expr" : "{   \"title\": \"Proudly Sponsored By\",   \"logos\": [     {       \"name\": \"Transistor\",       \"src\": \"https://tailwindui.com/img/logos/158x48/transistor-logo-gray-900.svg\"     }, { \"name\": \"Reform\", \"src\": \"https://tailwindui.com/img/logos/158x48/reform-logo-gray-900.svg\" }, { \"name\": \"Tuple\", \"src\": \"https://tailwindui.com/img/logos/158x48/tuple-logo-gray-900.svg\" }   ] }",
-                "respectSharing" : false
-              },
-              "definition" : "expression:logos",
-              "id" : "3b9f085c-fa42-4434-b1be-52b816d5151c",
-              "type" : "component"
-            } ],
-            "id" : "d737fd0f-1f9e-48d4-bcd4-c896f1798934",
-            "name" : "col1",
-            "title" : "Column 1",
-            "type" : "region"
-          } ],
-          "definition" : "community_layout:section",
-          "id" : "01c5ab86-ff98-431b-9b41-9781d5bdeb63",
-          "type" : "component"
-        } ],
-        "id" : "5820b569-0a06-4213-a086-741a96505bb3",
-        "name" : "content",
-        "title" : "Content",
-        "type" : "region"
-      }, {
-        "children" : [ {
-          "attributes" : {
-            "customHeadTags" : "",
-            "description" : "",
-            "pageTitle" : "ExpressionConf",
-            "recordId" : "{!recordId}"
-          },
-          "definition" : "community_builder:seoAssistant",
-          "id" : "00cfe44e-a167-4733-b14f-b9cfe4e927e1",
-          "type" : "component"
-        } ],
-        "id" : "d3ffbcfb-575b-4279-a972-58a722374de0",
-        "name" : "sfdcHiddenRegion",
-        "title" : "sfdcHiddenRegion",
-        "type" : "region"
-      } ],
-      "definition" : "community_layout:sldsFlexibleLayout",
-      "id" : "36f27ede-9448-4694-bb9d-9e6945961d43",
-      "type" : "component"
+              "definition": "community_builder:seoAssistant",
+              "id": "00cfe44e-a167-4733-b14f-b9cfe4e927e1",
+              "type": "component"
+            }
+          ],
+          "id": "d3ffbcfb-575b-4279-a972-58a722374de0",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region"
+        }
+      ],
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "36f27ede-9448-4694-bb9d-9e6945961d43",
+      "type": "component"
     },
-    "dataProviders" : [ ],
-    "themeLayoutType" : "Inner",
-    "viewType" : "home"
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "home"
   }
 }
