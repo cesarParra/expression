@@ -1,0 +1,34 @@
+{
+  "records": [
+    {
+      "attributes": {
+        "type": "Product__c",
+        "referenceId": "Product__cRef1"
+      },
+      "Name": "Silver",
+      "Features__c": "Access the event grounds\r\nGuaranteed seating in all sessions\r\nFree swag!\r\nRide to and from airport",
+      "Description__c": "Our next level pass",
+      "Event__c": "@Event__cRef1"
+    },
+    {
+      "attributes": {
+        "type": "Product__c",
+        "referenceId": "Product__cRef2"
+      },
+      "Name": "Gold",
+      "Features__c": "Access the event grounds\r\nGuaranteed seating in all sessions\r\nFree swag!\r\nRide to and from airport\r\nAll dinners included\r\nMeet the pope!",
+      "Description__c": "Our next level pass",
+      "Event__c": "@Event__cRef1"
+    },
+    {
+      "attributes": {
+        "type": "Product__c",
+        "referenceId": "Product__cRef3"
+      },
+      "Name": "Bronze",
+      "Features__c": "Access the event grounds\r\nGuaranteed seating in all sessions",
+      "Description__c": "Our most basic of passes",
+      "Event__c": "@Event__cRef1"
+    }
+  ]
+}

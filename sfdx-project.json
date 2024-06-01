@@ -2,26 +2,11 @@
   "packageDirectories": [
     {
       "path": "expression-src",
-      "package": "Expression",
-      "versionName": "Version 1.7",
-      "versionNumber": "1.7.0.NEXT",
-      "default": false,
-      "versionDescription": "Expression core language",
-      "ancestorVersion": "HIGHEST"
+      "default": false
     },
     {
       "path": "expression-components",
-      "package": "Expression Components",
-      "versionName": "Version 1.6",
-      "versionNumber": "1.6.0.NEXT",
-      "ancestorVersion": "HIGHEST",
-      "default": false,
-      "dependencies": [
-        {
-          "package": "Expression",
-          "versionNumber": "1.0.0.LATEST"
-        }
-      ]
+      "default": false
     },
     {
       "path": "src-pull",
@@ -29,18 +14,7 @@
     }
   ],
   "name": "Expression",
-  "namespace": "expression",
+  "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "60.0",
-  "packageAliases": {
-    "Expression": "0HoHu000000TNMAKA4",
-    "Expression@1.0.0-1": "04tHu000003OVu3IAG",
-    "Expression Components": "0HoHu000000TNMFKA4",
-    "Expression@1.4.0-1": "04tRb000000yvufIAA",
-    "Expression@1.5.0-1": "04tRb000000zZVVIA2",
-    "Expression Components@1.5.0-1": "04tRb0000011OhFIAU",
-    "Expression Components@1.6.0-1": "04tRb0000012Mv8IAE",
-    "Expression@1.6.0-1": "04tRb0000012O45IAE",
-    "Expression@1.7.0-1": "04tRb00000162GHIAY"
-  }
+  "sourceApiVersion": "60.0"
 }

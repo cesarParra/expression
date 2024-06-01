@@ -1,0 +1,37 @@
+{
+  "records": [
+    {
+      "attributes": {
+        "type": "Price_Component__c",
+        "referenceId": "Price_Component__cRef1"
+      },
+      "Description__c": "Bronze List Price",
+      "Expression__c": "true",
+      "Percent__c": null,
+      "Price__c": 100,
+      "Type__c": "List Price"
+    },
+    {
+      "attributes": {
+        "type": "Price_Component__c",
+        "referenceId": "Price_Component__cRef2"
+      },
+      "Description__c": "Silver List Price",
+      "Expression__c": "true",
+      "Percent__c": null,
+      "Price__c": 200,
+      "Type__c": "List Price"
+    },
+    {
+      "attributes": {
+        "type": "Price_Component__c",
+        "referenceId": "Price_Component__cRef3"
+      },
+      "Description__c": "Gold List Price",
+      "Expression__c": "true",
+      "Percent__c": null,
+      "Price__c": 400,
+      "Type__c": "List Price"
+    }
+  ]
+}

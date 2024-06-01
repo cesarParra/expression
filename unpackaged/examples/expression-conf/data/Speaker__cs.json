@@ -1,0 +1,40 @@
+{
+  "records": [
+    {
+      "attributes": {
+        "type": "Speaker__c",
+        "referenceId": "Speaker__cRef1"
+      },
+      "About__c": "Nam ei corpora lobortis, at numquam ocurreret appellantur mei. Lorem similique cum ea. At his harum everti dolorum, vel euripidis interpretaris in, sed et senserit disputationi. Ut cum amet vivendum periculis. Ne ipsum dolore iisque sed.",
+      "Person__c": "@ContactRef1",
+      "Event__c": "@Event__cRef1"
+    },
+    {
+      "attributes": {
+        "type": "Speaker__c",
+        "referenceId": "Speaker__cRef2"
+      },
+      "About__c": "Mel accusam qualisque assentior no, per ad mucius accusata maiestatis, id mei saperet fastidii. Eu sadipscing contentiones mea, vel ne adipisci suavitate quaerendum. Omnis dignissim in sea. Ei vim posse dictas equidem.",
+      "Person__c": "@ContactRef2",
+      "Event__c": "@Event__cRef1"
+    },
+    {
+      "attributes": {
+        "type": "Speaker__c",
+        "referenceId": "Speaker__cRef3"
+      },
+      "About__c": "Vel ea ludus equidem, usu putant timeam in. Adhuc populo mei id. Te falli iudico mea, tractatos suavitate contentiones cu per. Eam mutat animal impedit ut, delicata iudicabit ea his.",
+      "Person__c": "@ContactRef3",
+      "Event__c": "@Event__cRef1"
+    },
+    {
+      "attributes": {
+        "type": "Speaker__c",
+        "referenceId": "Speaker__cRef4"
+      },
+      "About__c": "Ornatus oporteat lobortis ei mel, est ad postulant repudiandae. Ut aperiam moderatius cum, mazim utroque vim ex. Vel ei persius repudiare. Quo noluisse iudicabit at, eos dicta apeirian ex.",
+      "Person__c": "@ContactRef4",
+      "Event__c": "@Event__cRef1"
+    }
+  ]
+}
