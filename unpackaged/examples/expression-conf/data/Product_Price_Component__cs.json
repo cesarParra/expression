@@ -1,0 +1,28 @@
+{
+  "records": [
+    {
+      "attributes": {
+        "type": "Product_Price_Component__c",
+        "referenceId": "Product_Price_Component__cRef1"
+      },
+      "Price_Component__c": "@Price_Component__cRef1",
+      "Product__c": "@Product__cRef3"
+    },
+    {
+      "attributes": {
+        "type": "Product_Price_Component__c",
+        "referenceId": "Product_Price_Component__cRef2"
+      },
+      "Price_Component__c": "@Price_Component__cRef2",
+      "Product__c": "@Product__cRef1"
+    },
+    {
+      "attributes": {
+        "type": "Product_Price_Component__c",
+        "referenceId": "Product_Price_Component__cRef3"
+      },
+      "Price_Component__c": "@Price_Component__cRef3",
+      "Product__c": "@Product__cRef2"
+    }
+  ]
+}

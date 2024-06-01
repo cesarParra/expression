@@ -41,7 +41,7 @@
                             "top": ""
                           }
                         },
-                        "expr": "Query(     expression__Event__c(where: Name = \"ExpressionConf\", limit: 1)     [Id, Name, Tag_Line__c, Description__c] )  -> FIRST()  -> TRANSFORM(     {     \"title\": $source.expression__Tag_Line__c,     \"description\": SUBSTITUTE($source.expression__Description__c, \"\\n\", BR())     }  )",
+                        "expr": "Query(     Event__c(where: Name = \"ExpressionConf\", limit: 1)     [Id, Name, Tag_Line__c, Description__c] )  -> FIRST()  -> TRANSFORM(     {     \"title\": $source.Tag_Line__c,     \"description\": SUBSTITUTE($source.Description__c, \"\\n\", BR())     }  )",
                         "respectSharing": false
                       },
                       "definition": "c:hero",
@@ -59,7 +59,7 @@
                             "top": "25px"
                           }
                         },
-                        "expr": "Query(expression__Event__c(where: Name = \"ExpressionConf\")     [Id, Name, Start_Date__c, End_Date__c] )  -> FIRST()  -> TRANSFORM(         \"\uD83D\uDCC5 ${TEXT(DAY($source.expression__Start_Date__c))} - ${DATETIMEFORMAT(DATETODATETIME($source.expression__End_Date__c), \"dd MMMM yyyy\")} ◆ \uD83D\uDDFA️Los Angeles, CA\"     )",
+                        "expr": "Query(Event__c(where: Name = \"ExpressionConf\")     [Id, Name, Start_Date__c, End_Date__c] )  -> FIRST()  -> TRANSFORM(         \"\uD83D\uDCC5 ${TEXT(DAY($source.Start_Date__c))} - ${DATETIMEFORMAT(DATETODATETIME($source.End_Date__c), \"dd MMMM yyyy\")} ◆ \uD83D\uDDFA️Los Angeles, CA\"     )",
                         "respectSharing": false,
                         "textAlignment": "Center"
                       },
@@ -77,7 +77,7 @@
                             "top": "50px"
                           }
                         },
-                        "expr": "{ \t\"stats\": [ \t\t{ \t\t\t\"label\": \"Speakers\", \t\t\t\"value\": TEXT(SIZE(QUERY(expression__Speaker__c))) \t\t},     {       \"label\": \"Days\",       \"value\":                  Query(expression__Event__c(where: Name = \"ExpressionConf\")                     [Name, Start_Date__c, End_Date__c]                 )                 -> FIRST()                 -> TRANSFORM(                     IF(                         ISBLANK($source),                          \"\",                          DAY($source.expression__End_Date__c)                         -                         DAY($source.expression__Start_Date__c)                     )                 )       }, \t\t{ \t\t\t\"label\": \"Venue\", \t\t\t\"value\": \"Staples Center\" \t\t}, \t\t{ \t\t\t\"label\": \"Location\", \t\t\t\"value\": \"Los Angeles\" \t\t} \t] }",
+                        "expr": "{ \t\"stats\": [ \t\t{ \t\t\t\"label\": \"Speakers\", \t\t\t\"value\": TEXT(SIZE(QUERY(Speaker__c))) \t\t},     {       \"label\": \"Days\",       \"value\":                  Query(Event__c(where: Name = \"ExpressionConf\")                     [Name, Start_Date__c, End_Date__c]                 )                 -> FIRST()                 -> TRANSFORM(                     IF(                         ISBLANK($source),                          \"\",                          DAY($source.End_Date__c)                         -                         DAY($source.Start_Date__c)                     )                 )       }, \t\t{ \t\t\t\"label\": \"Venue\", \t\t\t\"value\": \"Staples Center\" \t\t}, \t\t{ \t\t\t\"label\": \"Location\", \t\t\t\"value\": \"Los Angeles\" \t\t} \t] }",
                         "respectSharing": false
                       },
                       "definition": "c:stats",
@@ -94,7 +94,7 @@
                             "top": "100px"
                           }
                         },
-                        "expr": "LET(     {         \"$speakers\": Query(expression__Speaker__c(where: (expression__Event__r.Name = \"ExpressionConf\"))                     [                     \"Id\", \"Name\", \"Event__r.Name\",                      \"Person__r.Name\", \"Person__r.Title\",                     \"Person__r.PhotoUrl__c\", \"About__c\"                     ]                     )                     -> MAP(                         {                             \"name\": $current.Person__r.Name,                             \"title\": $current.Person__r.Title,                             \"imgUrl\": $current.Person__r.expression__PhotoUrl__c,                             \"about\": $current.expression__About__c                         }                     )     },     {         \"title\": \"Speakers\",         \"description\": \"Learn from the experts on the cutting-edge of technology.\",         \"people\": $speakers     })",
+                        "expr": "LET(     {         \"$speakers\": Query(Speaker__c(where: (Event__r.Name = \"ExpressionConf\"))                     [                     \"Id\", \"Name\", \"Event__r.Name\",                      \"Person__r.Name\", \"Person__r.Title\",                     \"Person__r.PhotoUrl__c\", \"About__c\"                     ]                     )                     -> MAP(                         {                             \"name\": $current.Person__r.Name,                             \"title\": $current.Person__r.Title,                             \"imgUrl\": $current.Person__r.PhotoUrl__c,                             \"about\": $current.About__c                         }                     )     },     {         \"title\": \"Speakers\",         \"description\": \"Learn from the experts on the cutting-edge of technology.\",         \"people\": $speakers     })",
                         "respectSharing": false
                       },
                       "definition": "c:people",
@@ -122,7 +122,7 @@
                             "top": "50px"
                           }
                         },
-                        "expr": "{ \t\"tag\": \"Pricing\", \t\"title\": \"Choose the righ pass for you\", \t\"description\": \"Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et quasi iusto modi velit ut non voluptas in. Explicabo id ut laborum.\", \t\"plans\": Query(expression__Product__c(where: expression__Event__r.Name = \"ExpressionConf\")[\"Name\", \"Features__c\", \"Description__c\", \"Event__r.Name\"])     -> MAP(         {             \"name\": Name,             \"price\": GETLISTPRICE(Id),             \"action\": {                 \"label\": \"Register\", \t\t\t\t\t\t\t\t\"type\": \"action\", \t\t\t\t\t\t\t\t\"src\": $Action.Apex.CreateSalesOrder(Id), \t\t\t\t\t\t\t\t\"callback\": $Action.Lwc.GoToNamedPage( \t\t\t\t\t\t\t\t\t{ \t\t\t\t\t\t\t\t\t\t\"name\": \"checkout__c\", \t\t\t\t\t\t\t\t\t\t\"id\": $returnValue \t\t\t\t\t\t\t\t\t} \t\t\t\t\t\t\t\t)             },             \"description\": expression__Description__c,             \"features\": SPLIT(expression__Features__c, \"\\r\\n\")         }     )     -> SORT(\"price\") }",
+                        "expr": "{ \t\"tag\": \"Pricing\", \t\"title\": \"Choose the righ pass for you\", \t\"description\": \"Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et quasi iusto modi velit ut non voluptas in. Explicabo id ut laborum.\", \t\"plans\": Query(Product__c(where: Event__r.Name = \"ExpressionConf\")[\"Name\", \"Features__c\", \"Description__c\", \"Event__r.Name\"])     -> MAP(         {             \"name\": Name,             \"price\": GETLISTPRICE(Id),             \"action\": {                 \"label\": \"Register\", \t\t\t\t\t\t\t\t\"type\": \"action\", \t\t\t\t\t\t\t\t\"src\": $Action.Apex.CreateSalesOrder(Id), \t\t\t\t\t\t\t\t\"callback\": $Action.Lwc.GoToNamedPage( \t\t\t\t\t\t\t\t\t{ \t\t\t\t\t\t\t\t\t\t\"name\": \"checkout__c\", \t\t\t\t\t\t\t\t\t\t\"id\": $returnValue \t\t\t\t\t\t\t\t\t} \t\t\t\t\t\t\t\t)             },             \"description\": Description__c,             \"features\": SPLIT(Features__c, \"\\r\\n\")         }     )     -> SORT(\"price\") }",
                         "respectSharing": false
                       },
                       "definition": "c:pricingTable",
