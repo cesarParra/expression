@@ -191,5 +191,5 @@ Object value = expression.Evaluator.run('AND(true, false, 1=1)', config);
 Run the tests with:
 
 ```bash
-sfdx force:apex:test:run
+sf apex test run
 ```
