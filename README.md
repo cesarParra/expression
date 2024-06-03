@@ -152,19 +152,19 @@ Contributions are welcome! Feel free to open an issue or submit a pull request.
 Create a scratch org by running:
 
 ```bash
-sfdx force:org:create -f config/dev.json -a Expression --setdefaultusername
+sf org create scratch -f config/dev.json -a Expression --set-default
 ```
 
 Push the source to the scratch org:
 
 ```bash
-sfdx force:source:push
+sf project deploy start
 ```
 
 Assign the `Expression Admin` permission set to the default user:
 
 ```bash
-sfdx force:user:permset:assign -n Expression_Admin
+sf org assign permset -n Expression_Admin
 ```
 
 ### Debugging
