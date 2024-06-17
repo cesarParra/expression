@@ -600,6 +600,24 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void contextResolutionWhenDifferentFunctionCombinationsAreUsed() {
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2
+        });
+
+        List<Object> result = (List<Object>) Evaluator.run('MAP(SORT(ChildAccounts, AnnualRevenue, "DESC"), Name)', parentAccount.Id);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual('Child2', result[0]);
+        Assert.areEqual('Child1', result[1]);
+    }
+
+    @IsTest
     private static void combiningWhereAndMap_withRelationshipsBetweenDifferentSObjectTypes() {
         Account parentAccount = new Account(Name = 'Parent');
         QDB.getInstance().doInsert(parentAccount);

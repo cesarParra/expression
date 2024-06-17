@@ -93,17 +93,7 @@ public with sharing class ContextResolver implements Visitor {
             this.queryContext = (Query) result;
             resolve(function.arguments[1]);
             this.queryContext = previousContext;
-
-            if (function.functionName == 'WHERE') {
-                // The WHERE function is a special case where we might want to keep building
-                // the query it started resolving, because where returns the List<SObject> back up, so
-                // the caller might want to keep operating on those records.
-                // See test: `combiningWhereAndMap`, and `combiningWhereAndMap_withRelationshipsBetweenDifferentSObjectTypes`
-                // for examples of why.
-                return result;
-            } else {
-                return null;
-            }
+            return result;
         } else {
             for (Expr argument : function.arguments) {
                 resolve(argument);

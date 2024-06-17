@@ -7,7 +7,7 @@ const variables = {
   tags,
   nodes,
   variables: {
-    packageId: "04tRb00000162GHIAY",
+    packageId: "04tRb000001EM3JIAW",
     componentPackageId: "04tRb0000012Mv8IAE",
     urlPrefix: IS_PROD ? "/expression" : "",
   }
