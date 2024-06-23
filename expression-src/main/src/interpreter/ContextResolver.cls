@@ -6,7 +6,6 @@ public with sharing class ContextResolver implements Visitor {
     private final List<Query> subQueries = new List<Query>();
 
     public ContextResolver(Id recordId) {
-        System.debug('got here');
         this.queryContext = new Query(recordId);
         this.topLevelQuery = this.queryContext;
     }
@@ -21,7 +20,6 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public List<SObject> build(Expr expression) {
-        System.debug('trying to resolve expression' + expression);
         this.resolve(expression);
         if (!this.shouldExecuteQuery) {
             return null;
@@ -32,7 +30,6 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         this.queryContext.queryBuilder.add(Q.condition('Id').isIn(new List<Id>(this.queryContext.recordId.getIds())));
-        System.debug('the qyery' + new QSalesforceDatabase.WithSharingRunner().build(this.queryContext.queryBuilder));
         List<SObject> results = QDB.getInstance().run(this.queryContext.queryBuilder);
         if (results.isEmpty()) {
             return null;

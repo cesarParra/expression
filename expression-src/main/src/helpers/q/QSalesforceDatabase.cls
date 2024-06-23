@@ -7,7 +7,7 @@ public inherited sharing abstract class QSalesforceDatabase extends QDB {
         }
     }
 
-    public with sharing class WithSharingRunner extends QSalesforceDatabase {
+    private with sharing class WithSharingRunner extends QSalesforceDatabase {
         public override List<SObject> run(Q query) {
             return Database.query(build(query), AccessLevel.USER_MODE);
         }
