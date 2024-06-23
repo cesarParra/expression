@@ -6,6 +6,7 @@ public with sharing class ContextResolver implements Visitor {
     private final List<Query> subQueries = new List<Query>();
 
     public ContextResolver(Id recordId) {
+        System.debug('got here');
         this.queryContext = new Query(recordId);
         this.topLevelQuery = this.queryContext;
     }
@@ -20,6 +21,7 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public List<SObject> build(Expr expression) {
+        System.debug('trying to resolve expression' + expression);
         this.resolve(expression);
         if (!this.shouldExecuteQuery) {
             return null;
@@ -30,6 +32,7 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         this.queryContext.queryBuilder.add(Q.condition('Id').isIn(new List<Id>(this.queryContext.recordId.getIds())));
+        System.debug('the qyery' + new QSalesforceDatabase.WithSharingRunner().build(this.queryContext.queryBuilder));
         List<SObject> results = QDB.getInstance().run(this.queryContext.queryBuilder);
         if (results.isEmpty()) {
             return null;
@@ -80,7 +83,7 @@ public with sharing class ContextResolver implements Visitor {
 
         // Whenever children resolution is needed we assume that the second argument contains the expression
         // for which to resolve, so skip this when the argument list is not long enough.
-        if (!fn.argumentIndicesToResolve().isEmpty()) {
+        if (fn.needsQueryArgumentResolution()) {
             // We want to first resolve the left side and it should resolve to a Query object
             // which we will use as the context for the right side.
 
@@ -91,8 +94,16 @@ public with sharing class ContextResolver implements Visitor {
             }
 
             this.queryContext = (Query) result;
-            resolve(function.arguments[1]); // TODO: Resolve the correct argument
+            resolve(function.arguments[1]);
             this.queryContext = previousContext;
+
+            // If there are more arguments, resolve normally for the top level query
+            if (function.arguments.size() > 2) {
+                for (Integer i = 2; i < function.arguments.size(); i++) {
+                    resolve(function.arguments[i]);
+                }
+            }
+
             return result;
         } else {
             for (Expr argument : function.arguments) {

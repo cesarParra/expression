@@ -47,8 +47,8 @@ public with sharing abstract class ExpressionFunction {
      * @return For functions that have children values that can be referenced, return the arguments that need to be resolved
      *         as a subquery.
      */
-    public virtual List<Integer> argumentIndicesToResolve() {
-        return new List<Integer>();
+    public virtual Boolean needsQueryArgumentResolution() {
+        return false;
     }
 
     protected Object evaluate(Expr expression) {

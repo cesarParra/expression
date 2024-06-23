@@ -130,8 +130,8 @@ public with sharing class CollectionFunctions {
             return Arity.exactly(2);
         }
 
-        public override List<Integer> argumentIndicesToResolve() {
-            return new List<Integer>{1};
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
         }
     }
 
@@ -192,8 +192,8 @@ public with sharing class CollectionFunctions {
             return Arity.exactly(2);
         }
 
-        public override List<Integer> argumentIndicesToResolve() {
-            return new List<Integer>{1};
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
         }
     }
 
@@ -557,8 +557,8 @@ public with sharing class CollectionFunctions {
             return Arity.between(1, 4);
         }
 
-        public override List<Integer> argumentIndicesToResolve() {
-            return new List<Integer>{1};
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
         }
 
         private List<Object> doSort(List<Object> listVal, String fieldToSortBy, String direction, NullsPosition position) {
@@ -784,8 +784,8 @@ public with sharing class CollectionFunctions {
             return Arity.exactly(3);
         }
 
-        public override List<Integer> argumentIndicesToResolve() {
-            return new List<Integer>{1};
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
         }
     }
 
