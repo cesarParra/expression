@@ -80,7 +80,7 @@ public with sharing class ContextResolver implements Visitor {
 
         // Whenever children resolution is needed we assume that the second argument contains the expression
         // for which to resolve, so skip this when the argument list is not long enough.
-        if (fn.needsChildrenResolution() && function.arguments.size() > 1) {
+        if (fn.needsQueryArgumentResolution()) {
             // We want to first resolve the left side and it should resolve to a Query object
             // which we will use as the context for the right side.
 
@@ -93,6 +93,14 @@ public with sharing class ContextResolver implements Visitor {
             this.queryContext = (Query) result;
             resolve(function.arguments[1]);
             this.queryContext = previousContext;
+
+            // If there are more arguments, resolve normally for the top level query
+            if (function.arguments.size() > 2) {
+                for (Integer i = 2; i < function.arguments.size(); i++) {
+                    resolve(function.arguments[i]);
+                }
+            }
+
             return result;
         } else {
             for (Expr argument : function.arguments) {

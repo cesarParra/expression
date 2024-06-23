@@ -713,6 +713,25 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void reduceWorksWithSObjectExpression_canHaveAFieldAsTheInitialValue() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent', NumberOfEmployees = 10);
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10, AnnualRevenue = 100);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20, AnnualRevenue = 200);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30, AnnualRevenue = 300);
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'REDUCE(ChildAccounts, NumberOfEmployees + $accumulator, NumberOfEmployees)';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(70, result);
+    }
+
+    @IsTest
     private static void reduceToMap() {
         Account parentAccount = new Account(Name = 'Parent');
         QDB.getInstance().doInsert(parentAccount);
@@ -834,6 +853,26 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void anyFunctionSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'ANY(ChildAccounts, NumberOfEmployees > 20)';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.isTrue((Boolean) result);
+    }
+
+    @IsTest
     private static void sumFunctionReturnsTheSumOfTheList() {
         Assert.areEqual(6, Evaluator.run('SUM([1, 2, 3])'));
     }
@@ -923,6 +962,26 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void everyFunctionSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'EVERY(ChildAccounts, NumberOfEmployees > 0)';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.isTrue((Boolean) result);
+    }
+
+    @IsTest
     private static void expandFunctionExpandsEachElementOfTheListIntoTheResolvedExpression() {
         String formula = 'EXPAND([1, 3, 0, 2], [{"value": $current}])';
         List<Object> result = (List<Object>) Evaluator.run(formula);
@@ -931,6 +990,32 @@ private class CollectionFunctionsTest {
         Assert.areEqual(3, ((Map<Object, Object>) result[1]).get('value'));
         Assert.areEqual(0, ((Map<Object, Object>) result[2]).get('value'));
         Assert.areEqual(2, ((Map<Object, Object>) result[3]).get('value'));
+    }
+
+    @IsTest
+    private static void expandFunctionSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'EXPAND(ChildAccounts, [{"name": Name, "employees": NumberOfEmployees}])';
+        List<Object> result = (List<Object>) Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(3, result.size());
+        Assert.areEqual('Child1', ((Map<Object, Object>) result[0]).get('name'));
+        Assert.areEqual(10, ((Map<Object, Object>) result[0]).get('employees'));
+        Assert.areEqual('Child2', ((Map<Object, Object>) result[1]).get('name'));
+        Assert.areEqual(20, ((Map<Object, Object>) result[1]).get('employees'));
+        Assert.areEqual('Child3', ((Map<Object, Object>) result[2]).get('name'));
+        Assert.areEqual(30, ((Map<Object, Object>) result[2]).get('employees'));
     }
 
     @IsTest
@@ -972,6 +1057,26 @@ private class CollectionFunctionsTest {
         } catch (Exception e) {
             Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
         }
+    }
+
+    @IsTest
+    private static void firstWhereSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'FIRSTWHERE(SORT(ChildAccounts, Name), NumberOfEmployees > 10)';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(20, ((Account) result).NumberOfEmployees);
     }
 
     @IsTest
@@ -1057,6 +1162,26 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void lastWhereReturnsNullWhenTheListIsEmpty() {
         Assert.isNull(Evaluator.run('LASTWHERE([], $current > 1)'));
+    }
+
+    @IsTest
+    private static void lastWhereSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'LASTWHERE(SORT(ChildAccounts, Name), NumberOfEmployees > 10)';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(30, ((Account) result).NumberOfEmployees);
     }
 
     @IsTest
@@ -1159,6 +1284,28 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void skipWhileSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'SKIPWHILE(SORT(ChildAccounts, Name), NumberOfEmployees < 20)';
+        List<Object> result = (List<Object>) Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual('Child2', ((Account) result[0]).Name);
+        Assert.areEqual('Child3', ((Account) result[1]).Name);
+    }
+
+    @IsTest
     private static void skipWhileReturnsAnEmptyListWhenTheListIsEmpty() {
         List<Object> result = (List<Object>) Evaluator.run('SKIPWHILE([], $current < 3)');
         Assert.areEqual(0, result.size());
@@ -1226,6 +1373,27 @@ private class CollectionFunctionsTest {
         Assert.areEqual(2, result.size());
         Assert.areEqual(1, result[0]);
         Assert.areEqual(2, result[1]);
+    }
+
+    @IsTest
+    private static void takeWhileSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'TAKEWHILE(SORT(ChildAccounts, Name), NumberOfEmployees < 20)';
+        List<Object> result = (List<Object>) Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual('Child1', ((Account) result[0]).Name);
     }
 
     @IsTest

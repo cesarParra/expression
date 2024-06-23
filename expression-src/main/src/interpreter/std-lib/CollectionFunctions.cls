@@ -130,7 +130,7 @@ public with sharing class CollectionFunctions {
             return Arity.exactly(2);
         }
 
-        public override Boolean needsChildrenResolution() {
+        public override Boolean needsQueryArgumentResolution() {
             return true;
         }
     }
@@ -192,7 +192,7 @@ public with sharing class CollectionFunctions {
             return Arity.exactly(2);
         }
 
-        public override Boolean needsChildrenResolution() {
+        public override Boolean needsQueryArgumentResolution() {
             return true;
         }
     }
@@ -557,7 +557,7 @@ public with sharing class CollectionFunctions {
             return Arity.between(1, 4);
         }
 
-        public override Boolean needsChildrenResolution() {
+        public override Boolean needsQueryArgumentResolution() {
             return true;
         }
 
@@ -784,7 +784,7 @@ public with sharing class CollectionFunctions {
             return Arity.exactly(3);
         }
 
-        public override Boolean needsChildrenResolution() {
+        public override Boolean needsQueryArgumentResolution() {
             return true;
         }
     }
@@ -920,6 +920,10 @@ public with sharing class CollectionFunctions {
         public override Arity getArity() {
             return Arity.exactly(2);
         }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
+        }
     }
 
     /**
@@ -945,16 +949,16 @@ public with sharing class CollectionFunctions {
                 return 0;
             }
 
-            Decimal sum = 0;
+            Decimal currentSum = 0;
             for (Object currentVal : listVal) {
                 if (!(currentVal instanceof Decimal)) {
                     throw new FunctionExecutionException(
                         'Error executing "SUM" function: the first argument must evaluate to a list of numbers.'
                     );
                 }
-                sum += (Decimal) currentVal;
+                currentSum += (Decimal) currentVal;
             }
-            return sum;
+            return currentSum;
         }
 
         public override Arity getArity() {
@@ -1013,6 +1017,10 @@ public with sharing class CollectionFunctions {
         public override Arity getArity() {
             return Arity.exactly(2);
         }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
+        }
     }
 
     /**
@@ -1070,6 +1078,10 @@ public with sharing class CollectionFunctions {
         public override Arity getArity() {
             return Arity.exactly(2);
         }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
+        }
     }
 
     /**
@@ -1124,6 +1136,10 @@ public with sharing class CollectionFunctions {
         public override Arity getArity() {
             return Arity.exactly(2);
         }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
+        }
     }
 
     /**
@@ -1131,7 +1147,7 @@ public with sharing class CollectionFunctions {
      * Accepts 2 arguments: the list to append to and the list to append.
      * @function FOLLOWEDBY
      * @example
-     * FOLLOWEDBY([1, 2, 3], [4, 5, 6])
+     * FOLLOWEDBY([1, 2, 3], [4, 5, 6]) // [1, 2, 3, 4, 5, 6]
      */
     private class FollowedByFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
@@ -1256,6 +1272,10 @@ public with sharing class CollectionFunctions {
         public override Arity getArity() {
             return Arity.exactly(2);
         }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
+        }
     }
 
     /**
@@ -1366,6 +1386,10 @@ public with sharing class CollectionFunctions {
         public override Arity getArity() {
             return Arity.exactly(2);
         }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
+        }
     }
 
     /**
@@ -1475,6 +1499,10 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
         }
     }
 

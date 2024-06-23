@@ -3,8 +3,8 @@
     {
       "path": "expression-src",
       "package": "Expression",
-      "versionName": "Version 1.8",
-      "versionNumber": "1.8.0.NEXT",
+      "versionName": "Version 1.9",
+      "versionNumber": "1.9.0.NEXT",
       "default": false,
       "versionDescription": "Expression core language",
       "ancestorVersion": "HIGHEST"
@@ -34,14 +34,10 @@
   "sourceApiVersion": "60.0",
   "packageAliases": {
     "Expression": "0HoHu000000TNMAKA4",
-    "Expression@1.0.0-1": "04tHu000003OVu3IAG",
     "Expression Components": "0HoHu000000TNMFKA4",
-    "Expression@1.4.0-1": "04tRb000000yvufIAA",
-    "Expression@1.5.0-1": "04tRb000000zZVVIA2",
     "Expression Components@1.5.0-1": "04tRb0000011OhFIAU",
     "Expression Components@1.6.0-1": "04tRb0000012Mv8IAE",
-    "Expression@1.6.0-1": "04tRb0000012O45IAE",
-    "Expression@1.7.0-1": "04tRb00000162GHIAY",
-    "Expression@1.8.0-2": "04tRb000001EM3JIAW"
+    "Expression@1.8.0-2": "04tRb000001EM3JIAW",
+    "Expression@1.9.0-1": "04tRb000001GNL3IAO"
   }
 }

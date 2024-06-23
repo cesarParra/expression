@@ -46,9 +46,9 @@ public with sharing abstract class ExpressionFunction {
     /**
      * @description Indicate if we are dealing with function where children values can be referenced, and thus
      *              the arguments need to be resolved as a subquery.
-     * @return {Boolean}
+     * @return Boolean
      */
-    public virtual Boolean needsChildrenResolution() {
+    public virtual Boolean needsQueryArgumentResolution() {
         return false;
     }
 
