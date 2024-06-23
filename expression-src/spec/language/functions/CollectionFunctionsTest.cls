@@ -1060,6 +1060,26 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void firstWhereSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'FIRSTWHERE(SORT(ChildAccounts, NumberOfEmployees), NumberOfEmployees > 10)';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(20, ((Account) result).NumberOfEmployees);
+    }
+
+    @IsTest
     private static void firstWhereThrowsAnExceptionIfThePredicateDoesNotEvaluateToABoolean() {
         try {
             Evaluator.run('FIRSTWHERE([1, 2, 3], $current)');
