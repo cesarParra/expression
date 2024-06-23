@@ -1073,7 +1073,7 @@ private class CollectionFunctionsTest {
             childAccount1, childAccount2, childAccount3
         });
 
-        String formula = 'FIRSTWHERE(SORT(ChildAccounts, NumberOfEmployees), NumberOfEmployees > 10)';
+        String formula = 'FIRSTWHERE(SORT(ChildAccounts, Name), NumberOfEmployees > 10)';
         Object result = Evaluator.run(formula, parentAccount.Id);
 
         Assert.areEqual(20, ((Account) result).NumberOfEmployees);
@@ -1162,6 +1162,26 @@ private class CollectionFunctionsTest {
     @IsTest
     private static void lastWhereReturnsNullWhenTheListIsEmpty() {
         Assert.isNull(Evaluator.run('LASTWHERE([], $current > 1)'));
+    }
+
+    @IsTest
+    private static void lastWhereSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'LASTWHERE(SORT(ChildAccounts, Name), NumberOfEmployees > 10)';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(30, ((Account) result).NumberOfEmployees);
     }
 
     @IsTest
