@@ -853,6 +853,26 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void anyFunctionSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'ANY(ChildAccounts, NumberOfEmployees > 20)';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.isTrue((Boolean) result);
+    }
+
+    @IsTest
     private static void sumFunctionReturnsTheSumOfTheList() {
         Assert.areEqual(6, Evaluator.run('SUM([1, 2, 3])'));
     }
