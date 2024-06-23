@@ -80,7 +80,7 @@ public with sharing class ContextResolver implements Visitor {
 
         // Whenever children resolution is needed we assume that the second argument contains the expression
         // for which to resolve, so skip this when the argument list is not long enough.
-        if (fn.needsChildrenResolution() && function.arguments.size() > 1) {
+        if (!fn.argumentIndicesToResolve().isEmpty()) {
             // We want to first resolve the left side and it should resolve to a Query object
             // which we will use as the context for the right side.
 
@@ -91,7 +91,7 @@ public with sharing class ContextResolver implements Visitor {
             }
 
             this.queryContext = (Query) result;
-            resolve(function.arguments[1]);
+            resolve(function.arguments[1]); // TODO: Resolve the correct argument
             this.queryContext = previousContext;
             return result;
         } else {

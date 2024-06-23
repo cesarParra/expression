@@ -44,12 +44,11 @@ public with sharing abstract class ExpressionFunction {
     abstract public Arity getArity();
 
     /**
-     * @description Indicate if we are dealing with function where children values can be referenced, and thus
-     *              the arguments need to be resolved as a subquery.
-     * @return {Boolean}
+     * @return For functions that have children values that can be referenced, return the arguments that need to be resolved
+     *         as a subquery.
      */
-    public virtual Boolean needsChildrenResolution() {
-        return false;
+    public virtual List<Integer> argumentIndicesToResolve() {
+        return new List<Integer>();
     }
 
     protected Object evaluate(Expr expression) {
