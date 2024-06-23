@@ -962,6 +962,26 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void everyFunctionSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'EVERY(ChildAccounts, NumberOfEmployees > 0)';
+        Object result = Evaluator.run(formula, parentAccount.Id);
+
+        Assert.isTrue((Boolean) result);
+    }
+
+    @IsTest
     private static void expandFunctionExpandsEachElementOfTheListIntoTheResolvedExpression() {
         String formula = 'EXPAND([1, 3, 0, 2], [{"value": $current}])';
         List<Object> result = (List<Object>) Evaluator.run(formula);

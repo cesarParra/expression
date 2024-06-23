@@ -949,16 +949,16 @@ public with sharing class CollectionFunctions {
                 return 0;
             }
 
-            Decimal sum = 0;
+            Decimal currentSum = 0;
             for (Object currentVal : listVal) {
                 if (!(currentVal instanceof Decimal)) {
                     throw new FunctionExecutionException(
                         'Error executing "SUM" function: the first argument must evaluate to a list of numbers.'
                     );
                 }
-                sum += (Decimal) currentVal;
+                currentSum += (Decimal) currentVal;
             }
-            return sum;
+            return currentSum;
         }
 
         public override Arity getArity() {
@@ -1016,6 +1016,10 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
         }
     }
 
