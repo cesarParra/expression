@@ -993,6 +993,32 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void expandFunctionSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'EXPAND(ChildAccounts, [{"name": Name, "employees": NumberOfEmployees}])';
+        List<Object> result = (List<Object>) Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(3, result.size());
+        Assert.areEqual('Child1', ((Map<Object, Object>) result[0]).get('name'));
+        Assert.areEqual(10, ((Map<Object, Object>) result[0]).get('employees'));
+        Assert.areEqual('Child2', ((Map<Object, Object>) result[1]).get('name'));
+        Assert.areEqual(20, ((Map<Object, Object>) result[1]).get('employees'));
+        Assert.areEqual('Child3', ((Map<Object, Object>) result[2]).get('name'));
+        Assert.areEqual(30, ((Map<Object, Object>) result[2]).get('employees'));
+    }
+
+    @IsTest
     private static void expandFunctionThrowsAnExceptionIfTheFirstArgumentIsNotAList() {
         try {
             Evaluator.run('EXPAND(1, [{"value": $current}])');
