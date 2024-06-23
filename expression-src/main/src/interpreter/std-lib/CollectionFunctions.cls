@@ -1386,6 +1386,10 @@ public with sharing class CollectionFunctions {
         public override Arity getArity() {
             return Arity.exactly(2);
         }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
+        }
     }
 
     /**

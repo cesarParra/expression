@@ -1284,6 +1284,28 @@ private class CollectionFunctionsTest {
     }
 
     @IsTest
+    private static void skipWhileSupportsReferencingChilddata() {
+        QDB.salesforce();
+        Account parentAccount = new Account(Name = 'Parent');
+        QDB.getInstance().doInsert(parentAccount);
+
+        Account childAccount1 = new Account(Name = 'Child1', ParentId = parentAccount.Id, NumberOfEmployees = 10);
+        Account childAccount2 = new Account(Name = 'Child2', ParentId = parentAccount.Id, NumberOfEmployees = 20);
+        Account childAccount3 = new Account(Name = 'Child3', ParentId = parentAccount.Id, NumberOfEmployees = 30);
+
+        QDB.getInstance().doInsert(new List<SObject>{
+            childAccount1, childAccount2, childAccount3
+        });
+
+        String formula = 'SKIPWHILE(SORT(ChildAccounts, Name), NumberOfEmployees < 20)';
+        List<Object> result = (List<Object>) Evaluator.run(formula, parentAccount.Id);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual('Child2', ((Account) result[0]).Name);
+        Assert.areEqual('Child3', ((Account) result[1]).Name);
+    }
+
+    @IsTest
     private static void skipWhileReturnsAnEmptyListWhenTheListIsEmpty() {
         List<Object> result = (List<Object>) Evaluator.run('SKIPWHILE([], $current < 3)');
         Assert.areEqual(0, result.size());
