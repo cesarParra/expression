@@ -233,6 +233,23 @@ public virtual with sharing class Interpreter implements Visitor {
                 getExpr.field,
                 'Error executing get expression: the map does not contain a key with the name: ' + getExpr.field.lexeme
             );
+        } else if (result instanceof Map<String, Object>) {
+            if (!getExpr.arguments.isEmpty()) {
+                throw new Exceptions.RuntimeException(
+                    getExpr.field,
+                    'Error executing expression. Get expressions on Maps must not have arguments.'
+                );
+            }
+
+            Map<String, Object> castMap = (Map<String, Object>) result;
+            if (castMap.containsKey(getExpr.field.lexeme)) {
+                return castMap.get(getExpr.field.lexeme);
+            }
+
+            throw new Exceptions.RuntimeException(
+                getExpr.field,
+                'Error executing get expression: the map does not contain a key with the name: ' + getExpr.field.lexeme
+            );
         }
 
         throw new Exceptions.RuntimeException(
