@@ -138,6 +138,20 @@ private class GlobalContextTest {
     }
 
     @IsTest
+    private static void canPassCustomContextWithNestedValues() {
+        String expression = '@MyCustomContext.MyNestedValue';
+        Map<String, Object> customContext = new Map<String, Object>{
+            'MyCustomContext' => new Map<String, Object>{
+                'MyNestedValue' => 'MyNestedValueValue'
+            }
+        };
+
+        Object result = Evaluator.run(expression, new Configuration().withCustomContext(customContext));
+
+        Assert.areEqual('MyNestedValueValue', result);
+    }
+
+    @IsTest
     private static void shouldBeAbleToAccessDataFromParentWhenMappingAChildRelationshipList_recordAsContext() {
         Account parentAccount = new Account(Name = 'Parent');
         insert parentAccount;
