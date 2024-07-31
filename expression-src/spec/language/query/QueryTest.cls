@@ -590,6 +590,26 @@ private class QueryTest {
     }
 
     @IsTest
+    static void canHaveAWhereConditionWithAGetExpressionToAVariable() {
+        FluentDataBuilder builder = givenAn(AccountTestRecord.build().named('Test'))
+            .inTheDatabase();
+        Id recordId = builder.first.Id;
+
+        String expr = 'QUERY(Account(where: Id = @ContextAcc.Id) [Id, Name])';
+        Configuration config = new Configuration().withCustomContext(
+            new Map<String, Object>{
+                'ContextAcc' => new Map<String, Object>{
+                    'Id' => recordId
+                }
+            }
+        );
+        List<Account> result = (List<Account>) Evaluator.run(expr, config);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual('Test', result[0].Name);
+    }
+
+    @IsTest
     static void canSpecifyAnOffSet() {
         FluentDataBuilder dataBuilder = given();
         for (Integer i = 0; i < 10; i++) {
