@@ -13,13 +13,13 @@ Expression can be installed in your Salesforce org through an Unlocked package.
 ## Install with SF CLI
 
 ```bash
-sf package install package --wait 20 --package {% $packageId %}
+sf package install --wait 20 --package {% $packageId %}
 ```
 
 ## Install with SFDX CLI
 
 ```shell
-sfdx force:package:install package --wait 20 --package {% $packageId %}
+sfdx force:package:install --wait 20 --package {% $packageId %}
 ```
 
 ## Setup

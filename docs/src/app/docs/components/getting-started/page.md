@@ -15,13 +15,13 @@ by the `Expression` language.
 Install with SF CLI:
 
 ```shell
-sf package install package --wait 20 --package {% $componentPackageId %}
+sf package install --wait 20 --package {% $componentPackageId %}
 ```
 
 Install with SFDX CLI:
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package {% $componentPackageId %}
+sfdx force:package:install --wait 20 --package {% $componentPackageId %}
 ```
 
 ## Site Context

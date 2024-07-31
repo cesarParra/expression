@@ -35,13 +35,13 @@ Install the Expression managed package in your Salesforce org.
 ### Install with SF CLI
 
 ```shell
-sf package install package --wait 20 --package {% $packageId %}
+sf package install --wait 20 --package {% $packageId %}
 ```
 
 ### Install with SFDX CLI
 
 ```shell
-sfdx force:package:install --apexcompile package --wait 20 --package {% $packageId %}
+sfdx force:package:install --wait 20 --package {% $packageId %}
 ```
 
 ### Setup
