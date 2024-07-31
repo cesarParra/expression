@@ -192,8 +192,6 @@ public virtual with sharing class Interpreter implements Visitor {
                 return tempEnvironmentForGet.getParentSObject(getExpr.field.lexeme);
             }
 
-            Account tmpAcc = (Account) result;
-            System.debug('tmpAcc: ' + tmpAcc.Parent);
             throw new Exceptions.RuntimeException(
                 getExpr.field,
                 'Error executing get expression: the SObject type ' +
