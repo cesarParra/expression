@@ -174,7 +174,6 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public virtual Object visit(Expr.GetExpr getExpr) {
-        System.debug('trying to get ' + getExpr.field.lexeme);
         Object result = evaluate(getExpr.objectExpr);
         if (result instanceof SObject) {
             if (!getExpr.arguments.isEmpty()) {
@@ -206,7 +205,6 @@ public virtual with sharing class Interpreter implements Visitor {
             }
 
             try {
-                System.debug('Calling get on ' + result + ' with ' + getExpr.field.lexeme + ' and ' + arguments);
                 return ((IGlobalVariableResolver) result).get(getExpr.field.lexeme, arguments);
             } catch (Exceptions.PositionAwareException e) {
                 throw e;
@@ -223,8 +221,6 @@ public virtual with sharing class Interpreter implements Visitor {
                     'Error executing expression. Get expressions on Maps must not have arguments.'
                 );
             }
-
-            System.debug('Getting MAP<OBJECT>' + getExpr.field.lexeme + ' from ' + result);
 
             Map<Object, Object> castMap = (Map<Object, Object>) result;
             if (castMap.containsKey(getExpr.field.lexeme)) {
@@ -243,7 +239,6 @@ public virtual with sharing class Interpreter implements Visitor {
                 );
             }
 
-            System.debug('Getting (MAP<STRING>) ' + getExpr.field.lexeme + ' from ' + result);
             Map<String, Object> castMap = (Map<String, Object>) result;
             if (castMap.containsKey(getExpr.field.lexeme)) {
                 return castMap.get(getExpr.field.lexeme);

@@ -68,7 +68,6 @@ public with sharing class QueryInterpreter extends Interpreter {
 
         if (query.whereExpr != null) {
             isWhereContext = true;
-            //System.debug(JSON.serializePretty(query.whereExpr));
             Object whereResult = evaluate(query.whereExpr);
             if (!(whereResult instanceof QICondition)) {
                 throw new Exceptions.RuntimeException(query.sObjectType,
@@ -147,11 +146,8 @@ public with sharing class QueryInterpreter extends Interpreter {
                 'Operators are not supported in a Query context outside of a where clause.');
         }
 
-        System.debug('Binary operator: ' + binary.operator.lexeme);
         Object left = evaluate(binary.left);
-        System.debug('Left: ' + left);
         Object right = evaluate(binary.right);
-        System.debug('Right: ' + right);
 
         switch on binary.operator.type {
             when EQUAL, EQUAL_EQUAL {
