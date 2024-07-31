@@ -110,7 +110,7 @@ public with sharing class QueryInterpreter extends Interpreter {
                         'Expected a condition or an expression that evaluates to a condition for the right side of the AND operator.');
                 }
 
-                List<QICondition> conditions = new List<QICondition> {
+                List<QICondition> conditions = new List<QICondition>{
                     (QICondition) left,
                     (QICondition) right
                 };
@@ -126,7 +126,7 @@ public with sharing class QueryInterpreter extends Interpreter {
                         'Expected a condition or an expression that evaluates to a condition for the right side of the OR operator.');
                 }
 
-                List<QICondition> conditions = new List<QICondition> {
+                List<QICondition> conditions = new List<QICondition>{
                     (QICondition) left,
                     (QICondition) right
                 };
@@ -189,6 +189,14 @@ public with sharing class QueryInterpreter extends Interpreter {
     }
 
     public override Object visit(Expr.GetExpr getExpr) {
+        // Within a GetExpr, we are going to either be dealing with a Variable
+        // (e.g. $Var.Field or @Var.Field) or a MergeField.
+        // Variables can be interpreted right away, so we can get the value,
+        // and thus we call the super method. But for merge fields we simply want to
+        // return them as is, so that they get passed into the SOQL query for interpretation.
+        if (getExpr.objectExpr instanceof Expr.Variable) {
+            return super.visit(getExpr);
+        }
         String field = getExpr.field.lexeme;
         return evaluate(getExpr.objectExpr) + '.' + field;
     }
@@ -204,7 +212,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
 
         Map<String, ExpressionFunction> dateAndTimeFunctions = new DateAndTimeFunctions.DateAndTimeFunctionsProvider().getFunctions();
-        Map<String, ExpressionFunction> supportedWhereFunctions = new Map<String, ExpressionFunction> {
+        Map<String, ExpressionFunction> supportedWhereFunctions = new Map<String, ExpressionFunction>{
             'LIKE' => new LikeFn(),
             'ISIN' => new IsInFn(),
             'ISNOTIN' => new IsNotInFn(),
