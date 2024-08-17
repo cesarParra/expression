@@ -177,16 +177,16 @@
     "title": "Api",
     "links": [
       {
-        "title": "expression.Configuration",
-        "href": "/docs/api/expression.Configuration"
+        "title": "Configuration",
+        "href": "/docs/api/miscellaneous/Configuration"
       },
       {
-        "title": "expression.Evaluator",
-        "href": "/docs/api/expression.Evaluator"
+        "title": "Evaluator",
+        "href": "/docs/api/miscellaneous/Evaluator"
       },
       {
-        "title": "expression.IExpressionFunction",
-        "href": "/docs/api/expression.IExpressionFunction"
+        "title": "IExpressionFunction",
+        "href": "/docs/api/miscellaneous/IExpressionFunction"
       }
     ]
   }

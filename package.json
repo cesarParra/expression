@@ -14,7 +14,7 @@
     "package:create:expression": "npm run package:pre && sf package version create -x -c -p 0HoHu000000TNMAKA4 -w 30 && npm run package:post",
     "package:create:expression:components": "npm run package:pre && sf package version create -x -c -p 0HoHu000000TNMFKA4 -w 30 && npm run package:post",
     "generate:library:docs": "node scripts/generate-library-docs.mjs",
-    "docs:generate": "apexdocs-generate -s expression-src -t docs/src/app/docs/api --scope global -g plain-markdown --namespace expression",
+    "docs:generate": "apexdocs markdown",
     "tw:build": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify",
     "tw:build:watch": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify --watch"
   },
@@ -30,7 +30,7 @@
   "homepage": "https://github.com/cesarParra/formula-evaluator#readme",
   "devDependencies": {
     "@cparra/apex-reflection": "^2.4.1",
-    "@cparra/apexdocs": "^2.23.0",
+    "@cparra/apexdocs": "3.0.0-alpha.2",
     "@tailwindcss/forms": "^0.5.6",
     "@types/node": "^20.10.2",
     "tailwindcss": "^3.3.3",

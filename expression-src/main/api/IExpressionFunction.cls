@@ -7,7 +7,8 @@ global interface IExpressionFunction {
      * @param args The arguments passed to the function, if any.
      * @return The result of the function.
      * @example
-     * // This example shows how to implement a function that returns the sum of its arguments.
+     * This example shows how to implement a function that returns the sum of its arguments.
+     * ```apex
      * global class SumFunction implements IExpressionFunction {
      *     global Object execute(List<Object> args) {
      *         Decimal result = 0;
@@ -17,6 +18,7 @@ global interface IExpressionFunction {
      *         return result;
      *     }
      *  }
+     * ```
      */
     Object execute(List<Object> args);
 }
