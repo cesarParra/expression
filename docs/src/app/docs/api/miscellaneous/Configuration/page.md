@@ -1,3 +1,10 @@
+---
+nextjs:
+  metadata:
+    title: Configuration
+    description: Api documentation for the Configuration class}
+---
+
 # Configuration Class
 
 Configuration class for the evaluator.

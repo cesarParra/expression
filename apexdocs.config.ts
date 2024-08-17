@@ -8,8 +8,6 @@ export default defineMarkdownConfig({
     namespace: 'expression',
     documentationRootDir: '/docs/api',
     transformReference: (reference) => {
-        console.log('display name', reference.displayName);
-        console.log('path from root', reference.outputDocPath);
         return {
             outputDocPath: reference.outputDocPath.replace('.md', '/page.md'),
             referencePath: reference.referencePath.replace('.md', ''),
@@ -18,15 +16,18 @@ export default defineMarkdownConfig({
     transformReferenceGuide: () => {
         return skip();
     },
-    // transformDocPage: (docPage) => {
-    //     // TODO: Let's also add frontmatter
-    //     return {
-    //         ...docPage,
-    //         fileName: 'page',
-    //         fileExtension: 'md',
-    //         directory: `${docPage.directory}/${docPage.fileName}`
-    //     };
-    // },
+    transformDocPage: (docPage) => {
+        return {
+            frontmatter: {
+                nextjs: {
+                    metadata: {
+                        title: docPage.source.name,
+                        description: `Api documentation for the ${docPage.source.name} ${docPage.source.type}}`,
+                    }
+                }
+            },
+        };
+    },
     transformDocs: (docs) => {
         const navFileContents = readFileSync("docs/src/lib/navigation.json", "utf8");
         const navItems = JSON.parse(navFileContents);
@@ -35,12 +36,8 @@ export default defineMarkdownConfig({
         apiNavObject = apiNavObject ?? {title: "Api", links: []};
 
         apiNavObject.links = docs.map((doc) => {
-            //return {title: doc.fileName.replace('expression.', ''), href: `/docs/api/${doc.directory}/${doc.fileName}`};
             return {
-                title: doc.source.name, href: `/docs/api/${doc.outputDocPath.replace('page.md', '')
-                    // remove trailing slash
-                    .replace(/\/$/, '')
-                }`
+                title: doc.source.name, href: `/docs/api/${doc.outputDocPath.replace('page.md', '').replace(/\/$/, '')}`
             };
         });
 

@@ -1,3 +1,10 @@
+---
+nextjs:
+  metadata:
+    title: IExpressionFunction
+    description: Api documentation for the IExpressionFunction interface}
+---
+
 # IExpressionFunction Interface
 
 Allows you to define your own custom functions for use in expressions.
