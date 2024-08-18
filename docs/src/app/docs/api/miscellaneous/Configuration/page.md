@@ -61,7 +61,7 @@ global Configuration respectSharing(Boolean respect)
 | respect | Boolean |  |
 
 #### Return Type
-**[Configuration](/docs/api/miscellaneous/Configuration)**
+**[Configuration](Configuration)**
 
 ---
 
@@ -73,7 +73,7 @@ global Configuration printAst()
 ```
 
 #### Return Type
-**[Configuration](/docs/api/miscellaneous/Configuration)**
+**[Configuration](Configuration)**
 
 ---
 
@@ -85,7 +85,7 @@ global Configuration withDiagnostics()
 ```
 
 #### Return Type
-**[Configuration](/docs/api/miscellaneous/Configuration)**
+**[Configuration](Configuration)**
 
 ---
 
@@ -102,7 +102,7 @@ global Configuration withCustomContext(Map<String,Object> objectsByStrings)
 | objectsByStrings | Map&lt;String,Object&gt; |  |
 
 #### Return Type
-**[Configuration](/docs/api/miscellaneous/Configuration)**
+**[Configuration](Configuration)**
 
 ## Enums
 ### SharingMode Enum

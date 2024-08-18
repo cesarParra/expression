@@ -55,7 +55,7 @@ global static Object run(String formula, Configuration config)
 | Name | Type | Description |
 |------|------|-------------|
 | formula | String | The formula to evaluate. |
-| config | [Configuration](/docs/api/miscellaneous/Configuration) | A configuration object that allows you to set options for the evaluation. |
+| config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
 
 #### Return Type
 **Object**
@@ -151,7 +151,7 @@ global static Object run(String formula, SObject context, Configuration config)
 |------|------|-------------|
 | formula | String | The expression to evaluate |
 | context | SObject | An SObject that will act as the context for the formula. Providing this allows you to reference fields on the SObject in the formula. |
-| config | [Configuration](/docs/api/miscellaneous/Configuration) | A configuration object that allows you to set options for the evaluation. |
+| config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
 
 #### Return Type
 **Object**
@@ -184,7 +184,7 @@ global static Object run(String formula, List<SObject> context, Configuration co
 |------|------|-------------|
 | formula | String | The expression to evaluate. |
 | context | List&lt;SObject&gt; | A list of records that will act as the context for the formula. Providing this allows you to reference the records through the `@context` global variable, which will give you a list of records that can be iterated over. |
-| config | [Configuration](/docs/api/miscellaneous/Configuration) | A configuration object that allows you to set options for the evaluation. |
+| config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
 
 #### Return Type
 **Object**
@@ -299,7 +299,7 @@ global static Object run(String formula, Id recordId, Configuration config)
 |------|------|-------------|
 | formula | String | The formula to evaluate. |
 | recordId | Id | The Id of the record to use as the context for the formula. |
-| config | [Configuration](/docs/api/miscellaneous/Configuration) | A configuration object that allows you to set options for the evaluation. |
+| config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
 
 #### Return Type
 **Object**
@@ -338,7 +338,7 @@ global static Object run(String formula, Set<Id> recordIds, Configuration config
 |------|------|-------------|
 | formula | String | The formula to evaluate. |
 | recordIds | Set&lt;Id&gt; | The Ids of the records to use as the context for the formula. |
-| config | [Configuration](/docs/api/miscellaneous/Configuration) | A configuration object that allows you to set options for 
+| config | [Configuration](Configuration) | A configuration object that allows you to set options for 
 the evaluation. |
 
 #### Return Type
