@@ -13,9 +13,6 @@ export function Navigation({
 }) {
     let pathname = usePathname()
 
-    console.log(JSON.stringify(navigation, null, 2))
-    console.log('pathname', pathname)
-
     return (
         <nav className={clsx('text-base lg:text-sm', className)}>
             <ul role="list" className="space-y-9">
