@@ -6,7 +6,6 @@ export default defineMarkdownConfig({
     targetDir: 'docs/src/app/docs/api',
     scope: ['global'],
     namespace: 'expression',
-    documentationRootDir: '/docs/api',
     transformReference: (reference) => {
         return {
             outputDocPath: reference.outputDocPath.replace('.md', '/page.md'),
@@ -47,7 +46,6 @@ export default defineMarkdownConfig({
 
         // Write the new navigation.json file
         const newNavFileContents = JSON.stringify(newNavItems, null, 2);
-        console.log("Writing new navigation.json file");
         writeFileSync("docs/src/lib/navigation.json", newNavFileContents);
 
         return docs;
