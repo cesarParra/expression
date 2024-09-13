@@ -46,3 +46,4 @@ $RECYCLE.BIN/
 /force-app/main/default/profiles/
 /IlluminatedCloud/Expression/OfflineSymbolTable.zip
 /src-pull/main
+/.localdev/
