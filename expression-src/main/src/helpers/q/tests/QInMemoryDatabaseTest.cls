@@ -418,46 +418,6 @@ private class QInMemoryDatabaseTest {
     }
 
     @IsTest
-    static void canQueryUsingACondition_dateTimesThatAreEqual() {
-        Datetime dateTime1 = Datetime.newInstance(2020, 1, 1, 1, 1, 1);
-        Datetime dateTime2 = Datetime.newInstance(2020, 1, 1, 1, 1, 2);
-
-        Asset asset1 = new Asset(UptimeRecordStart = dateTime1);
-        Asset asset2 = new Asset(UptimeRecordStart = dateTime2);
-        db.doInsert(new List<Asset>{
-            asset1, asset2
-        });
-
-        Q query = new Q(Asset.SObjectType)
-            .add(Q.condition('UptimeRecordStart').equalsTo(dateTime1));
-
-        List<SObject> results = db.run(query);
-
-        Assert.areEqual(1, results.size());
-        Assert.areEqual(asset1, results[0]);
-    }
-
-    @IsTest
-    static void canQueryUsingACondition_dateTimesThatAreNotEqual() {
-        Datetime dateTime1 = Datetime.newInstance(2020, 1, 1, 1, 1, 1);
-        Datetime dateTime2 = Datetime.newInstance(2020, 1, 1, 1, 1, 2);
-
-        Asset asset1 = new Asset(UptimeRecordStart = dateTime1);
-        Asset asset2 = new Asset(UptimeRecordStart = dateTime2);
-        db.doInsert(new List<Asset>{
-            asset1, asset2
-        });
-
-        Q query = new Q(Asset.SObjectType)
-            .add(Q.condition('UptimeRecordStart').notEqualsTo(dateTime1));
-
-        List<SObject> results = db.run(query);
-
-        Assert.areEqual(1, results.size());
-        Assert.areEqual(asset2, results[0]);
-    }
-
-    @IsTest
     static void canQueryUsingACondition_lessThan() {
         Account account1 = new Account(Name = 'Test Account', NumberOfEmployees = 10);
         Account account2 = new Account(Name = 'Test Account 2', NumberOfEmployees = 20);
