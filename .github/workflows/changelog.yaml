@@ -13,8 +13,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate changelog
+        run: npm run generate:changelog
+
+      - name: Read Changelog contents
+        id: changelog
+        uses: jaywcjlove/github-action-read-file@main
+        with:
+          path: changelog/changelog.md
+
+      - name: Echo package.json
+        run: echo "${{ steps.changelog.outputs.content }}"
+
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            Hello world ! :wave:
+            ${{ steps.changelog.outputs.content }}

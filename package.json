@@ -16,7 +16,8 @@
     "generate:library:docs": "node scripts/generate-library-docs.mjs",
     "docs:generate": "apexdocs markdown",
     "tw:build": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify",
-    "tw:build:watch": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify --watch"
+    "tw:build:watch": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify --watch",
+    "generate:changelog": "apexdocs changelog --repoPath git@github.com:cesarParra/expression.git --previousGitReference 'v2.2.0' --currentVersionDir expression-src --previousVersionDir force-app --targetDir changelog"
   },
   "repository": {
     "type": "git",
@@ -30,7 +31,7 @@
   "homepage": "https://github.com/cesarParra/formula-evaluator#readme",
   "devDependencies": {
     "@cparra/apex-reflection": "^2.4.1",
-    "@cparra/apexdocs": "3.1.0",
+    "@cparra/apexdocs": "3.3.0-alpha.0",
     "@tailwindcss/forms": "^0.5.6",
     "@types/node": "^20.10.2",
     "tailwindcss": "^3.3.3",
