@@ -18,7 +18,7 @@ jobs:
         with:
           repository: cesarParra/expression
           ref: 'v2.2.0'
-          path: .previous
+          path: previous
 
       - uses: actions/setup-node@v2
         with:
@@ -27,8 +27,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install ApexDocs globally
+        run: npm install @cparra/apexdocs --global
+
       - name: Generate changelog
-        run: npm run generate:changelog
+        run: apexdocs changelog --currentVersionDir expression-src --previousVersionDir './previous/force-app' --targetDir changelog
 
       - name: Read Changelog contents
         id: changelog
