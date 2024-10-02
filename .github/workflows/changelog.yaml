@@ -13,6 +13,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Checkout previous version
+        uses: actions/checkout@v3
+        with:
+          repository: cesarParra/expression
+          ref: 'v2.2.0'
+          path: .previous
+
       - uses: actions/setup-node@v2
         with:
           node-version: "20"

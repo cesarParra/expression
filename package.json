@@ -17,7 +17,7 @@
     "docs:generate": "apexdocs markdown",
     "tw:build": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify",
     "tw:build:watch": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify --watch",
-    "generate:changelog": "apexdocs changelog --repoPath git@github.com:cesarParra/expression.git --previousGitReference 'v2.2.0' --currentVersionDir expression-src --previousVersionDir force-app --targetDir changelog"
+    "generate:changelog": "apexdocs changelog --repoPath git@github.com:cesarParra/expression.git --currentVersionDir expression-src --previousVersionDir '.previous/force-app' --targetDir changelog"
   },
   "repository": {
     "type": "git",
