@@ -31,19 +31,9 @@ jobs:
         run: npm install @cparra/apexdocs --global
 
       - name: Generate changelog
-        run: apexdocs changelog --currentVersionDir expression-src --previousVersionDir './previous/force-app' --targetDir changelog
-
-      - name: Read Changelog contents
-        id: changelog
-        uses: jaywcjlove/github-action-read-file@main
-        with:
-          path: changelog/changelog.md
-
-      - name: Echo package.json
-        run: echo "${{ steps.changelog.outputs.content }}"
+        run: apexdocs changelog --currentVersionDir expression-src --previousVersionDir './previous/force-app' --targetDir './changelog'
 
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v2
         with:
-          message: |
-            ${{ steps.changelog.outputs.content }}
+          filePath: './changelog/changelog.md'
