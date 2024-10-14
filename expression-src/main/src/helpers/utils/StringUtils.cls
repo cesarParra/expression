@@ -12,9 +12,7 @@ public with sharing class StringUtils {
             return '';
         }
 
-        if (obj instanceof Decimal) {
-            return ((Decimal) obj).format();
-        } else if (obj instanceof Date) {
+        if (obj instanceof Date) {
             return ((Date) obj).format();
         } else if (obj instanceof Datetime) {
             return ((Datetime) obj).format();
