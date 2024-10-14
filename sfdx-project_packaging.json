@@ -4,7 +4,7 @@
       "path": "expression-src",
       "package": "Expression",
       "versionName": "Version 1.11",
-      "versionNumber": "1.12.0.NEXT",
+      "versionNumber": "1.13.0.NEXT",
       "default": false,
       "versionDescription": "Expression core language",
       "ancestorVersion": "HIGHEST"
@@ -41,6 +41,7 @@
     "Expression@1.9.0-1": "04tRb000001GNL3IAO",
     "Expression@1.10.0-1": "04tRb000001SS2PIAW",
     "Expression@1.11.0-1": "04tRb000001TfwrIAC",
-    "Expression@1.12.0-1": "04tRb000001iDH7IAM"
+    "Expression@1.12.0-1": "04tRb000001iDH7IAM",
+    "Expression@1.13.0-1": "04tRb000001sOuPIAU"
   }
 }

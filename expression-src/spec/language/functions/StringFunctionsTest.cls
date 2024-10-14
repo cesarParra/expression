@@ -215,6 +215,11 @@ private class StringFunctionsTest {
     }
 
     @IsTest
+    private static void testDoesNotFormatLargeNumbers() {
+        Assert.areEqual('1234567890', Evaluator.run('TEXT(1234567890)'));
+    }
+
+    @IsTest
     private static void textConvertsDateValues() {
         Assert.areEqual('1/1/2015', Evaluator.run('TEXT(DATE(2015, 1, 1))'));
     }
