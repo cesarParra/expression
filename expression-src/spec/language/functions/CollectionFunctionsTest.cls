@@ -576,7 +576,7 @@ private class CollectionFunctionsTest {
             new Q('ChildAccounts')
         ));
 
-        List<Object> result = (List<Object>) Evaluator.run('WHERE(ChildAccounts, NumberOfEmployees > 10)', requiredRecords[0]);
+        List<Object> result = (List<Object>) Evaluator.run('WHERE(ChildAccounts, NumberOfEmployees > 10)', requiredRecords[0].Id);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(20, ((Account) result[0]).NumberOfEmployees);
@@ -629,7 +629,7 @@ private class CollectionFunctionsTest {
         List<SObject> records = QDB.getInstance().run(new Q(Account.SObjectType).addSubquery(
             new Q('Contacts')
         ));
-        List<Object> result = (List<Object>) Evaluator.run(expr, records[0]);
+        List<Object> result = (List<Object>) Evaluator.run(expr, records[0].Id);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Child', result[0]);
@@ -707,14 +707,13 @@ private class CollectionFunctionsTest {
         ));
 
         String formula = 'REDUCE(ChildAccounts, NumberOfEmployees + $accumulator, 0)';
-        Object result = Evaluator.run(formula, requiredRecords[0]);
+        Object result = Evaluator.run(formula, requiredRecords[0].Id);
 
         Assert.areEqual(60, result);
     }
 
     @IsTest
     private static void reduceWorksWithSObjectExpression_canHaveAFieldAsTheInitialValue() {
-        QDB.salesforce();
         Account parentAccount = new Account(Name = 'Parent', NumberOfEmployees = 10);
         QDB.getInstance().doInsert(parentAccount);
 
@@ -854,7 +853,6 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void anyFunctionSupportsReferencingChilddata() {
-        QDB.salesforce();
         Account parentAccount = new Account(Name = 'Parent');
         QDB.getInstance().doInsert(parentAccount);
 
@@ -963,7 +961,6 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void everyFunctionSupportsReferencingChilddata() {
-        QDB.salesforce();
         Account parentAccount = new Account(Name = 'Parent');
         QDB.getInstance().doInsert(parentAccount);
 
@@ -994,7 +991,6 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void expandFunctionSupportsReferencingChilddata() {
-        QDB.salesforce();
         Account parentAccount = new Account(Name = 'Parent');
         QDB.getInstance().doInsert(parentAccount);
 
@@ -1061,7 +1057,6 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void firstWhereSupportsReferencingChilddata() {
-        QDB.salesforce();
         Account parentAccount = new Account(Name = 'Parent');
         QDB.getInstance().doInsert(parentAccount);
 
@@ -1166,7 +1161,6 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void lastWhereSupportsReferencingChilddata() {
-        QDB.salesforce();
         Account parentAccount = new Account(Name = 'Parent');
         QDB.getInstance().doInsert(parentAccount);
 
@@ -1285,7 +1279,6 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void skipWhileSupportsReferencingChilddata() {
-        QDB.salesforce();
         Account parentAccount = new Account(Name = 'Parent');
         QDB.getInstance().doInsert(parentAccount);
 
@@ -1377,7 +1370,6 @@ private class CollectionFunctionsTest {
 
     @IsTest
     private static void takeWhileSupportsReferencingChilddata() {
-        QDB.salesforce();
         Account parentAccount = new Account(Name = 'Parent');
         QDB.getInstance().doInsert(parentAccount);
 

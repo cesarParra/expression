@@ -16,7 +16,6 @@ private class DataFunctionsTest {
 
     @IsTest
     private static void canRunARawSoqlQueryThroughTheRawQueryFunction() {
-        QDB.salesforce();
         String formula = 'RAWQUERY("SELECT Id FROM Account LIMIT 1")';
         Object result = Evaluator.run(formula);
         Assert.isNotNull(result);
