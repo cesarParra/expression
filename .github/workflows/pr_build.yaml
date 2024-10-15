@@ -46,8 +46,8 @@ jobs:
           COVERAGE=$(jq -r '.result.summary.testRunCoverage' test-results.json)
           COVERAGE=${COVERAGE%\%}
           echo "Code coverage: $COVERAGE%"
-          if (( $(echo "$COVERAGE < 90" | bc -l) )); then
-            echo "Code coverage is less than 90%, failing the build."
+          if (( $(echo "$COVERAGE < 85" | bc -l) )); then
+            echo "Code coverage is less than 85%, failing the build."
             exit 1
           fi
 

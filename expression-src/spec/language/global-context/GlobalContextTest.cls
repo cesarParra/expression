@@ -22,7 +22,6 @@ private class GlobalContextTest {
 
     @IsTest
     private static void usingARecordIdAsTheContextConsumesAQuery() {
-        QDB.salesforce();
         Account accountRecord = new Account(Name = 'Test');
         QDB.getInstance().doInsert(accountRecord);
 

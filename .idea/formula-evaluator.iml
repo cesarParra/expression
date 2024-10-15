@@ -21,6 +21,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.sf" />
       <excludeFolder url="file://$MODULE_DIR$/.sfdx" />
       <excludeFolder url="file://$MODULE_DIR$/docs/out" />
+      <excludeFolder url="file://$MODULE_DIR$/.localdev" />
     </content>
     <orderEntry type="jdk" jdkName="IlluminatedCloud (expression/Expression)" jdkType="IlluminatedCloud" />
     <orderEntry type="sourceFolder" forTests="false" />

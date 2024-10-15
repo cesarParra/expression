@@ -1,9 +1,5 @@
 @IsTest
 private class QueryTest {
-    static {
-        QDB.salesforce();
-    }
-
     private class FluentDataBuilder {
         private final List<SObject> registeredRecords = new List<SObject>();
 
