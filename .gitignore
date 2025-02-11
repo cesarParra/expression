@@ -48,3 +48,9 @@ $RECYCLE.BIN/
 /src-pull/main
 /.localdev/
 /.illuminatedCloud/
+
+# Added by Illuminated Cloud
+/out/
+target/
+**/tsconfig*.json
+**/*.tsbuildinfo

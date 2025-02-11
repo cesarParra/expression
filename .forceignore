@@ -13,3 +13,10 @@ package.xml
 
 # Tailwind input css
 expression-components/tw/input.css
+
+# Added by Illuminated Cloud
+/.illuminatedCloud/
+**/*.ts
+**/tsconfig*.json
+**/*.tsbuildinfo
+**/eslint.config.mjs
