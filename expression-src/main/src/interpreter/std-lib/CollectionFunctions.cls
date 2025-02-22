@@ -37,7 +37,8 @@ public with sharing class CollectionFunctions {
         'TAKEWHILE' => new TakeWhileFn(),
         'RANGE' => new RangeFn(),
         'FLATTEN' => new FlattenFn(),
-        'AGGREGATEGROUPS' => new AggregateGroupsFn()
+        'AGGREGATEGROUPS' => new AggregateGroupsFn(),
+        'ASSOCIATEBY' => new AssociateByFn()
     };
 
     public class CollectionFunctionsProvider implements FunctionProvider {
@@ -1639,6 +1640,36 @@ public with sharing class CollectionFunctions {
                 }
 
                 result.put(key, acc);
+            }
+
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
+        }
+    }
+
+    private class AssociateByFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException('Error executing "ASSOCIATEBY" function: the first argument must evaluate to a list.');
+            }
+
+            List<Object> listVal = (List<Object>) listObj;
+            Expr expr = arguments.get(1);
+            Map<Object, Object> result = new Map<Object, Object>();
+            for (Object currentVal : listVal) {
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object key = interpreter.interpret(expr);
+                result.put(key, currentVal);
             }
 
             return result;

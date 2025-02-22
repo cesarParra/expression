@@ -1550,4 +1550,29 @@ private class CollectionFunctionsTest {
         Assert.areEqual('Curry is spicy and vegan', result.get('Curry'));
         Assert.areEqual('Pizza is cheesy', result.get('Pizza'));
     }
+
+    @IsTest
+    private static void associateByExpectsAListAsTheFirstArgument() {
+        try {
+            Evaluator.run('ASSOCIATEBY(1, "Name")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+            Assert.isTrue(e.getMessage().containsIgnoreCase('must evaluate to a list'));
+        }
+    }
+
+    @IsTest
+    private static void associateByAssociatesElementsOfAListByAKey() {
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run('ASSOCIATEBY([{"Name": "Alice"}, {"Name": "Bob"}], $current.Name)');
+        Assert.areEqual(2, result.size());
+
+        Map<Object, Object> aliceMap = (Map<Object, Object>) result.get('Alice');
+        Assert.areEqual(1, aliceMap.size());
+        Assert.areEqual('Alice', aliceMap.get('Name'));
+
+        Map<Object, Object> bobMap = (Map<Object, Object>) result.get('Bob');
+        Assert.areEqual(1, bobMap.size());
+        Assert.areEqual('Bob', bobMap.get('Name'));
+    }
 }
