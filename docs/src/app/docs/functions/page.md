@@ -865,6 +865,80 @@ Accepts 2 arguments: the list to evaluate and the expression to evaluate.
 expression.Evaluator.run('FIRSTWHERE([1, 2, 3], $current > 2)'); // 3
 ```
 
+- `GROUPBY`
+
+Groups a list of objects by the given expression.
+
+Accepts 2 arguments: the list to group and the expression to evaluate.
+
+Provides 1 special variable in the inner expression: `$current` (the current item being iterated over).
+
+```
+GROUPBY(
+    [
+        {"FirstName": "Alice", "LastName": "Smith"},
+        {"FirstName": "Maggie", "LastName": "Smith"},
+        {"FirstName": "Bob", "LastName": "Pan"},
+        {"FirstName": "Peter", "LastName": "Pan"}
+    ],
+    $current.LastName
+)
+
+// Results in:
+// {
+//     "Smith": [
+//         {
+//             "FirstName": "Alice",
+//             "LastName": "Smith"
+//         },
+//         {
+//             "FirstName": "Maggie",
+//             "LastName": "Smith"
+//         }
+//     ],
+//     "Pan": [
+//         {
+//             "FirstName": "Bob",
+//             "LastName": "Pan"
+//         },
+//         {
+//             "FirstName": "Peter",
+//             "LastName": "Pan"
+//         }
+//     ]
+// }
+```
+
+```
+Query(Account[Parent.Name])
+-> GROUPBY(IF($current.Parent != NULL, $current.Parent.Name, "NONE"))
+
+// Results in:
+// {
+//     "NONE": [
+//         {
+//             "Id": "001DX00001NLwT7YAL"
+//         },
+//         {
+//             "Id": "001DX00001NJA1HYAX"
+//         },
+//         {
+//             "Id": "001DX00001NJA1IYAX"
+//         }
+//     ],
+//     "Sample Account for Entitlements": [
+//         {
+//             "ParentId": "001DX00001NLwT7YAL",
+//             "Id": "001DX00001NJA2PYAX",
+//             "Parent": {
+//                 "Name": "Sample Account for Entitlements",
+//                 "Id": "001DX00001NLwT7YAL"
+//             }
+//         }
+//     ]
+// }
+```
+
 - `MAP`
 
 Maps to a list using the first argument as the context and the second argument as the expression to evaluate.

@@ -1575,4 +1575,43 @@ private class CollectionFunctionsTest {
         Assert.areEqual(1, bobMap.size());
         Assert.areEqual('Bob', bobMap.get('Name'));
     }
+
+    @IsTest
+    private static void groupByExpectsAListAsTheFirstArgument() {
+        try {
+            Evaluator.run('GROUPBY(1, "Name")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+            Assert.isTrue(e.getMessage().containsIgnoreCase('must evaluate to a list'));
+        }
+    }
+    
+    @IsTest
+    private static void groupByGroupsElementsByTheResultOfAnExpression() {
+        String formula = '' +
+            'GROUPBY(\n' +
+            '    [\n' +
+            '        {"FirstName": "Alice", "LastName": "Smith"},\n' +
+            '        {"FirstName": "Maggie", "LastName": "Smith"},\n' +
+            '        {"FirstName": "Bob", "LastName": "Pan"},\n' +
+            '        {"FirstName": "Peter", "LastName": "Pan"}\n' +
+            '    ],\n' +
+            '    $current.LastName\n' +
+            ')';
+
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run(formula);
+
+        Assert.areEqual(2, result.size());
+
+        List<Object> smiths = (List<Object>) result.get('Smith');
+        Assert.areEqual(2, smiths.size());
+        Assert.areEqual('Alice', ((Map<Object, Object>) smiths[0]).get('FirstName'));
+        Assert.areEqual('Maggie', ((Map<Object, Object>) smiths[1]).get('FirstName'));
+
+        List<Object> pans = (List<Object>) result.get('Pan');
+        Assert.areEqual(2, pans.size());
+        Assert.areEqual('Bob', ((Map<Object, Object>) pans[0]).get('FirstName'));
+        Assert.areEqual('Peter', ((Map<Object, Object>) pans[1]).get('FirstName'));
+    }
 }

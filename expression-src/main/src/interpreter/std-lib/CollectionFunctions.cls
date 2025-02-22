@@ -38,7 +38,8 @@ public with sharing class CollectionFunctions {
         'RANGE' => new RangeFn(),
         'FLATTEN' => new FlattenFn(),
         'AGGREGATEGROUPS' => new AggregateGroupsFn(),
-        'ASSOCIATEBY' => new AssociateByFn()
+        'ASSOCIATEBY' => new AssociateByFn(),
+        'GROUPBY' => new GroupByFn()
     };
 
     public class CollectionFunctionsProvider implements FunctionProvider {
@@ -1680,6 +1681,52 @@ public with sharing class CollectionFunctions {
                 Interpreter interpreter = new Interpreter(env);
                 Object key = interpreter.interpret(expr);
                 result.put(key, currentVal);
+            }
+
+            return result;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
+        }
+    }
+
+    /**
+     * @description Groups the elements of a list by the result of the given expression.
+     * Accepts 2 arguments: the list to evaluate and the expression to evaluate.
+     * Provides the following special variables in the inner expression:
+     * - `$current` (the current item being iterated over).
+     * @function GROUPBY
+     * @example
+     * GROUPBY([
+     *   { "FirstName": "John", "LastName": "Doe" },
+     *   { "FirstName": "Jane", "LastName": "Doe" },
+     *   ], $current.LastName)
+     * // { "Doe": [{ "FirstName": "John", "LastName": "Doe" }, { "FirstName": "Jane", "LastName": "Doe" }] }
+     */
+    private class GroupByFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof List<Object>)) {
+                throw new FunctionExecutionException('Error executing "GROUPBY" function: the first argument must evaluate to a list.');
+            }
+
+            List<Object> listVal = (List<Object>) listObj;
+            Expr expr = arguments.get(1);
+            Map<Object, List<Object>> result = new Map<Object, List<Object>>();
+            for (Object currentVal : listVal) {
+                Environment env = getEnvironmentFromObject(currentVal);
+                env.define('$current', currentVal);
+                Interpreter interpreter = new Interpreter(env);
+                Object key = interpreter.interpret(expr);
+                if (!result.containsKey(key)) {
+                    result.put(key, new List<Object>());
+                }
+                result.get(key).add(currentVal);
             }
 
             return result;
