@@ -1581,6 +1581,19 @@ public with sharing class CollectionFunctions {
         }
     }
 
+    /**
+     * @description Applies the given aggregator to each group in the given grouping, returning
+     * the results together as a map with the respective group keys.
+     * Accepts 2 arguments: the grouping to aggregate and the expression to evaluate.
+     * Provides the following special variables in the inner expression:
+     * - `$current` (the current item being iterated over).
+     * - `$key` (the current group key).
+     * - `$isFirst` (true if the current item is the first in the group).
+     * - `$acc` (the current accumulator value).
+     * @function AGGREGATEGROUPS
+     * @example
+     * AGGREGATEGROUPS({ "a": [1, 2], "b": [3, 4] }, IF($isFirst, $current, SUM([$acc, $current])) // { "a": 3, "b": 7 }
+     */
     private class AggregateGroupsFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object mapObj = evaluate(arguments.get(0));
