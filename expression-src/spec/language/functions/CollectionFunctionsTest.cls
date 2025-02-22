@@ -1506,4 +1506,112 @@ private class CollectionFunctionsTest {
         Assert.isTrue(result.contains(3));
         Assert.isTrue(result.contains(4));
     }
+
+    @IsTest
+    private static void aggregateGroupsExpectsAMapAsTheFirstArgument() {
+        try {
+            Evaluator.run('AGGREGATEGROUPS(1, "Name")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+            Assert.isTrue(e.getMessage().containsIgnoreCase('must evaluate to a map'));
+        }
+    }
+
+    @IsTest
+    private static void aggregateGroupsExpectsAMapWithListsAsValues() {
+        try {
+            Evaluator.run('AGGREGATEGROUPS({"a": 1}, "Name")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+            Assert.isTrue(e.getMessage().containsIgnoreCase('must be lists'));
+        }
+    }
+
+    @IsTest
+    private static void aggregateGroupsReturnsAnEmptyMapWhenTheSeedMapIsEmpty() {
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run('AGGREGATEGROUPS({}, "Name")');
+        Assert.areEqual(0, result.size());
+    }
+
+    @IsTest
+    private static void aggregateGroupsAppliesAnAggregatorToEachGrouping() {
+        String formula = 'AGGREGATEGROUPS(\n' +
+            '    {\n' +
+            '        "Curry": ["spicy", "vegan"],\n' +
+            '        "Pizza": ["cheesy"]\n' +
+            '    },\n' +
+            '    IF($isFirst, "${$key} is ${$current}", "${$acc} and ${$current}")\n' +
+            ')';
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run(formula);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual('Curry is spicy and vegan', result.get('Curry'));
+        Assert.areEqual('Pizza is cheesy', result.get('Pizza'));
+    }
+
+    @IsTest
+    private static void associateByExpectsAListAsTheFirstArgument() {
+        try {
+            Evaluator.run('ASSOCIATEBY(1, "Name")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+            Assert.isTrue(e.getMessage().containsIgnoreCase('must evaluate to a list'));
+        }
+    }
+
+    @IsTest
+    private static void associateByAssociatesElementsOfAListByAKey() {
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run('ASSOCIATEBY([{"Name": "Alice"}, {"Name": "Bob"}], $current.Name)');
+        Assert.areEqual(2, result.size());
+
+        Map<Object, Object> aliceMap = (Map<Object, Object>) result.get('Alice');
+        Assert.areEqual(1, aliceMap.size());
+        Assert.areEqual('Alice', aliceMap.get('Name'));
+
+        Map<Object, Object> bobMap = (Map<Object, Object>) result.get('Bob');
+        Assert.areEqual(1, bobMap.size());
+        Assert.areEqual('Bob', bobMap.get('Name'));
+    }
+
+    @IsTest
+    private static void groupByExpectsAListAsTheFirstArgument() {
+        try {
+            Evaluator.run('GROUPBY(1, "Name")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+            Assert.isTrue(e.getMessage().containsIgnoreCase('must evaluate to a list'));
+        }
+    }
+    
+    @IsTest
+    private static void groupByGroupsElementsByTheResultOfAnExpression() {
+        String formula = '' +
+            'GROUPBY(\n' +
+            '    [\n' +
+            '        {"FirstName": "Alice", "LastName": "Smith"},\n' +
+            '        {"FirstName": "Maggie", "LastName": "Smith"},\n' +
+            '        {"FirstName": "Bob", "LastName": "Pan"},\n' +
+            '        {"FirstName": "Peter", "LastName": "Pan"}\n' +
+            '    ],\n' +
+            '    $current.LastName\n' +
+            ')';
+
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run(formula);
+
+        Assert.areEqual(2, result.size());
+
+        List<Object> smiths = (List<Object>) result.get('Smith');
+        Assert.areEqual(2, smiths.size());
+        Assert.areEqual('Alice', ((Map<Object, Object>) smiths[0]).get('FirstName'));
+        Assert.areEqual('Maggie', ((Map<Object, Object>) smiths[1]).get('FirstName'));
+
+        List<Object> pans = (List<Object>) result.get('Pan');
+        Assert.areEqual(2, pans.size());
+        Assert.areEqual('Bob', ((Map<Object, Object>) pans[0]).get('FirstName'));
+        Assert.areEqual('Peter', ((Map<Object, Object>) pans[1]).get('FirstName'));
+    }
 }
