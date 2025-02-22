@@ -1506,4 +1506,15 @@ private class CollectionFunctionsTest {
         Assert.isTrue(result.contains(3));
         Assert.isTrue(result.contains(4));
     }
+
+    @IsTest
+    private static void aggregateGroupsExpectsAMapAsTheFirstArgument() {
+        try {
+            Evaluator.run('AGGREGATEGROUPS(1, "Name")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+            Assert.isTrue(e.getMessage().containsIgnoreCase('must evaluate to a map'));
+        }
+    }
 }

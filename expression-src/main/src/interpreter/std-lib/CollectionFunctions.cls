@@ -36,7 +36,8 @@ public with sharing class CollectionFunctions {
         'TAKE' => new TakeFn(),
         'TAKEWHILE' => new TakeWhileFn(),
         'RANGE' => new RangeFn(),
-        'FLATTEN' => new FlattenFn()
+        'FLATTEN' => new FlattenFn(),
+        'AGGREGATEGROUPS' => new AggregateGroupsFn()
     };
 
     public class CollectionFunctionsProvider implements FunctionProvider {
@@ -1577,6 +1578,22 @@ public with sharing class CollectionFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(1);
+        }
+    }
+
+    private class AggregateGroupsFn extends ExpressionFunction {
+        public override Object call(List<Expr> arguments) {
+            Object listObj = evaluate(arguments.get(0));
+            if (!(listObj instanceof Iterable<Object>)) {
+                throw new FunctionExecutionException(
+                    'Error executing "AGGREGATEGROUPS" function: the first argument must evaluate to a Map.'
+                );
+            }
+            return null;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
         }
     }
 }
