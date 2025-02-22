@@ -1583,17 +1583,60 @@ public with sharing class CollectionFunctions {
 
     private class AggregateGroupsFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
-            Object listObj = evaluate(arguments.get(0));
-            if (!(listObj instanceof Iterable<Object>)) {
+            Object mapObj = evaluate(arguments.get(0));
+            if (!(mapObj instanceof Map<Object, Object>)) {
                 throw new FunctionExecutionException(
                     'Error executing "AGGREGATEGROUPS" function: the first argument must evaluate to a Map.'
                 );
             }
-            return null;
+
+            Map<Object, Object> mapVal = (Map<Object, Object>) mapObj;
+
+            // All values must be lists
+            for (Object value : mapVal.values()) {
+                if (!(value instanceof List<Object>)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "AGGREGATEGROUPS" function: all values in the map must be lists.'
+                    );
+                }
+            }
+
+            if (mapVal.isEmpty()) {
+                return new Map<Object, Object>();
+            }
+
+            // For all groups, we want to evaluate the subexpression.
+            Expr secondArgument = arguments.get(1);
+            Map<Object, Object> result = new Map<Object, Object>();
+            for (Object key : mapVal.keySet()) {
+                List<Object> values = (List<Object>) mapVal.get(key);
+
+                Object acc = null;
+                for (Integer i = 0; i < values.size(); i++) {
+                    Object current = values.get(i);
+                    Environment env = getEnvironmentFromObject(current);
+
+                    env.define('$current', current);
+                    env.define('$key', key);
+                    env.define('$isFirst', i == 0);
+                    env.define('$acc', acc);
+
+                    Interpreter interpreter = new Interpreter(env);
+                    acc = interpreter.interpret(secondArgument);
+                }
+
+                result.put(key, acc);
+            }
+
+            return result;
         }
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+
+        public override Boolean needsQueryArgumentResolution() {
+            return true;
         }
     }
 }

@@ -1517,4 +1517,37 @@ private class CollectionFunctionsTest {
             Assert.isTrue(e.getMessage().containsIgnoreCase('must evaluate to a map'));
         }
     }
+
+    @IsTest
+    private static void aggregateGroupsExpectsAMapWithListsAsValues() {
+        try {
+            Evaluator.run('AGGREGATEGROUPS({"a": 1}, "Name")');
+            Assert.fail('Expected exception');
+        } catch (Exception e) {
+            Assert.isInstanceOfType(e, Exceptions.RuntimeException.class);
+            Assert.isTrue(e.getMessage().containsIgnoreCase('must be lists'));
+        }
+    }
+
+    @IsTest
+    private static void aggregateGroupsReturnsAnEmptyMapWhenTheSeedMapIsEmpty() {
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run('AGGREGATEGROUPS({}, "Name")');
+        Assert.areEqual(0, result.size());
+    }
+
+    @IsTest
+    private static void aggregateGroupsAppliesAnAggregatorToEachGrouping() {
+        String formula = 'AGGREGATEGROUPS(\n' +
+            '    {\n' +
+            '        "Curry": ["spicy", "vegan"],\n' +
+            '        "Pizza": ["cheesy"]\n' +
+            '    },\n' +
+            '    IF($isFirst, "${$key} is ${$current}", "${$acc} and ${$current}")\n' +
+            ')';
+        Map<Object, Object> result = (Map<Object, Object>) Evaluator.run(formula);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual('Curry is spicy and vegan', result.get('Curry'));
+        Assert.areEqual('Pizza is cheesy', result.get('Pizza'));
+    }
 }
