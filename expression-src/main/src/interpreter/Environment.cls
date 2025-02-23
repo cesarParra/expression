@@ -3,6 +3,7 @@ public with sharing class Environment {
     private final Map<String, Object> variables = new Map<String, Object>();
 
     private static final Map<String, Object> GLOBAL_VARIABLES = new Map<String, Object>();
+    private static final Map<String, Expr.FunctionDeclaration> FUNCTIONS = new Map<String, Expr.FunctionDeclaration>();
 
     static {
         GLOBAL_VARIABLES.put('$label', new CustomLabelVariableResolver.CustomLabelResolverWrapper());
@@ -23,6 +24,23 @@ public with sharing class Environment {
         }
 
         GLOBAL_VARIABLES.put(name.toLowerCase(), value);
+    }
+    
+    public static void addFunction(Expr.FunctionDeclaration function) {
+        // Check that the name has not already been declared
+        if (FUNCTIONS.containsKey(function.functionName.toUpperCase())) {
+            throw new EnvironmentException('Function with name ' + function.functionName + ' already exists');
+        }
+
+        FUNCTIONS.put(function.functionName.toUpperCase(), function);
+    }
+
+    public static Boolean hasFunction(String functionName) {
+        return FUNCTIONS.containsKey(functionName.toUpperCase());
+    }
+
+    public static Expr.FunctionDeclaration getFunction(String functionName) {
+        return FUNCTIONS.get(functionName.toUpperCase());
     }
 
     /**

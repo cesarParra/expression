@@ -56,6 +56,12 @@ public abstract class Expr {
             this.body = body;
         }
 
+        public String functionName {
+            get {
+                return name.lexeme;
+            }
+        }
+
         public override Object accept(Visitor v) {
             return v.visit(this);
         }

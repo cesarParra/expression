@@ -1,7 +1,7 @@
 public with sharing abstract class EvaluatorResolver {
     private final Map<String, Object> additionalResultData = new Map<String, Object>();
     private final EvaluatorEventNotifier eventNotifier;
-    
+
     private EvaluatorResolver() {
         this.eventNotifier = new EvaluatorEventNotifier(additionalResultData);
     }
@@ -45,6 +45,12 @@ public with sharing abstract class EvaluatorResolver {
         // We assume that the previous results are declarations.
         Object result = null;
         for (Expr pipedExpression : pipedExpressions) {
+            if (isFunctionDeclaration(pipedExpression)) {
+                // If we are dealing with a function declaration we do not need to interpret it.
+                Environment.addFunction((Expr.FunctionDeclaration) pipedExpression);
+                continue;
+            }
+
             Environment anEnvironment = this.prepareEnvironment(pipedExpression);
             result = this.interpret(anEnvironment, pipedExpression);
         }
@@ -61,6 +67,10 @@ public with sharing abstract class EvaluatorResolver {
         for (String customVariableName : config.customContext.keySet()) {
             Environment.addGlobalContextVariable(customVariableName, config.customContext.get(customVariableName));
         }
+    }
+
+    private static Boolean isFunctionDeclaration(Expr expression) {
+        return expression instanceof Expr.FunctionDeclaration;
     }
 
     private List<Token> scan(String expression) {

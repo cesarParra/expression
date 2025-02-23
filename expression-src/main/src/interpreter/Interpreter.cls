@@ -357,6 +357,14 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public virtual Object visit(Expr.FunctionCall function) {
+        // Check if the function has been declared in the environment
+        if (Environment.hasFunction(function.functionName)) {
+            Expr.FunctionDeclaration functionDeclaration = Environment.getFunction(function.functionName);
+            // TODO: Function expressions have their own environment (the arguments they receive are defined in their own scope)
+            // TODO: So let's take that into account.
+            return evaluate(functionDeclaration.body);
+        }
+
         // Check if the function is in the list of supported functions
         if (ExpressionFunction.functionExistsInStandardLibrary(function.functionName)) {
             ExpressionFunction fn = ExpressionFunction.getByName(function.functionName);
@@ -500,10 +508,14 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.FunctionDeclaration functionDeclaration) {
-        // TODO
+        // Declarations should not be called
+        // by the EvaluationResolver.
+        // Reaching this point means a declaration exists within another expression and not at the top level,
+        // which is not valid.
         throw new Exceptions.RuntimeException(
             functionDeclaration.name,
-            'Error executing function declaration: function declarations are not supported at this time.'
+            'Error executing function declaration: function declarations should not be called, they can only be declared' +
+                ' at the top level of the expression.'
         );
     }
 }
