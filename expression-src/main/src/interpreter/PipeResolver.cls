@@ -177,9 +177,11 @@ public with sharing class PipeResolver implements Visitor {
     }
 
     public Object visit(Expr.FunctionDeclaration functionDeclaration) {
-        throw new Exceptions.RuntimeException(
+        Expr resolvedBody = resolve(functionDeclaration.body);
+        return new Expr.FunctionDeclaration(
             functionDeclaration.name,
-            'Function declarations are not supported at this time'
+            functionDeclaration.parameters,
+            resolvedBody
         );
     }
 }

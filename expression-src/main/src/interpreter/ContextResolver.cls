@@ -246,6 +246,11 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.FunctionDeclaration functionDeclaration) {
+        this.resolve(functionDeclaration.body);
+        return null;
+    }
+
     public Object visit(Expr.Query query) {
         // Nothing to resolve when inside of a Query expression.
         // A query expression essentially starts an isolated context.
@@ -341,9 +346,5 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     private class NotSupportedGetResolutionException extends Exception {
-    }
-
-    public Object visit(Expr.FunctionDeclaration functionDeclaration) {
-        throw new ResolverException('Function declarations are not supported at this time');
     }
 }

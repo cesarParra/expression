@@ -203,6 +203,14 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     }
 
     public Object visit(Expr.FunctionDeclaration functionDeclaration) {
-        throw new Exceptions.RuntimeException('Function declarations are not supported in the AST printer');
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'FunctionDeclaration',
+            'body' => new Map<String, Object>{
+                'name' => functionDeclaration.name.lexeme,
+                'parameters' => functionDeclaration.parameters,
+                'body' => functionDeclaration.body.accept(this)
+            }
+        };
+        return toPrint;
     }
 }

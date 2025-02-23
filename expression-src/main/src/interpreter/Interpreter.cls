@@ -500,6 +500,7 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.FunctionDeclaration functionDeclaration) {
+        // TODO
         throw new Exceptions.RuntimeException(
             functionDeclaration.name,
             'Error executing function declaration: function declarations are not supported at this time.'

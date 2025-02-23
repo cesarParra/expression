@@ -1,8 +1,7 @@
 public with sharing abstract class EvaluatorResolver {
     private final Map<String, Object> additionalResultData = new Map<String, Object>();
     private final EvaluatorEventNotifier eventNotifier;
-
-    // TODO: Can we get rid of this?
+    
     private EvaluatorResolver() {
         this.eventNotifier = new EvaluatorEventNotifier(additionalResultData);
     }
@@ -39,12 +38,14 @@ public with sharing abstract class EvaluatorResolver {
 
         List<Expr> pipedExpressions = this.desugarPipe(parsedExpressions);
 
+        // This deals with the global environment, which is shared across all evaluations, so it
+        // it safe to call outside of the loop.
+        addCustomContextVariablesToGlobalEnvironment(config);
         // We only care about the result of the last interpreted expression.
         // We assume that the previous results are declarations.
         Object result = null;
         for (Expr pipedExpression : pipedExpressions) {
             Environment anEnvironment = this.prepareEnvironment(pipedExpression);
-            addCustomContextVariablesToEnvironment(config); // TODO: See if everything works when this is taken out of here
             result = this.interpret(anEnvironment, pipedExpression);
         }
 
@@ -53,7 +54,7 @@ public with sharing abstract class EvaluatorResolver {
         return new EvaluationResult(result, additionalResultData);
     }
 
-    private static void addCustomContextVariablesToEnvironment(Configuration config) {
+    private static void addCustomContextVariablesToGlobalEnvironment(Configuration config) {
         if (config?.customContext == null) {
             return;
         }
