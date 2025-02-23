@@ -53,7 +53,7 @@ public with sharing class CollectionFunctions {
         if (currentVal instanceof SObject) {
             env = new Environment((SObject) currentVal);
         } else {
-            env = new Environment(null);
+            env = new Environment();
         }
         return env;
     }
@@ -472,10 +472,10 @@ public with sharing class CollectionFunctions {
             Object fieldToSortBy = null;
             if (arguments.size() > 1) {
                 Expr fieldToSortByExpr = arguments.get(1);
-                if (fieldToSortByExpr instanceof Expr.MergeField) {
+                if (fieldToSortByExpr instanceof Expr.MergeFieldOrScopeVariable) {
                     // If dealing with a merge field, we don't want to evaluate it since we are not interested
                     // in the value. Instead we want to use the name of the field as a string.
-                    fieldToSortBy = ((Expr.MergeField) fieldToSortByExpr).name.lexeme;
+                    fieldToSortBy = ((Expr.MergeFieldOrScopeVariable) fieldToSortByExpr).name.lexeme;
                 } else {
                     fieldToSortBy = evaluate(fieldToSortByExpr);
                 }

@@ -284,30 +284,23 @@ public virtual with sharing class Interpreter implements Visitor {
         );
     }
 
-    public virtual Object visit(Expr.MergeField mergeField) {
-        if (env.noRecordContext()) {
-            throw new Exceptions.RuntimeException(
-                mergeField.name,
-                'Error executing merge field ' + mergeField.name.lexeme + ': no record context was provided.'
-            );
-        }
-
-        if (!env.contains(mergeField.name.lexeme)) {
-            if (env.containsAsParent(mergeField.name.lexeme)) {
-                return env.getParentSObject(mergeField.name.lexeme);
+    public virtual Object visit(Expr.MergeFieldOrScopeVariable mergeFieldOrScopeVariable) {
+        if (!env.contains(mergeFieldOrScopeVariable.name.lexeme)) {
+            if (env.containsAsParent(mergeFieldOrScopeVariable.name.lexeme)) {
+                return env.getParentSObject(mergeFieldOrScopeVariable.name.lexeme);
             }
 
+            String messageSuffix = env.getSObjectTypeName() != null ? ' or the SObject type ' + env.getSObjectTypeName() + ' does not contain a field with that name.' : '';
             throw new Exceptions.RuntimeException(
-                mergeField.name,
-                'Error executing merge field: ' +
-                    mergeField.name.lexeme +
-                    ' The SObject type ' +
-                    env.getSObjectTypeName() +
-                    ' does not contain a field with that name.'
+                mergeFieldOrScopeVariable.name,
+                'Error evaluating merge field or variable: ' +
+                    mergeFieldOrScopeVariable.name.lexeme +
+                    ' A varitable with that name is not declared in the current context' +
+                    messageSuffix
             );
         }
 
-        return env.get(mergeField.name.lexeme);
+        return env.get(mergeFieldOrScopeVariable.name.lexeme);
     }
 
     public virtual Object visit(Expr.Unary unary) {
@@ -360,13 +353,29 @@ public virtual with sharing class Interpreter implements Visitor {
         // Check if the function has been declared in the environment
         if (Environment.hasFunction(function.functionName)) {
             Expr.FunctionDeclaration functionDeclaration = Environment.getFunction(function.functionName);
-            // TODO: Function expressions have their own environment (the arguments they receive are defined in their own scope)
-            // TODO: So let's take that into account.
-            return evaluate(functionDeclaration.body);
-        }
+            // Ensure that the length of the arguments matches the length of the parameters
+            if (functionDeclaration.parameters.size() != function.arguments.size()) {
+                throw new Exceptions.RuntimeException(
+                    function.functionToken,
+                    'Error executing ' + function.functionName + ' function: the function expects ' +
+                        functionDeclaration.parameters.size() + ' argument(s), but ' +
+                        function.arguments.size() + ' were provided.'
+                );
+            }
 
-        // Check if the function is in the list of supported functions
-        if (ExpressionFunction.functionExistsInStandardLibrary(function.functionName)) {
+            Environment functionScopeEnvironment = new Environment(env);
+
+            for (Integer i = 0; i < functionDeclaration.parameters.size(); i++) {
+                functionScopeEnvironment.define(
+                    functionDeclaration.parameters.get(i).lexeme,
+                    evaluate(function.arguments.get(i))
+                );
+            }
+
+            Interpreter functionInterpreter = new Interpreter(functionScopeEnvironment);
+            return functionInterpreter.evaluate(functionDeclaration.body);
+        } else if (ExpressionFunction.functionExistsInStandardLibrary(function.functionName)) {
+            // Check if the function is in the list of supported functions
             ExpressionFunction fn = ExpressionFunction.getByName(function.functionName);
             fn.setInterpreter(this);
             evaluateArity(fn, function);
@@ -509,7 +518,7 @@ public virtual with sharing class Interpreter implements Visitor {
 
     public Object visit(Expr.FunctionDeclaration functionDeclaration) {
         // Declarations should not be called
-        // by the EvaluationResolver.
+        // by the EvaluatorResolver.
         // Reaching this point means a declaration exists within another expression and not at the top level,
         // which is not valid.
         throw new Exceptions.RuntimeException(

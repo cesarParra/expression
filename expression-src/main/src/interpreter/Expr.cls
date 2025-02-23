@@ -136,10 +136,10 @@ public abstract class Expr {
         }
     }
 
-    public class MergeField extends Expr {
+    public class MergeFieldOrScopeVariable extends Expr {
         public final Token name;
 
-        public MergeField(Token name) {
+        public MergeFieldOrScopeVariable(Token name) {
             this.name = name;
         }
 

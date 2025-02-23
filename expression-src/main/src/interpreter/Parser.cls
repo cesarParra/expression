@@ -236,7 +236,7 @@ public with sharing class Parser {
             }
 
             // Otherwise we assume it's a field reference
-            return new Expr.MergeField(previous());
+            return new Expr.MergeFieldOrScopeVariable(previous());
         }
 
         if (match(TokenType.LEFT_PAREN)) {

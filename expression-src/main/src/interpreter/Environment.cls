@@ -1,6 +1,26 @@
 public with sharing class Environment {
+    private final Environment parentEnvironment;
     private final SObject context;
+
+    private SObject getContext() {
+        if (context != null) {
+            return context;
+        }
+
+        if (parentEnvironment != null) {
+            return parentEnvironment.getContext();
+        }
+
+        return null;
+    }
+
     private final Map<String, Object> variables = new Map<String, Object>();
+
+    private Map<String, Object> getVariables() {
+        Map<String, Object> allVariables = parentEnvironment?.getVariables() ?? new Map<String, Object>();
+        allVariables.putAll(variables);
+        return allVariables;
+    }
 
     private static final Map<String, Object> GLOBAL_VARIABLES = new Map<String, Object>();
     private static final Map<String, Expr.FunctionDeclaration> FUNCTIONS = new Map<String, Expr.FunctionDeclaration>();
@@ -25,7 +45,7 @@ public with sharing class Environment {
 
         GLOBAL_VARIABLES.put(name.toLowerCase(), value);
     }
-    
+
     public static void addFunction(Expr.FunctionDeclaration function) {
         // Check that the name has not already been declared
         if (FUNCTIONS.containsKey(function.functionName.toUpperCase())) {
@@ -54,12 +74,18 @@ public with sharing class Environment {
         GLOBAL_VARIABLES.put(prefixedName.toLowerCase(), value);
     }
 
+    public Environment() {}
+
+    public Environment(Environment parentEnvironment) {
+        this.parentEnvironment = parentEnvironment;
+    }
+
     public Environment(SObject context) {
         this.context = context;
     }
 
     public Boolean noRecordContext() {
-        return context == null;
+        return getContext() == null;
     }
 
     public void define(String name, Object value) {
@@ -73,7 +99,7 @@ public with sharing class Environment {
             return true;
         }
 
-        Set<String> fields = context?.getSObjectType().getDescribe().fields.getMap().keySet();
+        Set<String> fields = getContext()?.getSObjectType().getDescribe().fields.getMap().keySet();
         if (fields == null) {
             return false;
         }
@@ -82,7 +108,7 @@ public with sharing class Environment {
         }
 
         // The name could also be a child relationship name, so add those as well
-        for (ChildRelationship relationship : context.getSObjectType().getDescribe().getChildRelationships()) {
+        for (ChildRelationship relationship : getContext().getSObjectType().getDescribe().getChildRelationships()) {
             String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
             if (childRelationshipName != null && childRelationshipName == lowerCaseField) {
                 return true;
@@ -94,7 +120,7 @@ public with sharing class Environment {
 
     public Boolean containsAsParent(String fieldName) {
         try {
-            context.getSObject(fieldName);
+            getContext().getSObject(fieldName);
             return true;
         } catch (SObjectException ex) {
             return false;
@@ -105,8 +131,8 @@ public with sharing class Environment {
         String lowerCaseField = field.toLowerCase();
 
         // Try to get it from the variables first
-        if (variables.containsKey(lowerCaseField)) {
-            return variables.get(lowerCaseField);
+        if (getVariables().containsKey(lowerCaseField)) {
+            return getVariables().get(lowerCaseField);
         }
 
         // Look in global variables
@@ -114,19 +140,19 @@ public with sharing class Environment {
             return GLOBAL_VARIABLES.get(lowerCaseField);
         }
 
-        if (context == null) {
+        if (getContext() == null) {
             throw new EnvironmentException('No such field: ' + field);
         }
 
-        if (context.getSObjectType().getDescribe().fields.getMap().keySet().contains(lowerCaseField)) {
-            return context.get(field);
+        if (getContext().getSObjectType().getDescribe().fields.getMap().keySet().contains(lowerCaseField)) {
+            return getContext().get(field);
         }
 
         // The name could also be a child relationship name, so look in there next
-        for (ChildRelationship relationship : context.getSObjectType().getDescribe().getChildRelationships()) {
+        for (ChildRelationship relationship : getContext().getSObjectType().getDescribe().getChildRelationships()) {
             String childRelationshipName = relationship.getRelationshipName()?.toLowerCase();
             if (childRelationshipName != null && childRelationshipName == lowerCaseField) {
-                return context.getSObjects(relationship.getRelationshipName()) ?? new List<SObject>();
+                return getContext().getSObjects(relationship.getRelationshipName()) ?? new List<SObject>();
             }
         }
 
@@ -134,11 +160,11 @@ public with sharing class Environment {
     }
 
     public String getSObjectTypeName() {
-        return context.getSObjectType().getDescribe().getName();
+        return getContext()?.getSObjectType().getDescribe().getName();
     }
 
     public SObject getParentSObject(String fieldName) {
-        return context.getSObject(fieldName);
+        return getContext().getSObject(fieldName);
     }
 
     public class EnvironmentException extends Exception {

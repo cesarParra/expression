@@ -84,7 +84,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         return toPrint;
     }
 
-    public Object visit(Expr.MergeField mergeField) {
+    public Object visit(Expr.MergeFieldOrScopeVariable mergeField) {
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'MergeField',
             'body' => new Map<String, Object>{

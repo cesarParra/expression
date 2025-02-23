@@ -184,7 +184,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         return super.visit(unary);
     }
 
-    public override Object visit(Expr.MergeField mergeField) {
+    public override Object visit(Expr.MergeFieldOrScopeVariable mergeField) {
         return mergeField.name.lexeme;
     }
 

@@ -133,8 +133,8 @@ public with sharing class ContextResolver implements Visitor {
     private String resolveExtractReferenceOutOfGetExpression(Expr.GetExpr getExpr) {
         // Get the relationship field to query out of the get/merge field contained.
         String relationshipToQuery = '';
-        if ((getExpr.objectExpr instanceof Expr.MergeField)) {
-            relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme + '.';
+        if ((getExpr.objectExpr instanceof Expr.MergeFieldOrScopeVariable)) {
+            relationshipToQuery += ((Expr.MergeFieldOrScopeVariable) getExpr.objectExpr).name.lexeme + '.';
         } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
             relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
         } else if (isReferencingContextField(getExpr)) {
@@ -179,7 +179,7 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
-    public Object visit(Expr.MergeField mergeField) {
+    public Object visit(Expr.MergeFieldOrScopeVariable mergeField) {
         String fieldName = mergeField.name.lexeme.toLowerCase();
         return addFieldToQuery(this.queryContext, fieldName);
     }

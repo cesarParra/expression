@@ -96,7 +96,7 @@ public with sharing class PipeResolver implements Visitor {
         return variable;
     }
 
-    public Object visit(Expr.MergeField mergeField) {
+    public Object visit(Expr.MergeFieldOrScopeVariable mergeField) {
         return mergeField;
     }
 

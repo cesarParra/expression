@@ -9,7 +9,7 @@ public interface Visitor {
     Object visit(Expr.FunctionCall function);
     Object visit(Expr.GetExpr getExpr);
     Object visit(Expr.Variable variable);
-    Object visit(Expr.MergeField mergeField);
+    Object visit(Expr.MergeFieldOrScopeVariable mergeField);
     Object visit(Expr.ListLiteral listLiteral);
     Object visit(Expr.MapLiteral mapLiteral);
     Object visit(Expr.Spread spread);

@@ -138,7 +138,7 @@ public with sharing abstract class EvaluatorResolver {
             // The environment is created without a record, as we are dealing with a list of records,
             // so it would not be possible to interpret references to record fields. Instead, the @context
             // variable should be used to access the list of records.
-            Environment env = new Environment(null);
+            Environment env = new Environment();
 
             Environment.addGlobalContextVariable('ids', recordIds);
             Environment.addGlobalContextVariable('context', records);
@@ -177,7 +177,7 @@ public with sharing abstract class EvaluatorResolver {
             }
             Environment.addGlobalContextVariable('ids', ids);
             Environment.addGlobalContextVariable('context', records);
-            return new Environment(null);
+            return new Environment();
         }
     }
 }

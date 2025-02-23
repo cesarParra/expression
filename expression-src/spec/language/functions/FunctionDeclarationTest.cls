@@ -11,8 +11,17 @@ private class FunctionDeclarationTest {
         System.assertEquals(8, result);
     }
 
-    // Functions can be declared
-    // Functions can receive arguments
+    @IsTest
+    static void functionsCanReceiveArguments() {
+        String expression = 'fun foo(a, b) => a + b;\n' +
+            '\n' +
+            'foo(5, 3)';
+
+        Object result = Evaluator.run(expression);
+
+        System.assertEquals(8, result);
+    }
+    
     // Functions can call other functions
     // Functions can be recursive
     // Inner expressions cannot have function declarations

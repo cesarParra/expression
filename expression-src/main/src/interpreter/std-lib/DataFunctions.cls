@@ -28,7 +28,7 @@ public with sharing class DataFunctions {
     private class TransformFn extends ExpressionFunction {
         public override Object call(List<Expr> arguments) {
             Object sourceObj = evaluate(arguments.get(0));
-            Environment env = new Environment(null);
+            Environment env = new Environment();
             env.define('$source', sourceObj);
             Interpreter interpreter = new Interpreter(env);
             return interpreter.interpret(arguments.get(1));

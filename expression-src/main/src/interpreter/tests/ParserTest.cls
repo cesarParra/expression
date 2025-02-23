@@ -51,7 +51,7 @@ private class ParserTest {
         Assert.isInstanceOfType(result, Expr.StringLiteral.class);
         Assert.areEqual(2, ((Expr.StringLiteral) result).stringsAndInterpolations.size());
         Assert.areEqual('a', ((Expr.StringLiteral) result).stringsAndInterpolations[0]);
-        Assert.isInstanceOfType(((Expr.StringLiteral) result).stringsAndInterpolations[1], Expr.MergeField.class);
+        Assert.isInstanceOfType(((Expr.StringLiteral) result).stringsAndInterpolations[1], Expr.MergeFieldOrScopeVariable.class);
     }
 
     @IsTest
