@@ -6,7 +6,8 @@ private class AstPrinterTest {
         Object ast = result.additionalData.get('ast');
 
         Assert.isNotNull(ast, 'AST should not be null');
-        Map<String, Object> astObject = (Map<String, Object>)ast;
+        List<Object> astList = (List<Object>) ast;
+        Map<String, Object> astObject = (Map<String, Object>) astList[0];
 
         Assert.isTrue(astObject.containsKey('type'));
         Assert.areEqual(expectedType, astObject.get('type'));
@@ -52,7 +53,8 @@ private class AstPrinterTest {
         Object ast = result.additionalData.get('ast');
 
         Assert.isNotNull(ast, 'AST should not be null');
-        Map<String, Object> astObject = (Map<String, Object>)ast;
+        List<Object> astList = (List<Object>) ast;
+        Map<String, Object> astObject = (Map<String, Object>) astList[0];
 
         Assert.isTrue(astObject.containsKey('type'));
         Assert.areEqual('MergeField', astObject.get('type'));

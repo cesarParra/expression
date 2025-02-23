@@ -1,7 +1,11 @@
 public with sharing class AstPrinter implements Visitor, EvaluatorEventListener {
     public Map<String, Object> handle(EvaluatorEvent event) {
         OnAfterParseEvent parseEvent = (OnAfterParseEvent) event;
-        Object toPrint = parseEvent.expression.accept(this);
+        List<Object> toPrint = new List<Object>();
+        for (Expr expression : parseEvent.expressions) {
+            toPrint.add(expression.accept(this));
+        }
+
         System.debug(JSON.serializePretty(toPrint));
         return new Map<String, Object>{
             'ast' => toPrint

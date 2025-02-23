@@ -2,6 +2,7 @@ public with sharing abstract class EvaluatorResolver {
     private final Map<String, Object> additionalResultData = new Map<String, Object>();
     private final EvaluatorEventNotifier eventNotifier;
 
+    // TODO: Can we get rid of this?
     private EvaluatorResolver() {
         this.eventNotifier = new EvaluatorEventNotifier(additionalResultData);
     }
@@ -32,14 +33,20 @@ public with sharing abstract class EvaluatorResolver {
         eventNotifier.notify(new OnEvaluationStartEvent(config));
 
         List<Token> tokens = this.scan(input);
-        Expr parsedExpression = this.parse(tokens);
+        List<Expr> parsedExpressions = this.parse(tokens);
 
-        eventNotifier.notify(new OnAfterParseEvent(parsedExpression));
+        eventNotifier.notify(new OnAfterParseEvent(parsedExpressions));
 
-        Expr pipedExpression = this.desugarPipe(parsedExpression);
-        Environment anEnvironment = this.prepareEnvironment(pipedExpression);
-        addCustomContextVariablesToEnvironment(config);
-        Object result = this.interpret(anEnvironment, pipedExpression);
+        List<Expr> pipedExpressions = this.desugarPipe(parsedExpressions);
+
+        // We only care about the result of the last interpreted expression.
+        // We assume that the previous results are declarations.
+        Object result = null;
+        for (Expr pipedExpression : pipedExpressions) {
+            Environment anEnvironment = this.prepareEnvironment(pipedExpression);
+            addCustomContextVariablesToEnvironment(config); // TODO: See if everything works when this is taken out of here
+            result = this.interpret(anEnvironment, pipedExpression);
+        }
 
         eventNotifier.notify(new OnEvaluationEndEvent());
 
@@ -60,16 +67,21 @@ public with sharing abstract class EvaluatorResolver {
         return scanner.scanTokens();
     }
 
-    private Expr parse(List<Token> tokens) {
+    private List<Expr> parse(List<Token> tokens) {
         Parser parser = new Parser(tokens);
-        // TODO: Handle parsing multiple expressions
-        return parser.parse()[0];
+        return parser.parse();
     }
 
-    private Expr desugarPipe(Expr rawExpression) {
+    private List<Expr> desugarPipe(List<Expr> rawExpressions) {
         PipeResolver pipeInterpreter = new PipeResolver();
-        Expr pipedExpression = pipeInterpreter.resolve(rawExpression);
-        return pipedExpression;
+
+        List<Expr> pipedExpressions = new List<Expr>();
+        for (Expr rawExpression : rawExpressions) {
+            Expr pipedExpression = pipeInterpreter.resolve(rawExpression);
+            pipedExpressions.add(pipedExpression);
+        }
+
+        return pipedExpressions;
     }
 
     protected abstract Environment prepareEnvironment(Expr pipedExpression);
