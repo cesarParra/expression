@@ -57,7 +57,7 @@ private class ParserTest {
     @IsTest
     static void parsesLocalVariables() {
         List<Token> tokens = new List<Token>{
-            new Token(TokenType.DOLLAR, '$local', null, null),
+            new Token(TokenType.CUSTOM_VARIABLE, '$local', null, null),
             new Token(TokenType.EOF, '', null, null)
         };
 
@@ -75,7 +75,7 @@ private class ParserTest {
     @IsTest
     static void parsesContextualVariables() {
         List<Token> tokens = new List<Token>{
-            new Token(TokenType.AT, '@Id', null, null),
+            new Token(TokenType.GLOBAL_CONTEXT_VARIABLE, '@Id', null, null),
             new Token(TokenType.EOF, '', null, null)
         };
 

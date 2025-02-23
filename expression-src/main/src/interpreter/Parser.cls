@@ -218,11 +218,11 @@ public with sharing class Parser {
             return new Expr.Literal(previous().literal);
         }
 
-        if (match(TokenType.DOLLAR)) {
+        if (match(TokenType.CUSTOM_VARIABLE)) {
             return new Expr.Variable(previous(), Expr.VariableType.LOCAL);
         }
 
-        if (match(TokenType.AT)) {
+        if (match(TokenType.GLOBAL_CONTEXT_VARIABLE)) {
             return new Expr.Variable(previous(), Expr.VariableType.GLOBAL_CONTEXT);
         }
 

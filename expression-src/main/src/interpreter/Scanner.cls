@@ -298,7 +298,7 @@ public with sharing class Scanner {
             advance();
         }
 
-        TokenType type = TokenType.DOLLAR;
+        TokenType type = TokenType.CUSTOM_VARIABLE;
         addToken(type);
     }
 
@@ -307,7 +307,7 @@ public with sharing class Scanner {
             advance();
         }
 
-        TokenType type = TokenType.AT;
+        TokenType type = TokenType.GLOBAL_CONTEXT_VARIABLE;
         addToken(type);
     }
 

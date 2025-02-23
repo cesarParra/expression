@@ -25,9 +25,9 @@ public enum TokenType {
     STRING_INTERPOLATION_START, STRING_INTERPOLATION_END,
     STRING_LITERAL_END, CHARACTER, NUMBER_LITERAL,
     // $. Used for custom variables and context aware variables
-    DOLLAR,
+    CUSTOM_VARIABLE,
     // @. Used for global context variables
-    AT,
+    GLOBAL_CONTEXT_VARIABLE,
 
     // ----------------- Keywords -----------------
     TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD, QUERY_KEYWORD,
