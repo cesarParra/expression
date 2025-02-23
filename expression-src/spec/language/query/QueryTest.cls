@@ -27,7 +27,7 @@ private class QueryTest {
     }
 
     private static List<Account> given10Accounts() {
-        List<Account> accounts = (List<Account>) SObjectTestDataBuilder.of(Account.SObjectType)
+        List<Account> accounts = SObjectTestDataBuilder.of(Account.SObjectType)
             .registerNewForInsert(10);
         SObjectTestDataBuilder.commitRecords();
         return accounts;
@@ -172,7 +172,7 @@ private class QueryTest {
 
     @IsTest
     static void canOrderByMultipleFields() {
-        List<Account> accountsInDatabase = (List<Account>) givenAn(
+        List<Account> accountsInDatabase = givenAn(
             AccountTestRecord.build().named('Z Account').withBillingCity('Z City')
         ).andGivenAn(
             AccountTestRecord.build().named('A Account').withBillingCity('A City')
@@ -191,7 +191,7 @@ private class QueryTest {
 
     @IsTest
     static void canOrderByMultipleFields_withDirection() {
-        List<Account> accountsInDatabase = (List<Account>) givenAn(
+        List<Account> accountsInDatabase = givenAn(
             AccountTestRecord.build().named('Z Account').withBillingCity('Z City')
         ).andGivenAn(
             AccountTestRecord.build().named('A Account').withBillingCity('A City')
@@ -470,7 +470,7 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereConditionWithAnIsInClause() {
-        List<Account> accountsInDatabase = (List<Account>) givenAn(
+        List<Account> accountsInDatabase = givenAn(
             AccountTestRecord.build().named('Test 1')
         ).andGivenAn(
             AccountTestRecord.build().named('Test 2')
@@ -506,7 +506,7 @@ private class QueryTest {
 
     @IsTest
     static void canHaveAWhereConditionWithAnIsNotInClause() {
-        List<Account> accountsInDatabase = (List<Account>) givenAn(
+        List<Account> accountsInDatabase = givenAn(
             AccountTestRecord.build().named('Test 1')
         ).andGivenAn(
             AccountTestRecord.build().named('Test 2')
