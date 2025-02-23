@@ -1,6 +1,3 @@
-// TODO: Make sure that function declarations are at the top level and not inside of other expressions.
-// TODO: Do we really need the semicolon for the functions?
-
 public with sharing class Parser {
     private final List<Token> tokens;
     private Integer current = 0;
