@@ -20,6 +20,10 @@ public virtual with sharing class Interpreter implements Visitor {
         return expr.accept(this);
     }
 
+    public Environment getEnvironment() {
+        return env;
+    }
+
     public virtual Object visit(Expr.Logical logical) {
         Object left = evaluate(logical.left);
 
@@ -350,83 +354,7 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public virtual Object visit(Expr.FunctionCall function) {
-        // Check if the function has been declared in the environment
-        if (Environment.hasFunction(function.functionName)) {
-            Expr.FunctionDeclaration functionDeclaration = Environment.getFunction(function.functionName);
-            // Ensure that the length of the arguments matches the length of the parameters
-            if (functionDeclaration.parameters.size() != function.arguments.size()) {
-                throw new Exceptions.RuntimeException(
-                    function.functionToken,
-                    'Error executing ' + function.functionName + ' function: the function expects ' +
-                        functionDeclaration.parameters.size() + ' argument(s), but ' +
-                        function.arguments.size() + ' were provided.'
-                );
-            }
-
-            Environment functionScopeEnvironment = new Environment(env);
-
-            for (Integer i = 0; i < functionDeclaration.parameters.size(); i++) {
-                functionScopeEnvironment.define(
-                    functionDeclaration.parameters.get(i).lexeme,
-                    evaluate(function.arguments.get(i))
-                );
-            }
-
-            Interpreter functionInterpreter = new Interpreter(functionScopeEnvironment);
-            return functionInterpreter.evaluate(functionDeclaration.body);
-        } else if (ExpressionFunction.functionExistsInStandardLibrary(function.functionName)) {
-            // Check if the function is in the list of supported functions
-            ExpressionFunction fn = ExpressionFunction.getByName(function.functionName);
-            fn.setInterpreter(this);
-            evaluateArity(fn, function);
-
-            try {
-                return fn.call(function.arguments);
-            } catch (Exceptions.PositionAwareException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new Exceptions.RuntimeException(
-                    function.functionToken,
-                    e.getMessage()
-                );
-            }
-        } else {
-            // Otherwise try to get a custom function from the Expression Function custom metadata type.
-            IExpressionFunction fn = CustomFunctionRepository.getInstance().getByName(function.functionName);
-            if (fn != null) {
-                List<Object> arguments = new List<Object>();
-                for (Expr argument : function.arguments) {
-                    arguments.add(evaluate(argument));
-                }
-
-                try {
-                    return fn.execute(arguments);
-                } catch (Exceptions.PositionAwareException e) {
-                    throw e;
-                } catch (Exception e) {
-                    throw new Exceptions.RuntimeException(
-                        function.functionToken,
-                        e.getMessage()
-                    );
-                }
-            }
-        }
-
-        throw new Exceptions.RuntimeException(
-            function.functionToken,
-            'Error executing ' + function.functionName + ' function: the function is not supported.'
-        );
-    }
-
-    protected void evaluateArity(ExpressionFunction fn, Expr.FunctionCall function) {
-        if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
-            throw new Exceptions.RuntimeException(
-                function.functionToken,
-                'Error executing ' + function.functionName + ' function: the function expects ' +
-                    fn.getArity().toString() + ' argument(s), but ' +
-                    function.arguments.size() + ' were provided.'
-            );
-        }
+        return FunctionCaller.exec(this, function);
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {

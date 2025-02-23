@@ -207,10 +207,18 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
             'type' => 'FunctionDeclaration',
             'body' => new Map<String, Object>{
                 'name' => functionDeclaration.name.lexeme,
-                'parameters' => functionDeclaration.parameters,
+                'parameters' => tokensToString(functionDeclaration.parameters),
                 'body' => functionDeclaration.body.accept(this)
             }
         };
         return toPrint;
+    }
+
+    private static String tokensToString(List<Token> tokens) {
+        List<String> lexemes = new List<String>();
+        for (Token token : tokens) {
+            lexemes.add(token.lexeme);
+        }
+        return String.join(lexemes, ', ');
     }
 }

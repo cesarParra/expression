@@ -231,7 +231,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         if (supportedWhereFunctions.containsKey(functionName)) {
             ExpressionFunction expressionFunction = supportedWhereFunctions.get(functionName);
             expressionFunction.setInterpreter(this);
-            evaluateArity(expressionFunction, function);
+            ArityEvaluator.check(expressionFunction, function);
             try {
                 return expressionFunction.call(function.arguments);
             } catch (Exception e) {
