@@ -980,4 +980,116 @@ private class QueryTest {
         Assert.areEqual(1, result.size());
         Assert.areEqual('Account 3', result[0]);
     }
+
+    @IsTest
+    static void whereBinaryOperationsAllowsScopeVariables() {
+        givenAn(AccountTestRecord.build().named('Account 1').withAnnualRevenue(1000))
+            .andGivenAn(AccountTestRecord.build().named('Account 2').withAnnualRevenue(2000))
+            .andGivenAn(AccountTestRecord.build().named('Account 3').withAnnualRevenue(3000))
+            .inTheDatabase();
+
+        String expression = '' +
+            'fun fooQuery(n) => Query(Account(where: AnnualRevenue > n, orderBy: AnnualRevenue)[Name]);\n' +
+            '\n' +
+            'fooQuery(1000)';
+
+        List<Account> result = (List<Account>) Evaluator.run(expression);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual('Account 2', result[0].Name);
+        Assert.areEqual('Account 3', result[1].Name);
+    }
+
+    @IsTest
+    static void likeFunctionAllowsScopeVariables() {
+        givenAn(AccountTestRecord.build().named('Account 1').withAnnualRevenue(1000))
+            .andGivenAn(AccountTestRecord.build().named('Account 2').withAnnualRevenue(2000))
+            .andGivenAn(AccountTestRecord.build().named('Account 3').withAnnualRevenue(3000))
+            .inTheDatabase();
+
+        String expression = '' +
+            'fun fooQuery(n) => Query(Account(where: LIKE(Name, "${n}%"), orderBy: AnnualRevenue)[Name]);\n' +
+            '\n' +
+            'fooQuery("Account 2")';
+
+        List<Account> result = (List<Account>) Evaluator.run(expression);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual('Account 2', result[0].Name);
+    }
+
+    @IsTest
+    static void isInFunctionAllowsScopeVariables() {
+        givenAn(AccountTestRecord.build().named('Account 1').withAnnualRevenue(1000))
+            .andGivenAn(AccountTestRecord.build().named('Account 2').withAnnualRevenue(2000))
+            .andGivenAn(AccountTestRecord.build().named('Account 3').withAnnualRevenue(3000))
+            .inTheDatabase();
+
+        String expression = '' +
+            'fun fooQuery(n) => Query(Account(where: ISIN(Name, [n]), orderBy: AnnualRevenue)[Name]);\n' +
+            '\n' +
+            'fooQuery("Account 2")';
+
+        List<Account> result = (List<Account>) Evaluator.run(expression);
+
+        Assert.areEqual(1, result.size());
+        Assert.areEqual('Account 2', result[0].Name);
+    }
+
+    @IsTest
+    static void isNotInFunctionAllowsScopeVariables() {
+        givenAn(AccountTestRecord.build().named('Account 1').withAnnualRevenue(1000))
+            .andGivenAn(AccountTestRecord.build().named('Account 2').withAnnualRevenue(2000))
+            .andGivenAn(AccountTestRecord.build().named('Account 3').withAnnualRevenue(3000))
+            .inTheDatabase();
+
+        String expression = '' +
+            'fun fooQuery(n) => Query(Account(where: ISNOTIN(Name, [n]), orderBy: AnnualRevenue)[Name]);\n' +
+            '\n' +
+            'fooQuery("Account 2")';
+
+        List<Account> result = (List<Account>) Evaluator.run(expression);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual('Account 1', result[0].Name);
+        Assert.areEqual('Account 3', result[1].Name);
+    }
+
+    @IsTest
+    static void limitAllowsScopeVariables() {
+        givenAn(AccountTestRecord.build().named('Account 1').withAnnualRevenue(1000))
+            .andGivenAn(AccountTestRecord.build().named('Account 2').withAnnualRevenue(2000))
+            .andGivenAn(AccountTestRecord.build().named('Account 3').withAnnualRevenue(3000))
+            .inTheDatabase();
+
+        String expression = '' +
+            'fun fooQuery(n) => Query(Account(limit: n, orderBy: AnnualRevenue)[Name]);\n' +
+            '\n' +
+            'fooQuery(2)';
+
+        List<Account> result = (List<Account>) Evaluator.run(expression);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual('Account 1', result[0].Name);
+        Assert.areEqual('Account 2', result[1].Name);
+    }
+
+    @IsTest
+    static void offsetAllowsScopeVariables() {
+        givenAn(AccountTestRecord.build().named('Account 1').withAnnualRevenue(1000))
+            .andGivenAn(AccountTestRecord.build().named('Account 2').withAnnualRevenue(2000))
+            .andGivenAn(AccountTestRecord.build().named('Account 3').withAnnualRevenue(3000))
+            .inTheDatabase();
+
+        String expression = '' +
+            'fun fooQuery(n) => Query(Account(offset: n, orderBy: AnnualRevenue)[Name]);\n' +
+            '\n' +
+            'fooQuery(1)';
+
+        List<Account> result = (List<Account>) Evaluator.run(expression);
+
+        Assert.areEqual(2, result.size());
+        Assert.areEqual('Account 2', result[0].Name);
+        Assert.areEqual('Account 3', result[1].Name);
+    }
 }

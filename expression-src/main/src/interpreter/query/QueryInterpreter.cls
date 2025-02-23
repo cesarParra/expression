@@ -1,5 +1,6 @@
 public with sharing class QueryInterpreter extends Interpreter {
     private Boolean isWhereContext = false;
+    private static Boolean allowScopeVariableInterpretation = false;
     private SObjectType objectType;
 
     public QueryInterpreter(Environment environment) {
@@ -58,7 +59,9 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
 
         if (query.limitExpr != null) {
+            allowScopeVariableInterpretation = true;
             Object limitResult = evaluate(query.limitExpr);
+            allowScopeVariableInterpretation = false;
             if (!(limitResult instanceof Decimal)) {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected an integer or an expression that evaluates to an number for the limit clause.');
@@ -79,7 +82,9 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
 
         if (query.offsetExpr != null) {
+            allowScopeVariableInterpretation = true;
             Object offsetResult = evaluate(query.offsetExpr);
+            allowScopeVariableInterpretation = false;
             if (!(offsetResult instanceof Decimal)) {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected an integer or an expression that evaluates to an number for the offset clause.');
@@ -147,7 +152,9 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
 
         Object left = evaluate(binary.left);
+        allowScopeVariableInterpretation = true;
         Object right = evaluate(binary.right);
+        allowScopeVariableInterpretation = false;
 
         switch on binary.operator.type {
             when EQUAL, EQUAL_EQUAL {
@@ -185,6 +192,9 @@ public with sharing class QueryInterpreter extends Interpreter {
     }
 
     public override Object visit(Expr.MergeFieldOrScopeVariable mergeField) {
+        if (allowScopeVariableInterpretation) {
+            return super.visit(mergeField);
+        }
         return mergeField.name.lexeme;
     }
 
@@ -249,7 +259,9 @@ public with sharing class QueryInterpreter extends Interpreter {
     private class LikeFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
+            allowScopeVariableInterpretation = true;
             Object pattern = evaluate(arguments.get(1));
+            allowScopeVariableInterpretation = false;
             if (!(text instanceof String)) {
                 throw new FunctionExecutionException(
                     'Error executing "LIKE" function: the first argument must evaluate to a string value.'
@@ -273,7 +285,9 @@ public with sharing class QueryInterpreter extends Interpreter {
         public override Object call(List<Expr> arguments) {
             // Expect 2 arguments, the first is the field name, the second is a list of values
             Object field = evaluate(arguments.get(0));
+            allowScopeVariableInterpretation = true;
             Object values = evaluate(arguments.get(1));
+            allowScopeVariableInterpretation = false;
 
             if (!(field instanceof String)) {
                 throw new FunctionExecutionException(
@@ -306,7 +320,9 @@ public with sharing class QueryInterpreter extends Interpreter {
         public override Object call(List<Expr> arguments) {
             // Expect 2 arguments, the first is the field name, the second is a list of values
             Object field = evaluate(arguments.get(0));
+            allowScopeVariableInterpretation = true;
             Object values = evaluate(arguments.get(1));
+            allowScopeVariableInterpretation = false;
 
             if (!(field instanceof String)) {
                 throw new FunctionExecutionException(
