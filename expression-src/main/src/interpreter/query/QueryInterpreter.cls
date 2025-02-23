@@ -211,8 +211,8 @@ public with sharing class QueryInterpreter extends Interpreter {
                 'Functions are not supported in a Query context outside of a where clause.');
         }
 
-        Map<String, ExpressionFunction> dateAndTimeFunctions = new DateAndTimeFunctions.DateAndTimeFunctionsProvider().getFunctions();
-        Map<String, ExpressionFunction> supportedWhereFunctions = new Map<String, ExpressionFunction>{
+        Map<String, StandardFunction> dateAndTimeFunctions = new DateAndTimeFunctions.DateAndTimeFunctionsProvider().getFunctions();
+        Map<String, StandardFunction> supportedWhereFunctions = new Map<String, StandardFunction>{
             'LIKE' => new LikeFn(),
             'ISIN' => new IsInFn(),
             'ISNOTIN' => new IsNotInFn(),
@@ -229,7 +229,7 @@ public with sharing class QueryInterpreter extends Interpreter {
 
         String functionName = function.functionToken.lexeme.toUpperCase();
         if (supportedWhereFunctions.containsKey(functionName)) {
-            ExpressionFunction expressionFunction = supportedWhereFunctions.get(functionName);
+            StandardFunction expressionFunction = supportedWhereFunctions.get(functionName);
             expressionFunction.setInterpreter(this);
             ArityEvaluator.check(expressionFunction, function);
             try {
@@ -246,7 +246,7 @@ public with sharing class QueryInterpreter extends Interpreter {
             'Unsupported function: ' + function.functionToken.lexeme + ' within a Query context\'s where clause.');
     }
 
-    private class LikeFn extends ExpressionFunction {
+    private class LikeFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             Object pattern = evaluate(arguments.get(1));
@@ -269,7 +269,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class IsInFn extends ExpressionFunction {
+    private class IsInFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect 2 arguments, the first is the field name, the second is a list of values
             Object field = evaluate(arguments.get(0));
@@ -302,7 +302,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class IsNotInFn extends ExpressionFunction {
+    private class IsNotInFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect 2 arguments, the first is the field name, the second is a list of values
             Object field = evaluate(arguments.get(0));
@@ -335,7 +335,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class IsNullFn extends ExpressionFunction {
+    private class IsNullFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect 1 argument, the field name
             Object field = evaluate(arguments.get(0));
@@ -354,7 +354,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class IsNotNullFn extends ExpressionFunction {
+    private class IsNotNullFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect 1 argument, the field name
             Object field = evaluate(arguments.get(0));
@@ -373,7 +373,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class AndFn extends ExpressionFunction {
+    private class AndFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             List<QICondition> conditions = new List<QICondition>();
             for (Expr argument : arguments) {
@@ -394,7 +394,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class OrFn extends ExpressionFunction {
+    private class OrFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             List<QICondition> conditions = new List<QICondition>();
             for (Expr argument : arguments) {

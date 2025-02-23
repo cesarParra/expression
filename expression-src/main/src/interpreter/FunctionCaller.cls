@@ -9,7 +9,7 @@ public abstract class FunctionCaller {
     private static FunctionCaller find(Expr.FunctionCall function) {
         if (Environment.hasFunction(function.functionName)) {
             return new FunctionDeclarationCaller(function);
-        } else if (ExpressionFunction.functionExistsInStandardLibrary(function.functionName)) {
+        } else if (StandardFunction.functionExistsInStandardLibrary(function.functionName)) {
             return new StandardLibraryFunctionCaller(function);
         }
 
@@ -65,7 +65,7 @@ public abstract class FunctionCaller {
 
         public override Object call(Interpreter interpreter) {
             // Check if the function is in the list of supported functions
-            ExpressionFunction fn = ExpressionFunction.getByName(function.functionName);
+            StandardFunction fn = StandardFunction.getByName(function.functionName);
             fn.setInterpreter(interpreter);
             ArityEvaluator.check(fn, function);
 
