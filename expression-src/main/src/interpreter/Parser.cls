@@ -6,12 +6,13 @@ public with sharing class Parser {
         this.tokens = tokens;
     }
 
-    public Expr parse() {
-        Expr result = expression();
-        if (!isAtEnd()) {
-            throw error(peek(), 'Unexpected character after end of expression.');
+    public List<Expr> parse() {
+        List<Expr> exprs = new List<Expr>();
+        while (!isAtEnd()) {
+            exprs.add(expression());
         }
-        return result;
+
+        return exprs;
     }
 
     private Expr functionDeclarationCheck() {

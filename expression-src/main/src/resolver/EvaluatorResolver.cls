@@ -62,7 +62,8 @@ public with sharing abstract class EvaluatorResolver {
 
     private Expr parse(List<Token> tokens) {
         Parser parser = new Parser(tokens);
-        return parser.parse();
+        // TODO: Handle parsing multiple expressions
+        return parser.parse()[0];
     }
 
     private Expr desugarPipe(Expr rawExpression) {
