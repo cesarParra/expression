@@ -34,15 +34,7 @@ public abstract class FunctionCaller {
 
         public override Object call(Interpreter interpreter) {
             Expr.FunctionDeclaration functionDeclaration = Environment.getFunction(function.functionName);
-            // Ensure that the length of the arguments matches the length of the parameters
-            if (functionDeclaration.parameters.size() != function.arguments.size()) {
-                throw new Exceptions.RuntimeException(
-                    function.functionToken,
-                    'Error executing ' + function.functionName + ' function: the function expects ' +
-                        functionDeclaration.parameters.size() + ' argument(s), but ' +
-                        function.arguments.size() + ' were provided.'
-                );
-            }
+            ArityEvaluator.check(functionDeclaration, function);
 
             Environment functionScopeEnvironment = new Environment(interpreter.getEnvironment());
 

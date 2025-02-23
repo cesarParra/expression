@@ -1,4 +1,4 @@
-public with sharing abstract class StandardFunction {
+public with sharing abstract class StandardFunction implements IAritySupport {
     public static final List<FunctionProvider> FUNCTION_PROVIDERS = new List<FunctionProvider>{
         new LogicalFunctions.LogicalFunctionsProvider(),
         new StringFunctions.StringFunctionsProvider(),

@@ -1,5 +1,5 @@
 public with sharing class ArityEvaluator {
-    public static void check(StandardFunction fn, Expr.FunctionCall function) {
+    public static void check(IAritySupport fn, Expr.FunctionCall function) {
         if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
             throw new Exceptions.RuntimeException(
                 function.functionToken,

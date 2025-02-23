@@ -45,7 +45,7 @@ public abstract class Expr {
         }
     }
 
-    public class FunctionDeclaration extends Expr {
+    public class FunctionDeclaration extends Expr implements IAritySupport {
         public final Token name;
         public final List<Token> parameters;
         public final Expr body;
@@ -64,6 +64,10 @@ public abstract class Expr {
 
         public override Object accept(Visitor v) {
             return v.visit(this);
+        }
+
+        public Arity getArity() {
+            return Arity.exactly(parameters.size());
         }
     }
 
