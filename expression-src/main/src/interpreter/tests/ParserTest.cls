@@ -80,6 +80,26 @@ private class ParserTest {
     }
 
     @IsTest
+    static void parsesFunctionDeclarations() {
+        List<Token> tokens = new List<Token> {
+            new Token(TokenType.FUNCTION_KEYWORD, 'function', null, null),
+            new Token(TokenType.IDENTIFIER, 'foo', null, null),
+            new Token(TokenType.LEFT_PAREN, '(', null, null),
+            new Token(TokenType.RIGHT_PAREN, ')', null, null),
+            new Token(TokenType.FAT_ARROW, '=>', null, null),
+            new Token(TokenType.IDENTIFIER, 'bar', null, null),
+            new Token(TokenType.SEMICOLON, ';', null, null),
+            new Token(TokenType.EOF, '', null, null)
+        };
+
+        Expr result = new Parser(tokens).parse();
+
+        Assert.isInstanceOfType(result, Expr.FunctionDeclaration.class);
+        Expr.FunctionDeclaration functionDeclaration = (Expr.FunctionDeclaration)result;
+        Assert.areEqual('foo', functionDeclaration.name.lexeme);
+    }
+
+    @IsTest
     private static void throwsExceptionIfThereAreMoreTokensAfterTheEndOfACompleteExpression() {
         try {
             Evaluator.run('1 + 1 1');
