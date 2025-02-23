@@ -51,5 +51,15 @@ private class FunctionDeclarationTest {
         System.assertEquals(120, result);
     }
 
-    // Inner expressions cannot have function declarations
+    @IsTest
+    static void functionsCannotBeDeclaredWithinAnotherExpression() {
+        String expression = 'IF(fun foo() => 5;, 1, 2)';
+
+        try {
+            Evaluator.run(expression);
+            Assert.fail('Expected an error');
+        } catch (Exception e) {
+            Assert.isTrue(e.getMessage().contains('declarations can only be declared at the top level of an expression'), e.getMessage());
+        }
+    }
 }

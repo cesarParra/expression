@@ -523,8 +523,7 @@ public virtual with sharing class Interpreter implements Visitor {
         // which is not valid.
         throw new Exceptions.RuntimeException(
             functionDeclaration.name,
-            'Error executing function declaration: function declarations should not be called, they can only be declared' +
-                ' at the top level of the expression.'
+            'Function declarations can only be declared at the top level of an expression.'
         );
     }
 }
