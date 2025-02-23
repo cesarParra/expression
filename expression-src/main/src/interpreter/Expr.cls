@@ -45,6 +45,22 @@ public abstract class Expr {
         }
     }
 
+    public class FunctionDeclaration extends Expr {
+        public final Token name;
+        public final List<Token> parameters;
+        public final Expr body;
+
+        public FunctionDeclaration(Token name, List<Token> parameters, Expr body) {
+            this.name = name;
+            this.parameters = parameters;
+            this.body = body;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
+
     public class FunctionCall extends Expr {
         public final Token functionToken;
         public final List<Expr> arguments;

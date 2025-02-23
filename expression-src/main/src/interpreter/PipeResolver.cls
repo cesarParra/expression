@@ -175,4 +175,11 @@ public with sharing class PipeResolver implements Visitor {
             newOffsetExpr
         );
     }
+
+    public Object visit(Expr.FunctionDeclaration functionDeclaration) {
+        throw new Exceptions.RuntimeException(
+            functionDeclaration.name,
+            'Function declarations are not supported at this time'
+        );
+    }
 }

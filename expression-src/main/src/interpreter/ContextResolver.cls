@@ -342,4 +342,8 @@ public with sharing class ContextResolver implements Visitor {
 
     private class NotSupportedGetResolutionException extends Exception {
     }
+
+    public Object visit(Expr.FunctionDeclaration functionDeclaration) {
+        throw new ResolverException('Function declarations are not supported at this time');
+    }
 }

@@ -498,4 +498,11 @@ public virtual with sharing class Interpreter implements Visitor {
         Q querier = new QueryInterpreter(this.env).evaluateToQuery(query);
         return QDB.getInstance().run(querier);
     }
+
+    public Object visit(Expr.FunctionDeclaration functionDeclaration) {
+        throw new Exceptions.RuntimeException(
+            functionDeclaration.name,
+            'Error executing function declaration: function declarations are not supported at this time.'
+        );
+    }
 }

@@ -33,6 +33,9 @@ public enum TokenType {
     TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD, QUERY_KEYWORD,
     ASC_KEYWORD, DESC_KEYWORD,
 
+    // ----------------- Functions ----------------------
+    FUNCTION_KEYWORD, FAT_ARROW, SEMICOLON,
+
     // ----------------- EOF ----------------------
     EOF
 }

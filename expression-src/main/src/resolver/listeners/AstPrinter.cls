@@ -1,9 +1,9 @@
 public with sharing class AstPrinter implements Visitor, EvaluatorEventListener {
     public Map<String, Object> handle(EvaluatorEvent event) {
-        OnAfterParseEvent parseEvent = (OnAfterParseEvent)event;
+        OnAfterParseEvent parseEvent = (OnAfterParseEvent) event;
         Object toPrint = parseEvent.expression.accept(this);
         System.debug(JSON.serializePretty(toPrint));
-        return new Map<String, Object> {
+        return new Map<String, Object>{
             'ast' => toPrint
         };
     }
@@ -11,7 +11,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     public Object visit(Expr.Logical logical) {
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'Logical',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'left' => logical.left.accept(this),
                 'operator' => logical.operator.lexeme,
                 'right' => logical.right.accept(this)
@@ -23,7 +23,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     public Object visit(Expr.Binary binary) {
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'Binary',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'left' => binary.left.accept(this),
                 'operator' => binary.operator?.lexeme,
                 'right' => binary.right.accept(this)
@@ -35,7 +35,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     public Object visit(Expr.Grouping grouping) {
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'Grouping',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'expression' => grouping.expression.accept(this)
             }
         };
@@ -45,7 +45,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     public Object visit(Expr.Literal literal) {
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'Literal',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'value' => literal.value
             }
         };
@@ -63,7 +63,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         }
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'StringLiteral',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'value' => stringsAndInterpolations
             }
         };
@@ -73,7 +73,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     public Object visit(Expr.Variable variable) {
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'Variable',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'name' => variable.name.lexeme
             }
         };
@@ -83,7 +83,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     public Object visit(Expr.MergeField mergeField) {
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'MergeField',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'name' => mergeField.name.lexeme
             }
         };
@@ -93,7 +93,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     public Object visit(Expr.Unary unary) {
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'Unary',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'operator' => unary.operator.lexeme,
                 'right' => unary.right.accept(this)
             }
@@ -108,7 +108,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         }
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'Get',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'object' => getExpr.objectExpr.accept(this),
                 'field' => getExpr.field.lexeme,
                 'arguments' => arguments
@@ -124,7 +124,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         }
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'FunctionCall',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'name' => function.functionName,
                 'arguments' => arguments
             }
@@ -139,7 +139,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         }
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'ListLiteral',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'elements' => elements
             }
         };
@@ -163,7 +163,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         }
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'MapLiteral',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'elements' => elements
             }
         };
@@ -173,7 +173,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     public Object visit(Expr.Spread spread) {
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'Spread',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'expression' => spread.expression.accept(this)
             }
         };
@@ -187,7 +187,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         }
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'Query',
-            'body' => new Map<String, Object> {
+            'body' => new Map<String, Object>{
                 'select' => query.sObjectType.lexeme,
                 'fields' => query.fieldsExpression?.accept(this),
                 'where' => query.whereExpr?.accept(this),
@@ -196,5 +196,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         };
 
         return toPrint;
+    }
+
+    public Object visit(Expr.FunctionDeclaration functionDeclaration) {
+        throw new Exceptions.RuntimeException('Function declarations are not supported in the AST printer');
     }
 }
