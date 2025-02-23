@@ -6,8 +6,8 @@ public abstract class FunctionCaller {
         this.function = function;
     }
 
-    private static FunctionCaller find(Expr.FunctionCall function) {
-        if (Environment.hasFunction(function.functionName)) {
+    private static FunctionCaller find(Expr.FunctionCall function, Environment env) {
+        if (env.hasFunction(function.functionName)) {
             return new FunctionDeclarationCaller(function);
         } else if (StandardFunction.functionExistsInStandardLibrary(function.functionName)) {
             return new StandardLibraryFunctionCaller(function);
@@ -23,7 +23,7 @@ public abstract class FunctionCaller {
     }
 
     public static Object exec(Interpreter interpreter, Expr.FunctionCall function) {
-        FunctionCaller functionCaller = find(function);
+        FunctionCaller functionCaller = find(function, interpreter.getEnvironment());
         return functionCaller.call(interpreter);
     }
 
@@ -33,7 +33,7 @@ public abstract class FunctionCaller {
         }
 
         public override Object call(Interpreter interpreter) {
-            Expr.FunctionDeclaration functionDeclaration = Environment.getFunction(function.functionName);
+            Expr.FunctionDeclaration functionDeclaration = interpreter.getEnvironment().getFunction(function.functionName);
             ArityEvaluator.check(functionDeclaration, function);
 
             Environment functionScopeEnvironment = new Environment(interpreter.getEnvironment());

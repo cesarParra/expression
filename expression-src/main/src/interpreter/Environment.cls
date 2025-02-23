@@ -23,7 +23,6 @@ public with sharing class Environment {
     }
 
     private static final Map<String, Object> GLOBAL_VARIABLES = new Map<String, Object>();
-    private static final Map<String, Expr.FunctionDeclaration> FUNCTIONS = new Map<String, Expr.FunctionDeclaration>();
 
     static {
         GLOBAL_VARIABLES.put('$label', new CustomLabelVariableResolver.CustomLabelResolverWrapper());
@@ -40,27 +39,26 @@ public with sharing class Environment {
     public static void addGlobalVariable(String name, Object value) {
         // Check that the name has not already been declared
         if (GLOBAL_VARIABLES.containsKey(name.toLowerCase())) {
-            throw new EnvironmentException('Variable with name ' + name + ' already exists');
+            throw new EnvironmentException('Variable or function with name ' + name + ' already exists');
         }
 
         GLOBAL_VARIABLES.put(name.toLowerCase(), value);
     }
 
-    public static void addFunction(Expr.FunctionDeclaration function) {
-        // Check that the name has not already been declared
-        if (FUNCTIONS.containsKey(function.functionName.toUpperCase())) {
-            throw new EnvironmentException('Function with name ' + function.functionName + ' already exists');
+    public Boolean hasFunction(String functionName) {
+        return getFunction(functionName) != null;
+    }
+
+    public Expr.FunctionDeclaration getFunction(String functionName) {
+        String lowercasedName = functionName.toLowerCase();
+        // First try and find it locally
+        Object possibleFunction = getVariables().get(lowercasedName);
+        if (possibleFunction != null && possibleFunction instanceof Expr.FunctionDeclaration) {
+            return (Expr.FunctionDeclaration) possibleFunction;
         }
 
-        FUNCTIONS.put(function.functionName.toUpperCase(), function);
-    }
-
-    public static Boolean hasFunction(String functionName) {
-        return FUNCTIONS.containsKey(functionName.toUpperCase());
-    }
-
-    public static Expr.FunctionDeclaration getFunction(String functionName) {
-        return FUNCTIONS.get(functionName.toUpperCase());
+        // Otherwise, look in the global variables
+        return (Expr.FunctionDeclaration) GLOBAL_VARIABLES.get(functionName.toLowerCase());
     }
 
     /**
@@ -120,8 +118,8 @@ public with sharing class Environment {
 
     public Boolean containsAsParent(String fieldName) {
         try {
-            getContext().getSObject(fieldName);
-            return true;
+            Object result = getContext()?.getSObject(fieldName);
+            return result != null;
         } catch (SObjectException ex) {
             return false;
         }
@@ -164,7 +162,7 @@ public with sharing class Environment {
     }
 
     public SObject getParentSObject(String fieldName) {
-        return getContext().getSObject(fieldName);
+        return getContext()?.getSObject(fieldName);
     }
 
     public class EnvironmentException extends Exception {

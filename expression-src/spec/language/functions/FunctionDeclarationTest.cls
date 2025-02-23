@@ -62,4 +62,16 @@ private class FunctionDeclarationTest {
             Assert.isTrue(e.getMessage().contains('declarations can only be declared at the top level of an expression'), e.getMessage());
         }
     }
+
+    @IsTest
+    static void functionsCanBePassedAsArguments() {
+        String expression = 'fun foo(a, b) => a + b;\n' +
+            'fun bar(fn, a, b) => fn(a, b);\n' +
+            '\n' +
+            'bar(foo, 5, 3)';
+
+        Object result = Evaluator.run(expression);
+
+        System.assertEquals(8, result);
+    }
 }

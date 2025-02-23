@@ -47,7 +47,8 @@ public with sharing abstract class EvaluatorResolver {
         for (Expr pipedExpression : pipedExpressions) {
             if (isFunctionDeclaration(pipedExpression)) {
                 // If we are dealing with a function declaration we do not need to interpret it.
-                Environment.addFunction((Expr.FunctionDeclaration) pipedExpression);
+                Expr.FunctionDeclaration fnDeclaration = (Expr.FunctionDeclaration) pipedExpression;
+                Environment.addGlobalVariable(fnDeclaration.functionName, fnDeclaration);
                 continue;
             }
 
