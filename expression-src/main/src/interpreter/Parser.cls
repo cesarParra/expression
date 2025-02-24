@@ -6,12 +6,45 @@ public with sharing class Parser {
         this.tokens = tokens;
     }
 
-    public Expr parse() {
-        Expr result = expression();
-        if (!isAtEnd()) {
-            throw error(peek(), 'Unexpected character after end of expression.');
+    public List<Expr> parse() {
+        List<Expr> exprs = new List<Expr>();
+        while (!isAtEnd()) {
+            exprs.add(expression());
         }
-        return result;
+
+        return exprs;
+    }
+
+    private static Boolean hasParameter(List<Token> parameters, Token parameter) {
+        for (Token p : parameters) {
+            if (p.lexeme.toLowerCase() == parameter.lexeme.toLowerCase()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Expr functionDeclarationCheck() {
+        if (match(TokenType.FUNCTION_KEYWORD)) {
+            Token name = consume(TokenType.IDENTIFIER, 'Expect function name.');
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
+            List<Token> parameters = new List<Token>();
+            if (!check(TokenType.RIGHT_PAREN)) {
+                do {
+                    Token parameter = consume(TokenType.IDENTIFIER, 'Expect parameter name.');
+                    if (hasParameter(parameters, parameter)) {
+                        throw error(parameter, 'Parameter name "' + parameter.lexeme + '" is already defined.');
+                    }
+                    parameters.add(parameter);
+                } while (match(TokenType.COMMA));
+            }
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+            consume(TokenType.FAT_ARROW, 'Expect \'=>\' before function body.');
+            Expr body = expression();
+            consume(TokenType.SEMICOLON, 'Expect \';\' after function body.');
+            return new Expr.FunctionDeclaration(name, parameters, body);
+        }
+        return orCheck();
     }
 
     private Expr orCheck() {
@@ -195,11 +228,11 @@ public with sharing class Parser {
             return new Expr.Literal(previous().literal);
         }
 
-        if (match(TokenType.DOLLAR)) {
+        if (match(TokenType.CUSTOM_VARIABLE)) {
             return new Expr.Variable(previous(), Expr.VariableType.LOCAL);
         }
 
-        if (match(TokenType.AT)) {
+        if (match(TokenType.GLOBAL_CONTEXT_VARIABLE)) {
             return new Expr.Variable(previous(), Expr.VariableType.GLOBAL_CONTEXT);
         }
 
@@ -213,7 +246,7 @@ public with sharing class Parser {
             }
 
             // Otherwise we assume it's a field reference
-            return new Expr.MergeField(previous());
+            return new Expr.MergeFieldOrScopeVariable(previous());
         }
 
         if (match(TokenType.LEFT_PAREN)) {
@@ -282,8 +315,7 @@ public with sharing class Parser {
                         whereExpr = expression();
                     } else if (qClause == 'offset') {
                         offsetExpr = expression();
-                    }
-                    else {
+                    } else {
                         throw error(previous(), 'Expect one of \'orderby\', \'limit\', \'where\', or \'offset\'.');
                     }
                 } while (match(TokenType.COMMA));
@@ -346,7 +378,7 @@ public with sharing class Parser {
     }
 
     private Expr expression() {
-        return orCheck();
+        return functionDeclarationCheck();
     }
 
     private Boolean match(TokenType type) {

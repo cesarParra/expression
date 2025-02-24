@@ -45,6 +45,32 @@ public abstract class Expr {
         }
     }
 
+    public class FunctionDeclaration extends Expr implements IAritySupport {
+        public final Token name;
+        public final List<Token> parameters;
+        public final Expr body;
+
+        public FunctionDeclaration(Token name, List<Token> parameters, Expr body) {
+            this.name = name;
+            this.parameters = parameters;
+            this.body = body;
+        }
+
+        public String functionName {
+            get {
+                return name.lexeme;
+            }
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+
+        public Arity getArity() {
+            return Arity.exactly(parameters.size());
+        }
+    }
+
     public class FunctionCall extends Expr {
         public final Token functionToken;
         public final List<Expr> arguments;
@@ -114,10 +140,10 @@ public abstract class Expr {
         }
     }
 
-    public class MergeField extends Expr {
+    public class MergeFieldOrScopeVariable extends Expr {
         public final Token name;
 
-        public MergeField(Token name) {
+        public MergeFieldOrScopeVariable(Token name) {
             this.name = name;
         }
 

@@ -16,6 +16,7 @@ public with sharing class Scanner {
         keywords.put('query', TokenType.QUERY_KEYWORD);
         keywords.put('asc', TokenType.ASC_KEYWORD);
         keywords.put('desc', TokenType.DESC_KEYWORD);
+        keywords.put('fun', TokenType.FUNCTION_KEYWORD);
     }
 
     public Scanner(String source) {
@@ -73,10 +74,22 @@ public with sharing class Scanner {
             when ':' {
                 addToken(TokenType.COLON);
             }
+            when ';' {
+                addToken(TokenType.SEMICOLON);
+            }
 
             // One or more character tokens
             when '=' {
-                addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
+                String next = peek();
+                if (next == '=') {
+                    advance();
+                    addToken(TokenType.EQUAL_EQUAL);
+                } else if (next == '>') {
+                    advance();
+                    addToken(TokenType.FAT_ARROW);
+                } else {
+                    addToken(TokenType.EQUAL);
+                }
             }
 
             when '.' {
@@ -285,7 +298,7 @@ public with sharing class Scanner {
             advance();
         }
 
-        TokenType type = TokenType.DOLLAR;
+        TokenType type = TokenType.CUSTOM_VARIABLE;
         addToken(type);
     }
 
@@ -294,7 +307,7 @@ public with sharing class Scanner {
             advance();
         }
 
-        TokenType type = TokenType.AT;
+        TokenType type = TokenType.GLOBAL_CONTEXT_VARIABLE;
         addToken(type);
     }
 

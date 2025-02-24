@@ -5,7 +5,7 @@
  * @display-icon utility:text
  */
 public with sharing class StringFunctions {
-    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction>{
         'BEGINS' => new StringFunctions.Begins(),
         'CONTAINS' => new StringFunctions.Contains(),
         'LOWER' => new StringFunctions.Lower(),
@@ -32,7 +32,7 @@ public with sharing class StringFunctions {
     };
 
     public class StringFunctionsProvider implements FunctionProvider {
-        public Map<String, ExpressionFunction> getFunctions() {
+        public Map<String, StandardFunction> getFunctions() {
             return FUNCTIONS;
         }
     }
@@ -45,7 +45,7 @@ public with sharing class StringFunctions {
      * @example
      * BEGINS("Hello World", "Hello") // TRUE
      */
-    private class Begins extends ExpressionFunction {
+    private class Begins extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
@@ -77,7 +77,7 @@ public with sharing class StringFunctions {
      * @example
      * CONTAINS("Hello World", "World") // TRUE
      */
-    private class Contains extends ExpressionFunction {
+    private class Contains extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object firstValue = evaluate(arguments.get(0));
             if (!(firstValue instanceof String) && !(firstValue instanceof List<Object>)) {
@@ -117,7 +117,7 @@ public with sharing class StringFunctions {
      * @example
      * LOWER("Hello World") // "hello world"
      */
-    private class Lower extends ExpressionFunction {
+    private class Lower extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
@@ -144,7 +144,7 @@ public with sharing class StringFunctions {
      * FIND("World", "Hello World") // 7
      * FIND("World", "Hello World", 7) // -1
      */
-    private class FindFn extends ExpressionFunction {
+    private class FindFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object searchText = evaluate(arguments.get(0));
             if (!(searchText instanceof String)) {
@@ -188,7 +188,7 @@ public with sharing class StringFunctions {
      * @example
      * LEFT("Hello World", 5) // "Hello"
      */
-    private class LeftFn extends ExpressionFunction {
+    private class LeftFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
@@ -220,7 +220,7 @@ public with sharing class StringFunctions {
      * @example
      * LEN("Hello World") // 11
      */
-    private class LenFn extends ExpressionFunction {
+    private class LenFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
@@ -237,7 +237,7 @@ public with sharing class StringFunctions {
         }
     }
 
-    private virtual class LRPad extends ExpressionFunction {
+    private virtual class LRPad extends StandardFunction {
         private final String name;
 
         public LRPad(String name) {
@@ -321,7 +321,7 @@ public with sharing class StringFunctions {
      * @example
      * REVERSE("Hello World") // "dlroW olleH"
      */
-    private class ReverseFn extends ExpressionFunction {
+    private class ReverseFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object val = evaluate(arguments.get(0));
             // Must evaluate to string or list
@@ -358,7 +358,7 @@ public with sharing class StringFunctions {
      * @example
      * MID("Hello World", 7, 5) // "World"
      */
-    private class MidFn extends ExpressionFunction {
+    private class MidFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
@@ -401,7 +401,7 @@ public with sharing class StringFunctions {
      * SUBSTRING("Hello World", 7) // "World"
      * SUBSTRING("Hello World", 7, 5) // "World"
      */
-    private class SubstringFn extends ExpressionFunction {
+    private class SubstringFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
@@ -451,7 +451,7 @@ public with sharing class StringFunctions {
      * RIGHT("Hello World", 5) // "World"
      * RIGHT("Hello World", -5) // ""
      */
-    private class RightFn extends ExpressionFunction {
+    private class RightFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             if (!(text instanceof String)) {
@@ -494,7 +494,7 @@ public with sharing class StringFunctions {
      * BR() // "<br/>"
      * BR(2) // "<br/><br/>"
      */
-    private class BrFn extends ExpressionFunction {
+    private class BrFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Integer linesToAdd = 1;
             // If an argument was passed, then it must be a number
@@ -530,7 +530,7 @@ public with sharing class StringFunctions {
      * @example
      * HYPERLINK("https://www.google.com", "Google") // "<a href="https://www.google.com">Google</a>"
      */
-    private class HyperLinkFn extends ExpressionFunction {
+    private class HyperLinkFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Check that the first argument is a string
             Object url = evaluate(arguments.get(0));
@@ -582,7 +582,7 @@ public with sharing class StringFunctions {
      * @example
      * SUBSTITUTE("Hello World", "World", "Universe") // "Hello Universe"
      */
-    private class SubstituteFn extends ExpressionFunction {
+    private class SubstituteFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Check that the first argument is a string
             Object text = evaluate(arguments.get(0));
@@ -625,7 +625,7 @@ public with sharing class StringFunctions {
      * @example
      * TEXT(123) // "123"
      */
-    private class TextFn extends ExpressionFunction {
+    private class TextFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
             return StringUtils.valueOf(value);
@@ -644,7 +644,7 @@ public with sharing class StringFunctions {
      * @example
      * TRIM(" Hello World ") // "Hello World"
      */
-    private class TrimFn extends ExpressionFunction {
+    private class TrimFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must be a string
             Object value = evaluate(arguments.get(0));
@@ -670,7 +670,7 @@ public with sharing class StringFunctions {
      * @example
      * UPPER("Hello World") // "HELLO WORLD"
      */
-    private class UpperFn extends ExpressionFunction {
+    private class UpperFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must be a string
             Object value = evaluate(arguments.get(0));
@@ -696,7 +696,7 @@ public with sharing class StringFunctions {
      * @example
      * VALUE("123") // 123
      */
-    private class ValueFn extends ExpressionFunction {
+    private class ValueFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must be a string
             Object value = evaluate(arguments.get(0));
@@ -723,7 +723,7 @@ public with sharing class StringFunctions {
      * @example
      * SPLIT("Hello World", " ") // ["Hello", "World"]
      */
-    private class SplitFn extends ExpressionFunction {
+    private class SplitFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument must be a string
             Object value = evaluate(arguments.get(0));
@@ -757,7 +757,7 @@ public with sharing class StringFunctions {
      * @example
      * INITCAP("hello world") // "Hello World"
      */
-    private class InitCapFn extends ExpressionFunction {
+    private class InitCapFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must be a string
             Object value = evaluate(arguments.get(0));
@@ -793,7 +793,7 @@ public with sharing class StringFunctions {
      * @example
      * URLENCODE("Hello World") // "Hello+World"
      */
-    private class UrlEncodeFn extends ExpressionFunction {
+    private class UrlEncodeFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must be a string
             Object value = evaluate(arguments.get(0));
@@ -823,7 +823,7 @@ public with sharing class StringFunctions {
      * LIKE("Hello World", "Hello%") // TRUE
      * LIKE("Hello World", "Hello_") // FALSE
      */
-    private class LikeFn extends ExpressionFunction {
+    private class LikeFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
             Object pattern = evaluate(arguments.get(1));

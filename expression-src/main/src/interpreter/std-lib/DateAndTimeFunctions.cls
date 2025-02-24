@@ -5,7 +5,7 @@
  * @display-icon utility:date_input
  */
 public with sharing class DateAndTimeFunctions {
-    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction>{
         'ADDMONTHS' => new DateAndTimeFunctions.AddMonthsFn(),
         'DATE' => new DateAndTimeFunctions.DateFn(),
         'DATETIME' => new DateAndTimeFunctions.DatetimeFn(),
@@ -35,7 +35,7 @@ public with sharing class DateAndTimeFunctions {
     };
 
     public class DateAndTimeFunctionsProvider implements FunctionProvider {
-        public Map<String, ExpressionFunction> getFunctions() {
+        public Map<String, StandardFunction> getFunctions() {
             return FUNCTIONS;
         }
     }
@@ -52,7 +52,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * ADDMONTHS(DATE(2020, 1, 1), 1) // 2020-02-01
      */
-    private class AddMonthsFn extends ExpressionFunction {
+    private class AddMonthsFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object startMonth = evaluate(arguments.get(0));
             if (!(startMonth instanceof Date)) {
@@ -84,7 +84,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * DATE(2020, 1, 1) // 2020-01-01
      */
-    private class DateFn extends ExpressionFunction {
+    private class DateFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object year = evaluate(arguments.get(0));
             if (!(year instanceof Decimal)) {
@@ -121,7 +121,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * DATETIME(2020, 1, 1, 12, 0, 0) // 2020-01-01 12:00:00
      */
-    private class DatetimeFn extends ExpressionFunction {
+    private class DatetimeFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object year = evaluate(arguments.get(0));
             if (!(year instanceof Decimal)) {
@@ -183,7 +183,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * DAY(DATE(2020, 1, 1)) // 1
      */
-    private class DayFn extends ExpressionFunction {
+    private class DayFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
@@ -208,7 +208,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * DAYOFYEAR(DATE(2020, 1, 1)) // 1
      */
-    private class DayOfYearFn extends ExpressionFunction {
+    private class DayOfYearFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
@@ -233,7 +233,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * NOW() // 2020-01-01 00:00:00
      */
-    private class NowFn extends ExpressionFunction {
+    private class NowFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             return Datetime.now();
         }
@@ -251,7 +251,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * DATEVALUE("2020-01-01") // 2020-01-01
      */
-    private class DateValueFn extends ExpressionFunction {
+    private class DateValueFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect the expression to either be a text or a datetime
             Object expression = evaluate(arguments.get(0));
@@ -281,7 +281,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * DATETIMEVALUE("2020-01-01 00:00:00") // 2020-01-01 00:00:00
      */
-    private class DateTimeValueFn extends ExpressionFunction {
+    private class DateTimeValueFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object expression = evaluate(arguments.get(0));
             if (!(expression instanceof String)) {
@@ -306,7 +306,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * TODAY() // 2020-01-01
      */
-    private class TodayFn extends ExpressionFunction {
+    private class TodayFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             return Date.today();
         }
@@ -316,7 +316,7 @@ public with sharing class DateAndTimeFunctions {
         }
     }
 
-    private virtual class TimeFn extends ExpressionFunction {
+    private virtual class TimeFn extends StandardFunction {
         private final String fnName;
         private final TimeType type;
 
@@ -413,7 +413,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * TIMEVALUE(DATETIMEVALUE("2020-01-01 12:00:00")) // 12:00:00
      */
-    private class TimeValueFn extends ExpressionFunction {
+    private class TimeValueFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object dateTimeOrText = evaluate(arguments.get(0));
             if (!(dateTimeOrText instanceof String) && !(dateTimeOrText instanceof Datetime)) {
@@ -463,7 +463,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * TIMENOW() // 12:00:00
      */
-    private class TimeNowFn extends ExpressionFunction {
+    private class TimeNowFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             return Datetime.now().time();
         }
@@ -481,7 +481,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * ISOWEEK(DATE(2020, 1, 1)) // 1
      */
-    private class IsoWeek extends ExpressionFunction {
+    private class IsoWeek extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
@@ -506,7 +506,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * ISOYEAR(DATE(2020, 1, 1)) // 2020
      */
-    private class IsoYear extends ExpressionFunction {
+    private class IsoYear extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
@@ -531,7 +531,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * YEAR(DATE(2020, 1, 1)) // 2020
      */
-    private class YearFn extends ExpressionFunction {
+    private class YearFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
@@ -556,7 +556,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * FROMUNIXTIME(1577836800) // 2020-01-01 00:00:00
      */
-    private class FromUnixTimeFn extends ExpressionFunction {
+    private class FromUnixTimeFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object unixTime = evaluate(arguments.get(0));
             if (!(unixTime instanceof Decimal)) {
@@ -586,7 +586,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * UNIXTIMESTAMP(DATE(2020, 1, 1)) // 1577836800
      */
-    private class UnixTimeStampFn extends ExpressionFunction {
+    private class UnixTimeStampFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object dateOrDateTimeOrTime = evaluate(arguments.get(0));
             if (!(dateOrDateTimeOrTime instanceof Date) && !(dateOrDateTimeOrTime instanceof Datetime) && !(dateOrDateTimeOrTime instanceof Time)) {
@@ -622,7 +622,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * WEEKDAY(DATE(2020, 1, 1)) // 2
      */
-    private class WeekdayFn extends ExpressionFunction {
+    private class WeekdayFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
@@ -660,7 +660,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * FORMATDURATION(TIMEVALUE("12:00:00"), TIMEVALUE("12:00:01")) // 00:00:01
      */
-    private class FormatDuration extends ExpressionFunction {
+    private class FormatDuration extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Datetime startDateTime;
             Datetime endDateTime;
@@ -726,7 +726,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * MONTH(DATE(2020, 1, 1)) // 1
      */
-    private class MonthFn extends ExpressionFunction {
+    private class MonthFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect a Date
             Object dateValue = evaluate(arguments.get(0));
@@ -752,7 +752,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * DATETIMEFORMAT(DATETIMEVALUE("2020-01-01 12:00:00"), "yyyy-MM-dd") // 2020-01-01
      */
-    private class DateTimeFormatFn extends ExpressionFunction {
+    private class DateTimeFormatFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect a DateTime
             Object dateTimeValue = evaluate(arguments.get(0));
@@ -786,7 +786,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * DATETODATETIME(DATE(2020, 1, 1)) // 2020-01-01 00:00:00
      */
-    private class DateToDateTimeFn extends ExpressionFunction {
+    private class DateToDateTimeFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect a Date
             Object dateValue = evaluate(arguments.get(0));
@@ -812,7 +812,7 @@ public with sharing class DateAndTimeFunctions {
      * @example
      * DAYSBETWEEN(DATE(2020, 1, 1), DATE(2020, 1, 2)) // 1
      */
-    private class DaysBetween extends ExpressionFunction {
+    private class DaysBetween extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect a Date
             Object dateValue = evaluate(arguments.get(0));
