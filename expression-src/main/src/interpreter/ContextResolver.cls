@@ -131,6 +131,7 @@ public with sharing class ContextResolver implements Visitor {
                 for (Expr argument : function.arguments) {
                     resolve(argument);
                 }
+                return null;
             }
         }
 
