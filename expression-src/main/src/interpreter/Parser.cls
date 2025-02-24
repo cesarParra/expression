@@ -250,6 +250,47 @@ public with sharing class Parser {
         }
 
         if (match(TokenType.LEFT_PAREN)) {
+            Integer checkpoint = current;
+
+            // Try to parse parameters for a potential anonymous function
+            List<Token> parameters = new List<Token>();
+            Boolean isPotentialFunction = true;
+
+            // Handle empty parameter list
+            if (!check(TokenType.RIGHT_PAREN)) {
+                do {
+                    // If we encounter something that's not an identifier, this is a grouping
+                    if (!check(TokenType.IDENTIFIER)) {
+                        isPotentialFunction = false;
+                        break;
+                    }
+                    Token parameter = consume(TokenType.IDENTIFIER, 'Expect parameter name.');
+                    if (hasParameter(parameters, parameter)) {
+                        throw error(parameter, 'Parameter name "' + parameter.lexeme + '" is already defined.');
+                    }
+                    parameters.add(parameter);
+
+                    if (!check(TokenType.COMMA) || !check(TokenType.RIGHT_PAREN)) {
+                        isPotentialFunction = false;
+                        break;
+                    }
+                } while (match(TokenType.COMMA));
+            }
+
+            // Check if next token after ) is =>
+            if (isPotentialFunction) {
+                // TODO: At this point we might still don't know if this is a function, so we should peek instead of consume
+                consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
+                if (match(TokenType.FAT_ARROW)) {
+                    Expr body = expression();
+                    // Pass null as the name since it's anonymous
+                    return new Expr.FunctionDeclaration(null, parameters, body);
+                }
+            }
+
+            // If we get here, this is a grouping expression
+            // Reset position and parse as grouping
+            current = checkpoint;
             Expr expr = expression();
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after expression.');
             return new Expr.Grouping(expr);
