@@ -53,6 +53,10 @@
         "href": "/docs/declaring-functions"
       },
       {
+        "title": "Anonymous Functions",
+        "href": "/docs/anonymous-functions"
+      },
+      {
         "title": "String Interpolation",
         "href": "/docs/string-interpolation"
       },

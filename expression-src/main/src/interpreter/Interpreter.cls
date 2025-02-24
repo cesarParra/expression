@@ -445,6 +445,10 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.FunctionDeclaration functionDeclaration) {
+        if (functionDeclaration.isAnonymous) {
+            return functionDeclaration;
+        }
+
         // Declarations should not be called
         // by the EvaluatorResolver.
         // Reaching this point means a declaration exists within another expression and not at the top level,

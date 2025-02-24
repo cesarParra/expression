@@ -118,6 +118,7 @@ System.debug(result); // 120
     - [Maps](https://cesarparra.github.io/expression/docs/maps)
     - [Piping](https://cesarparra.github.io/expression/docs/piping)
     - [Declaring Functions](https://cesarparra.github.io/expression/docs/declaring-functions)
+    - [Anonymous Functions](https://cesarparra.github.io/expression/docs/anonymous-functions)
     - [String Interpolation](https://cesarparra.github.io/expression/docs/string-interpolation)
     - [Querying Record Data](https://cesarparra.github.io/expression/docs/querying-record-data)
     - [Referencing Org Data](https://cesarparra.github.io/expression/docs/referencing-org-data)
