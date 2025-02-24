@@ -206,7 +206,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'FunctionDeclaration',
             'body' => new Map<String, Object>{
-                'name' => functionDeclaration.name.lexeme,
+                'name' => functionDeclaration.name?.lexeme ?? '[[anonymous]]',
                 'parameters' => tokensToString(functionDeclaration.parameters),
                 'body' => functionDeclaration.body.accept(this)
             }

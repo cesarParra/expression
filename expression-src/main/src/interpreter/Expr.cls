@@ -62,6 +62,12 @@ public abstract class Expr {
             }
         }
 
+        public Boolean isAnonymous {
+            get {
+                return name == null;
+            }
+        }
+
         public override Object accept(Visitor v) {
             return v.visit(this);
         }

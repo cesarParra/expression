@@ -279,7 +279,6 @@ public with sharing class Parser {
 
             // Check if next token after ) is =>
             if (isPotentialFunction) {
-                // TODO: At this point we might still don't know if this is a function, so we should peek instead of consume
                 consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
                 if (match(TokenType.FAT_ARROW)) {
                     Expr body = expression();

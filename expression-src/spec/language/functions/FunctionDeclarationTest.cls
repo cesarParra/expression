@@ -131,4 +131,15 @@ private class FunctionDeclarationTest {
             Assert.isTrue(e.getMessage().contains('is already defined'), e.getMessage());
         }
     }
+
+    @IsTest
+    static void functionsCanBeAnonymous() {
+        String expression = 'fun foo(f) => f();\n' +
+            '\n' +
+            'foo(() => (5 + 5))';
+
+        Object result = Evaluator.run(expression);
+
+        Assert.areEqual(10, result);
+    }
 }
