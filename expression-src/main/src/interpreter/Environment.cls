@@ -3,8 +3,6 @@ public with sharing class Environment {
     private final SObject context;
 
     private SObject getContext() {
-        System.debug('context: ' + context);
-        System.debug('parentEnvironment: ' + parentEnvironment?.context);
         return context ?? parentEnvironment?.getContext();
     }
 
@@ -81,21 +79,16 @@ public with sharing class Environment {
     }
 
     public Boolean contains(String field) {
-        System.debug(1);
         String lowerCaseField = field.toLowerCase();
 
         if (getVariables().containsKey(lowerCaseField) || GLOBAL_VARIABLES.containsKey(lowerCaseField)) {
             return true;
         }
-        System.debug(2);
 
         Set<String> fields = getContext()?.getSObjectType().getDescribe().fields.getMap().keySet();
         if (fields == null) {
-            System.debug(3);
             return false;
         }
-        System.debug('fields: ' + fields);
-        System.debug('looking for: ' + lowerCaseField);
         if (fields.contains(lowerCaseField)) {
             return true;
         }

@@ -55,7 +55,6 @@ public with sharing abstract class EvaluatorResolver {
             }
 
             Environment anEnvironment = this.prepareEnvironment(pipedExpression, customFunctionDeclarations);
-            System.debug('Environment resolved: ' + anEnvironment);
             result = this.interpret(anEnvironment, pipedExpression);
         }
 
@@ -114,7 +113,6 @@ public with sharing abstract class EvaluatorResolver {
         }
 
         public override Environment prepareEnvironment(Expr expression, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
-            System.debug('Preparing environment for recordId: ' + recordId);
             ContextResolver ctxInterpreter = new ContextResolver(recordId, customFunctionDeclarations);
             List<SObject> records = ctxInterpreter.build(expression);
             SObject record;

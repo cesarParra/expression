@@ -23,7 +23,6 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public List<SObject> build(Expr expression) {
-        System.debug('Building context for expression: ' + expression);
         this.resolve(expression);
         if (!this.shouldExecuteQuery) {
             return null;
@@ -78,14 +77,11 @@ public with sharing class ContextResolver implements Visitor {
 
     private final Set<String> ignoredScopedVariables = new Set<String>();
     public Object visit(Expr.FunctionCall function) {
-        // TODO: This only works for standard functions, what about for custom functions created in Apex/CMT?
-
         // See if the function can be found in the custom function declarations
         for (Expr.FunctionDeclaration customFunction : this.customFunctionDeclarations) {
             if (customFunction.name.lexeme.toLowerCase() == function.functionName.toLowerCase()) {
                 // Resolve arguments
                 for (Integer i = 0; i < function.arguments.size(); i++) {
-                    System.debug('Argument: ' + function.arguments[i]);
                     resolve(function.arguments[i]);
                 }
 

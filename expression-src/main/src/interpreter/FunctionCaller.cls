@@ -23,7 +23,6 @@ public abstract class FunctionCaller {
     }
 
     public static Object exec(Interpreter interpreter, Expr.FunctionCall function) {
-        System.debug('Received env: ' + interpreter.getEnvironment());
         FunctionCaller functionCaller = find(function, interpreter.getEnvironment());
         return functionCaller.call(interpreter);
     }
