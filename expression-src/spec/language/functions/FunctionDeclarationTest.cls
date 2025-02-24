@@ -105,6 +105,20 @@ private class FunctionDeclarationTest {
         System.assertEquals('Hello, Alice!', result);
     }
 
-    // TODO: Shadows outer scope variables.
+    @IsTest
+    static void shadowsOuterRecordScopeVariables() {
+        Account record = new Account(Name = 'Alice');
+        insert record;
+
+        String expression = '' +
+            'fun greet(Name) => "Hello, " + Name + "!";\n' +
+            '\n' +
+            'greet("Bob")';
+
+        Object result = Evaluator.run(expression, record.Id);
+
+        System.assertEquals('Hello, Bob!', result);
+    }
+    
     // TODO: Make sure that two parameters can't have the same name.
 }
