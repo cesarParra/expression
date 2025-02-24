@@ -299,7 +299,7 @@ public virtual with sharing class Interpreter implements Visitor {
                 mergeFieldOrScopeVariable.name,
                 'Error evaluating merge field or variable: ' +
                     mergeFieldOrScopeVariable.name.lexeme +
-                    ' A varitable with that name is not declared in the current context' +
+                    ' A variable with that name is not declared in the current context' +
                     messageSuffix
             );
         }

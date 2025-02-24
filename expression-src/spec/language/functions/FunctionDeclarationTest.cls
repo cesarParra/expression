@@ -74,4 +74,6 @@ private class FunctionDeclarationTest {
 
         System.assertEquals(8, result);
     }
+
+    // TODO: Make sure that two parameters can't have the same name.
 }

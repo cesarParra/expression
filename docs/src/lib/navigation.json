@@ -49,6 +49,10 @@
         "href": "/docs/piping"
       },
       {
+        "title": "Declaring Functions",
+        "href": "/docs/declaring-functions"
+      },
+      {
         "title": "String Interpolation",
         "href": "/docs/string-interpolation"
       },
