@@ -116,7 +116,6 @@ public with sharing abstract class EvaluatorResolver {
             ContextResolver ctxInterpreter = new ContextResolver(recordId, customFunctionDeclarations);
             List<SObject> records = ctxInterpreter.build(expression);
             SObject record;
-            System.debug('Records: ' + records);
             if (records != null && records.size() > 0) {
                 record = records[0];
             }
