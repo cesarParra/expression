@@ -91,6 +91,16 @@ Object result = expression.Evaluator.run(
 System.debug(result); // (Acme Inc. Acme Subsidiary)
 ```
 
+## Declaring Custom Functions
+
+```apex
+String expr = 'fun factorial(n) => IF(n = 0 || n = 1, 1, n * factorial(n - 1));\n' +
+    '\n' +
+    'factorial(5)';
+Object result = Evaluator.run(expr);
+System.debug(result); // 120
+```
+
 # Documentation
 
 ## Table of Contents
@@ -107,6 +117,7 @@ System.debug(result); // (Acme Inc. Acme Subsidiary)
     - [Lists](https://cesarparra.github.io/expression/docs/lists)
     - [Maps](https://cesarparra.github.io/expression/docs/maps)
     - [Piping](https://cesarparra.github.io/expression/docs/piping)
+    - [Declaring Functions](https://cesarparra.github.io/expression/docs/declaring-functions)
     - [String Interpolation](https://cesarparra.github.io/expression/docs/string-interpolation)
     - [Querying Record Data](https://cesarparra.github.io/expression/docs/querying-record-data)
     - [Referencing Org Data](https://cesarparra.github.io/expression/docs/referencing-org-data)
