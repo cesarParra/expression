@@ -102,39 +102,47 @@ public with sharing class ContextResolver implements Visitor {
 
         // Otherwise, try and resolve the standard function
         StandardFunction fn = StandardFunction.getByName(function.functionName);
-        if (fn == null) {
-            return null;
-        }
+        if (fn != null) {
+            // Whenever children resolution is needed we assume that the second argument contains the expression
+            // for which to resolve, so skip this when the argument list is not long enough.
+            if (fn.needsQueryArgumentResolution()) {
+                // We want to first resolve the left side and it should resolve to a Query object
+                // which we will use as the context for the right side.
 
-        // Whenever children resolution is needed we assume that the second argument contains the expression
-        // for which to resolve, so skip this when the argument list is not long enough.
-        if (fn.needsQueryArgumentResolution()) {
-            // We want to first resolve the left side and it should resolve to a Query object
-            // which we will use as the context for the right side.
+                Query previousContext = this.queryContext;
+                Object result = resolve(function.arguments[0]);
+                if (!(result instanceof Query)) {
+                    return null;
+                }
 
-            Query previousContext = this.queryContext;
-            Object result = resolve(function.arguments[0]);
-            if (!(result instanceof Query)) {
-                return null;
-            }
+                this.queryContext = (Query) result;
+                resolve(function.arguments[1]);
+                this.queryContext = previousContext;
 
-            this.queryContext = (Query) result;
-            resolve(function.arguments[1]);
-            this.queryContext = previousContext;
+                // If there are more arguments, resolve normally for the top level query
+                if (function.arguments.size() > 2) {
+                    for (Integer i = 2; i < function.arguments.size(); i++) {
+                        resolve(function.arguments[i]);
+                    }
+                }
 
-            // If there are more arguments, resolve normally for the top level query
-            if (function.arguments.size() > 2) {
-                for (Integer i = 2; i < function.arguments.size(); i++) {
-                    resolve(function.arguments[i]);
+                return result;
+            } else {
+                for (Expr argument : function.arguments) {
+                    resolve(argument);
                 }
             }
+        }
 
-            return result;
-        } else {
+        // See if the function exists as a Custom Metadata function
+        IExpressionFunction customMetadataFunction = CustomFunctionRepository.getInstance().getByName(function.functionName);
+        if (customMetadataFunction != null) {
+            // Resolve arguments
             for (Expr argument : function.arguments) {
                 resolve(argument);
             }
         }
+
         return null;
     }
 
