@@ -190,8 +190,8 @@ public with sharing class StringFunctions {
      */
     private class LeftFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
-            Object text = evaluate(arguments.get(0));
-            if (!(text instanceof String)) {
+            Object textObj = evaluate(arguments.get(0));
+            if (!(textObj instanceof String)) {
                 throw new FunctionExecutionException(
                     'Error executing "LEFT" function: the argument must evaluate to a string value.'
                 );
@@ -203,7 +203,11 @@ public with sharing class StringFunctions {
                     'Error executing "LEFT" function: the argument must evaluate to a number value.'
                 );
             }
+            String text = (String) textObj;
 
+            if (text.length() <= (Decimal)length) {
+                return text;
+            }
             return ((String) text).substring(0, ((Decimal) length).intValue());
         }
 
