@@ -2,17 +2,20 @@ public with sharing class ContextResolver implements Visitor {
     private Boolean shouldExecuteQuery = false;
     private Query queryContext;
 
+    private final List<Expr.FunctionDeclaration> customFunctionDeclarations;
     private final Query topLevelQuery;
     private final List<Query> subQueries = new List<Query>();
 
-    public ContextResolver(Id recordId) {
+    public ContextResolver(Id recordId, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
         this.queryContext = new Query(recordId);
         this.topLevelQuery = this.queryContext;
+        this.customFunctionDeclarations = customFunctionDeclarations;
     }
 
-    public ContextResolver(Set<Id> recordIds) {
+    public ContextResolver(Set<Id> recordIds, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
         this.queryContext = new Query(recordIds);
         this.topLevelQuery = this.queryContext;
+        this.customFunctionDeclarations = customFunctionDeclarations;
     }
 
     private Object resolve(Expr expr) {
@@ -20,6 +23,7 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public List<SObject> build(Expr expression) {
+        System.debug('Building context for expression: ' + expression);
         this.resolve(expression);
         if (!this.shouldExecuteQuery) {
             return null;
@@ -73,6 +77,22 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.FunctionCall function) {
+        // TODO: This only works for standard functions, what about for custom functions created in Apex/CMT?
+
+        // See if the function can be found in the custom function declarations
+        for (Expr.FunctionDeclaration customFunction : this.customFunctionDeclarations) {
+            if (customFunction.name.lexeme.toLowerCase() == function.functionName.toLowerCase()) {
+                // Resolve arguments
+                for (Integer i = 0; i < function.arguments.size(); i++) {
+                    System.debug('Argument: ' + function.arguments[i]);
+                    resolve(function.arguments[i]);
+                }
+
+                return null;
+            }
+        }
+
+        // Otherwise, try and resolve the standard function
         StandardFunction fn = StandardFunction.getByName(function.functionName);
         if (fn == null) {
             return null;

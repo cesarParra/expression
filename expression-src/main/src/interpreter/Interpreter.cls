@@ -354,6 +354,7 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public virtual Object visit(Expr.FunctionCall function) {
+        System.debug('Env being passed: ' + env);
         return FunctionCaller.exec(this, function);
     }
 

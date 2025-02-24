@@ -44,15 +44,18 @@ public with sharing abstract class EvaluatorResolver {
         // We only care about the result of the last interpreted expression.
         // We assume that the previous results are declarations.
         Object result = null;
+        List<Expr.FunctionDeclaration> customFunctionDeclarations = new List<Expr.FunctionDeclaration>();
         for (Expr pipedExpression : pipedExpressions) {
             if (isFunctionDeclaration(pipedExpression)) {
                 // If we are dealing with a function declaration we do not need to interpret it.
                 Expr.FunctionDeclaration fnDeclaration = (Expr.FunctionDeclaration) pipedExpression;
                 Environment.addGlobalVariable(fnDeclaration.functionName, fnDeclaration);
+                customFunctionDeclarations.add(fnDeclaration);
                 continue;
             }
 
-            Environment anEnvironment = this.prepareEnvironment(pipedExpression);
+            Environment anEnvironment = this.prepareEnvironment(pipedExpression, customFunctionDeclarations);
+            System.debug('Environment resolved: ' + anEnvironment);
             result = this.interpret(anEnvironment, pipedExpression);
         }
 
@@ -96,7 +99,7 @@ public with sharing abstract class EvaluatorResolver {
         return pipedExpressions;
     }
 
-    protected abstract Environment prepareEnvironment(Expr pipedExpression);
+    protected abstract Environment prepareEnvironment(Expr pipedExpression, List<Expr.FunctionDeclaration> customFunctionDeclarations);
 
     private Object interpret(Environment anEnvironment, Expr pipedExpression) {
         Interpreter theInterpreter = new Interpreter(anEnvironment);
@@ -110,10 +113,12 @@ public with sharing abstract class EvaluatorResolver {
             this.recordId = recordId;
         }
 
-        public override Environment prepareEnvironment(Expr expression) {
-            ContextResolver ctxInterpreter = new ContextResolver(recordId);
+        public override Environment prepareEnvironment(Expr expression, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+            System.debug('Preparing environment for recordId: ' + recordId);
+            ContextResolver ctxInterpreter = new ContextResolver(recordId, customFunctionDeclarations);
             List<SObject> records = ctxInterpreter.build(expression);
             SObject record;
+            System.debug('Records: ' + records);
             if (records != null && records.size() > 0) {
                 record = records[0];
             }
@@ -133,8 +138,8 @@ public with sharing abstract class EvaluatorResolver {
             this.recordIds = recordIds;
         }
 
-        public override Environment prepareEnvironment(Expr expression) {
-            ContextResolver ctxInterpreter = new ContextResolver(recordIds);
+        public override Environment prepareEnvironment(Expr expression, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+            ContextResolver ctxInterpreter = new ContextResolver(recordIds, customFunctionDeclarations);
             List<SObject> records = ctxInterpreter.build(expression);
             // The environment is created without a record, as we are dealing with a list of records,
             // so it would not be possible to interpret references to record fields. Instead, the @context
@@ -155,7 +160,7 @@ public with sharing abstract class EvaluatorResolver {
             this.record = record;
         }
 
-        public override Environment prepareEnvironment(Expr expression) {
+        public override Environment prepareEnvironment(Expr expression, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
             Environment.addGlobalContextVariable('id', record?.Id);
             Environment.addGlobalContextVariable('context', record);
             return new Environment(record);
@@ -169,7 +174,7 @@ public with sharing abstract class EvaluatorResolver {
             this.records = records;
         }
 
-        public override Environment prepareEnvironment(Expr expression) {
+        public override Environment prepareEnvironment(Expr expression, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
             Set<Id> ids = new Set<Id>();
             for (SObject record : records) {
                 if (record.Id != null) {
