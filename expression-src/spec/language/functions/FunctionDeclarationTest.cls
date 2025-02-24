@@ -119,6 +119,16 @@ private class FunctionDeclarationTest {
 
         System.assertEquals('Hello, Bob!', result);
     }
-    
-    // TODO: Make sure that two parameters can't have the same name.
+
+    @IsTest
+    static void disallowMultipleParametersWithTheSameName() {
+        String expression = 'fun foo(a, a) => a + a;';
+
+        try {
+            Evaluator.run(expression);
+            Assert.fail('Expected an error');
+        } catch (Exception e) {
+            Assert.isTrue(e.getMessage().contains('is already defined'), e.getMessage());
+        }
+    }
 }

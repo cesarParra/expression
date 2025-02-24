@@ -15,6 +15,15 @@ public with sharing class Parser {
         return exprs;
     }
 
+    private static Boolean hasParameter(List<Token> parameters, Token parameter) {
+        for (Token p : parameters) {
+            if (p.lexeme.toLowerCase() == parameter.lexeme.toLowerCase()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Expr functionDeclarationCheck() {
         if (match(TokenType.FUNCTION_KEYWORD)) {
             Token name = consume(TokenType.IDENTIFIER, 'Expect function name.');
@@ -22,7 +31,11 @@ public with sharing class Parser {
             List<Token> parameters = new List<Token>();
             if (!check(TokenType.RIGHT_PAREN)) {
                 do {
-                    parameters.add(consume(TokenType.IDENTIFIER, 'Expect parameter name.'));
+                    Token parameter = consume(TokenType.IDENTIFIER, 'Expect parameter name.');
+                    if (hasParameter(parameters, parameter)) {
+                        throw error(parameter, 'Parameter name "' + parameter.lexeme + '" is already defined.');
+                    }
+                    parameters.add(parameter);
                 } while (match(TokenType.COMMA));
             }
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after parameters.');
