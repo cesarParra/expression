@@ -90,7 +90,21 @@ private class FunctionDeclarationTest {
         System.assertEquals('Hello, Alice!', result);
     }
 
-    // haveAccessToContextFromTheOuterScope
+    @IsTest
+    static void haveAccessToRecordContextFromTheOuterScope() {
+        Account record = new Account(Name = 'Alice');
+        insert record;
+
+        String expression = '' +
+            'fun greet() => "Hello, " + Name + "!";\n' +
+            '\n' +
+            'greet()';
+
+        Object result = Evaluator.run(expression, record.Id);
+
+        System.assertEquals('Hello, Alice!', result);
+    }
+
     // TODO: Shadows outer scope variables.
     // TODO: Make sure that two parameters can't have the same name.
 }

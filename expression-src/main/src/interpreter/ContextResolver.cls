@@ -76,6 +76,7 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    private final Set<String> ignoredScopedVariables = new Set<String>();
     public Object visit(Expr.FunctionCall function) {
         // TODO: This only works for standard functions, what about for custom functions created in Apex/CMT?
 
@@ -86,6 +87,17 @@ public with sharing class ContextResolver implements Visitor {
                 for (Integer i = 0; i < function.arguments.size(); i++) {
                     System.debug('Argument: ' + function.arguments[i]);
                     resolve(function.arguments[i]);
+                }
+
+                // Resolve the function body
+                // Declared functions have their own scope, so we need to ignore the variables declared in the function
+                // since these will be passed from outside, and we don't want to resolve them as part of the query.
+                for (Token functionScopeVariableToken : customFunction.parameters) {
+                    ignoredScopedVariables.add(functionScopeVariableToken.lexeme.toLowerCase());
+                }
+                resolve(customFunction.body);
+                for (Token functionScopeVariableToken : customFunction.parameters) {
+                    ignoredScopedVariables.remove(functionScopeVariableToken.lexeme.toLowerCase());
                 }
 
                 return null;
@@ -201,6 +213,10 @@ public with sharing class ContextResolver implements Visitor {
 
     public Object visit(Expr.MergeFieldOrScopeVariable mergeField) {
         String fieldName = mergeField.name.lexeme.toLowerCase();
+        // Check if it is ignored within a function scope
+        if (ignoredScopedVariables.contains(fieldName)) {
+            return null;
+        }
         return addFieldToQuery(this.queryContext, fieldName);
     }
 
