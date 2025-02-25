@@ -44,6 +44,17 @@ private class ApexFfiTest {
         Assert.areEqual('Test', result);
     }
 
+    @IsTest
+    private static void canPassCustomRecordContextInformationToCustomFunctions() {
+        Account testAccount = new Account(Name = 'Test Account');
+        insert testAccount;
+
+        QDB.instance = new FakeExpressionFunctionRunner();
+        String formula = 'CUSTOMFUNCTION(Name)';
+        Object result = Evaluator.run(formula, testAccount);
+        Assert.areEqual('Hello Test Account', result);
+    }
+
     private class FakeExpressionFunctionRunner extends QDB {
         public override List<SObject> run(Q query) {
             return new List<Expression_Function__mdt>{
@@ -66,7 +77,12 @@ private class ApexFfiTest {
 
     public class FakeFunction implements IExpressionFunction {
         public Object execute(List<Object> args) {
-            return 'Test';
+            if (args.isEmpty()) {
+                return 'Test';
+            }
+
+            String arg = (String) args[0];
+            return 'Hello ' + arg;
         }
     }
 }

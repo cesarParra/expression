@@ -1,7 +1,7 @@
 public enum TokenType {
     // --------------- Single-character ---------------
     PLUS, MINUS, STAR, SLASH, EXPONENT, LEFT_PAREN, RIGHT_PAREN, COMMA,
-    LEFT_BRACKET, RIGHT_BRACKET, LEFT_BRACE, RIGHT_BRACE, COLON, HASH,
+    LEFT_BRACKET, RIGHT_BRACKET, LEFT_BRACE, RIGHT_BRACE, COLON,
 
     // --------------- One or two character ---------------
     LESS, LESS_GREATER, LESS_EQUAL,
@@ -25,13 +25,16 @@ public enum TokenType {
     STRING_INTERPOLATION_START, STRING_INTERPOLATION_END,
     STRING_LITERAL_END, CHARACTER, NUMBER_LITERAL,
     // $. Used for custom variables and context aware variables
-    DOLLAR,
+    CUSTOM_VARIABLE,
     // @. Used for global context variables
-    AT,
+    GLOBAL_CONTEXT_VARIABLE,
 
     // ----------------- Keywords -----------------
     TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD, QUERY_KEYWORD,
     ASC_KEYWORD, DESC_KEYWORD,
+
+    // ----------------- Functions ----------------------
+    FUNCTION_KEYWORD, FAT_ARROW, SEMICOLON,
 
     // ----------------- EOF ----------------------
     EOF

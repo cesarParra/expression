@@ -2,7 +2,7 @@ name: PR Build
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
     types: [ opened, reopened, synchronize, closed ]
 
 concurrency:

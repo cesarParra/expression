@@ -100,6 +100,12 @@ private class StringFunctionsTest {
     }
 
     @IsTest
+    private static void leftAndRightNoExceptionWhenStringShorterThanRequestedLength() {
+        Assert.areEqual('a', Evaluator.run('RIGHT("a", 2)'));
+        Assert.areEqual('a', Evaluator.run('LEFT("a", 2)'));
+    }
+
+    @IsTest
     private static void isBlankReturnsTrueForAnEmptyString() {
         Assert.areEqual(true, Evaluator.run('ISBLANK("")'));
     }

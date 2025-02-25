@@ -186,6 +186,23 @@ private class ScannerTest {
     }
 
     @IsTest
+    private static void canScanFunctionDeclarations() {
+        String expression = 'fun foo() => 1;';
+        List<Token> result = new Scanner(expression).scanTokens();
+
+        Assert.areEqual(TokenType.FUNCTION_KEYWORD, result[0].type);
+        Assert.areEqual(TokenType.IDENTIFIER, result[1].type);
+        Assert.areEqual('foo', result[1].lexeme);
+        Assert.areEqual(TokenType.LEFT_PAREN, result[2].type);
+        Assert.areEqual(TokenType.RIGHT_PAREN, result[3].type);
+        Assert.areEqual(TokenType.FAT_ARROW, result[4].type);
+        Assert.areEqual(TokenType.NUMBER_LITERAL, result[5].type);
+        Assert.areEqual(1, result[5].literal);
+        Assert.areEqual(TokenType.SEMICOLON, result[6].type);
+        Assert.areEqual(TokenType.EOF, result[7].type);
+    }
+
+    @IsTest
     static void match2DoesntGoBeyondEndOfInput() {
         // Match2 tries to check if we are dealing with a ... or a single ., so since the key we
         // are trying to access is only one character long, we need to make sure that it doesn't go
@@ -200,7 +217,7 @@ private class ScannerTest {
         String expression = '@Id';
         List<Token> result = new Scanner(expression).scanTokens();
         Assert.areEqual(2, result.size());
-        Assert.areEqual(TokenType.AT, result[0].type);
+        Assert.areEqual(TokenType.GLOBAL_CONTEXT_VARIABLE, result[0].type);
         Assert.areEqual('@Id', result[0].lexeme);
     }
 }

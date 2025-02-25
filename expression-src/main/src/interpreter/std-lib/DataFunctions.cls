@@ -5,14 +5,14 @@
  * @display-icon utility:data_mapping
  */
 public with sharing class DataFunctions {
-    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction>{
         'TRANSFORM' => new TransformFn(),
         'LET' => new LET(),
         'RAWQUERY' => new RawQuery()
     };
 
     public class DataFunctionsProvider implements FunctionProvider {
-        public Map<String, ExpressionFunction> getFunctions() {
+        public Map<String, StandardFunction> getFunctions() {
             return FUNCTIONS;
         }
     }
@@ -25,10 +25,10 @@ public with sharing class DataFunctions {
      * @function TRANSFORM
      * @example TRANSFORM("Hello World", UPPER($source)) // "HELLO WORLD"
      */
-    private class TransformFn extends ExpressionFunction {
+    private class TransformFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object sourceObj = evaluate(arguments.get(0));
-            Environment env = new Environment(null);
+            Environment env = new Environment();
             env.define('$source', sourceObj);
             Interpreter interpreter = new Interpreter(env);
             return interpreter.interpret(arguments.get(1));
@@ -46,7 +46,7 @@ public with sharing class DataFunctions {
      * @function LET
      * @example LET({ "$a": 1, "$b": 2 }, $a + $b) // 3
      */
-    private class LET extends ExpressionFunction {
+    private class LET extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument should be a map
             Object left = evaluate(arguments.get(0));
@@ -82,7 +82,7 @@ public with sharing class DataFunctions {
      * @function RAWQUERY
      * @example RAWQUERY("SELECT Id, Name FROM Account LIMIT 10")
      */
-    private class RawQuery extends ExpressionFunction {
+    private class RawQuery extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object queryObj = (String) evaluate(arguments.get(0));
             if (!(queryObj instanceof String)) {

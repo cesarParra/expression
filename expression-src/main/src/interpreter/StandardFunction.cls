@@ -1,4 +1,4 @@
-public with sharing abstract class ExpressionFunction {
+public with sharing abstract class StandardFunction implements IAritySupport {
     public static final List<FunctionProvider> FUNCTION_PROVIDERS = new List<FunctionProvider>{
         new LogicalFunctions.LogicalFunctionsProvider(),
         new StringFunctions.StringFunctionsProvider(),
@@ -23,7 +23,7 @@ public with sharing abstract class ExpressionFunction {
         return getStandardFunctionNames().contains(upperCaseFunctionName);
     }
 
-    public static ExpressionFunction getByName(String functionName) {
+    public static StandardFunction getByName(String functionName) {
         String upperCaseFunctionName = functionName.toUpperCase();
         for (FunctionProvider provider : FUNCTION_PROVIDERS) {
             if (provider.getFunctions().containsKey(upperCaseFunctionName)) {

@@ -1,5 +1,6 @@
 public with sharing class QueryInterpreter extends Interpreter {
     private Boolean isWhereContext = false;
+    private static Boolean allowScopeVariableInterpretation = false;
     private SObjectType objectType;
 
     public QueryInterpreter(Environment environment) {
@@ -58,7 +59,9 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
 
         if (query.limitExpr != null) {
+            allowScopeVariableInterpretation = true;
             Object limitResult = evaluate(query.limitExpr);
+            allowScopeVariableInterpretation = false;
             if (!(limitResult instanceof Decimal)) {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected an integer or an expression that evaluates to an number for the limit clause.');
@@ -79,7 +82,9 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
 
         if (query.offsetExpr != null) {
+            allowScopeVariableInterpretation = true;
             Object offsetResult = evaluate(query.offsetExpr);
+            allowScopeVariableInterpretation = false;
             if (!(offsetResult instanceof Decimal)) {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected an integer or an expression that evaluates to an number for the offset clause.');
@@ -147,7 +152,9 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
 
         Object left = evaluate(binary.left);
+        allowScopeVariableInterpretation = true;
         Object right = evaluate(binary.right);
+        allowScopeVariableInterpretation = false;
 
         switch on binary.operator.type {
             when EQUAL, EQUAL_EQUAL {
@@ -184,7 +191,10 @@ public with sharing class QueryInterpreter extends Interpreter {
         return super.visit(unary);
     }
 
-    public override Object visit(Expr.MergeField mergeField) {
+    public override Object visit(Expr.MergeFieldOrScopeVariable mergeField) {
+        if (allowScopeVariableInterpretation) {
+            return super.visit(mergeField);
+        }
         return mergeField.name.lexeme;
     }
 
@@ -211,8 +221,8 @@ public with sharing class QueryInterpreter extends Interpreter {
                 'Functions are not supported in a Query context outside of a where clause.');
         }
 
-        Map<String, ExpressionFunction> dateAndTimeFunctions = new DateAndTimeFunctions.DateAndTimeFunctionsProvider().getFunctions();
-        Map<String, ExpressionFunction> supportedWhereFunctions = new Map<String, ExpressionFunction>{
+        Map<String, StandardFunction> dateAndTimeFunctions = new DateAndTimeFunctions.DateAndTimeFunctionsProvider().getFunctions();
+        Map<String, StandardFunction> supportedWhereFunctions = new Map<String, StandardFunction>{
             'LIKE' => new LikeFn(),
             'ISIN' => new IsInFn(),
             'ISNOTIN' => new IsNotInFn(),
@@ -229,9 +239,9 @@ public with sharing class QueryInterpreter extends Interpreter {
 
         String functionName = function.functionToken.lexeme.toUpperCase();
         if (supportedWhereFunctions.containsKey(functionName)) {
-            ExpressionFunction expressionFunction = supportedWhereFunctions.get(functionName);
+            StandardFunction expressionFunction = supportedWhereFunctions.get(functionName);
             expressionFunction.setInterpreter(this);
-            evaluateArity(expressionFunction, function);
+            ArityEvaluator.check(expressionFunction, function);
             try {
                 return expressionFunction.call(function.arguments);
             } catch (Exception e) {
@@ -246,10 +256,12 @@ public with sharing class QueryInterpreter extends Interpreter {
             'Unsupported function: ' + function.functionToken.lexeme + ' within a Query context\'s where clause.');
     }
 
-    private class LikeFn extends ExpressionFunction {
+    private class LikeFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object text = evaluate(arguments.get(0));
+            allowScopeVariableInterpretation = true;
             Object pattern = evaluate(arguments.get(1));
+            allowScopeVariableInterpretation = false;
             if (!(text instanceof String)) {
                 throw new FunctionExecutionException(
                     'Error executing "LIKE" function: the first argument must evaluate to a string value.'
@@ -269,11 +281,13 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class IsInFn extends ExpressionFunction {
+    private class IsInFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect 2 arguments, the first is the field name, the second is a list of values
             Object field = evaluate(arguments.get(0));
+            allowScopeVariableInterpretation = true;
             Object values = evaluate(arguments.get(1));
+            allowScopeVariableInterpretation = false;
 
             if (!(field instanceof String)) {
                 throw new FunctionExecutionException(
@@ -302,11 +316,13 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class IsNotInFn extends ExpressionFunction {
+    private class IsNotInFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect 2 arguments, the first is the field name, the second is a list of values
             Object field = evaluate(arguments.get(0));
+            allowScopeVariableInterpretation = true;
             Object values = evaluate(arguments.get(1));
+            allowScopeVariableInterpretation = false;
 
             if (!(field instanceof String)) {
                 throw new FunctionExecutionException(
@@ -335,7 +351,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class IsNullFn extends ExpressionFunction {
+    private class IsNullFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect 1 argument, the field name
             Object field = evaluate(arguments.get(0));
@@ -354,7 +370,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class IsNotNullFn extends ExpressionFunction {
+    private class IsNotNullFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Expect 1 argument, the field name
             Object field = evaluate(arguments.get(0));
@@ -373,7 +389,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class AndFn extends ExpressionFunction {
+    private class AndFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             List<QICondition> conditions = new List<QICondition>();
             for (Expr argument : arguments) {
@@ -394,7 +410,7 @@ public with sharing class QueryInterpreter extends Interpreter {
         }
     }
 
-    private class OrFn extends ExpressionFunction {
+    private class OrFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             List<QICondition> conditions = new List<QICondition>();
             for (Expr argument : arguments) {

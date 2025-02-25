@@ -5,7 +5,7 @@
  * @display-icon utility:advanced_function
  */
 public with sharing class MathFunctions {
-    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction>{
         'ABS' => new AbsFn(),
         'CEILING' => new CeilingFn(),
         'FLOOR' => new FloorFn(),
@@ -17,7 +17,7 @@ public with sharing class MathFunctions {
     };
 
     public class MathFunctionsProvider implements FunctionProvider {
-        public Map<String, ExpressionFunction> getFunctions() {
+        public Map<String, StandardFunction> getFunctions() {
             return FUNCTIONS;
         }
     }
@@ -30,7 +30,7 @@ public with sharing class MathFunctions {
      * @example
      * ABS(-1) // 1
      */
-    private class AbsFn extends ExpressionFunction {
+    private class AbsFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object numberValue = evaluate(arguments.get(0));
             if (!(numberValue instanceof Decimal)) {
@@ -55,7 +55,7 @@ public with sharing class MathFunctions {
      * @example
      * CEILING(1.5) // 2
      */
-    private class CeilingFn extends ExpressionFunction {
+    private class CeilingFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object numberValue = evaluate(arguments.get(0));
             if (!(numberValue instanceof Decimal)) {
@@ -80,7 +80,7 @@ public with sharing class MathFunctions {
      * @example
      * FLOOR(1.5) // 1
      */
-    private class FloorFn extends ExpressionFunction {
+    private class FloorFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object numberValue = evaluate(arguments.get(0));
             if (!(numberValue instanceof Decimal)) {
@@ -97,7 +97,7 @@ public with sharing class MathFunctions {
         }
     }
 
-    private virtual class MaxMixFns extends ExpressionFunction {
+    private virtual class MaxMixFns extends StandardFunction {
         private final String name;
 
         public MaxMixFns(String name) {
@@ -181,7 +181,7 @@ public with sharing class MathFunctions {
         }
     }
 
-    private virtual class RoundAndTruncFns extends ExpressionFunction {
+    private virtual class RoundAndTruncFns extends StandardFunction {
         private final String name;
 
         public RoundAndTruncFns(String name) {
@@ -257,7 +257,7 @@ public with sharing class MathFunctions {
      * @example
      * MOD(5, 2) // 1
      */
-    private class ModFn extends ExpressionFunction {
+    private class ModFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object dividendValue = evaluate(arguments.get(0));
             if (!(dividendValue instanceof Decimal)) {

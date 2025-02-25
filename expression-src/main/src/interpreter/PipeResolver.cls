@@ -96,7 +96,7 @@ public with sharing class PipeResolver implements Visitor {
         return variable;
     }
 
-    public Object visit(Expr.MergeField mergeField) {
+    public Object visit(Expr.MergeFieldOrScopeVariable mergeField) {
         return mergeField;
     }
 
@@ -173,6 +173,15 @@ public with sharing class PipeResolver implements Visitor {
             newLimitExpr,
             newWhereExpr,
             newOffsetExpr
+        );
+    }
+
+    public Object visit(Expr.FunctionDeclaration functionDeclaration) {
+        Expr resolvedBody = resolve(functionDeclaration.body);
+        return new Expr.FunctionDeclaration(
+            functionDeclaration.name,
+            functionDeclaration.parameters,
+            resolvedBody
         );
     }
 }

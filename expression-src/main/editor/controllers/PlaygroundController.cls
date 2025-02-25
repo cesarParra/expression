@@ -1,7 +1,7 @@
 public with sharing class PlaygroundController {
     @AuraEnabled(Cacheable=true)
     public static List<String> getFunctionNames() {
-        Set<String> builtInFunctionNames = ExpressionFunction.getStandardFunctionNames();
+        Set<String> builtInFunctionNames = StandardFunction.getStandardFunctionNames();
         Set<String> customFunctionNames = Expression_Function__mdt.getAll().keySet();
         Set<String> functionNames = new Set<String>();
         functionNames.addAll(builtInFunctionNames);

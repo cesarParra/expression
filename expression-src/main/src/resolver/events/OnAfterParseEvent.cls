@@ -1,8 +1,8 @@
 public with sharing class OnAfterParseEvent implements EvaluatorEvent {
-    public final Expr expression;
+    public final List<Expr> expressions;
 
-    public OnAfterParseEvent(Expr expression) {
-        this.expression = expression;
+    public OnAfterParseEvent(List<Expr> expressions) {
+        this.expressions = expressions;
     }
 
     public Type getType() {

@@ -2,17 +2,20 @@ public with sharing class ContextResolver implements Visitor {
     private Boolean shouldExecuteQuery = false;
     private Query queryContext;
 
+    private final List<Expr.FunctionDeclaration> customFunctionDeclarations;
     private final Query topLevelQuery;
     private final List<Query> subQueries = new List<Query>();
 
-    public ContextResolver(Id recordId) {
+    public ContextResolver(Id recordId, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
         this.queryContext = new Query(recordId);
         this.topLevelQuery = this.queryContext;
+        this.customFunctionDeclarations = customFunctionDeclarations;
     }
 
-    public ContextResolver(Set<Id> recordIds) {
+    public ContextResolver(Set<Id> recordIds, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
         this.queryContext = new Query(recordIds);
         this.topLevelQuery = this.queryContext;
+        this.customFunctionDeclarations = customFunctionDeclarations;
     }
 
     private Object resolve(Expr expr) {
@@ -72,41 +75,75 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    private final Set<String> ignoredScopedVariables = new Set<String>();
     public Object visit(Expr.FunctionCall function) {
-        ExpressionFunction fn = ExpressionFunction.getByName(function.functionName);
-        if (fn == null) {
-            return null;
-        }
-
-        // Whenever children resolution is needed we assume that the second argument contains the expression
-        // for which to resolve, so skip this when the argument list is not long enough.
-        if (fn.needsQueryArgumentResolution()) {
-            // We want to first resolve the left side and it should resolve to a Query object
-            // which we will use as the context for the right side.
-
-            Query previousContext = this.queryContext;
-            Object result = resolve(function.arguments[0]);
-            if (!(result instanceof Query)) {
-                return null;
-            }
-
-            this.queryContext = (Query) result;
-            resolve(function.arguments[1]);
-            this.queryContext = previousContext;
-
-            // If there are more arguments, resolve normally for the top level query
-            if (function.arguments.size() > 2) {
-                for (Integer i = 2; i < function.arguments.size(); i++) {
+        // See if the function can be found in the custom function declarations
+        for (Expr.FunctionDeclaration customFunction : this.customFunctionDeclarations) {
+            if (customFunction.name.lexeme.toLowerCase() == function.functionName.toLowerCase()) {
+                // Resolve arguments
+                for (Integer i = 0; i < function.arguments.size(); i++) {
                     resolve(function.arguments[i]);
                 }
-            }
 
-            return result;
-        } else {
+                // Resolve the function body
+                // Declared functions have their own scope, so we need to ignore the variables declared in the function
+                // since these will be passed from outside, and we don't want to resolve them as part of the query.
+                for (Token functionScopeVariableToken : customFunction.parameters) {
+                    ignoredScopedVariables.add(functionScopeVariableToken.lexeme.toLowerCase());
+                }
+                resolve(customFunction.body);
+                for (Token functionScopeVariableToken : customFunction.parameters) {
+                    ignoredScopedVariables.remove(functionScopeVariableToken.lexeme.toLowerCase());
+                }
+
+                return null;
+            }
+        }
+
+        // Otherwise, try and resolve the standard function
+        StandardFunction fn = StandardFunction.getByName(function.functionName);
+        if (fn != null) {
+            // Whenever children resolution is needed we assume that the second argument contains the expression
+            // for which to resolve, so skip this when the argument list is not long enough.
+            if (fn.needsQueryArgumentResolution()) {
+                // We want to first resolve the left side and it should resolve to a Query object
+                // which we will use as the context for the right side.
+
+                Query previousContext = this.queryContext;
+                Object result = resolve(function.arguments[0]);
+                if (!(result instanceof Query)) {
+                    return null;
+                }
+
+                this.queryContext = (Query) result;
+                resolve(function.arguments[1]);
+                this.queryContext = previousContext;
+
+                // If there are more arguments, resolve normally for the top level query
+                if (function.arguments.size() > 2) {
+                    for (Integer i = 2; i < function.arguments.size(); i++) {
+                        resolve(function.arguments[i]);
+                    }
+                }
+
+                return result;
+            } else {
+                for (Expr argument : function.arguments) {
+                    resolve(argument);
+                }
+                return null;
+            }
+        }
+
+        // See if the function exists as a Custom Metadata function
+        IExpressionFunction customMetadataFunction = CustomFunctionRepository.getInstance().getByName(function.functionName);
+        if (customMetadataFunction != null) {
+            // Resolve arguments
             for (Expr argument : function.arguments) {
                 resolve(argument);
             }
         }
+
         return null;
     }
 
@@ -133,8 +170,8 @@ public with sharing class ContextResolver implements Visitor {
     private String resolveExtractReferenceOutOfGetExpression(Expr.GetExpr getExpr) {
         // Get the relationship field to query out of the get/merge field contained.
         String relationshipToQuery = '';
-        if ((getExpr.objectExpr instanceof Expr.MergeField)) {
-            relationshipToQuery += ((Expr.MergeField) getExpr.objectExpr).name.lexeme + '.';
+        if ((getExpr.objectExpr instanceof Expr.MergeFieldOrScopeVariable)) {
+            relationshipToQuery += ((Expr.MergeFieldOrScopeVariable) getExpr.objectExpr).name.lexeme + '.';
         } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
             relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
         } else if (isReferencingContextField(getExpr)) {
@@ -179,8 +216,12 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
-    public Object visit(Expr.MergeField mergeField) {
+    public Object visit(Expr.MergeFieldOrScopeVariable mergeField) {
         String fieldName = mergeField.name.lexeme.toLowerCase();
+        // Check if it is ignored within a function scope
+        if (ignoredScopedVariables.contains(fieldName)) {
+            return null;
+        }
         return addFieldToQuery(this.queryContext, fieldName);
     }
 
@@ -243,6 +284,11 @@ public with sharing class ContextResolver implements Visitor {
 
     public Object visit(Expr.Spread spread) {
         this.resolve(spread.expression);
+        return null;
+    }
+
+    public Object visit(Expr.FunctionDeclaration functionDeclaration) {
+        this.resolve(functionDeclaration.body);
         return null;
     }
 
