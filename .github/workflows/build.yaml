@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ main ]
     paths:
       - 'expression-src/**'
   workflow_dispatch:
