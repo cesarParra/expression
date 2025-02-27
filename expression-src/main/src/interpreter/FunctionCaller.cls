@@ -10,6 +10,7 @@ public abstract class FunctionCaller {
         if (env.hasFunction(function.functionName)) {
             return new FunctionDeclarationCaller(function);
         } else if (StandardFunction.functionExistsInStandardLibrary(function.functionName)) {
+            // TODO: Also cache standard functions
             return new StandardLibraryFunctionCaller(function);
         }
 
@@ -45,8 +46,14 @@ public abstract class FunctionCaller {
                 );
             }
 
+            if (functionDeclaration.isCachedForEnvironment(functionScopeEnvironment)) {
+                return functionDeclaration.getCachedValueForEnvironment(functionScopeEnvironment);
+            }
+
             Interpreter functionInterpreter = new Interpreter(functionScopeEnvironment);
-            return functionInterpreter.interpret(functionDeclaration.body);
+            Object value = functionInterpreter.interpret(functionDeclaration.body);
+            functionDeclaration.cache(functionScopeEnvironment, value);
+            return value;
         }
     }
 

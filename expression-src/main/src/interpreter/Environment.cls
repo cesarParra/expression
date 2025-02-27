@@ -155,4 +155,13 @@ public with sharing class Environment {
 
     public class EnvironmentException extends Exception {
     }
+
+    public Boolean equals(Object obj) {
+        Environment other = (Environment) obj;
+        return parentEnvironment == other.parentEnvironment && context == other.context && variables.equals(other.variables);
+    }
+
+    public override Integer hashCode() {
+        return (parentEnvironment != null ? parentEnvironment.hashCode() : 0) ^ (context != null ? context.hashCode() : 0) ^ variables.hashCode();
+    }
 }

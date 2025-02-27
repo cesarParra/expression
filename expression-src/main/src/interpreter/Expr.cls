@@ -49,6 +49,7 @@ public abstract class Expr {
         public final Token name;
         public final List<Token> parameters;
         public final Expr body;
+        private Map<Environment, Object> cachedValueForEnvironment = new Map<Environment, Object>();
 
         public FunctionDeclaration(Token name, List<Token> parameters, Expr body) {
             this.name = name;
@@ -74,6 +75,18 @@ public abstract class Expr {
 
         public Arity getArity() {
             return Arity.exactly(parameters.size());
+        }
+
+        public void cache(Environment env, Object cachedValue) {
+            cachedValueForEnvironment.put(env, cachedValue);
+        }
+
+        public Boolean isCachedForEnvironment(Environment env) {
+            return cachedValueForEnvironment.containsKey(env);
+        }
+
+        public Object getCachedValueForEnvironment(Environment env) {
+            return cachedValueForEnvironment.get(env);
         }
     }
 
