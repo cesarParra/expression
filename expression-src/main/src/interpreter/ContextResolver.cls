@@ -21,6 +21,39 @@ public with sharing class ContextResolver implements Visitor {
     private Object resolve(Expr expr) {
         return expr.accept(this);
     }
+    
+    /**
+     * @description Resolves an expression for record field references without building the query
+     * @param expression The expression to analyze
+     * @return Object The result of the visitor
+     */
+    public Object resolveForRecord(Expr expression) {
+        return this.resolve(expression);
+    }
+    
+    /**
+     * @description Checks if the query should be executed based on whether any fields were added to the query
+     * @return Boolean True if the query should be executed, false otherwise
+     */
+    public Boolean shouldExecuteQuery() {
+        return this.shouldExecuteQuery;
+    }
+    
+    /**
+     * @description Gets the current query context
+     * @return Query The current query context
+     */
+    public Query getQueryContext() {
+        return this.queryContext;
+    }
+    
+    /**
+     * @description Gets the list of subqueries that were added during expression resolution
+     * @return List<Query> The list of subqueries
+     */
+    public List<Query> getSubQueries() {
+        return this.subQueries;
+    }
 
     public List<SObject> build(Expr expression) {
         this.resolve(expression);

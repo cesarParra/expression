@@ -222,4 +222,29 @@ global with sharing abstract class Evaluator {
     global static Object run(String formula, Set<Id> recordIds, Configuration config) {
         return EvaluatorResolver.forIds(recordIds).evaluate(formula, config).result;
     }
+    
+    /**
+     * @description Analyzes multiple formulas and retrieves a record with all fields needed by those formulas.
+     *              This is useful when you need to query a record once with all required fields for multiple
+     *              formula evaluations, rather than letting each formula evaluation perform its own query.
+     * @param recordId The Id of the record to retrieve
+     * @param formulas List of formulas to analyze
+     * @return SObject The record populated with all fields referenced in the formulas
+     * @example
+     * ```apex
+     * Id accountId = [SELECT Id FROM Account LIMIT 1].Id;
+     * List<String> formulas = new List<String>{
+     *   'Name',
+     *   'BillingCity',
+     *   'Owner.Name'
+     * };
+     * Account account = (Account)expression.Evaluator.retrieveRecordForFormulas(accountId, formulas);
+     * // Now use the account record which contains all the needed fields
+     * String accountName = (String)account.get('Name');
+     * String ownerName = (String)account.getSObject('Owner').get('Name');
+     * ```
+     */
+    global static SObject retrieveRecordForFormulas(Id recordId, List<String> formulas) {
+        return EvaluatorResolver.retrieveRecordForFormulas(recordId, formulas);
+    }
 }
