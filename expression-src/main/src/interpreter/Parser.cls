@@ -26,6 +26,13 @@ public with sharing class Parser {
 
     private Expr functionDeclarationCheck() {
         if (match(TokenType.FUNCTION_KEYWORD)) {
+            Boolean skipCache = false;
+
+            // The fun keyword might be followed (optionally) by the nocache keyword
+            if (match(TokenType.NOCACHE_KEYWORD)) {
+                skipCache = true;
+            }
+
             Token name = consume(TokenType.IDENTIFIER, 'Expect function name.');
             consume(TokenType.LEFT_PAREN, 'Expect \'(\' after function name.');
             List<Token> parameters = new List<Token>();
@@ -42,7 +49,7 @@ public with sharing class Parser {
             consume(TokenType.FAT_ARROW, 'Expect \'=>\' before function body.');
             Expr body = expression();
             consume(TokenType.SEMICOLON, 'Expect \';\' after function body.');
-            return new Expr.FunctionDeclaration(name, parameters, body);
+            return new Expr.FunctionDeclaration(name, parameters, body, skipCache);
         }
         return orCheck();
     }
@@ -283,7 +290,7 @@ public with sharing class Parser {
                 if (match(TokenType.FAT_ARROW)) {
                     Expr body = expression();
                     // Pass null as the name since it's anonymous
-                    return new Expr.FunctionDeclaration(null, parameters, body);
+                    return new Expr.FunctionDeclaration(null, parameters, body, true);
                 }
             }
 

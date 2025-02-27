@@ -181,7 +181,8 @@ public with sharing class PipeResolver implements Visitor {
         return new Expr.FunctionDeclaration(
             functionDeclaration.name,
             functionDeclaration.parameters,
-            resolvedBody
+            resolvedBody,
+            functionDeclaration.skipCache
         );
     }
 }
