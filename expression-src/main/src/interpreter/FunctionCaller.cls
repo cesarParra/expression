@@ -45,8 +45,14 @@ public abstract class FunctionCaller {
                 );
             }
 
+            if (functionDeclaration.isCachedForEnvironment(functionScopeEnvironment)) {
+                return functionDeclaration.getCachedValueForEnvironment(functionScopeEnvironment);
+            }
+
             Interpreter functionInterpreter = new Interpreter(functionScopeEnvironment);
-            return functionInterpreter.interpret(functionDeclaration.body);
+            Object value = functionInterpreter.interpret(functionDeclaration.body);
+            functionDeclaration.cache(functionScopeEnvironment, value);
+            return value;
         }
     }
 

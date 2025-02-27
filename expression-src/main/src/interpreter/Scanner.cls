@@ -17,6 +17,7 @@ public with sharing class Scanner {
         keywords.put('asc', TokenType.ASC_KEYWORD);
         keywords.put('desc', TokenType.DESC_KEYWORD);
         keywords.put('fun', TokenType.FUNCTION_KEYWORD);
+        keywords.put('nocache', TokenType.NOCACHE_KEYWORD);
     }
 
     public Scanner(String source) {
