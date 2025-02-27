@@ -45,6 +45,62 @@ public abstract class Expr {
         }
     }
 
+    public class FunctionDeclaration extends Expr implements IAritySupport {
+        public final Token name;
+        public final List<Token> parameters;
+        public final Expr body;
+        public final Boolean skipCache;
+        private final Map<Environment, Object> cachedValueForEnvironment = new Map<Environment, Object>();
+
+        public FunctionDeclaration(Token name, List<Token> parameters, Expr body, Boolean skipCache) {
+            this.name = name;
+            this.parameters = parameters;
+            this.body = body;
+            this.skipCache = skipCache;
+        }
+
+        public String functionName {
+            get {
+                return name.lexeme;
+            }
+        }
+
+        public Boolean isAnonymous {
+            get {
+                return name == null;
+            }
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+
+        public Arity getArity() {
+            return Arity.exactly(parameters.size());
+        }
+
+        public void cache(Environment env, Object cachedValue) {
+            if (skipCache) {
+                return;
+            }
+            cachedValueForEnvironment.put(env, cachedValue);
+        }
+
+        public Boolean isCachedForEnvironment(Environment env) {
+            if (skipCache) {
+                return false;
+            }
+            return cachedValueForEnvironment.containsKey(env);
+        }
+
+        public Object getCachedValueForEnvironment(Environment env) {
+            if (skipCache) {
+                return null;
+            }
+            return cachedValueForEnvironment.get(env);
+        }
+    }
+
     public class FunctionCall extends Expr {
         public final Token functionToken;
         public final List<Expr> arguments;
@@ -114,10 +170,10 @@ public abstract class Expr {
         }
     }
 
-    public class MergeField extends Expr {
+    public class MergeFieldOrScopeVariable extends Expr {
         public final Token name;
 
-        public MergeField(Token name) {
+        public MergeFieldOrScopeVariable(Token name) {
             this.name = name;
         }
 

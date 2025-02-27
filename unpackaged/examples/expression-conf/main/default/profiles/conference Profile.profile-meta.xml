@@ -97,7 +97,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>ExpressionFunction</apexClass>
+        <apexClass>StandardFunction</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

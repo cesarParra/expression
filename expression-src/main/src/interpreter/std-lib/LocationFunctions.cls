@@ -5,13 +5,13 @@
  * @display-icon utility:pin
  */
 public with sharing class LocationFunctions {
-    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction>{
         'LOCATION' => new LocationFn(),
         'DISTANCE' => new DistanceFn()
     };
 
     public class LocationFunctionsProvider implements FunctionProvider {
-        public Map<String, ExpressionFunction> getFunctions() {
+        public Map<String, StandardFunction> getFunctions() {
             return FUNCTIONS;
         }
     }
@@ -24,7 +24,7 @@ public with sharing class LocationFunctions {
      * @example
      * LOCATION(37.7749, 122.4194) // { "latitude": 37.7749, "longitude": 122.4194 }
      */
-    private class LocationFn extends ExpressionFunction {
+    private class LocationFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Argument must be a Decimal
             Object latitude = evaluate(arguments.get(0));
@@ -42,7 +42,7 @@ public with sharing class LocationFunctions {
                 );
             }
 
-            return Location.newInstance((Decimal)latitude, (Decimal)longitude);
+            return Location.newInstance((Decimal) latitude, (Decimal) longitude);
         }
 
         public override Arity getArity() {
@@ -59,7 +59,7 @@ public with sharing class LocationFunctions {
      * @example
      * DISTANCE(LOCATION(37.7749, 122.4194), LOCATION(40.7128, 74.0060), "mi") // 2565.6985207767134
      */
-    private class DistanceFn extends ExpressionFunction {
+    private class DistanceFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First object must be a System.Location
             Object first = evaluate(arguments.get(0));
@@ -86,14 +86,14 @@ public with sharing class LocationFunctions {
             }
 
             // The third argument must either be "km" or "mi"
-            String unit = (String)third;
+            String unit = (String) third;
             if (!unit.equals('km') && !unit.equals('mi')) {
                 throw new FunctionExecutionException(
                     'Error executing "DISTANCE" function: the third argument must be either "km" or "mi".'
                 );
             }
 
-            return Location.getDistance((System.Location)first, (System.Location)second, unit);
+            return Location.getDistance((System.Location) first, (System.Location) second, unit);
         }
 
         public override Arity getArity() {

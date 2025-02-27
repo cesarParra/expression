@@ -5,7 +5,7 @@
  * @display-icon utility:check
  */
 public with sharing class LogicalFunctions {
-    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction>{
         'AND' => new LogicalFunctions.AndFn(),
         'IF' => new LogicalFunctions.IfFn(),
         'NOT' => new LogicalFunctions.NotFn(),
@@ -17,7 +17,7 @@ public with sharing class LogicalFunctions {
     };
 
     public class LogicalFunctionsProvider implements FunctionProvider {
-        public Map<String, ExpressionFunction> getFunctions() {
+        public Map<String, StandardFunction> getFunctions() {
             return FUNCTIONS;
         }
     }
@@ -30,7 +30,7 @@ public with sharing class LogicalFunctions {
      * @example
      * AND(true, false, true) // false
      */
-    private class AndFn extends ExpressionFunction {
+    private class AndFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Loop through all arguments and return false if any of them is false
             for (Expr argument : arguments) {
@@ -63,7 +63,7 @@ public with sharing class LogicalFunctions {
      * IF(true, "Hello", "World") // "Hello"
      * IF(false, "Hello", "World") // "World"
      */
-    private class IfFn extends ExpressionFunction {
+    private class IfFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Evaluate the condition
             Object condition = evaluate(arguments.get(0));
@@ -95,7 +95,7 @@ public with sharing class LogicalFunctions {
      * @example
      * NOT(true) // false
      */
-    private class NotFn extends ExpressionFunction {
+    private class NotFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Evaluate the expression
             Object expression = evaluate(arguments.get(0));
@@ -123,7 +123,7 @@ public with sharing class LogicalFunctions {
      * OR(true, false, true) // true
      * OR(false, false, false) // false
      */
-    private class OrFn extends ExpressionFunction {
+    private class OrFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // Loop through all arguments and return true if any of them is true
             for (Expr argument : arguments) {
@@ -156,7 +156,7 @@ public with sharing class LogicalFunctions {
      * @example
      * BLANKVALUE(null, "Hello") // "Hello"
      */
-    private class BlankValue extends ExpressionFunction {
+    private class BlankValue extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
             if (value == null) {
@@ -193,7 +193,7 @@ public with sharing class LogicalFunctions {
      * ISBLANK("") // true
      * ISBLANK("Hello") // false
      */
-    private class IsBlank extends ExpressionFunction {
+    private class IsBlank extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
             if ((value instanceof String)) {
@@ -217,7 +217,7 @@ public with sharing class LogicalFunctions {
      * ISNUMBER(1) // true
      * ISNUMBER("Hello") // false
      */
-    private class IsNumber extends ExpressionFunction {
+    private class IsNumber extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
             return value instanceof Decimal;
@@ -239,7 +239,7 @@ public with sharing class LogicalFunctions {
      * @example
      * CASE(Rating, "Hot", "🔥", "Cold", "🧊", "🤷") // "🔥", "🧊", or "🤷"
      */
-    private class CaseFn extends ExpressionFunction {
+    private class CaseFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // The first argument is the when expression
             Object whenExpression = evaluate(arguments.get(0));

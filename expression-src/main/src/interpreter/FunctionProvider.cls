@@ -1,3 +1,3 @@
 public interface FunctionProvider {
-    Map<String, ExpressionFunction> getFunctions();
+    Map<String, StandardFunction> getFunctions();
 }

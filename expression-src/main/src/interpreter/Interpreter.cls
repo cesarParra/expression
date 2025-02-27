@@ -20,6 +20,10 @@ public virtual with sharing class Interpreter implements Visitor {
         return expr.accept(this);
     }
 
+    public Environment getEnvironment() {
+        return env;
+    }
+
     public virtual Object visit(Expr.Logical logical) {
         Object left = evaluate(logical.left);
 
@@ -284,30 +288,23 @@ public virtual with sharing class Interpreter implements Visitor {
         );
     }
 
-    public virtual Object visit(Expr.MergeField mergeField) {
-        if (env.noRecordContext()) {
-            throw new Exceptions.RuntimeException(
-                mergeField.name,
-                'Error executing merge field ' + mergeField.name.lexeme + ': no record context was provided.'
-            );
-        }
-
-        if (!env.contains(mergeField.name.lexeme)) {
-            if (env.containsAsParent(mergeField.name.lexeme)) {
-                return env.getParentSObject(mergeField.name.lexeme);
+    public virtual Object visit(Expr.MergeFieldOrScopeVariable mergeFieldOrScopeVariable) {
+        if (!env.contains(mergeFieldOrScopeVariable.name.lexeme)) {
+            if (env.containsAsParent(mergeFieldOrScopeVariable.name.lexeme)) {
+                return env.getParentSObject(mergeFieldOrScopeVariable.name.lexeme);
             }
 
+            String messageSuffix = env.getSObjectTypeName() != null ? ' or the SObject type ' + env.getSObjectTypeName() + ' does not contain a field with that name.' : '';
             throw new Exceptions.RuntimeException(
-                mergeField.name,
-                'Error executing merge field: ' +
-                    mergeField.name.lexeme +
-                    ' The SObject type ' +
-                    env.getSObjectTypeName() +
-                    ' does not contain a field with that name.'
+                mergeFieldOrScopeVariable.name,
+                'Error evaluating merge field or variable: ' +
+                    mergeFieldOrScopeVariable.name.lexeme +
+                    ' A variable with that name is not declared in the current context' +
+                    messageSuffix
             );
         }
 
-        return env.get(mergeField.name.lexeme);
+        return env.get(mergeFieldOrScopeVariable.name.lexeme);
     }
 
     public virtual Object visit(Expr.Unary unary) {
@@ -357,59 +354,7 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public virtual Object visit(Expr.FunctionCall function) {
-        // Check if the function is in the list of supported functions
-        if (ExpressionFunction.functionExistsInStandardLibrary(function.functionName)) {
-            ExpressionFunction fn = ExpressionFunction.getByName(function.functionName);
-            fn.setInterpreter(this);
-            evaluateArity(fn, function);
-
-            try {
-                return fn.call(function.arguments);
-            } catch (Exceptions.PositionAwareException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new Exceptions.RuntimeException(
-                    function.functionToken,
-                    e.getMessage()
-                );
-            }
-        } else {
-            // Otherwise try to get a custom function from the Expression Function custom metadata type.
-            IExpressionFunction fn = CustomFunctionRepository.getInstance().getByName(function.functionName);
-            if (fn != null) {
-                List<Object> arguments = new List<Object>();
-                for (Expr argument : function.arguments) {
-                    arguments.add(evaluate(argument));
-                }
-
-                try {
-                    return fn.execute(arguments);
-                } catch (Exceptions.PositionAwareException e) {
-                    throw e;
-                } catch (Exception e) {
-                    throw new Exceptions.RuntimeException(
-                        function.functionToken,
-                        e.getMessage()
-                    );
-                }
-            }
-        }
-
-        throw new Exceptions.RuntimeException(
-            function.functionToken,
-            'Error executing ' + function.functionName + ' function: the function is not supported.'
-        );
-    }
-
-    protected void evaluateArity(ExpressionFunction fn, Expr.FunctionCall function) {
-        if (fn.getArity().isSatisfiedBy(function.arguments.size()) == false) {
-            throw new Exceptions.RuntimeException(
-                function.functionToken,
-                'Error executing ' + function.functionName + ' function: the function expects ' +
-                    fn.getArity().toString() + ' argument(s), but ' +
-                    function.arguments.size() + ' were provided.'
-            );
-        }
+        return FunctionCaller.exec(this, function);
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
@@ -497,5 +442,20 @@ public virtual with sharing class Interpreter implements Visitor {
     public virtual Object visit(Expr.Query query) {
         Q querier = new QueryInterpreter(this.env).evaluateToQuery(query);
         return QDB.getInstance().run(querier);
+    }
+
+    public Object visit(Expr.FunctionDeclaration functionDeclaration) {
+        if (functionDeclaration.isAnonymous) {
+            return functionDeclaration;
+        }
+
+        // Declarations should not be called
+        // by the EvaluatorResolver.
+        // Reaching this point means a declaration exists within another expression and not at the top level,
+        // which is not valid.
+        throw new Exceptions.RuntimeException(
+            functionDeclaration.name,
+            'Function declarations can only be declared at the top level of an expression.'
+        );
     }
 }

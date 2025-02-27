@@ -5,7 +5,7 @@
  * @display-icon utility:justify_text
  */
 public with sharing class CollectionFunctions {
-    private static final Map<String, ExpressionFunction> FUNCTIONS = new Map<String, ExpressionFunction>{
+    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction>{
         'LIST' => new ListFn(),
         'MAP' => new MapFn(),
         'WHERE' => new WhereFn(),
@@ -43,7 +43,7 @@ public with sharing class CollectionFunctions {
     };
 
     public class CollectionFunctionsProvider implements FunctionProvider {
-        public Map<String, ExpressionFunction> getFunctions() {
+        public Map<String, StandardFunction> getFunctions() {
             return FUNCTIONS;
         }
     }
@@ -53,7 +53,7 @@ public with sharing class CollectionFunctions {
         if (currentVal instanceof SObject) {
             env = new Environment((SObject) currentVal);
         } else {
-            env = new Environment(null);
+            env = new Environment();
         }
         return env;
     }
@@ -64,7 +64,7 @@ public with sharing class CollectionFunctions {
      * @example
      * LIST(1, 2, 3, ...LIST(4, 5, 6))
      */
-    private class ListFn extends ExpressionFunction {
+    private class ListFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             interpreter.setIsInListLiteral(true);
 
@@ -93,7 +93,7 @@ public with sharing class CollectionFunctions {
      * @example
      * MAP(["a", "b", "c"], UPPER($current))
      */
-    private class MapFn extends ExpressionFunction {
+    private class MapFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object children = evaluate(arguments.get(0));
             if (children == null) {
@@ -146,7 +146,7 @@ public with sharing class CollectionFunctions {
      * @example
      * WHERE([1, 2, 3], $current > 1)
      */
-    private class WhereFn extends ExpressionFunction {
+    private class WhereFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object children = evaluate(arguments.get(0));
             if (children == null) {
@@ -207,7 +207,7 @@ public with sharing class CollectionFunctions {
      * @example
      * AVERAGE(LIST(1, 2, 3))
      */
-    private class AverageFn extends ExpressionFunction {
+    private class AverageFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object listOfNumbers = evaluate(arguments.get(0));
 
@@ -255,7 +255,7 @@ public with sharing class CollectionFunctions {
      * @example
      * SIZE(LIST(1, 2, 3)) // 3
      */
-    private class SizeFn extends ExpressionFunction {
+    private class SizeFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object listOfValues = evaluate(arguments.get(0));
             // Must be a list or a map
@@ -284,7 +284,7 @@ public with sharing class CollectionFunctions {
      * @example
      * ISEMPTY(LIST(1, 2, 3)) // false
      */
-    private class IsEmptyFn extends ExpressionFunction {
+    private class IsEmptyFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // The argument must either be a list or a map
             Object value = evaluate(arguments.get(0));
@@ -313,7 +313,7 @@ public with sharing class CollectionFunctions {
      * @example
      * APPEND(LIST(1, 2, 3), 4) // [1, 2, 3, 4]
      */
-    private class AppendFn extends ExpressionFunction {
+    private class AppendFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0)) ?? new List<Object>();
             Object item = evaluate(arguments.get(1));
@@ -338,7 +338,7 @@ public with sharing class CollectionFunctions {
      * @example
      * DISTINCT(LIST(1, 2, 3, 1, 2, 3)) // [1, 2, 3]
      */
-    private class DistinctFn extends ExpressionFunction {
+    private class DistinctFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
             if (!(listObj instanceof List<Object>)) {
@@ -367,7 +367,7 @@ public with sharing class CollectionFunctions {
      * @example
      * KEYS(MAP('a' => 1, 'b' => 2, 'c' => 3)) // ['a', 'b', 'c']
      */
-    private class KeysFn extends ExpressionFunction {
+    private class KeysFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object mapObj = evaluate(arguments.get(0));
             if (!(mapObj instanceof Map<Object, Object>)) {
@@ -390,7 +390,7 @@ public with sharing class CollectionFunctions {
      * @example
      * GET(MAP('a' => 1, 'b' => 2, 'c' => 3), 'a') // 1
      */
-    private class GetFn extends ExpressionFunction {
+    private class GetFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object mapObj = evaluate(arguments.get(0));
             Object key = evaluate(arguments.get(1));
@@ -420,7 +420,7 @@ public with sharing class CollectionFunctions {
      * @example
      * VALUES(MAP('a' => 1, 'b' => 2, 'c' => 3)) // [1, 2, 3]
      */
-    private class ValuesFn extends ExpressionFunction {
+    private class ValuesFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object mapObj = evaluate(arguments.get(0));
             if (!(mapObj instanceof Map<Object, Object>)) {
@@ -456,7 +456,7 @@ public with sharing class CollectionFunctions {
      * SORT([{ "a": 3 }, { "a": 2 }, { "a": 1 }], "a", "DESC") // [{ "a": 3 }, { "a": 2 }, { "a": 1 }]
      * SORT([SObject1, SObject2, SObject3], "Name", "ASC", "NULLS_LAST") // [SObject1, SObject2, SObject3]
      **/
-    private class SortFn extends ExpressionFunction {
+    private class SortFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -472,10 +472,10 @@ public with sharing class CollectionFunctions {
             Object fieldToSortBy = null;
             if (arguments.size() > 1) {
                 Expr fieldToSortByExpr = arguments.get(1);
-                if (fieldToSortByExpr instanceof Expr.MergeField) {
+                if (fieldToSortByExpr instanceof Expr.MergeFieldOrScopeVariable) {
                     // If dealing with a merge field, we don't want to evaluate it since we are not interested
                     // in the value. Instead we want to use the name of the field as a string.
-                    fieldToSortBy = ((Expr.MergeField) fieldToSortByExpr).name.lexeme;
+                    fieldToSortBy = ((Expr.MergeFieldOrScopeVariable) fieldToSortByExpr).name.lexeme;
                 } else {
                     fieldToSortBy = evaluate(fieldToSortByExpr);
                 }
@@ -691,7 +691,7 @@ public with sharing class CollectionFunctions {
      * @example
      * FIRST(LIST(1, 2, 3)) // 1
      */
-    private class FirstFn extends ExpressionFunction {
+    private class FirstFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
             if (!(listObj instanceof List<Object>)) {
@@ -718,7 +718,7 @@ public with sharing class CollectionFunctions {
      * @example
      * LAST(LIST(1, 2, 3)) // 3
      */
-    private class LastFn extends ExpressionFunction {
+    private class LastFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
             if (!(listObj instanceof List<Object>)) {
@@ -746,7 +746,7 @@ public with sharing class CollectionFunctions {
      * @example
      * REDUCE([1, 2, 3], $accumulator + $current, 0) // 6
      */
-    private class ReduceFn extends ExpressionFunction {
+    private class ReduceFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -799,7 +799,7 @@ public with sharing class CollectionFunctions {
      * @example
      * PUT({ "a": 1, "b": 2, "c": 3 }, "d", 4) // { "a": 1, "b": 2, "c": 3, "d": 4 }
      */
-    private class PutFn extends ExpressionFunction {
+    private class PutFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a map
             Object mapObj = evaluate(arguments.get(0));
@@ -834,7 +834,7 @@ public with sharing class CollectionFunctions {
      * @function AT
      * @example AT([1, 2, 3], 1) // 2
      */
-    private class AtFn extends ExpressionFunction {
+    private class AtFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -880,7 +880,7 @@ public with sharing class CollectionFunctions {
      * @example
      * ANY([1, 2, 3], $current = 2) // true
      */
-    private class AnyFn extends ExpressionFunction {
+    private class AnyFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -936,7 +936,7 @@ public with sharing class CollectionFunctions {
      * @example
      * SUM([1, 2, 3]) // 6
      */
-    private class SumFn extends ExpressionFunction {
+    private class SumFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -977,7 +977,7 @@ public with sharing class CollectionFunctions {
      * @example
      * EVERY([1, 2, 3], $current > 0) // true
      */
-    private class EveryFn extends ExpressionFunction {
+    private class EveryFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -1036,7 +1036,7 @@ public with sharing class CollectionFunctions {
      * @example
      * EXPAND([1, 2, 3], LIST($current, $current + 1)) // [1, 2, 2, 3, 3, 4]
      */
-    private class ExpandFn extends ExpressionFunction {
+    private class ExpandFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -1096,7 +1096,7 @@ public with sharing class CollectionFunctions {
      * @example
      * FIRSTWHERE([1, 2, 3], $current > 2) // 3
      */
-    private class FirstWhereFn extends ExpressionFunction {
+    private class FirstWhereFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -1152,7 +1152,7 @@ public with sharing class CollectionFunctions {
      * @example
      * FOLLOWEDBY([1, 2, 3], [4, 5, 6]) // [1, 2, 3, 4, 5, 6]
      */
-    private class FollowedByFn extends ExpressionFunction {
+    private class FollowedByFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -1190,7 +1190,7 @@ public with sharing class CollectionFunctions {
      * @example
      * JOIN([1, 2, 3], ", ")
      */
-    private class JoinFn extends ExpressionFunction {
+    private class JoinFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -1231,7 +1231,7 @@ public with sharing class CollectionFunctions {
      * @example
      * LASTWHERE([1, 2, 3], $current > 2) // 3
      */
-    private class LastWhereFn extends ExpressionFunction {
+    private class LastWhereFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -1288,7 +1288,7 @@ public with sharing class CollectionFunctions {
      * @example
      * SKIP([1, 2, 3], 2) // [3]
      */
-    private class SkipFn extends ExpressionFunction {
+    private class SkipFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -1345,7 +1345,7 @@ public with sharing class CollectionFunctions {
      * @example
      * SKIPWHILE([1, 2, 3], $current < 3) // [3]
      */
-    private class SkipWhileFn extends ExpressionFunction {
+    private class SkipWhileFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -1402,7 +1402,7 @@ public with sharing class CollectionFunctions {
      * @example
      * TAKE([1, 2, 3], 2) // [1, 2]
      */
-    private class TakeFn extends ExpressionFunction {
+    private class TakeFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -1459,7 +1459,7 @@ public with sharing class CollectionFunctions {
      * @example
      * TAKEWHILE([1, 2, 3], $current < 3)
      */
-    private class TakeWhileFn extends ExpressionFunction {
+    private class TakeWhileFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a list
             Object listObj = evaluate(arguments.get(0));
@@ -1516,7 +1516,7 @@ public with sharing class CollectionFunctions {
      * @example
      * RANGE(1, 3) // [1, 2, 3]
      */
-    private class RangeFn extends ExpressionFunction {
+    private class RangeFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             // First argument is a number
             Object numberObj = evaluate(arguments.get(0));
@@ -1555,7 +1555,7 @@ public with sharing class CollectionFunctions {
      * @example
      * FLATTEN([[1, 2], [3, 4]]) // [1, 2, 3, 4]
      */
-    private class FlattenFn extends ExpressionFunction {
+    private class FlattenFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
             if (!(listObj instanceof Iterable<Object>)) {
@@ -1596,7 +1596,7 @@ public with sharing class CollectionFunctions {
      * @example
      * AGGREGATEGROUPS({ "a": [1, 2], "b": [3, 4] }, IF($isFirst, $current, SUM([$acc, $current])) // { "a": 3, "b": 7 }
      */
-    private class AggregateGroupsFn extends ExpressionFunction {
+    private class AggregateGroupsFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object mapObj = evaluate(arguments.get(0));
             if (!(mapObj instanceof Map<Object, Object>)) {
@@ -1665,7 +1665,7 @@ public with sharing class CollectionFunctions {
      * @example
      * ASSOCIATEBY([1, 2, 3], $current + 1) // { 2: 1, 3: 2, 4: 3 }
      */
-    private class AssociateByFn extends ExpressionFunction {
+    private class AssociateByFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
             if (!(listObj instanceof List<Object>)) {
@@ -1708,7 +1708,7 @@ public with sharing class CollectionFunctions {
      *   ], $current.LastName)
      * // { "Doe": [{ "FirstName": "John", "LastName": "Doe" }, { "FirstName": "Jane", "LastName": "Doe" }] }
      */
-    private class GroupByFn extends ExpressionFunction {
+    private class GroupByFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object listObj = evaluate(arguments.get(0));
             if (!(listObj instanceof List<Object>)) {
