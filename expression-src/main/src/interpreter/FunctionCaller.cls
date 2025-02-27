@@ -10,7 +10,6 @@ public abstract class FunctionCaller {
         if (env.hasFunction(function.functionName)) {
             return new FunctionDeclarationCaller(function);
         } else if (StandardFunction.functionExistsInStandardLibrary(function.functionName)) {
-            // TODO: Also cache standard functions
             return new StandardLibraryFunctionCaller(function);
         }
 
