@@ -362,3 +362,41 @@ List<String> recordNames = (List<String)expression.Evaluator.run(
 
 System.assertEquals(new List<String>{'Example 1', 'Example 2'}, recordNames);
 ```
+
+---
+
+### `retrieveRecordForFormulas(recordId, formulas)`
+
+Analyzes multiple formulas and retrieves a record with all fields needed by those formulas. 
+This is useful when you need to query a record once with all required fields for multiple 
+formula evaluations, rather than letting each formula evaluation perform its own query.
+
+#### Signature
+```apex
+global static SObject retrieveRecordForFormulas(Id recordId, List<String> formulas)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| recordId | Id | The Id of the record to retrieve |
+| formulas | List&lt;String&gt; | List of formulas to analyze |
+
+#### Return Type
+**SObject**
+
+SObject The record populated with all fields referenced in the formulas
+
+#### Example
+```apex
+Id accountId = [SELECT Id FROM Account LIMIT 1].Id;
+List<String> formulas = new List<String>{
+  'Name',
+  'BillingCity',
+  'Owner.Name'
+};
+Account account = (Account)expression.Evaluator.retrieveRecordForFormulas(accountId, formulas);
+// Now use the account record which contains all the needed fields
+String accountName = (String)account.get('Name');
+String ownerName = (String)account.getSObject('Owner').get('Name');
+```
