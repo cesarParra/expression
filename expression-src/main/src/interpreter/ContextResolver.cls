@@ -21,7 +21,7 @@ public with sharing class ContextResolver implements Visitor {
     private Object resolve(Expr expr) {
         return expr.accept(this);
     }
-    
+
     /**
      * @description Resolves an expression for record field references without building the query
      * @param expression The expression to analyze
@@ -30,7 +30,7 @@ public with sharing class ContextResolver implements Visitor {
     public Object resolveForRecord(Expr expression) {
         return this.resolve(expression);
     }
-    
+
     /**
      * @description Checks if the query should be executed based on whether any fields were added to the query
      * @return Boolean True if the query should be executed, false otherwise
@@ -38,7 +38,7 @@ public with sharing class ContextResolver implements Visitor {
     public Boolean shouldExecuteQuery() {
         return this.shouldExecuteQuery;
     }
-    
+
     /**
      * @description Gets the current query context
      * @return Query The current query context
@@ -46,7 +46,7 @@ public with sharing class ContextResolver implements Visitor {
     public Query getQueryContext() {
         return this.queryContext;
     }
-    
+
     /**
      * @description Gets the list of subqueries that were added during expression resolution
      * @return List<Query> The list of subqueries
@@ -233,7 +233,14 @@ public with sharing class ContextResolver implements Visitor {
 
     public Object visit(Expr.Variable variable) {
         if (variable.isContext()) {
+            // If context is being accessed, then we always want to rn the query.
             this.shouldExecuteQuery = true;
+
+            // recordId migh be null when this is being run from within a subquery
+            // if so, return early.
+            if (this.queryContext.recordId == null) {
+                return null;
+            }
 
             // When dealing with multiple record Ids and accessing the @Context, then we return
             // the top level query, so that we can take advantage of functions that resolve for children,
@@ -403,6 +410,7 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         public Query(SObjectType objectType, String relationshipName) {
+            System.debug('Is here!!!');
             this.objectType = objectType;
             this.relationshipName = relationshipName;
             this.queryBuilder = new Q(relationshipName);

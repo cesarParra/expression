@@ -93,6 +93,37 @@ private class ContextualGlobalVariablesTest {
     }
 
     @IsTest
+    private static void canAccessContextFromInsideOfACollectionFunctionThatResolvesQueries() {
+        Account parent = new Account(Name = 'Parent');
+        insert parent;
+        Account child = new Account(Name = 'Child1', ParentId = parent.Id);
+        insert child;
+
+        String expression = 'MAP(\n' +
+            '    ChildAccounts, \n' +
+            '    {\n' +
+            '        "name": Name, \n' +
+            '        "parentName": @Context.Name, \n' +
+            '        "fullParent": @Context\n' +
+            '    }\n' +
+            ')';
+
+        Object result = Evaluator.run(expression, parent.Id);
+
+        Assert.isNotNull(result);
+        List<Object> mappedRecords = (List<Object>) result;
+        Assert.areEqual(1, mappedRecords.size());
+
+        Map<Object, Object> mappedRecord = (Map<Object, Object>) mappedRecords[0];
+        Assert.areEqual('Child1', mappedRecord.get('name'));
+        Assert.areEqual('Parent', mappedRecord.get('parentName'));
+
+        SObject parentRecord = (SObject) mappedRecord.get('fullParent');
+        Assert.areEqual(parent.Id, parentRecord.Id);
+        Assert.areEqual(parent.Name, parentRecord.get('Name'));
+    }
+
+    @IsTest
     private static void canGetFieldsFromTheRecordContext_2levels() {
         String expression = '@Context.Parent.Name';
         Account parentAccount = new Account(Name = 'Parent');
