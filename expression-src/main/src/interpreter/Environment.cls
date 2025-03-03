@@ -105,12 +105,17 @@ public with sharing class Environment {
     }
 
     public Boolean containsAsParent(String fieldName) {
-        try {
-            Object result = getContext()?.getSObject(fieldName);
-            return result != null;
-        } catch (SObjectException ex) {
+        if (this.getContext() == null) {
             return false;
         }
+        Map<String, SObjectField> fields = this.getContext().getSObjectType().getDescribe().fields.getMap();
+        for (String currentKey : fields.keySet()) {
+            String relationshipName = fields.get(currentKey).getDescribe().getRelationshipName();
+            if (String.isNotBlank(relationshipName) && relationshipName.equalsIgnoreCase(fieldName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Object get(String field) {

@@ -124,6 +124,30 @@ private class ContextualGlobalVariablesTest {
     }
 
     @IsTest
+    private static void canAccessParentObjects() {
+        String expression = '@Context.Parent';
+        Account parentAccount = new Account(Name = 'Parent');
+        insert parentAccount;
+        Account testRecord = new Account(Name = 'Test', ParentId = parentAccount.Id);
+        insert testRecord;
+
+        Object result = Evaluator.run(expression, testRecord.Id);
+
+        Assert.areEqual(parentAccount.Id, ((SObject) result).Id);
+    }
+
+    @IsTest
+    private static void canAccessParentObjects_whenThereIsNoParent() {
+        String expression = '@Context.Parent';
+        Account testRecord = new Account(Name = 'Test');
+        insert testRecord;
+
+        Object result = Evaluator.run(expression, testRecord.Id);
+
+        Assert.isNull(result);
+    }
+
+    @IsTest
     private static void canGetFieldsFromTheRecordContext_2levels() {
         String expression = '@Context.Parent.Name';
         Account parentAccount = new Account(Name = 'Parent');
