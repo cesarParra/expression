@@ -410,7 +410,6 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         public Query(SObjectType objectType, String relationshipName) {
-            System.debug('Is here!!!');
             this.objectType = objectType;
             this.relationshipName = relationshipName;
             this.queryBuilder = new Q(relationshipName);
