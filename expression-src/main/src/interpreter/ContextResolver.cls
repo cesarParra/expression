@@ -233,7 +233,7 @@ public with sharing class ContextResolver implements Visitor {
 
     public Object visit(Expr.Variable variable) {
         if (variable.isContext()) {
-            // If context is being accessed, then we always want to rn the query.
+            // If context is being accessed, then we always want to run the query.
             this.shouldExecuteQuery = true;
 
             // recordId migh be null when this is being run from within a subquery.
