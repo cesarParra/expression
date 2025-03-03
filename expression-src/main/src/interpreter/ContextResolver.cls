@@ -275,8 +275,14 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         // Check if the field belongs to the parent object
-        if (this.getFields().contains(fieldName)) {
-            queryContext.queryBuilder.selectField(fieldName);
+        Field potentialField = this.getFields().get(fieldName);
+        if (potentialField != null) {
+            if (potentialField.isRelationship) {
+                queryContext.queryBuilder.selectField(fieldName + '.Id');
+            } else {
+                queryContext.queryBuilder.selectField(fieldName);
+            }
+
             this.shouldExecuteQuery = true;
             return null;
         }
@@ -297,8 +303,8 @@ public with sharing class ContextResolver implements Visitor {
             }
         }
 
-        throw new ResolverException('Did not understand the relationship to field ' +
-            fieldName + ' for SObjectType ' + queryContext.objectType);
+        throw new ResolverException('Did not understand the relationship to field "' +
+            fieldName + '" for SObjectType ' + queryContext.objectType);
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
@@ -338,18 +344,69 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
-    private final Map<SObjectType, Set<String>> cachedFieldsBySObjectType = new Map<SObjectType, Set<String>>();
-    private Set<String> getFields() {
+    private final Map<SObjectType, Fields> cachedFieldsBySObjectType = new Map<SObjectType, Fields>();
+    private Fields getFields() {
         if (cachedFieldsBySObjectType.containsKey(this.queryContext.objectType)) {
             return cachedFieldsBySObjectType.get(this.queryContext.objectType);
         }
 
-        Set<String> cachedFields = this.queryContext.objectType.getDescribe().fields.getMap().keySet();
-        cachedFieldsBySObjectType.put(this.queryContext.objectType, cachedFields);
-        return cachedFields;
+        Map<String, SObjectField> fields = this.queryContext.objectType.getDescribe().fields.getMap();
+        Fields fieldsToCache = new Fields();
+        for (String currentKey : fields.keySet()) {
+            fieldsToCache.add(new Field(currentKey.toLowerCase(), false));
+            String relationshipName = fields.get(currentKey).getDescribe().getRelationshipName();
+            if (String.isNotBlank(relationshipName)) {
+                fieldsToCache.add(new Field(relationshipName.toLowerCase(), true));
+            }
+        }
+        cachedFieldsBySObjectType.put(this.queryContext.objectType, fieldsToCache);
+        return fieldsToCache;
     }
 
     public class ResolverException extends Exception {
+    }
+
+    private class Fields {
+        private final Set<Field> fields;
+
+        public Fields() {
+            this.fields = new Set<Field>();
+        }
+
+        public void add(Field field) {
+            this.fields.add(field);
+        }
+
+        public Field get(String fieldName) {
+            for (Field field : this.fields) {
+                if (field.name == fieldName) {
+                    return field;
+                }
+            }
+            return null;
+        }
+    }
+
+    private class Field {
+        final String name;
+        final Boolean isRelationship;
+
+        public Field(String name, Boolean isRelationship) {
+            this.name = name;
+            this.isRelationship = isRelationship;
+        }
+
+        public Boolean equals(Object obj) {
+            if (obj instanceof Field) {
+                Field other = (Field) obj;
+                return this.name == other.name && this.isRelationship == other.isRelationship;
+            }
+            return false;
+        }
+
+        public Integer hashCode() {
+            return this.name.hashCode() + this.isRelationship.hashCode();
+        }
     }
 
     private interface IdComposite {
