@@ -18,7 +18,7 @@ public with sharing class AccountTestRecord extends SObjectTestDataBuilder imple
     }
 
     public Account registerNewForInsert() {
-        return (Account)this.registerSObjectForInsert();
+        return (Account) this.registerSObjectForInsert();
     }
 
     public List<SObject> registerNewForInsert(Integer numberOfRecords) {
@@ -26,19 +26,19 @@ public with sharing class AccountTestRecord extends SObjectTestDataBuilder imple
     }
 
     public AccountTestRecord named(String name) {
-        return (AccountTestRecord)this.withData(Account.Name, name);
+        return (AccountTestRecord) this.withData(Account.Name, name);
     }
 
     public AccountTestRecord withBillingCity(String billingCity) {
-        return (AccountTestRecord)this.withData(Account.BillingCity, billingCity);
+        return (AccountTestRecord) this.withData(Account.BillingCity, billingCity);
     }
 
     public AccountTestRecord withNumberOfEmployees(Integer numberOfEmployees) {
-        return (AccountTestRecord)this.withData(Account.NumberOfEmployees, numberOfEmployees);
+        return (AccountTestRecord) this.withData(Account.NumberOfEmployees, numberOfEmployees);
     }
 
     public AccountTestRecord withAnnualRevenue(Integer annualRevenue) {
-        return (AccountTestRecord)this.withData(Account.AnnualRevenue, annualRevenue);
+        return (AccountTestRecord) this.withData(Account.AnnualRevenue, annualRevenue);
     }
 
     public AccountTestRecord withAChildContact() {
@@ -64,12 +64,17 @@ public with sharing class AccountTestRecord extends SObjectTestDataBuilder imple
         return this;
     }
 
+    public AccountTestRecord withAChildAccount(ITestDataBuilder childBuilder) {
+        this.withChild(childBuilder, Account.ParentId);
+        return this;
+    }
+
     public AccountTestRecord withChild(ITestDataBuilder childBuilder, SObjectField relationshipField) {
-        return (AccountTestRecord)this.withChildData(childBuilder, relationshipField);
+        return (AccountTestRecord) this.withChildData(childBuilder, relationshipField);
     }
 
     protected override Map<SObjectField, Object> getDefaultValueMap() {
-        return new Map<SObjectField, Object> {
+        return new Map<SObjectField, Object>{
             Account.Name => 'ACME'
         };
     }
