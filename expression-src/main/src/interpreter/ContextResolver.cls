@@ -236,8 +236,8 @@ public with sharing class ContextResolver implements Visitor {
             // If context is being accessed, then we always want to rn the query.
             this.shouldExecuteQuery = true;
 
-            // recordId migh be null when this is being run from within a subquery
-            // if so, return early.
+            // recordId migh be null when this is being run from within a subquery.
+            // If so, return early.
             if (this.queryContext.recordId == null) {
                 return null;
             }
