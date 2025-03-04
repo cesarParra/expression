@@ -3,9 +3,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link
-        rel="stylesheet"
-        data-name="vs/editor/editor.main"
-        href="min/vs/editor/editor.main.css"
+            rel="stylesheet"
+            data-name="vs/editor/editor.main"
+            href="min/vs/editor/editor.main.css"
     />
 </head>
 <body style="margin: 0;">
@@ -72,7 +72,7 @@
     });
     monaco.languages.setMonarchTokensProvider('expression', {
       keywords,
-        // we include these common regular expressions
+      // we include these common regular expressions
       symbols: /[=><!~?:&|+\-*\/\^%]+/,
       escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
       digits: /\d+(_+\d+)*/,
@@ -114,7 +114,7 @@
         ],
 
         string_double: [
-          [/\$\{/, { token: 'delimiter.bracket', next: '@bracketCounting' }],
+          [/\$\{/, {token: 'delimiter.bracket', next: '@bracketCounting'}],
           [/[^\\"$]+/, 'string'],
           [/@escapes/, 'string.escape'],
           [/\\./, 'string.escape.invalid'],
@@ -124,7 +124,7 @@
         bracketCounting: [
           [/\{/, 'delimiter.bracket', '@bracketCounting'],
           [/\}/, 'delimiter.bracket', '@pop'],
-          { include: 'common' }
+          {include: 'common'}
         ]
       },
       ignoreCase: true

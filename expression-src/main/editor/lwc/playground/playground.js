@@ -45,7 +45,7 @@ export default class Monaco extends LightningElement {
 
       this.iframeWindow.postMessage({
         name: 'evaluation_error',
-        payload: [{type: error, message: result.error}]
+        payload: result.error
       });
     } else {
       // The evaluation might return null, which is a valid result but gets converted to undefined in JS,

@@ -28,8 +28,12 @@
         "href": "/docs/accessing-contextual-data"
       },
       {
-        "title": "Configuring the evaluation",
+        "title": "Configuring the Evaluation",
         "href": "/docs/configuring-the-evaluation"
+      },
+      {
+        "title": "Debugging",
+        "href": "/docs/debugging"
       }
     ]
   },
