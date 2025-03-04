@@ -323,6 +323,15 @@ export const data = [
         "icon": "utility:data_mapping"
       },
       {
+        "name": "PRINT",
+        "autoCompleteValue": "PRINT(",
+        "description": "Allows you to print a value to the playground console.<br/>Accepts 1 argument: the value to print.",
+        "examples": [
+          "PRINT(\"Hello World\")"
+        ],
+        "icon": "utility:data_mapping"
+      },
+      {
         "name": "RAWQUERY",
         "autoCompleteValue": "RAWQUERY(",
         "description": "Allows you to run a raw query against the database.<br/>Accepts 1 argument: the query to run.",

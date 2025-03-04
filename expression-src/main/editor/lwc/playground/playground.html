@@ -35,10 +35,16 @@
                         <div class="slds-p-horizontal_small slds-p-bottom_none">
                             <lightning-tabset>
                                 <lightning-tab label="Result">
-                                    <pre class={resultColor}>
-                                        <lightning-formatted-rich-text
-                                                value={result.payload}></lightning-formatted-rich-text>
-                                    </pre>
+                                    <template for:each={result.payload} for:item="payload">
+                                        <div key={payload.message}>
+                                            <lightning-badge label={payload.type}></lightning-badge>
+                                            <pre class={resultColor}>
+                                                            <lightning-formatted-rich-text
+                                                                    value={payload.message}></lightning-formatted-rich-text>
+                                                        </pre>
+                                            <hr/>
+                                        </div>
+                                    </template>
                                 </lightning-tab>
                                 <lightning-tab label="Diagnostics">
                                     <ul>
@@ -50,10 +56,10 @@
                                     </ul>
                                 </lightning-tab>
                                 <lightning-tab label="AST">
-                                    <pre class={resultColor}>
-                                        <lightning-formatted-rich-text
-                                                value={ast}></lightning-formatted-rich-text>
-                                    </pre>
+                                                <pre class={resultColor}>
+                                                    <lightning-formatted-rich-text
+                                                            value={ast}></lightning-formatted-rich-text>
+                                                </pre>
                                 </lightning-tab>
                             </lightning-tabset>
                         </div>

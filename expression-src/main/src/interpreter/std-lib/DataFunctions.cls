@@ -8,7 +8,8 @@ public with sharing class DataFunctions {
     private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction>{
         'TRANSFORM' => new TransformFn(),
         'LET' => new LET(),
-        'RAWQUERY' => new RawQuery()
+        'RAWQUERY' => new RawQuery(),
+        'PRINT' => new PrintFn()
     };
 
     public class DataFunctionsProvider implements FunctionProvider {
@@ -90,6 +91,24 @@ public with sharing class DataFunctions {
             }
             String query = (String) queryObj;
             return QDB.getInstance().runRaw(query);
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    /**
+     * @description Allows you to print a value to the playground console.
+     * Accepts 1 argument: the value to print.
+     * @function PRINT
+     * @example PRINT("Hello World")
+     */
+    private class PrintFn extends StandardFunction {
+        public override Object call(List<Expr> arguments) {
+            Object toPrint = evaluate(arguments.get(0));
+            Printer.instance.print(toPrint);
+            return toPrint;
         }
 
         public override Arity getArity() {
