@@ -214,6 +214,17 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         return toPrint;
     }
 
+    public Object visit(Expr.IfExpr iExpr) {
+        Map<String, Object> toPrint = new Map<String, Object>{
+            'type' => 'IfExpr',
+            'body' => new Map<String, Object>{
+                'condition' => iExpr.condition.accept(this),
+                'body' => iExpr.body.accept(this)
+            }
+        };
+        return toPrint;
+    }
+
     private static String tokensToString(List<Token> tokens) {
         List<String> lexemes = new List<String>();
         for (Token token : tokens) {

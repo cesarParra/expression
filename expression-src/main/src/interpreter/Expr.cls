@@ -261,6 +261,24 @@ public abstract class Expr {
         }
     }
 
+    public class IfExpr extends Expr {
+        public final Token ifToken;
+        public final Expr condition;
+        public final Expr body;
+        public final Expr valueExpr;
+
+        public IfExpr(Token ifToken, Expr condition, Expr body, Expr valueExpr) {
+            this.ifToken = ifToken;
+            this.condition = condition;
+            this.body = body;
+            this.valueExpr = valueExpr;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
+
     public class Query extends Expr {
         public final Token sObjectType;
         // Fields is an expression that must evaluate to a list

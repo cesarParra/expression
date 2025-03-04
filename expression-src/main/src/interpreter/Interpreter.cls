@@ -364,6 +364,11 @@ public virtual with sharing class Interpreter implements Visitor {
             Object result = evaluate(expr);
             if (result instanceof ListSpreadContents) {
                 resultList.addAll(((ListSpreadContents) result).contents);
+            } else if (result instanceof ConditionalElement) {
+                ConditionalElement element = (ConditionalElement) result;
+                if (element.shouldAdd) {
+                    resultList.add(element.value);
+                }
             } else {
                 resultList.add(result);
             }
@@ -433,6 +438,15 @@ public virtual with sharing class Interpreter implements Visitor {
                 if (result instanceof MapSpreadContents) {
                     resultMap.putAll(((MapSpreadContents) result).contents);
                 }
+            } else if (element instanceof Expr.IfExpr) {
+                System.debug('Interpreting map literal if expression: ' + element);
+                Object result = evaluate((Expr.IfExpr) element);
+                if (result instanceof ConditionalKeyValuePair) {
+                    ConditionalKeyValuePair conditionalKeyValuePair = (ConditionalKeyValuePair) result;
+                    resultMap.put(conditionalKeyValuePair.key, conditionalKeyValuePair.value);
+                }
+
+                // TODO: Else, throw
             }
         }
         isInMapLiteral = false;
@@ -457,5 +471,74 @@ public virtual with sharing class Interpreter implements Visitor {
             functionDeclaration.name,
             'Function declarations can only be declared at the top level of an expression.'
         );
+    }
+
+    private abstract class Conditional {
+        public final Boolean shouldAdd;
+
+        protected Conditional(Boolean shouldAdd) {
+            this.shouldAdd = shouldAdd;
+        }
+    }
+
+    private class ShouldNotAdd extends Conditional {
+        public ShouldNotAdd() {
+            super(false);
+        }
+    }
+
+    private class ConditionalElement extends Conditional {
+        public final Object value;
+
+        public ConditionalElement(Object value) {
+            super(true);
+            this.value = value;
+        }
+    }
+
+    private class ConditionalKeyValuePair extends Conditional {
+        public final Object key;
+        public final Object value;
+
+        public ConditionalKeyValuePair(Object key, Object value) {
+            super(true);
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    public Object visit(Expr.IfExpr ifExpr) {
+        if (!inListLiteral && !isInMapLiteral) {
+            throw new Exceptions.RuntimeException(
+                ifExpr.ifToken,
+                'Error executing if expression: the if expression can only be used in a list or map literal.'
+            );
+        }
+
+        Object condition = evaluate(ifExpr.condition);
+        if (!isBoolean(condition)) {
+            throw new Exceptions.RuntimeException(
+                ifExpr.ifToken,
+                'Error executing if expression: the condition must evaluate to a boolean value.'
+            );
+        }
+
+        if ((Boolean) condition) {
+            if (ifExpr.valueExpr != null) {
+                // We are dealing with a key value pair
+                // TODO: Throw if we are not inside of a map
+                return new ConditionalKeyValuePair(
+                    evaluate(ifExpr.body),
+                    evaluate(ifExpr.valueExpr)
+                );
+            }
+
+            // TODO: Throw if we are not inside of a list
+            return new ConditionalElement(
+                evaluate(ifExpr.body)
+            );
+        }
+
+        return new ShouldNotAdd();
     }
 }
