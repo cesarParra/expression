@@ -69,6 +69,10 @@
         "href": "/docs/referencing-org-data"
       },
       {
+        "title": "Control Flow Collections",
+        "href": "/docs/control-flow-collections"
+      },
+      {
         "title": "Comments",
         "href": "/docs/comments"
       }
