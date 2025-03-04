@@ -14,7 +14,7 @@ public enum TokenType {
     ARROW,
 
     // ---------------- One or more character ---------------
-    DOT, DOT_DOT_DOT,
+    DOT, SPREAD,
 
     // ----------------- Two character -----------------
     DOUBLE_PIPE,
@@ -31,7 +31,7 @@ public enum TokenType {
 
     // ----------------- Keywords -----------------
     TRUE_KEYWORD, FALSE_KEYWORD, NULL_KEYWORD, QUERY_KEYWORD,
-    ASC_KEYWORD, DESC_KEYWORD,
+    ASC_KEYWORD, DESC_KEYWORD, ADD_IF_KEYWORD,
 
     // ----------------- Functions ----------------------
     FUNCTION_KEYWORD, FAT_ARROW, SEMICOLON, NOCACHE_KEYWORD,

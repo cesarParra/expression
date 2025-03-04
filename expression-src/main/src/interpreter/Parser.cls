@@ -148,12 +148,37 @@ public with sharing class Parser {
     }
 
     private Expr spread() {
-        if (match(TokenType.DOT_DOT_DOT)) {
+        if (match(TokenType.SPREAD)) {
             Token spreadToken = previous();
             Expr right = getExpr();
             return new Expr.Spread(
                 spreadToken,
                 right
+            );
+        }
+
+        return addIfExpr();
+    }
+
+    private Expr addIfExpr() {
+        if (match(TokenType.ADD_IF_KEYWORD)) {
+            Token ifToken = previous();
+            consume(TokenType.LEFT_PAREN, 'Expect \'(\' after \'addif\'.');
+            Expr condition = expression();
+            consume(TokenType.RIGHT_PAREN, 'Expect \')\' after condition.');
+
+            Expr body = expression();
+            Expr valueExpr;
+            if (peek().type == TokenType.COLON) {
+                consume(TokenType.COLON, 'Expect \':\' after body.');
+                valueExpr = expression();
+            }
+
+            return new Expr.AddIfExpr(
+                ifToken,
+                condition,
+                body,
+                valueExpr
             );
         }
 
@@ -322,6 +347,12 @@ public with sharing class Parser {
                         elements.add(key);
                         continue;
                     }
+
+                    if (key instanceof Expr.AddIfExpr) {
+                        elements.add(key);
+                        continue;
+                    }
+
                     consume(TokenType.COLON, 'Expect \':\' after key.');
                     Expr value = expression();
                     elements.add(new Expr.KeyValue(key, value));

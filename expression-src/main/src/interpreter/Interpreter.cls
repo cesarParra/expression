@@ -364,6 +364,15 @@ public virtual with sharing class Interpreter implements Visitor {
             Object result = evaluate(expr);
             if (result instanceof ListSpreadContents) {
                 resultList.addAll(((ListSpreadContents) result).contents);
+            } else if (result instanceof AddIfConditional) {
+                AddIfConditional element = (AddIfConditional) result;
+                if (element.shouldAdd == false) {
+                    continue;
+                }
+
+                // We can safely cast here since the `visit` method will take
+                // care of only returning a ConditionalElement when within a list literal.
+                resultList.add(((ConditionalElement) element).value);
             } else {
                 resultList.add(result);
             }
@@ -433,6 +442,16 @@ public virtual with sharing class Interpreter implements Visitor {
                 if (result instanceof MapSpreadContents) {
                     resultMap.putAll(((MapSpreadContents) result).contents);
                 }
+            } else if (element instanceof Expr.AddIfExpr) {
+                Object result = evaluate((Expr.AddIfExpr) element);
+                AddIfConditional conditional = (AddIfConditional) result;
+                if (conditional.shouldAdd == false) {
+                    continue;
+                }
+                // We can safely cast here since the `visit` method will take
+                // care of only returning a ConditionalKeyValuePair when within a map literal.
+                ConditionalKeyValuePair conditionalKeyValuePair = (ConditionalKeyValuePair) result;
+                resultMap.put(conditionalKeyValuePair.key, conditionalKeyValuePair.value);
             }
         }
         isInMapLiteral = false;
@@ -457,5 +476,86 @@ public virtual with sharing class Interpreter implements Visitor {
             functionDeclaration.name,
             'Function declarations can only be declared at the top level of an expression.'
         );
+    }
+
+    private abstract class AddIfConditional {
+        public final Boolean shouldAdd;
+
+        protected AddIfConditional(Boolean shouldAdd) {
+            this.shouldAdd = shouldAdd;
+        }
+    }
+
+    private class ShouldNotAdd extends AddIfConditional {
+        public ShouldNotAdd() {
+            super(false);
+        }
+    }
+
+    private class ConditionalElement extends AddIfConditional {
+        public final Object value;
+
+        public ConditionalElement(Object value) {
+            super(true);
+            this.value = value;
+        }
+    }
+
+    private class ConditionalKeyValuePair extends AddIfConditional {
+        public final Object key;
+        public final Object value;
+
+        public ConditionalKeyValuePair(Object key, Object value) {
+            super(true);
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    public Object visit(Expr.AddIfExpr ifExpr) {
+        if (!inListLiteral && !isInMapLiteral) {
+            throw new Exceptions.RuntimeException(
+                ifExpr.ifToken,
+                'Error executing addif expression: the "addif" expression can only be used in a list or map literal.'
+            );
+        }
+
+        if (inListLiteral && ifExpr.valueExpr != null) {
+            throw new Exceptions.RuntimeException(
+                ifExpr.ifToken,
+                'Error executing addif expression: a "colon" was not expected. When using addif in a list literal, only one expression is expected.'
+            );
+        }
+
+        if (isInMapLiteral && ifExpr.valueExpr == null) {
+            throw new Exceptions.RuntimeException(
+                ifExpr.ifToken,
+                'Error executing addif expression: a "colon" was expected. ' +
+                    'When using addif in a map literal, two expressions separated by a colon (:) are expected, one for the key and one for the value.'
+            );
+        }
+
+        Object condition = evaluate(ifExpr.condition);
+        if (!isBoolean(condition)) {
+            throw new Exceptions.RuntimeException(
+                ifExpr.ifToken,
+                'Error executing addif expression: the condition must evaluate to a boolean value.'
+            );
+        }
+
+        if ((Boolean) condition) {
+            if (ifExpr.isForKeyValuePair()) {
+                return new ConditionalKeyValuePair(
+                    evaluate(ifExpr.body),
+                    evaluate(ifExpr.valueExpr)
+                );
+            }
+
+            return new ConditionalElement(
+                evaluate(ifExpr.body)
+            );
+        }
+
+        return new ShouldNotAdd();
     }
 }

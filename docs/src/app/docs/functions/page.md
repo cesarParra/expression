@@ -945,9 +945,9 @@ Maps to a list using the first argument as the context and the second argument a
 
 Accepts 2 arguments: List of objects and an expression to evaluate.
 
-> In the inner expression, you have access to 3 special variables: `$index` (the index of the current
-> record in the list), `$current` (the current item being iterated over), and `$total` (the total number
-> of items in the list).
+In the inner expression, you have access to 3 special variables: `$index` (the index of the current
+record in the list), `$current` (the current item being iterated over), and `$total` (the total number
+of items in the list).
 
 ```apex
 Object result = expression.Evaluator.run('MAP(["a", "b", "c"], UPPER($current))'); // ["A", "B", "C"]
@@ -957,8 +957,8 @@ To work with child records, you can specify the child relationship name as the f
 to evaluate on each
 child item as the second argument.
 
-> When referencing child data through the record Id endpoint, the framework will take care of any necessary
-> subqueries, so only one SOQL query is consumed.
+When referencing child data through the record Id endpoint, the framework will take care of any necessary
+subqueries, so only one SOQL query is consumed.
 
 This expression can be anything, something as simple as extracting a single field:
 

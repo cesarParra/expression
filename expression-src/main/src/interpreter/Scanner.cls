@@ -18,6 +18,7 @@ public with sharing class Scanner {
         keywords.put('desc', TokenType.DESC_KEYWORD);
         keywords.put('fun', TokenType.FUNCTION_KEYWORD);
         keywords.put('nocache', TokenType.NOCACHE_KEYWORD);
+        keywords.put('addif', TokenType.ADD_IF_KEYWORD);
     }
 
     public Scanner(String source) {
@@ -94,7 +95,7 @@ public with sharing class Scanner {
             }
 
             when '.' {
-                addToken(match2('..') ? TokenType.DOT_DOT_DOT : TokenType.DOT);
+                addToken(match2('..') ? TokenType.SPREAD : TokenType.DOT);
             }
 
             when '-' {

@@ -123,6 +123,11 @@ public with sharing class PipeResolver implements Visitor {
                 continue;
             }
 
+            if (element instanceof Expr.AddIfExpr) {
+                newElements.add(resolve((Expr) element));
+                continue;
+            }
+
             Expr.KeyValue keyValue = (Expr.KeyValue) element;
             Expr.KeyValue newKeyValue = new Expr.KeyValue(
                 resolve(keyValue.key),
@@ -183,6 +188,19 @@ public with sharing class PipeResolver implements Visitor {
             functionDeclaration.parameters,
             resolvedBody,
             functionDeclaration.skipCache
+        );
+    }
+
+    public Object visit(Expr.AddIfExpr ifExpr) {
+        Expr valueExpr = null;
+        if (ifExpr.valueExpr != null) {
+            valueExpr = resolve(ifExpr.valueExpr);
+        }
+        return new Expr.AddIfExpr(
+            ifExpr.ifToken,
+            resolve(ifExpr.condition),
+            resolve(ifExpr.body),
+            valueExpr
         );
     }
 }
