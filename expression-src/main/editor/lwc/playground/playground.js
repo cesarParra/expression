@@ -40,20 +40,26 @@ export default class Monaco extends LightningElement {
     if (result.error) {
       this.result = {
         type: "error",
-        payload: result.error.message
+        payload: [{type: 'error', message: result.error.message}]
       }
 
       this.iframeWindow.postMessage({
         name: 'evaluation_error',
-        payload: result.error
+        payload: [{type: error, message: result.error}]
       });
     } else {
       // The evaluation might return null, which is a valid result but gets converted to undefined in JS,
       // so we handle it by coercing it to null.
       const payload = result.result ?? null;
+      const toPrint = result.toPrint.map((item) => item ?? null);
+      const allResults = [...toPrint, payload];
       this.result = {
         type: "success",
-        payload: this._syntaxHighlight(JSON.stringify(payload, null, 4))
+        payload: allResults.map((current, i) => ({
+          // all messages are of type "printed", except for the last one which is of type "result"
+          type: i === allResults.length - 1 ? "result" : "printed",
+          message: this._syntaxHighlight(JSON.stringify(current, null, 4))
+        }))
       }
     }
 

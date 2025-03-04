@@ -58,6 +58,7 @@ public with sharing class PlaygroundController {
                 evalResult = EvaluatorResolver.withoutContext().evaluate(expr, config);
             }
 
+            toReturn.toPrint = Printer.instance.toPrint;
             toReturn.result = evalResult.result;
 
             if (evalResult.additionalData.containsKey('diagnostics')) {
@@ -91,6 +92,9 @@ public with sharing class PlaygroundController {
     public class Result {
         @AuraEnabled
         public EvaluationError error;
+
+        @AuraEnabled
+        public List<Object> toPrint;
 
         @AuraEnabled
         public Object result;
