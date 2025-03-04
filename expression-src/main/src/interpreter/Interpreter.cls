@@ -364,11 +364,13 @@ public virtual with sharing class Interpreter implements Visitor {
             Object result = evaluate(expr);
             if (result instanceof ListSpreadContents) {
                 resultList.addAll(((ListSpreadContents) result).contents);
-            } else if (result instanceof ConditionalElement) {
-                ConditionalElement element = (ConditionalElement) result;
-                if (element.shouldAdd) {
-                    resultList.add(element.value);
+            } else if (result instanceof Conditional) {
+                Conditional element = (Conditional) result;
+                if (element.shouldAdd == false) {
+                    continue;
                 }
+
+                resultList.add(((ConditionalElement) element).value);
             } else {
                 resultList.add(result);
             }
@@ -511,7 +513,22 @@ public virtual with sharing class Interpreter implements Visitor {
         if (!inListLiteral && !isInMapLiteral) {
             throw new Exceptions.RuntimeException(
                 ifExpr.ifToken,
-                'Error executing if expression: the if expression can only be used in a list or map literal.'
+                'Error executing addif expression: the if expression can only be used in a list or map literal.'
+            );
+        }
+
+        if (inListLiteral && ifExpr.valueExpr != null) {
+            throw new Exceptions.RuntimeException(
+                ifExpr.ifToken,
+                'Error executing addif expression: a "colon" was not expected. When using addif in a list literal, only one expression is expected.'
+            );
+        }
+
+        if (isInMapLiteral && ifExpr.valueExpr == null) {
+            throw new Exceptions.RuntimeException(
+                ifExpr.ifToken,
+                'Error executing addif expression: a "colon" was expected. ' +
+                    'When using addif in a map literal, two expressions separated by a colon (:) are expected, one for the key and one for the value.'
             );
         }
 
