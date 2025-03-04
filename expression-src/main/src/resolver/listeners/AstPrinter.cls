@@ -163,6 +163,8 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
                 elements.add(keyValue);
             } else if (current instanceof Expr.Spread) {
                 elements.add(((Expr.Spread) current).accept(this));
+            } else if (current instanceof Expr.AddIfExpr) {
+                elements.add(((Expr.AddIfExpr) current).accept(this));
             }
         }
         Map<String, Object> toPrint = new Map<String, Object>{
@@ -214,12 +216,13 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         return toPrint;
     }
 
-    public Object visit(Expr.AddIfExpr iExpr) {
+    public Object visit(Expr.AddIfExpr ifExpr) {
         Map<String, Object> toPrint = new Map<String, Object>{
-            'type' => 'IfExpr',
+            'type' => 'AddIfExpr',
             'body' => new Map<String, Object>{
-                'condition' => iExpr.condition.accept(this),
-                'body' => iExpr.body.accept(this)
+                'condition' => ifExpr.condition.accept(this),
+                'body' => ifExpr.body.accept(this),
+                'value' => ifExpr.valueExpr?.accept(this) ?? null
             }
         };
         return toPrint;

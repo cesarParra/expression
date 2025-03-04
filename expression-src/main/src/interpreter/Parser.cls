@@ -379,9 +379,9 @@ public with sharing class Parser {
         Expr whereExpr;
         Expr offsetExpr;
 
-// Optional named parameters section that define the "extra" parts of the query (order by, where, limit, etc.).
+        // Optional named parameters section that define the "extra" parts of the query (order by, where, limit, etc.).
         if (match(TokenType.LEFT_PAREN)) {
-            if (peek(). type == TokenType.IDENTIFIER) {
+            if (peek().type == TokenType.IDENTIFIER) {
                 do {
                     String qClause = consume(TokenType.IDENTIFIER, 'Expect query clause name.').lexeme;
                     consume(TokenType.COLON, 'Expect \':\' after' + qClause + '');
@@ -402,8 +402,8 @@ public with sharing class Parser {
             consume(TokenType.RIGHT_PAREN, 'Expect \')\' after query arguments.');
         }
 
-// Optional expression that defines the fields to be returned in the query.
-        if (peek(). type != TokenType.RIGHT_PAREN) {
+        // Optional expression that defines the fields to be returned in the query.
+        if (peek().type != TokenType.RIGHT_PAREN) {
             fieldsExpression = expression();
         }
 
@@ -413,7 +413,7 @@ public with sharing class Parser {
 
     private List<Expr> getOrderBys() {
         List<Expr> orderBys = new List<Expr>();
-// Check if the next one is a LEFT_BRACKET
+        // Check if the next one is a LEFT_BRACKET
         if (match(TokenType.LEFT_BRACKET)) {
             do {
                 Expr orderBy = extractOrderby();
@@ -421,7 +421,7 @@ public with sharing class Parser {
             } while (match(TokenType.COMMA));
             consume(TokenType.RIGHT_BRACKET, 'Expect \']\' to close list of order by references.');
         } else {
-// Assume we have a single field reference
+            // Assume we have a single field reference
             Expr orderBy = extractOrderby();
             orderBys.add(orderBy);
         }
@@ -431,14 +431,14 @@ public with sharing class Parser {
 
     private Expr extractOrderby() {
         Expr orderByExpr = expression();
-// The expression might be followed by (optionally) the ASC or DESC keyword
+        // The expression might be followed by (optionally) the ASC or DESC keyword
         if (match(new List<TokenType>{
             TokenType.ASC_KEYWORD, TokenType.DESC_KEYWORD
         })) {
             QOrder.SortOrder qSortOrder = previous().lexeme == 'ASC' ? QOrder.SortOrder.ASCENDING : QOrder.SortOrder.DESCENDING;
             return new Expr.Binary(orderByExpr, null, new Expr.Literal(qSortOrder));
         } else {
-// Default to ASC
+            // Default to ASC
             return new Expr.Binary(orderByExpr, null, new Expr.Literal(QOrder.SortOrder.ASCENDING));
         }
     }
@@ -487,7 +487,7 @@ public with sharing class Parser {
             return false;
         }
 
-        return peek(). type == type;
+        return peek().type == type;
     }
 
     private Token advance() {
@@ -503,11 +503,11 @@ public with sharing class Parser {
     }
 
     private Token peek() {
-        return tokens.get (current);
+        return tokens.get(current);
     }
 
     private Token previous() {
-        return tokens.get (current - 1);
+        return tokens.get(current - 1);
     }
 
     private Token consume(TokenType type, String message) {

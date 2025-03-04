@@ -191,15 +191,15 @@ public with sharing class PipeResolver implements Visitor {
         );
     }
 
-    public Object visit(Expr.AddIfExpr iExpr) {
+    public Object visit(Expr.AddIfExpr ifExpr) {
         Expr valueExpr = null;
-        if (iExpr.valueExpr != null) {
-            valueExpr = resolve(iExpr.valueExpr);
+        if (ifExpr.valueExpr != null) {
+            valueExpr = resolve(ifExpr.valueExpr);
         }
         return new Expr.AddIfExpr(
-            iExpr.ifToken,
-            resolve(iExpr.condition),
-            resolve(iExpr.body),
+            ifExpr.ifToken,
+            resolve(ifExpr.condition),
+            resolve(ifExpr.body),
             valueExpr
         );
     }
