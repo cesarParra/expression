@@ -364,12 +364,14 @@ public virtual with sharing class Interpreter implements Visitor {
             Object result = evaluate(expr);
             if (result instanceof ListSpreadContents) {
                 resultList.addAll(((ListSpreadContents) result).contents);
-            } else if (result instanceof Conditional) {
-                Conditional element = (Conditional) result;
+            } else if (result instanceof AddIfConditional) {
+                AddIfConditional element = (AddIfConditional) result;
                 if (element.shouldAdd == false) {
                     continue;
                 }
 
+                // We can safely cast here since the `visit` method will take
+                // care of only returning a ConditionalElement when within a list literal.
                 resultList.add(((ConditionalElement) element).value);
             } else {
                 resultList.add(result);
@@ -440,15 +442,16 @@ public virtual with sharing class Interpreter implements Visitor {
                 if (result instanceof MapSpreadContents) {
                     resultMap.putAll(((MapSpreadContents) result).contents);
                 }
-            } else if (element instanceof Expr.IfExpr) {
-                System.debug('Interpreting map literal if expression: ' + element);
-                Object result = evaluate((Expr.IfExpr) element);
-                if (result instanceof ConditionalKeyValuePair) {
-                    ConditionalKeyValuePair conditionalKeyValuePair = (ConditionalKeyValuePair) result;
-                    resultMap.put(conditionalKeyValuePair.key, conditionalKeyValuePair.value);
+            } else if (element instanceof Expr.AddIfExpr) {
+                Object result = evaluate((Expr.AddIfExpr) element);
+                AddIfConditional conditional = (AddIfConditional) result;
+                if (conditional.shouldAdd == false) {
+                    continue;
                 }
-
-                // TODO: Else, throw
+                // We can safely cast here since the `visit` method will take
+                // care of only returning a ConditionalKeyValuePair when within a map literal.
+                ConditionalKeyValuePair conditionalKeyValuePair = (ConditionalKeyValuePair) result;
+                resultMap.put(conditionalKeyValuePair.key, conditionalKeyValuePair.value);
             }
         }
         isInMapLiteral = false;
@@ -475,21 +478,21 @@ public virtual with sharing class Interpreter implements Visitor {
         );
     }
 
-    private abstract class Conditional {
+    private abstract class AddIfConditional {
         public final Boolean shouldAdd;
 
-        protected Conditional(Boolean shouldAdd) {
+        protected AddIfConditional(Boolean shouldAdd) {
             this.shouldAdd = shouldAdd;
         }
     }
 
-    private class ShouldNotAdd extends Conditional {
+    private class ShouldNotAdd extends AddIfConditional {
         public ShouldNotAdd() {
             super(false);
         }
     }
 
-    private class ConditionalElement extends Conditional {
+    private class ConditionalElement extends AddIfConditional {
         public final Object value;
 
         public ConditionalElement(Object value) {
@@ -498,7 +501,7 @@ public virtual with sharing class Interpreter implements Visitor {
         }
     }
 
-    private class ConditionalKeyValuePair extends Conditional {
+    private class ConditionalKeyValuePair extends AddIfConditional {
         public final Object key;
         public final Object value;
 
@@ -509,11 +512,11 @@ public virtual with sharing class Interpreter implements Visitor {
         }
     }
 
-    public Object visit(Expr.IfExpr ifExpr) {
+    public Object visit(Expr.AddIfExpr ifExpr) {
         if (!inListLiteral && !isInMapLiteral) {
             throw new Exceptions.RuntimeException(
                 ifExpr.ifToken,
-                'Error executing addif expression: the if expression can only be used in a list or map literal.'
+                'Error executing addif expression: the "addif" expression can only be used in a list or map literal.'
             );
         }
 
@@ -536,21 +539,18 @@ public virtual with sharing class Interpreter implements Visitor {
         if (!isBoolean(condition)) {
             throw new Exceptions.RuntimeException(
                 ifExpr.ifToken,
-                'Error executing if expression: the condition must evaluate to a boolean value.'
+                'Error executing addif expression: the condition must evaluate to a boolean value.'
             );
         }
 
         if ((Boolean) condition) {
-            if (ifExpr.valueExpr != null) {
-                // We are dealing with a key value pair
-                // TODO: Throw if we are not inside of a map
+            if (ifExpr.isForKeyValuePair()) {
                 return new ConditionalKeyValuePair(
                     evaluate(ifExpr.body),
                     evaluate(ifExpr.valueExpr)
                 );
             }
 
-            // TODO: Throw if we are not inside of a list
             return new ConditionalElement(
                 evaluate(ifExpr.body)
             );

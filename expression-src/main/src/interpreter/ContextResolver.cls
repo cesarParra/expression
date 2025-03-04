@@ -344,9 +344,12 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
-    public Object visit(Expr.IfExpr iExpr) {
-        resolve(iExpr.condition);
-        resolve(iExpr.body);
+    public Object visit(Expr.AddIfExpr ifExpr) {
+        resolve(ifExpr.condition);
+        resolve(ifExpr.body);
+        if (ifExpr.valueExpr != null) {
+            resolve(ifExpr.valueExpr);
+        }
         return null;
     }
 

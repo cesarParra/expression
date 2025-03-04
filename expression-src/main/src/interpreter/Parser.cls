@@ -174,7 +174,7 @@ public with sharing class Parser {
                 valueExpr = expression();
             }
 
-            return new Expr.IfExpr(
+            return new Expr.AddIfExpr(
                 ifToken,
                 condition,
                 body,
@@ -348,7 +348,7 @@ public with sharing class Parser {
                         continue;
                     }
 
-                    if (key instanceof Expr.IfExpr) {
+                    if (key instanceof Expr.AddIfExpr) {
                         elements.add(key);
                         continue;
                     }

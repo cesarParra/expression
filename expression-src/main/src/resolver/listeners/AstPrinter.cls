@@ -214,7 +214,7 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         return toPrint;
     }
 
-    public Object visit(Expr.IfExpr iExpr) {
+    public Object visit(Expr.AddIfExpr iExpr) {
         Map<String, Object> toPrint = new Map<String, Object>{
             'type' => 'IfExpr',
             'body' => new Map<String, Object>{

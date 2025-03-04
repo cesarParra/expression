@@ -123,7 +123,7 @@ public with sharing class PipeResolver implements Visitor {
                 continue;
             }
 
-            if (element instanceof Expr.IfExpr) {
+            if (element instanceof Expr.AddIfExpr) {
                 newElements.add(resolve((Expr) element));
                 continue;
             }
@@ -191,12 +191,12 @@ public with sharing class PipeResolver implements Visitor {
         );
     }
 
-    public Object visit(Expr.IfExpr iExpr) {
+    public Object visit(Expr.AddIfExpr iExpr) {
         Expr valueExpr = null;
         if (iExpr.valueExpr != null) {
             valueExpr = resolve(iExpr.valueExpr);
         }
-        return new Expr.IfExpr(
+        return new Expr.AddIfExpr(
             iExpr.ifToken,
             resolve(iExpr.condition),
             resolve(iExpr.body),

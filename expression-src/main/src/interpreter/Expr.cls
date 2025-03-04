@@ -261,13 +261,15 @@ public abstract class Expr {
         }
     }
 
-    public class IfExpr extends Expr {
+    public class AddIfExpr extends Expr {
         public final Token ifToken;
         public final Expr condition;
         public final Expr body;
+        // When dealing with a key:value pair, the valueExpr will be the value
+        // If we are dealing with a regular element (within a list), this will be null.
         public final Expr valueExpr;
 
-        public IfExpr(Token ifToken, Expr condition, Expr body, Expr valueExpr) {
+        public AddIfExpr(Token ifToken, Expr condition, Expr body, Expr valueExpr) {
             this.ifToken = ifToken;
             this.condition = condition;
             this.body = body;
@@ -276,6 +278,10 @@ public abstract class Expr {
 
         public override Object accept(Visitor v) {
             return v.visit(this);
+        }
+
+        public Boolean isForKeyValuePair() {
+            return valueExpr != null;
         }
     }
 
