@@ -268,6 +268,11 @@ public with sharing class Parser {
             return new Expr.Variable(previous(), Expr.VariableType.GLOBAL_CONTEXT);
         }
 
+        if (match(TokenType.COLON) && peek().type == TokenType.IDENTIFIER) {
+            Token symbol = consume(TokenType.IDENTIFIER, 'Expect symbol name.');
+            return new Expr.Symbol(symbol);
+        }
+
         if (match(TokenType.IDENTIFIER)) {
             // First check if the identifier is a potential function name
             // by seeing if the next token is a left parenthesis

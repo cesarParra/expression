@@ -228,6 +228,15 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         return toPrint;
     }
 
+    public Object visit(Expr.Symbol symbol) {
+        return new Map<String, Object>{
+            'type' => 'Symbol',
+            'body' => new Map<String, Object>{
+                'name' => symbol.name.lexeme
+            }
+        };
+    }
+
     private static String tokensToString(List<Token> tokens) {
         List<String> lexemes = new List<String>();
         for (Token token : tokens) {

@@ -558,4 +558,8 @@ public virtual with sharing class Interpreter implements Visitor {
 
         return new ShouldNotAdd();
     }
+
+    public Object visit(Expr.Symbol symbol) {
+        return new Symbol(symbol.name.lexeme);
+    }
 }
