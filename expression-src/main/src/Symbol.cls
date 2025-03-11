@@ -5,20 +5,16 @@ public with sharing class Symbol {
         if (name == null) {
             throw new IllegalArgumentException('Name cannot be null');
         }
-        this.name = name;
+        this.name = name.toLowerCase();
     }
 
     public Boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
-        // TODO: Get rid of this check
-        if (this == obj) {
-            return true;
-        }
         if (obj instanceof Symbol) {
             Symbol other = (Symbol) obj;
-            return this.name.equals(other.name);
+            return this.name.equalsIgnoreCase(other.name);
         }
         return false;
     }

@@ -560,6 +560,6 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.Symbol symbol) {
-        return new Symbol(symbol.name.lexeme);
+        return 'sym:' + symbol.name.lexeme.toLowerCase();
     }
 }
