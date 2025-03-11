@@ -2,6 +2,7 @@ import {LightningElement} from 'lwc';
 import monaco from '@salesforce/resourceUrl/monaco';
 import getFunctions from '@salesforce/apex/PlaygroundController.getFunctionNames';
 import validate from '@salesforce/apex/PlaygroundController.validate';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 
 export default class Monaco extends LightningElement {
   recordId;
@@ -36,37 +37,51 @@ export default class Monaco extends LightningElement {
       name: 'clear_markers'
     });
 
-    const result = await validate({expr: this.currentExpression, recordId: this.recordId});
-    if (result.error) {
+    try {
+      const result = await validate({expr: this.currentExpression, recordId: this.recordId});
+      if (result.error) {
+        this.result = {
+          type: "error",
+          payload: [{type: 'error', message: result.error.message}]
+        }
+
+        this.iframeWindow.postMessage({
+          name: 'evaluation_error',
+          payload: result.error
+        });
+      } else {
+        // The evaluation might return null, which is a valid result but gets converted to undefined in JS,
+        // so we handle it by coercing it to null.
+        const payload = result.result ?? null;
+        const toPrint = result.toPrint.map((item) => item ?? null);
+        const allResults = [...toPrint, payload];
+        this.result = {
+          type: "success",
+          payload: allResults.map((current, i) => ({
+            // all messages are of type "printed", except for the last one which is of type "result"
+            type: i === allResults.length - 1 ? "result" : "printed",
+            message: this._syntaxHighlight(JSON.stringify(current, null, 4))
+          }))
+        }
+      }
+
+      this._setDiagnostics(result.diagnostics ?? {});
+      this.ast = result.ast ?
+        this._syntaxHighlight(JSON.stringify(result.ast, null, 4)) :
+        "";
+    } catch (e) {
+      const event = new ShowToastEvent({
+        title: 'Unknown error',
+        variant: 'error',
+        message: e.body.message,
+      });
+      this.dispatchEvent(event);
+
       this.result = {
         type: "error",
-        payload: [{type: 'error', message: result.error.message}]
-      }
-
-      this.iframeWindow.postMessage({
-        name: 'evaluation_error',
-        payload: result.error
-      });
-    } else {
-      // The evaluation might return null, which is a valid result but gets converted to undefined in JS,
-      // so we handle it by coercing it to null.
-      const payload = result.result ?? null;
-      const toPrint = result.toPrint.map((item) => item ?? null);
-      const allResults = [...toPrint, payload];
-      this.result = {
-        type: "success",
-        payload: allResults.map((current, i) => ({
-          // all messages are of type "printed", except for the last one which is of type "result"
-          type: i === allResults.length - 1 ? "result" : "printed",
-          message: this._syntaxHighlight(JSON.stringify(current, null, 4))
-        }))
+        payload: [{type: 'error', message: 'An unknown error occurred while evaluating the expression.'}]
       }
     }
-
-    this._setDiagnostics(result.diagnostics ?? {});
-    this.ast = result.ast ?
-      this._syntaxHighlight(JSON.stringify(result.ast, null, 4)) :
-      "";
   }
 
   _setDiagnostics(diagnostics) {
