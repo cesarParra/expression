@@ -15,5 +15,4 @@ public interface Visitor {
     Object visit(Expr.Spread spread);
     Object visit(Expr.Query query);
     Object visit(Expr.AddIfExpr ifExpr);
-    Object visit(Expr.Symbol symbol);
 }

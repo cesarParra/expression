@@ -203,8 +203,4 @@ public with sharing class PipeResolver implements Visitor {
             valueExpr
         );
     }
-
-    public Object visit(Expr.Symbol symbol) {
-        return symbol;
-    }
 }

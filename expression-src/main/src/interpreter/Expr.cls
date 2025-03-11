@@ -182,18 +182,6 @@ public abstract class Expr {
         }
     }
 
-    public class Symbol extends Expr {
-        public final Token name;
-
-        public Symbol(Token name) {
-            this.name = name;
-        }
-
-        public override Object accept(Visitor v) {
-            return v.visit(this);
-        }
-    }
-
     public class GetExpr extends Expr {
         public final Expr objectExpr;
         public final Token field;

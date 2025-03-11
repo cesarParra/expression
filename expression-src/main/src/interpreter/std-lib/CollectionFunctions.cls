@@ -403,11 +403,6 @@ public with sharing class CollectionFunctions {
             }
 
             if ((mapObj instanceof Map<Object, Object>)) {
-                Map<Object, Object> theMap = (Map<Object, Object>) mapObj;
-                for (Object obj : theMap.keySet()) {
-                    System.debug('The current key is: ' + obj);
-                    System.debug('Is it equals? ' + obj.equals(key));
-                }
                 return ((Map<Object, Object>) mapObj).get(key);
             } else {
                 return ((SObject) mapObj).get((String) key);

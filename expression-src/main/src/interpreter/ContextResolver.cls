@@ -353,10 +353,6 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
-    public Object visit(Expr.Symbol symbol) {
-        return null;
-    }
-
     private final Map<SObjectType, Fields> cachedFieldsBySObjectType = new Map<SObjectType, Fields>();
     private Fields getFields() {
         if (cachedFieldsBySObjectType.containsKey(this.queryContext.objectType)) {
