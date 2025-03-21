@@ -126,10 +126,8 @@ public with sharing class DataFunctions {
      */
     public class ParseJsonFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
-            // Get the first argument and evaluate it
             Object jsonInput = evaluate(arguments.get(0));
             
-            // Validate the input is a string
             if (!(jsonInput instanceof String)) {
                 throw new FunctionExecutionException(
                     'Error executing "PARSEJSON" function: the argument must evaluate to a string value.'
@@ -139,23 +137,19 @@ public with sharing class DataFunctions {
             String jsonStr = (String) jsonInput;
             
             try {
-                // Parse the JSON string and convert it to a Map<Object, Object>
                 Object deserializedObj = JSON.deserializeUntyped(jsonStr);
                 
-                // If it's not a map, wrap it in a map with a "value" key
                 if (!(deserializedObj instanceof Map<String, Object>)) {
                     Map<Object, Object> wrappedMap = new Map<Object, Object>();
                     wrappedMap.put('value', deserializedObj);
                     return wrappedMap;
                 }
                 
-                // Convert Map<String, Object> to Map<Object, Object> for compatibility
                 Map<String, Object> typedMap = (Map<String, Object>)deserializedObj;
                 Map<Object, Object> resultMap = new Map<Object, Object>();
                 
                 for (String key : typedMap.keySet()) {
                     Object value = typedMap.get(key);
-                    // Recursively convert nested maps
                     if (value instanceof Map<String, Object>) {
                         value = convertToObjectMap((Map<String, Object>)value);
                     } else if (value instanceof List<Object>) {
