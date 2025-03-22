@@ -41,7 +41,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
 
       - uses: actions/setup-node@v2
         with:
