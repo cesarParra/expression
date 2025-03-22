@@ -11,6 +11,9 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,7 +26,7 @@ jobs:
 
       - name: Install NPM
         run: |
-          npm install 
+          npm install
 
       - name: Install Salesforce CLI
         run: npm install @salesforce/cli --global
@@ -33,3 +36,30 @@ jobs:
 
       - name: Create Expression package version
         run: npm run package:create:expression
+
+  generate-docs:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: Install NPM
+        run: |
+          npm install
+
+      - name: Generate Docs
+        run: |
+          npm run docs:generate
+          npm run generate:library:docs
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "Automated documentation update"
+          git push origin ${{ github.ref }}
