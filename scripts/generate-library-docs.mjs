@@ -1,6 +1,7 @@
-import { reflect } from '@cparra/apex-reflection';
+import {reflect} from '@cparra/apex-reflection';
 import * as fs from 'fs';
 import * as path from 'path';
+import MarkdownBuilder from "./markdown-builder.mjs";
 
 const rootDirectory = 'expression-src';
 
@@ -62,3 +63,31 @@ const categories = processFiles(dirPath);
 const outputFileName = path.join(process.cwd(), 'expression-src/main/editor/lwc/functionLibrary/functions.js');
 // Write the output to a file
 fs.writeFileSync(outputFileName, `export const data = ${JSON.stringify(categories, null, 2)};`);
+
+// Update the Functions page
+
+const frontMatter = {
+  title: 'Functions',
+  nextjs: {
+    metadata: {
+      title: 'Functions',
+      description: 'Functions overview.'
+    }
+  }
+};
+
+const markdownBuilder = new MarkdownBuilder();
+markdownBuilder.frontMatter(frontMatter);
+for (const category of categories) {
+  markdownBuilder.h2(category.category);
+  for (const fn of category.values) {
+    markdownBuilder.h3(fn.name);
+    markdownBuilder.text(fn.description);
+    fn.examples.forEach((example) => {
+      markdownBuilder.code(example);
+    });
+  }
+}
+
+const outputMarkdown = path.join(process.cwd(), 'docs/src/app/docs/functions/page.md');
+fs.writeFileSync(outputMarkdown, markdownBuilder.markdown);
