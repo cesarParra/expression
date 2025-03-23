@@ -29,8 +29,6 @@ private class DataFunctionsTest {
         );
         insert acc;
         
-        acc = [SELECT Id, Description FROM Account WHERE Id = :acc.Id LIMIT 1];
-        
         String formula = 'PARSEJSON(Description)';
         Object result = Evaluator.run(formula, acc.Id);
         
@@ -46,8 +44,6 @@ private class DataFunctionsTest {
             Description = '{"name":"John","age":30,"address":{"city":"New York","zip":10001}}'
         );
         insert acc;
-        
-        acc = [SELECT Id, Description FROM Account WHERE Id = :acc.Id LIMIT 1];
         
         String formula = 'PARSEJSON(Description)';
         Object result = Evaluator.run(formula, acc.Id);
@@ -65,8 +61,6 @@ private class DataFunctionsTest {
             Description = '{"name":"John","age":30,"skills":["Apex","JavaScript","HTML"]}'
         );
         insert acc;
-        
-        acc = [SELECT Id, Description FROM Account WHERE Id = :acc.Id LIMIT 1];
         
         String formula = 'PARSEJSON(Description)';
         Object result = Evaluator.run(formula, acc.Id);
