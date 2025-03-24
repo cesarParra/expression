@@ -76,6 +76,28 @@ private class ContextualGlobalVariablesTest {
     }
 
     @IsTest
+    private static void canResolveMultipleContextEventWhenThereIsOnlyOneId() {
+        List<Account> records = new List<Account>{
+            new Account(Name = 'Example 1')
+        };
+        insert records;
+
+        Object result = Evaluator.run(
+            'MAP(@context, {Id : Name == "Example 1"})',
+            new Set<Id>{
+                records[0].Id
+            }
+        );
+
+        Assert.isNotNull(result);
+        List<Object> mappedRecords = (List<Object>) result;
+        Assert.areEqual(1, mappedRecords.size());
+
+        Map<Object, Object> mappedRecord = (Map<Object, Object>) mappedRecords[0];
+        Assert.areEqual(true, mappedRecord.get(records[0].Id));
+    }
+
+    @IsTest
     private static void canGetFieldsFromTheRecordContextWhenDealingWithAList() {
         String expression = 'MAP(@Context, Name)';
         Account testRecord1 = new Account(Name = 'Test1');
