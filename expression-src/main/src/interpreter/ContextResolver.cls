@@ -246,7 +246,7 @@ public with sharing class ContextResolver implements Visitor {
             // the top level query, so that we can take advantage of functions that resolve for children,
             // but instead of resolving a subquery, it can just resolve the top level query and add
             // fields to the main query itself.
-            if (this.queryContext.recordId.getIds().size() > 1) {
+            if (this.queryContext.recordId.isComposite()) {
                 return topLevelQuery;
             } else {
                 return null;
@@ -421,6 +421,7 @@ public with sharing class ContextResolver implements Visitor {
     private interface IdComposite {
         SObjectType getSobjectType();
         Set<Id> getIds();
+        Boolean isComposite();
     }
 
     private class SingleId implements IdComposite {
@@ -438,6 +439,10 @@ public with sharing class ContextResolver implements Visitor {
                 this.id
             };
         }
+
+        public Boolean isComposite() {
+            return false;
+        }
     }
 
     private class MultipleIds implements IdComposite {
@@ -452,6 +457,10 @@ public with sharing class ContextResolver implements Visitor {
 
         public Set<Id> getIds() {
             return this.ids;
+        }
+
+        public Boolean isComposite() {
+            return true;
         }
     }
 
@@ -471,6 +480,7 @@ public with sharing class ContextResolver implements Visitor {
         public Query(Set<Id> recordIds) {
             this.recordId = new MultipleIds(recordIds);
             this.objectType = this.recordId.getSobjectType();
+            System.debug('Querying for ' + this.objectType);
             this.queryBuilder = new Q(this.objectType);
             this.queryBuilder.selectField('Id');
         }
