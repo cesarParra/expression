@@ -363,6 +363,15 @@ The map keys should be the variable names prefixed with `$`.
 LET({ "$a": 1, "$b": 2 }, $a + $b) // 3
 ```
 
+### PARSEJSON
+
+Parses a JSON string into a usable map/object structure.
+Accepts 1 argument: the JSON string to parse.
+
+```
+PARSEJSON(Contact.Custom_JSON_Field__c) // Parses JSON from a field
+```
+
 ### PRINT
 
 Allows you to print a value to the playground console.

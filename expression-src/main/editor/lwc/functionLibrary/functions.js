@@ -323,6 +323,15 @@ export const data = [
         "icon": "utility:data_mapping"
       },
       {
+        "name": "PARSEJSON",
+        "autoCompleteValue": "PARSEJSON(",
+        "description": "Parses a JSON string into a usable map/object structure.<br/>Accepts 1 argument: the JSON string to parse.",
+        "examples": [
+          "PARSEJSON(Contact.Custom_JSON_Field__c) // Parses JSON from a field"
+        ],
+        "icon": "utility:data_mapping"
+      },
+      {
         "name": "PRINT",
         "autoCompleteValue": "PRINT(",
         "description": "Allows you to print a value to the playground console.<br/>Accepts 1 argument: the value to print.",
