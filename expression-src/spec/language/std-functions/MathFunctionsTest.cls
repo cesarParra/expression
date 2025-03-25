@@ -85,4 +85,29 @@ private class MathFunctionsTest {
     private static void modFunctionReturnsTheRemainderOfTheDivision() {
         Assert.areEqual(1, Evaluator.run('MOD(5, 2)'));
     }
+    
+    @IsTest
+    private static void formatNumberFunctionFormatsThousands() {
+        Assert.areEqual('20,000.53', Evaluator.run('FORMATNUMBER(20000.53)'));
+    }
+    
+    @IsTest
+    private static void formatNumberFunctionCanSpecifyDecimalPlaces() {
+        Assert.areEqual('20,000.5', Evaluator.run('FORMATNUMBER(20000.53, 1)'));
+    }
+    
+    @IsTest
+    private static void formatNumberFunctionHandlesNegativeNumbers() {
+        Assert.areEqual('-20,000.53', Evaluator.run('FORMATNUMBER(-20000.53)'));
+    }
+    
+    @IsTest
+    private static void formatNumberFunctionHandlesNoDecimalNumbers() {
+        Assert.areEqual('20,000', Evaluator.run('FORMATNUMBER(20000)'));
+    }
+    
+    @IsTest
+    private static void formatNumberFunctionHandlesSmallNumbers() {
+        Assert.areEqual('123', Evaluator.run('FORMATNUMBER(123)'));
+    }
 }

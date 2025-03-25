@@ -13,7 +13,8 @@ public with sharing class MathFunctions {
         'MIN' => new MinFn(),
         'ROUND' => new RoundFn(),
         'TRUNC' => new TruncFn(),
-        'MOD' => new ModFn()
+        'MOD' => new ModFn(),
+        'FORMATNUMBER' => new FormatNumberFn()
     };
 
     public class MathFunctionsProvider implements FunctionProvider {
@@ -278,6 +279,78 @@ public with sharing class MathFunctions {
 
         public override Arity getArity() {
             return Arity.exactly(2);
+        }
+    }
+    
+    /**
+     * @description Formats a number with comma as thousand separator.
+     *
+     * Accepts 1 or 2 arguments: the number to format and optionally the number of decimal places.
+     * @function FORMATNUMBER
+     * @example
+     * FORMATNUMBER(20000.53) // "20,000.53"
+     * FORMATNUMBER(20000.53, 1) // "20,000.5"
+     */
+    private class FormatNumberFn extends StandardFunction {
+        public override Object call(List<Expr> arguments) {
+            Object numberValue = evaluate(arguments.get(0));
+            if (!(numberValue instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "FORMATNUMBER" function: the argument must evaluate to a number value.'
+                );
+            }
+            
+            Decimal precision = -1;
+            if (arguments.size() > 1) {
+                Object precisionValue = evaluate(arguments.get(1));
+                if (!(precisionValue instanceof Decimal)) {
+                    throw new FunctionExecutionException(
+                        'Error executing "FORMATNUMBER" function: the second argument must evaluate to a number value.'
+                    );
+                }
+                precision = (Decimal) precisionValue;
+            }
+            
+            Decimal numValue = (Decimal) numberValue;
+            if (precision >= 0) {
+                numValue = numValue.setScale(precision.intValue(), RoundingMode.HALF_UP);
+            }
+            
+            String result = '';
+            String decimalPart = '';
+            
+            String numberStr = String.valueOf(numValue);
+            Integer decimalPos = numberStr.indexOf('.');
+            
+            if (decimalPos >= 0) {
+                decimalPart = numberStr.substring(decimalPos);
+                numberStr = numberStr.substring(0, decimalPos);
+            }
+            
+            Integer len = numberStr.length();
+            
+            Boolean isNegative = numberStr.startsWith('-');
+            if (isNegative) {
+                numberStr = numberStr.substring(1);
+                len--;
+            }
+            
+            for (Integer i = 0; i < len; i++) {
+                if (i > 0 && Math.mod(len - i, 3) == 0) {
+                    result += ',';
+                }
+                result += numberStr.substring(i, i+1);
+            }
+            
+            if (isNegative) {
+                result = '-' + result;
+            }
+            
+            return result + decimalPart;
+        }
+
+        public override Arity getArity() {
+            return Arity.between(1, 2);
         }
     }
 }
