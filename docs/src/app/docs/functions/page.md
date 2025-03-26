@@ -817,6 +817,17 @@ Accepts 1 argument: the number to evaluate.
 FLOOR(1.5) // 1
 ```
 
+### FORMATNUMBER
+
+Formats a number with comma as thousand separator.
+
+Accepts 1 or 2 arguments: the number to format and optionally the number of decimal places.
+
+```
+FORMATNUMBER(20000.53) // "20,000.53"
+FORMATNUMBER(20000.53, 1) // "20,000.5"
+```
+
 ### MAX
 
 Returns the largest value in a list of numbers.

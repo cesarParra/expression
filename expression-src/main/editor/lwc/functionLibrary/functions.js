@@ -730,6 +730,15 @@ export const data = [
         "icon": "utility:advanced_function"
       },
       {
+        "name": "FORMATNUMBER",
+        "autoCompleteValue": "FORMATNUMBER(",
+        "description": "Formats a number with comma as thousand separator.<br/><br/>Accepts 1 or 2 arguments: the number to format and optionally the number of decimal places.",
+        "examples": [
+          "FORMATNUMBER(20000.53) // \"20,000.53\"\nFORMATNUMBER(20000.53, 1) // \"20,000.5\""
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
         "name": "MAX",
         "autoCompleteValue": "MAX(",
         "description": "Returns the largest value in a list of numbers.<br/><br/>Accepts either a list of numbers as a single argument, or multiple numerical arguments.",
