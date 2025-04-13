@@ -1,44 +1,13 @@
-import {LightningElement, wire} from 'lwc';
-import getFunctions from '@salesforce/apex/PlaygroundController.getCustomFunctions';
-import {operators} from './operators';
-import {data} from './functions';
+import {LightningElement} from 'lwc';
+import {getFunctionsAndOperators} from 'c/functions';
 
 export default class FunctionLibrary extends LightningElement {
-  _categories;
   functionWithOpenDocumentation;
   isDocumentationPinned = false;
+  availableFormulaFunctionsAndOperators = [];
 
-  @wire(getFunctions)
-  handleGetPricingVariablesWire({data, error}) {
-    if (data && data.length) {
-      this._categories = data
-        .filter((category) => category.functions.length)
-        .map((category) => {
-          return {
-            category: category.name,
-            values: category.functions.map((fn) => {
-              return {
-                name: fn.name,
-                autoCompleteValue: fn.autoCompleteValue,
-                icon: category.icon,
-                description: fn.description,
-                examples: fn.example ? [fn.example] : undefined
-              };
-            })
-          };
-        });
-    } else if (error) {
-      console.error(error.body.message);
-      this._categories = undefined;
-    }
-  }
-
-  get availableFormulaFunctionsAndOperators() {
-    let availableFunctionsAndOperators = [...operators, ...data];
-    if (this._categories?.length) {
-      availableFunctionsAndOperators = [...availableFunctionsAndOperators, ...this._categories];
-    }
-    return availableFunctionsAndOperators;
+  async connectedCallback() {
+    this.availableFormulaFunctionsAndOperators = await getFunctionsAndOperators();
   }
 
   handleDisplayFunctionDocumentation(event) {
