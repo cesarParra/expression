@@ -60,7 +60,7 @@ function getCategory(functionRepo) {
 
 const categories = processFiles(dirPath);
 
-const outputFileName = path.join(process.cwd(), 'expression-src/main/editor/lwc/functionLibrary/functions.js');
+const outputFileName = path.join(process.cwd(), 'expression-src/main/editor/lwc/functions/functions-src.js');
 // Write the output to a file
 fs.writeFileSync(outputFileName, `export const data = ${JSON.stringify(categories, null, 2)};`);
 
