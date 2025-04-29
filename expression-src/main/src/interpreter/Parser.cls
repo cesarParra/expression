@@ -7,12 +7,25 @@ public with sharing class Parser {
     }
 
     public List<Expr> parse() {
+        Boolean hasNonFunctionDeclarationExpression = false;
         List<Expr> exprs = new List<Expr>();
         while (!isAtEnd()) {
-            exprs.add(expression());
+            Expr currentExpression = expression();
+            if (!isFunctionDeclarationExpr(currentExpression)) {
+                if (hasNonFunctionDeclarationExpression) {
+                    throw error(peek(), 'Only one main expression is allowed.');
+                } else {
+                    hasNonFunctionDeclarationExpression = true;
+                }
+            }
+            exprs.add(currentExpression);
         }
 
         return exprs;
+    }
+
+    private static Boolean isFunctionDeclarationExpr(Expr expr) {
+        return expr instanceof Expr.FunctionDeclaration;
     }
 
     private static Boolean hasParameter(List<Token> parameters, Token parameter) {
