@@ -1,6 +1,21 @@
 @IsTest
 private class FunctionDeclarationTest {
     @IsTest
+    static void onlyOneMainExpressionIsAllowed() {
+        String expression = 'fun foo() => 5 + 3;\n' +
+            '\n' +
+            'foo()\n' +
+            'foo()';
+
+        try {
+            Evaluator.run(expression);
+            Assert.fail('Expected an error');
+        } catch (Exception e) {
+            Assert.isTrue(e.getMessage().contains('one main expression is allowed'), e.getMessage());
+        }
+    }
+
+    @IsTest
     static void functionsCanBeDeclared() {
         String expression = 'fun foo() => 5 + 3;\n' +
             '\n' +
