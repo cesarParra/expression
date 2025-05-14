@@ -8,7 +8,7 @@ nextjs:
 
 {% callout title="Be aware that" %}
 📓Code samples use the `expression` namespace, which assumes you are using the
-unlocked package.
+managed package.
 If you are not, you can remove the namespace prefix from the code samples.
 {% /callout %}
 

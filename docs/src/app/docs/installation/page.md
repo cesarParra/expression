@@ -6,9 +6,18 @@ nextjs:
     description: Install the Expression package.
 ---
 
-Expression can be installed in your Salesforce org through an Unlocked package.
+Expression can be installed in your Salesforce org through a Managed package.
 
 ---
+
+## Install using the URL
+
+Use the following URL to install the Expression package in your Salesforce org through the
+browser.
+
+```text
+https://login.salesforce.com/packaging/installPackage.apexp?p0={% $packageId %}
+```
 
 ## Install with SF CLI
 
