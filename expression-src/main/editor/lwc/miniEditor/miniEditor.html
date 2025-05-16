@@ -1,0 +1,62 @@
+<template>
+  <lightning-card>
+    <div class="slds-grid slds-grid_align-spread">
+      <div class="slds-col slds-text-body_small">{title}</div>
+      <div class="slds-col">
+        <lightning-button variant="brand-outline" label="Save"></lightning-button>
+      </div>
+    </div>
+    <div class="pt-1">
+      <input type="text" name="expression" class="unstyled-input p-2 mono" placeholder={placeholder}/>
+    </div>
+    <hr/>
+    <div class="py-2">
+      = {preview}
+    </div>
+    <hr/>
+    <div>
+      <div class="flex">
+        <div class="pl-2 pr-4 min-w-48 max-h-72 overflow-y-scroll">
+          <ul class="list-none px-0">
+            <template for:each={categories} for:item="category">
+              <li class="truncate pt-1" key={category.category}>
+                <span class="text-sm text-gray-600 font-semibold">{category.category}</span>
+                <ul class="list-none px-0">
+                  <template for:each={category.values} for:item="value">
+                    <li class="py-0.5" key={value.name}>
+                      <a class="no-underline text-gray-600 hover:text-blue-500 text-sm"
+                         href="#"
+                         data-name={value.name}
+                         onmouseenter={handleMouseEnter}
+                      >
+                        {value.name}
+                      </a>
+                    </li>
+                  </template>
+                </ul>
+              </li>
+            </template>
+          </ul>
+        </div>
+        <div class="border-l border-gray-200"></div>
+        <div class="px-4 max-h-72 overflow-y-scroll flex-1">
+          <template lwc:if={lastHoveredFunction}>
+            <div>
+              <p class="font-bold">{lastHoveredFunction.name}</p>
+              {lastHoveredFunction.description}
+              <div>
+                <template lwc:if={lastHoveredFunction.examples}>
+                  <div>
+                <pre>
+                  {lastHoveredFunction.examples}
+                </pre>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </lightning-card>
+</template>
