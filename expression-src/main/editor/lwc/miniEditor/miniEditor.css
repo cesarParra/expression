@@ -1,0 +1,159 @@
+.mono {
+    font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+}
+
+.unstyled-input {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font: inherit;
+    width: 100%;
+}
+
+.pt-1 {
+    padding-top: 0.25rem;
+}
+
+.pt-2 {
+    padding-top: 0.5rem;
+}
+
+.py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.p-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.mb-1 {
+    margin-bottom: 0.25rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--lwc-colorBorder);
+    margin: 0;
+}
+
+.flex {
+    display: flex;
+}
+
+pre {
+    font-size: 1rem;
+    background: #eee;
+    border: 0 solid #3d7e9a;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding: 15px;
+    position: relative;
+    font-family: consolas, monaco, 'Andale Mono', monospace;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5;
+    overflow: auto;
+    direction: ltr !important;
+    text-align: left !important;
+    border-left-width: 5px !important;
+    -moz-tab-size: 4;
+    tab-size: 4;
+    -moz-hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+}
+
+.pl-2 {
+    padding-left: 0.5rem;
+}
+
+.pr-4 {
+    padding-right: 1rem;
+}
+
+.min-w-48 {
+    min-width: 12rem;
+}
+
+.max-h-72 {
+    max-height: 18rem;
+}
+
+.overflow-y-scroll {
+    overflow-y: auto;
+}
+
+.list-none {
+    list-style-type: none;
+}
+
+.px-0 {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.pl-2 {
+    padding-left: 0.5rem;
+}
+
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.text-gray-600 {
+    color: var(--lwc-colorTextWeak);
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.py-0\.5 {
+    padding-top: 0.125rem;
+    padding-bottom: 0.125rem;
+}
+
+.no-underline {
+    text-decoration: none;
+}
+
+.hover\:text-blue-500:hover {
+    color: var(--lwc-colorTextLink) !important;
+}
+
+.flex-1 {
+    flex: 1 1 auto;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.border-l {
+    border-left: 1px solid var(--lwc-colorBorder);
+}
+
+.border-gray-200 {
+    border-color: var(--lwc-colorBorder);
+}
