@@ -8,18 +8,64 @@ export default class MiniEditor extends LightningElement {
   @api
   placeholder = "Your Expression";
 
+  @api
+  displayAsTextArea = false;
+
   categories = [];
-  preview = '';
+  expression = '';
   lastHoveredFunction = null;
 
   async connectedCallback() {
     this.categories = await getFunctionsAndOperators();
   }
 
+  get displayFunctions() {
+    const data = this.categories.map((category) => {
+      return {
+        ...category,
+        values: category.values.map((value) => {
+          return {
+            ...value,
+            icon: value.icon || category.icon
+          };
+        })
+      };
+    });
+
+    function filter(expression) {
+      const rightmostWord = expression.split(" ").pop() ?? expression;
+      const filteredData = data
+        .map((category) => {
+          const filteredValues = category.values.filter((value) =>
+            value.name.toLowerCase().startsWith(rightmostWord.toLowerCase())
+          );
+          return {
+            ...category,
+            values: filteredValues,
+          };
+        })
+        .filter((category) => category.values.length > 0);
+
+      return filteredData.length > 0 ? filteredData : data;
+    }
+
+    return filter(this.expression);
+  }
+
+  handleExpressionChange(event) {
+    this.expression = event.target.value;
+  }
+
+  handleExpressionSaved() {
+    this.dispatchEvent(new CustomEvent('save', {
+      detail: {
+        expression: this.expression,
+      }
+    }));
+  }
+
   handleMouseEnter(event) {
-    console.log('handleOnMouseEnter', event);
     const hoveredElementName = event.target.dataset.name;
-    console.log('hoveredElementName', hoveredElementName);
 
     // Find the function by loooping through each category,
     // then each value until found

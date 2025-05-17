@@ -1,24 +1,31 @@
 <template>
   <lightning-card>
-    <div class="slds-grid slds-grid_align-spread">
-      <div class="slds-col slds-text-body_small">{title}</div>
+    <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+      <div class="slds-col slds-text-body_small slds-text-title_bold pl-2">{title}</div>
       <div class="slds-col">
-        <lightning-button variant="brand-outline" label="Save"></lightning-button>
+        <lightning-button variant="brand-outline" label="Save"
+                          onclick={handleExpressionSaved}
+        ></lightning-button>
       </div>
     </div>
     <div class="pt-1">
-      <input type="text" name="expression" class="unstyled-input p-2 mono" placeholder={placeholder}/>
+      <template lwc:if={displayAsTextArea}>
+        <textarea name="expression"
+                  onkeyup={handleExpressionChange}
+                  class="unstyled-input p-2 mono" placeholder={placeholder} value={expression}></textarea>
+      </template>
+      <template lwc:else>
+        <input type="text" name="expression"
+               onkeyup={handleExpressionChange}
+               class="unstyled-input p-2 mono" placeholder={placeholder} value={expression}/>
+      </template>
     </div>
     <hr/>
-    <div class="py-2">
-      = {preview}
-    </div>
-    <hr/>
-    <div>
+    <div class="mb-1">
       <div class="flex">
-        <div class="pl-2 pr-4 min-w-48 max-h-72 overflow-y-scroll">
+        <div class="pl-2 pt-2 pr-4 min-w-48 max-h-72 overflow-y-scroll">
           <ul class="list-none px-0">
-            <template for:each={categories} for:item="category">
+            <template for:each={displayFunctions} for:item="category">
               <li class="truncate pt-1" key={category.category}>
                 <span class="text-sm text-gray-600 font-semibold">{category.category}</span>
                 <ul class="list-none px-0">
@@ -39,18 +46,21 @@
           </ul>
         </div>
         <div class="border-l border-gray-200"></div>
-        <div class="px-4 max-h-72 overflow-y-scroll flex-1">
+        <div class="px-4 pt-2 max-h-72 overflow-y-scroll flex-1">
           <template lwc:if={lastHoveredFunction}>
             <div>
               <p class="font-bold">{lastHoveredFunction.name}</p>
-              {lastHoveredFunction.description}
-              <div>
+              <lightning-formatted-rich-text value={lastHoveredFunction.description}></lightning-formatted-rich-text>
+              <div class="mt-2">
                 <template lwc:if={lastHoveredFunction.examples}>
-                  <div>
-                <pre>
-                  {lastHoveredFunction.examples}
-                </pre>
-                  </div>
+                  <div><strong>Examples</strong></div>
+                  <pre>
+                    <template for:each={lastHoveredFunction.examples} for:item="example">
+                      <div key={example}>
+                        {example}
+                      </div>
+                    </template>
+                  </pre>
                 </template>
               </div>
             </div>

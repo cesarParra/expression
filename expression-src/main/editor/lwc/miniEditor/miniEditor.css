@@ -14,6 +14,10 @@
     padding-top: 0.25rem;
 }
 
+.pt-2 {
+    padding-top: 0.5rem;
+}
+
 .py-2 {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
@@ -26,6 +30,14 @@
     padding-right: 0.5rem;
 }
 
+.mb-1 {
+    margin-bottom: 0.25rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
 hr {
     border: none;
     border-top: 1px solid var(--lwc-colorBorder);
@@ -34,6 +46,31 @@ hr {
 
 .flex {
     display: flex;
+}
+
+pre {
+    font-size: 1rem;
+    background: #eee;
+    border: 0 solid #3d7e9a;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding: 15px;
+    position: relative;
+    font-family: consolas, monaco, 'Andale Mono', monospace;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5;
+    overflow: auto;
+    direction: ltr !important;
+    text-align: left !important;
+    border-left-width: 5px !important;
+    -moz-tab-size: 4;
+    tab-size: 4;
+    -moz-hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
 }
 
 .pl-2 {
@@ -63,6 +100,15 @@ hr {
 .px-0 {
     padding-left: 0;
     padding-right: 0;
+}
+
+.pl-2 {
+    padding-left: 0.5rem;
+}
+
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .truncate {
