@@ -37,6 +37,10 @@ export default class MiniEditor extends LightningElement {
     });
 
     function filter(expression) {
+      if (!expression) {
+        return data;
+      }
+
       const rightmostWord = expression.split(" ").pop() ?? expression;
       const filteredData = data
         .map((category) => {
