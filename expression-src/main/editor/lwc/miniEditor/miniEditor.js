@@ -11,12 +11,16 @@ export default class MiniEditor extends LightningElement {
   @api
   displayAsTextArea = false;
 
+  @api
+  defaultExpression = '';
+
   categories = [];
   expression = '';
   lastHoveredFunction = null;
 
   async connectedCallback() {
     this.categories = await getFunctionsAndOperators();
+    this.expression = this.defaultExpression;
   }
 
   get displayFunctions() {
