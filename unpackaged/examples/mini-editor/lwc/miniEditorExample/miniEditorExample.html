@@ -1,7 +1,9 @@
 <template>
-  <lightning-card  title="Mini Editor">
+  <lightning-card title="Mini Editor">
     <div class="slds-p-horizontal_small">
-      <c-mini-editor display-as-text-area="true" onsave={handleExpressionSaved}></c-mini-editor>
+      <c-mini-editor display-as-text-area="true"
+                     default-expression="true"
+                     onsave={handleExpressionSaved}></c-mini-editor>
     </div>
   </lightning-card>
 </template>
