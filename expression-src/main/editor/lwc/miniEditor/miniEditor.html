@@ -12,7 +12,9 @@
       <template lwc:if={displayAsTextArea}>
         <textarea name="expression"
                   onkeyup={handleExpressionChange}
-                  class="unstyled-input p-2 mono" placeholder={placeholder} value={expression}></textarea>
+                  class="unstyled-input p-2 mono" placeholder={placeholder} value={expression}>
+          {expression}
+        </textarea>
       </template>
       <template lwc:else>
         <input type="text" name="expression"
