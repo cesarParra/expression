@@ -48,12 +48,12 @@ public with sharing class CollectionFunctions {
         }
     }
 
-    private static Environment getEnvironmentFromObject(Object currentVal) {
+    private static Environment getEnvironmentFromObject(Environment parentEnvironment, Object currentVal) {
         Environment env;
         if (currentVal instanceof SObject) {
-            env = new Environment((SObject) currentVal);
+            env = new Environment(parentEnvironment, (SObject) currentVal);
         } else {
-            env = new Environment();
+            env = new Environment(parentEnvironment);
         }
         return env;
     }
@@ -118,7 +118,7 @@ public with sharing class CollectionFunctions {
             List<Object> result = new List<Object>();
             for (Integer i = 0; i < childrenAsList.size(); i++) {
                 Object child = childrenAsList.get(i);
-                Environment env = getEnvironmentFromObject(child);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), child);
                 env.define('$current', child);
                 env.define('$index', i);
                 env.define('$total', childrenAsList.size());
@@ -170,7 +170,7 @@ public with sharing class CollectionFunctions {
             List<Object> result = new List<Object>();
             for (Integer i = 0; i < childrenAsList.size(); i++) {
                 Object child = childrenAsList.get(i);
-                Environment env = getEnvironmentFromObject(child);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), child);
 
                 env.define('$current', child);
                 env.define('$index', i);
@@ -774,7 +774,7 @@ public with sharing class CollectionFunctions {
             // The result of the expression will be the new value.
             Object accumulator = initialValue;
             for (Object currentVal : listVal) {
-                Environment env = getEnvironmentFromObject(currentVal);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), currentVal);
                 env.define('$current', currentVal);
                 env.define('$accumulator', accumulator);
                 Interpreter interpreter = new Interpreter(env);
@@ -902,7 +902,7 @@ public with sharing class CollectionFunctions {
             // Loop through each element in the list, evaluating the
             // expression with the current value (as $current) being looped.
             for (Object currentVal : listVal) {
-                Environment env = getEnvironmentFromObject(currentVal);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), currentVal);
                 env.define('$current', currentVal);
                 Interpreter interpreter = new Interpreter(env);
                 Object result = interpreter.interpret(expr);
@@ -999,7 +999,7 @@ public with sharing class CollectionFunctions {
             // Loop through each element in the list, evaluating the
             // expression with the current value (as $current) being looped.
             for (Object currentVal : listVal) {
-                Environment env = getEnvironmentFromObject(currentVal);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), currentVal);
                 env.define('$current', currentVal);
                 Interpreter interpreter = new Interpreter(env);
                 Object result = interpreter.interpret(expr);
@@ -1059,7 +1059,7 @@ public with sharing class CollectionFunctions {
             // expression with the current value (as $current) being looped.
             List<Object> result = new List<Object>();
             for (Object currentVal : listVal) {
-                Environment env = getEnvironmentFromObject(currentVal);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), currentVal);
                 env.define('$current', currentVal);
                 Interpreter interpreter = new Interpreter(env);
                 Object evaluated = interpreter.interpret(expr);
@@ -1118,7 +1118,7 @@ public with sharing class CollectionFunctions {
             // Loop through each element in the list, evaluating the
             // expression with the current value (as $current) being looped.
             for (Object currentVal : listVal) {
-                Environment env = getEnvironmentFromObject(currentVal);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), currentVal);
                 env.define('$current', currentVal);
                 Interpreter interpreter = new Interpreter(env);
                 Object result = interpreter.interpret(expr);
@@ -1254,7 +1254,7 @@ public with sharing class CollectionFunctions {
             // expression with the current value (as $current) being looped.
             for (Integer i = listVal.size() - 1; i >= 0; i--) {
                 Object currentVal = listVal.get(i);
-                Environment env = getEnvironmentFromObject(currentVal);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), currentVal);
                 env.define('$current', currentVal);
                 Interpreter interpreter = new Interpreter(env);
                 Object result = interpreter.interpret(expr);
@@ -1361,7 +1361,7 @@ public with sharing class CollectionFunctions {
             List<Object> listVal = (List<Object>) listObj;
             for (Integer i = 0; i < listVal.size(); i++) {
                 Object currentVal = listVal.get(i);
-                Environment env = getEnvironmentFromObject(currentVal);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), currentVal);
                 env.define('$current', currentVal);
                 Interpreter interpreter = new Interpreter(env);
                 Object result = interpreter.interpret(expr);
@@ -1475,7 +1475,7 @@ public with sharing class CollectionFunctions {
             List<Object> listVal = (List<Object>) listObj;
             for (Integer i = 0; i < listVal.size(); i++) {
                 Object currentVal = listVal.get(i);
-                Environment env = getEnvironmentFromObject(currentVal);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), currentVal);
                 env.define('$current', currentVal);
                 Interpreter interpreter = new Interpreter(env);
                 Object result = interpreter.interpret(expr);
@@ -1629,7 +1629,7 @@ public with sharing class CollectionFunctions {
                 Object acc = null;
                 for (Integer i = 0; i < values.size(); i++) {
                     Object current = values.get(i);
-                    Environment env = getEnvironmentFromObject(current);
+                    Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), current);
 
                     env.define('$current', current);
                     env.define('$key', key);
@@ -1676,7 +1676,7 @@ public with sharing class CollectionFunctions {
             Expr expr = arguments.get(1);
             Map<Object, Object> result = new Map<Object, Object>();
             for (Object currentVal : listVal) {
-                Environment env = getEnvironmentFromObject(currentVal);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), currentVal);
                 env.define('$current', currentVal);
                 Interpreter interpreter = new Interpreter(env);
                 Object key = interpreter.interpret(expr);
@@ -1719,7 +1719,7 @@ public with sharing class CollectionFunctions {
             Expr expr = arguments.get(1);
             Map<Object, List<Object>> result = new Map<Object, List<Object>>();
             for (Object currentVal : listVal) {
-                Environment env = getEnvironmentFromObject(currentVal);
+                Environment env = getEnvironmentFromObject(this.interpreter.getEnvironment(), currentVal);
                 env.define('$current', currentVal);
                 Interpreter interpreter = new Interpreter(env);
                 Object key = interpreter.interpret(expr);
