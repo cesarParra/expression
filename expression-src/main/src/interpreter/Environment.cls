@@ -74,6 +74,11 @@ public with sharing class Environment {
         this.context = context;
     }
 
+    public Environment(Environment parentEnvironment, SObject context) {
+        this.parentEnvironment = parentEnvironment;
+        this.context = context;
+    }
+
     public void define(String name, Object value) {
         variables.put(name.toLowerCase(), value);
     }
