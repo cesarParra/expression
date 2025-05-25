@@ -25,7 +25,7 @@ public with sharing abstract class EvaluatorResolver {
     public static EvaluatorResolver withoutContext() {
         return new BaseSingleRecordEvaluator(null);
     }
-    
+
     /**
      * @description Analyzes multiple formulas and retrieves a record with all fields needed by those formulas
      * @param recordId The Id of the record to retrieve
@@ -36,14 +36,14 @@ public with sharing abstract class EvaluatorResolver {
         if (recordId == null || formulas == null || formulas.isEmpty()) {
             return null;
         }
-        
+
         ContextResolver contextResolver = new ContextResolver(recordId, new List<Expr.FunctionDeclaration>());
-        
+
         for (String formula : formulas) {
             try {
                 List<Token> tokens = new Scanner(formula).scanTokens();
                 List<Expr> expressions = new Parser(tokens).parse();
-                
+
                 for (Expr parsedExpression : expressions) {
                     Expr desugaredExpression = new PipeResolver().resolve(parsedExpression);
                     contextResolver.resolveForRecord(desugaredExpression);
@@ -53,19 +53,19 @@ public with sharing abstract class EvaluatorResolver {
                 System.debug(LoggingLevel.WARN, 'Error analyzing formula "' + formula + '": ' + e.getMessage());
             }
         }
-        
+
         if (!contextResolver.shouldExecuteQuery()) {
             return null;
         }
-        
+
         // Add subqueries to the main query
         for (ContextResolver.Query subquery : contextResolver.getSubQueries()) {
             contextResolver.getQueryContext().queryBuilder.addSubquery(subquery.queryBuilder);
         }
-        
+
         // Add condition to filter by the specific record id
         contextResolver.getQueryContext().queryBuilder.add(Q.condition('Id').isIn(new List<Id>{recordId}));
-        
+
         // Execute the query and return the first record (if any)
         List<SObject> records = QDB.getInstance().run(contextResolver.getQueryContext().queryBuilder);
         return records.isEmpty() ? null : records[0];
@@ -73,6 +73,7 @@ public with sharing abstract class EvaluatorResolver {
 
     public EvaluationResult evaluate(String input, Configuration config) {
         config.subscribe(this.eventNotifier);
+        eventNotifier.subscribe(OnEvaluationEndEvent.class, new Environment.ClearContext());
 
         eventNotifier.notify(new OnEvaluationStartEvent(config));
 

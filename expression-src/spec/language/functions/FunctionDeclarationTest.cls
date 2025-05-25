@@ -205,4 +205,20 @@ private class FunctionDeclarationTest {
         Assert.areEqual(2, Limits.getQueries(), 'Two queries should have been consumed, ' +
             'since the function was called with the "nocache" keyword');
     }
+
+    @IsTest
+    static void canRunEvaluatorMultipleTimesWhenUsingFunctions() {
+        insert new Account(Name = 'ACME');
+
+        String expression = 'fun foo(n) => Query(Account(where: Name = n));\n' +
+            '\n' +
+            '[...foo("ACME"), ...foo("Salesforce")]';
+
+        try {
+            Evaluator.run(expression);
+            Evaluator.run(expression);
+        } catch (Exception e) {
+            Assert.fail('Should be able to run the evaluator multiple times: ' + e.getMessage());
+        }
+    }
 }

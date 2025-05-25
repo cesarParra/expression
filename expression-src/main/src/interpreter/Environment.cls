@@ -174,4 +174,11 @@ public with sharing class Environment {
     public override Integer hashCode() {
         return (parentEnvironment != null ? parentEnvironment.hashCode() : 0) ^ (context != null ? context.hashCode() : 0) ^ variables.hashCode();
     }
+
+    public class ClearContext implements EvaluatorEventListener {
+        public Map<String, Object> handle(EvaluatorEvent event) {
+            GLOBAL_VARIABLES.clear();
+            return null;
+        }
+    }
 }
