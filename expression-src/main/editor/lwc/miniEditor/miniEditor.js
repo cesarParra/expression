@@ -11,6 +11,13 @@ export default class MiniEditor extends LightningElement {
   placeholder = "Your Expression";
 
   /**
+   * Deprecated: Use variant instead.
+   * @type {boolean}
+   */
+  @api
+  displayAsTextArea = false;
+
+  /**
    *
    * @type {"input" | "textarea" | "editor"}
    */
@@ -35,7 +42,7 @@ export default class MiniEditor extends LightningElement {
     return this.variant === 'input';
   }
 
-  get displayAsTextarea() {
+  get displayAsTextareaVariant() {
     return this.variant === 'textarea';
   }
 
