@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link
-            rel="stylesheet"
-            data-name="vs/editor/editor.main"
-            href="min/vs/editor/editor.main.css"
-    />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <link
+    rel="stylesheet"
+    data-name="vs/editor/editor.main"
+    href="min/vs/editor/editor.main.css"
+  />
 </head>
 <body style="margin: 0;">
 <div id="container" style="height: 100vh;"></div>
@@ -23,7 +23,7 @@
 
   function onMessage(event) {
     if (event.data.name === 'initialize') {
-      initialize(event.data.keywords);
+      initialize(event.data.keywords, event.data.initialValue);
     }
     if (event.data.name === 'evaluation_error') {
       markError(event.data.payload);
@@ -36,7 +36,7 @@
     }
   }
 
-  function initialize(functionKeywords) {
+  function initialize(functionKeywords, initialValue) {
     monaco.languages.register({id: 'expression'});
     let keywords = functionKeywords;
 
@@ -147,7 +147,7 @@
     });
 
     window.editor = monaco.editor.create(document.getElementById('container'), {
-      value: [''].join('\n'),
+      value: initialValue ?? [''].join('\n'),
       language: 'expression',
       wordWrap: "wordWrapColumn",
       wordWrapColumn: 100,

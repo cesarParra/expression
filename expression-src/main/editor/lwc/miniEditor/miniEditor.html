@@ -9,23 +9,29 @@
       </div>
     </div>
     <div class="pt-1">
-      <template lwc:if={displayAsTextArea}>
+      <template lwc:if={displayAsTextarea}>
         <textarea name="expression"
                   onkeyup={handleExpressionChange}
                   class="unstyled-input p-2 mono" placeholder={placeholder} value={expression}>
           {expression}
         </textarea>
       </template>
-      <template lwc:else>
+      <template lwc:if={displayAsInput}>
         <input type="text" name="expression"
                onkeyup={handleExpressionChange}
                class="unstyled-input p-2 mono" placeholder={placeholder} value={expression}/>
+      </template>
+      <template lwc:if={displayAsEditor}>
+        <iframe src={iframeUrl}
+                scrolling="no" style="width: 100%; height: 100%; overflow: hidden; border: none"
+                onload={iframeLoaded}
+        ></iframe>
       </template>
     </div>
     <hr/>
     <div class="mb-1">
       <div class="flex">
-        <div class="pl-2 pt-2 pr-4 min-w-48 max-h-72 overflow-y-scroll">
+        <div class="pl-2 pt-2 pr-4 w-48 min-w-48 max-h-72 overflow-y-scroll">
           <ul class="list-none px-0">
             <template for:each={displayFunctions} for:item="category">
               <li class="truncate pt-1" key={category.category}>
