@@ -30,7 +30,7 @@ public with sharing class DataFunctions {
     private class TransformFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object sourceObj = evaluate(arguments.get(0));
-            Environment env = new Environment();
+            Environment env = new Environment(this.interpreter.getEnvironment());
             env.define('$source', sourceObj);
             Interpreter interpreter = new Interpreter(env);
             return interpreter.interpret(arguments.get(1));
@@ -127,37 +127,37 @@ public with sharing class DataFunctions {
     public class ParseJsonFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
             Object jsonInput = evaluate(arguments.get(0));
-            
+
             if (!(jsonInput instanceof String)) {
                 throw new FunctionExecutionException(
                     'Error executing "PARSEJSON" function: the argument must evaluate to a string value.'
                 );
             }
-            
+
             String jsonStr = (String) jsonInput;
-            
+
             try {
                 Object deserializedObj = JSON.deserializeUntyped(jsonStr);
-                
+
                 if (!(deserializedObj instanceof Map<String, Object>)) {
                     Map<Object, Object> wrappedMap = new Map<Object, Object>();
                     wrappedMap.put('value', deserializedObj);
                     return wrappedMap;
                 }
-                
-                Map<String, Object> typedMap = (Map<String, Object>)deserializedObj;
+
+                Map<String, Object> typedMap = (Map<String, Object>) deserializedObj;
                 Map<Object, Object> resultMap = new Map<Object, Object>();
-                
+
                 for (String key : typedMap.keySet()) {
                     Object value = typedMap.get(key);
                     if (value instanceof Map<String, Object>) {
-                        value = convertToObjectMap((Map<String, Object>)value);
+                        value = convertToObjectMap((Map<String, Object>) value);
                     } else if (value instanceof List<Object>) {
-                        value = convertListContents((List<Object>)value);
+                        value = convertListContents((List<Object>) value);
                     }
                     resultMap.put(key, value);
                 }
-                
+
                 return resultMap;
             } catch (Exception e) {
                 throw new FunctionExecutionException(
@@ -165,37 +165,37 @@ public with sharing class DataFunctions {
                 );
             }
         }
-        
+
         private Map<Object, Object> convertToObjectMap(Map<String, Object> typedMap) {
             Map<Object, Object> resultMap = new Map<Object, Object>();
-            
+
             for (String key : typedMap.keySet()) {
                 Object value = typedMap.get(key);
                 // Recursively convert nested maps
                 if (value instanceof Map<String, Object>) {
-                    value = convertToObjectMap((Map<String, Object>)value);
+                    value = convertToObjectMap((Map<String, Object>) value);
                 } else if (value instanceof List<Object>) {
-                    value = convertListContents((List<Object>)value);
+                    value = convertListContents((List<Object>) value);
                 }
                 resultMap.put(key, value);
             }
-            
+
             return resultMap;
         }
-        
+
         private List<Object> convertListContents(List<Object> typedList) {
             List<Object> resultList = new List<Object>();
-            
+
             for (Object item : typedList) {
                 if (item instanceof Map<String, Object>) {
-                    resultList.add(convertToObjectMap((Map<String, Object>)item));
+                    resultList.add(convertToObjectMap((Map<String, Object>) item));
                 } else if (item instanceof List<Object>) {
-                    resultList.add(convertListContents((List<Object>)item));
+                    resultList.add(convertListContents((List<Object>) item));
                 } else {
                     resultList.add(item);
                 }
             }
-            
+
             return resultList;
         }
 

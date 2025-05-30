@@ -85,6 +85,10 @@ pre {
     min-width: 12rem;
 }
 
+.w-48 {
+    width: 12rem;
+}
+
 .max-h-72 {
     max-height: 18rem;
 }

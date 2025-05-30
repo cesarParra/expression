@@ -1,5 +1,7 @@
 import { LightningElement, api } from 'lwc';
 import { getFunctionsAndOperators } from 'c/functions';
+import monaco from '@salesforce/resourceUrl/monaco';
+import getFunctions from "@salesforce/apex/PlaygroundController.getFunctionNames";
 
 export default class MiniEditor extends LightningElement {
   @api
@@ -8,11 +10,24 @@ export default class MiniEditor extends LightningElement {
   @api
   placeholder = "Your Expression";
 
+  /**
+   * Deprecated: Use variant instead.
+   * @type {boolean}
+   */
   @api
   displayAsTextArea = false;
 
+  /**
+   *
+   * @type {"input" | "textarea" | "editor"}
+   */
+  @api
+  variant = "editor";
+
   @api
   defaultExpression = '';
+
+  iframeUrl = `${monaco}/main.html`;
 
   categories = [];
   expression = '';
@@ -21,6 +36,38 @@ export default class MiniEditor extends LightningElement {
   async connectedCallback() {
     this.categories = await getFunctionsAndOperators();
     this.expression = this.defaultExpression;
+  }
+
+  get displayAsInput() {
+    return this.variant === 'input';
+  }
+
+  get displayAsTextareaVariant() {
+    return this.variant === 'textarea';
+  }
+
+  get displayAsEditor() {
+    return this.variant === 'editor';
+  }
+
+  async iframeLoaded() {
+    const functionKeywords = await getFunctions();
+    this.iframeWindow.postMessage({
+      name: 'initialize',
+      keywords: functionKeywords,
+      initialValue: this.expression
+    });
+
+    window.addEventListener('message', (event) => {
+      const {name, payload} = event.data;
+      if (name === 'content_change') {
+        this.expression = payload;
+      }
+    }, false);
+  }
+
+  get iframeWindow() {
+    return this.template.querySelector('iframe').contentWindow;
   }
 
   get displayFunctions() {
