@@ -121,7 +121,7 @@ private class EvaluatorRetrieveRecordTest {
     @IsTest
     static void testSuppressErrorsReturnEmptyString() {
         Test.startTest();
-        String result = (String)Evaluator.run('InvalidFunction()', new Configuration().suppressErrors());
+        Object result = Evaluator.run('"a" & 1', new Configuration().suppressErrors());
         Test.stopTest();
         
         System.assertEquals('', result, 'Should return empty string when errors are suppressed');
@@ -130,7 +130,7 @@ private class EvaluatorRetrieveRecordTest {
     @IsTest
     static void testSuppressErrorsWithValidExpression() {
         Test.startTest();
-        String result = (String)Evaluator.run('"Hello World"', new Configuration().suppressErrors());
+        Object result = Evaluator.run('"Hello World"', new Configuration().suppressErrors());
         Test.stopTest();
         
         System.assertEquals('Hello World', result, 'Should return correct result when no errors occur');
@@ -141,7 +141,7 @@ private class EvaluatorRetrieveRecordTest {
         Test.startTest();
         Boolean exceptionThrown = false;
         try {
-            Evaluator.run('InvalidFunction()', new Configuration());
+            Evaluator.run('"a" & 1', new Configuration());
         } catch (Exception e) {
             exceptionThrown = true;
         }
