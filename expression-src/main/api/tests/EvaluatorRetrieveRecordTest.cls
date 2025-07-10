@@ -117,4 +117,36 @@ private class EvaluatorRetrieveRecordTest {
         System.assertEquals(null, resultWithNullId, 'Should return null with null recordId');
         Test.stopTest();
     }
+    
+    @IsTest
+    static void testSuppressErrorsReturnEmptyString() {
+        Test.startTest();
+        String result = (String)Evaluator.run('InvalidFunction()', new Configuration().suppressErrors());
+        Test.stopTest();
+        
+        System.assertEquals('', result, 'Should return empty string when errors are suppressed');
+    }
+    
+    @IsTest
+    static void testSuppressErrorsWithValidExpression() {
+        Test.startTest();
+        String result = (String)Evaluator.run('"Hello World"', new Configuration().suppressErrors());
+        Test.stopTest();
+        
+        System.assertEquals('Hello World', result, 'Should return correct result when no errors occur');
+    }
+    
+    @IsTest
+    static void testWithoutSuppressErrorsThrowsException() {
+        Test.startTest();
+        Boolean exceptionThrown = false;
+        try {
+            Evaluator.run('InvalidFunction()', new Configuration());
+        } catch (Exception e) {
+            exceptionThrown = true;
+        }
+        Test.stopTest();
+        
+        System.assertTrue(exceptionThrown, 'Should throw exception when errors are not suppressed');
+    }
 }

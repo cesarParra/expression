@@ -11,6 +11,7 @@ global with sharing class Configuration {
     global Boolean printAst = false;
     global Map<String, Object> customContext = new Map<String, Object>();
     public Boolean withDiagnostics = false;
+    global Boolean suppressErrors = false;
 
     global Configuration respectSharing(Boolean respect) {
         sharing = respect ? SharingMode.WITH : SharingMode.WITHOUT;
@@ -30,6 +31,11 @@ global with sharing class Configuration {
     global Configuration withCustomContext(Map<String, Object> objectsByStrings) {
         Map<String, Object> objectToSet = objectsByStrings ?? new Map<String, Object>();
         this.customContext = objectToSet;
+        return this;
+    }
+
+    global Configuration suppressErrors() {
+        suppressErrors = true;
         return this;
     }
 
