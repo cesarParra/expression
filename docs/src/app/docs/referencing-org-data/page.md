@@ -83,3 +83,12 @@ The `timeZone` property of the `$UserSettings` global variable returns a map con
 Object result = expression.Evaluator.run('$UserSettings.timeZone.name');
 Object gmtOffset = expression.Evaluator.run('$UserSettings.timeZone.gmtOffset');
 ```
+
+## Organization
+
+You can reference information about the current organization through the `$Organization` global variable.
+
+Available references are:
+
+* `OrgId`
+* `Name`

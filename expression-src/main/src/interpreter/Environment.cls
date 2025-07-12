@@ -23,6 +23,7 @@ public with sharing class Environment {
         GLOBAL_VARIABLES.put('$action', new ActionVariableResolver());
         GLOBAL_VARIABLES.put('$user', new UserVariableResolver());
         GLOBAL_VARIABLES.put('$usersettings', new UserSettingsVariableResolver());
+        GLOBAL_VARIABLES.put('$organizationsettings', new OrganizationSettingsVariableResolver());
 
         // Placeholder value for whatever the called Action returned. Not used by language,
         // but can be used by the caller to get the return value of the Action.
