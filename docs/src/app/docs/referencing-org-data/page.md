@@ -47,6 +47,7 @@ Object result = expression.Evaluator.run('$Resource.MyStaticResourceName');
 You can reference information about the current user through the `$User` global variable.
 
 Available references are:
+
 * `DefaultCurrency`
 * `FirstName`
 * `Language`
@@ -58,4 +59,27 @@ Available references are:
 
 ```apex
 Object result = expression.Evaluator.run('$User.FirstName');
+```
+
+## User Settings
+
+You can reference user settings using the `$UserSettings` global variable.
+
+This global variable wraps all properties of the `ConnectApi.UserSettings` class,
+so please reference
+the [documentation for that class](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_connectapi_output_usersettings.htm)
+for available properties.
+
+```apex
+Object result = expression.Evaluator.run('$UserSettings.hasChatter');
+```
+
+### Time Zone
+
+The `timeZone` property of the `$UserSettings` global variable returns a map containing
+`name` and `gmtOffset` properties.
+
+```apex
+Object result = expression.Evaluator.run('$UserSettings.timeZone.name');
+Object gmtOffset = expression.Evaluator.run('$UserSettings.timeZone.gmtOffset');
 ```

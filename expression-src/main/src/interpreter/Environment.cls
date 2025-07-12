@@ -22,6 +22,7 @@ public with sharing class Environment {
         GLOBAL_VARIABLES.put('$resource', new StaticResourceVariableResolver());
         GLOBAL_VARIABLES.put('$action', new ActionVariableResolver());
         GLOBAL_VARIABLES.put('$user', new UserVariableResolver());
+        GLOBAL_VARIABLES.put('$usersettings', new UserSettingsVariableResolver());
 
         // Placeholder value for whatever the called Action returned. Not used by language,
         // but can be used by the caller to get the return value of the Action.
@@ -46,11 +47,11 @@ public with sharing class Environment {
         // First try and find it locally
         Object possibleFunction = getVariables().get(lowercasedName);
         if (possibleFunction != null && possibleFunction instanceof Expr.FunctionDeclaration) {
-            return (Expr.FunctionDeclaration) possibleFunction;
+            return (Expr.FunctionDeclaration)possibleFunction;
         }
 
         // Otherwise, look in the global variables
-        return (Expr.FunctionDeclaration) GLOBAL_VARIABLES.get(functionName.toLowerCase());
+        return (Expr.FunctionDeclaration)GLOBAL_VARIABLES.get(functionName.toLowerCase());
     }
 
     /**
@@ -167,7 +168,7 @@ public with sharing class Environment {
     }
 
     public Boolean equals(Object obj) {
-        Environment other = (Environment) obj;
+        Environment other = (Environment)obj;
         return parentEnvironment == other.parentEnvironment && context == other.context && variables.equals(other.variables);
     }
 
