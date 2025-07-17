@@ -92,3 +92,11 @@ Available references are:
 
 * `OrgId`
 * `Name`
+
+## Permission
+
+Allows you to reference information about the current user’s custom permission access.
+
+```
+$Permission.MyCustomPermissionName # Returns true if the user has access to the custom permission, false otherwise.
+```
