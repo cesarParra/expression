@@ -20,4 +20,16 @@ private class ConfigurationTest {
         Configuration config = new Configuration().withCustomContext(null);
         Assert.isTrue(config.customContext.isEmpty());
     }
+
+    @IsTest
+    static void suppressErrorsDefaultsToFalse() {
+        Configuration config = new Configuration();
+        Assert.isFalse(config.suppressErrors);
+    }
+
+    @IsTest
+    static void canEnableSuppressErrors() {
+        Configuration config = new Configuration().suppressErrors();
+        Assert.isTrue(config.suppressErrors);
+    }
 }
