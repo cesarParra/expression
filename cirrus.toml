@@ -1,0 +1,17 @@
+[[orgs]]
+name = "Expression"
+definitionFile = "config/dev.json"
+
+[commands]
+ls = "sf org list --skip-connection-status"
+deploy = "sf project deploy start"
+assign-perms = "sf org assign permset -n Expression_Admin"
+test = "sf apex test run --test-level RunLocalTests --wait 20"
+
+[flow.start-dev]
+description = "Starts a new development environment"
+steps = [
+    { type = "create_scratch", org = "Expression" },
+    { type = "command", name = "deploy" },
+    { type = "command", name = "assign-perms" },
+]
