@@ -18,6 +18,29 @@ private class BulkTest {
         Assert.areEqual(1, results[3].getValue());
     }
 
+    @IsTest
+    static void canEvaluateExpressionsInBulkUsingAnIdContext() {
+        Account accountRecord = new Account(Name = 'Test');
+        insert accountRecord;
+
+        List<String> expressions = new List<String> {
+            'Name',
+            'Name = "Test"',
+            '4 - 2',
+            'Id'
+        };
+
+        List<Result> results = Evaluator.run(expressions, accountRecord.Id);
+
+        Assert.areEqual(4, results.size());
+        Assert.areEqual('Test', results[0].getValue());
+        Assert.isTrue((Boolean)results[1].getValue());
+        Assert.areEqual(2, results[2].getValue());
+        Assert.areEqual(accountRecord.Id, results[3].getValue());
+
+        Assert.areEqual(1, Limits.getDmlStatements());
+    }
+
     // TODO: Error handling
     // TODO: Context sharing (single DML)
 }

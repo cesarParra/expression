@@ -39,7 +39,7 @@ global with sharing abstract class Evaluator {
      * ```
      */
     global static Object run(String formula, Configuration config) {
-        return run(formula, (SObject) null, config);
+        return run(formula, (SObject)null, config);
     }
 
     /**
@@ -143,6 +143,15 @@ global with sharing abstract class Evaluator {
      */
     global static Object run(String formula, Id recordId) {
         return run(formula, recordId, new Configuration());
+    }
+
+    global static List<Result> run(List<String> expressions, Id recordId) {
+        List<EvaluationResult> innerResults = EvaluatorResolver.forId(recordId).evaluate(expressions, new Configuration());
+        List<Result> results = new List<Result>();
+        for (EvaluationResult innerResult : innerResults) {
+            results.add(innerResult.toResult());
+        }
+        return results;
     }
 
     /**
