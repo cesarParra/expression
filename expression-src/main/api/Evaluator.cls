@@ -17,6 +17,14 @@ global with sharing abstract class Evaluator {
         return run(formula, new Configuration());
     }
 
+    global static List<Result> run(List<String> expressions) {
+        List<EvaluationResult> innerResults = EvaluatorResolver.forRecord(null).evaluate(expressions, new Configuration());
+        List<Result> results = new List<Result>();
+        for (EvaluationResult innerResult : innerResults) {
+            results.add(innerResult.toResult());
+        }
+        return results;
+    }
     /**
      * @description Evaluates a formula and returns the result.
      * @param formula The formula to evaluate.
@@ -90,7 +98,7 @@ global with sharing abstract class Evaluator {
      * ```
      */
     global static Object run(String formula, SObject context, Configuration config) {
-        return EvaluatorResolver.forRecord(context).evaluate(formula, config).result;
+        return EvaluatorResolver.forRecord(context).evaluate(formula, config).resultValue;
     }
 
     /**
@@ -116,7 +124,7 @@ global with sharing abstract class Evaluator {
      * ```
      */
     global static Object run(String formula, List<SObject> context, Configuration config) {
-        return EvaluatorResolver.forRecords(context).evaluate(formula, config).result;
+        return EvaluatorResolver.forRecords(context).evaluate(formula, config).resultValue;
     }
 
     /**
@@ -187,7 +195,7 @@ global with sharing abstract class Evaluator {
      * ```
      */
     global static Object run(String formula, Id recordId, Configuration config) {
-        return EvaluatorResolver.forId(recordId).evaluate(formula, config).result;
+        return EvaluatorResolver.forId(recordId).evaluate(formula, config).resultValue;
     }
 
     /**
@@ -220,9 +228,9 @@ global with sharing abstract class Evaluator {
      * ```
      */
     global static Object run(String formula, Set<Id> recordIds, Configuration config) {
-        return EvaluatorResolver.forIds(recordIds).evaluate(formula, config).result;
+        return EvaluatorResolver.forIds(recordIds).evaluate(formula, config).resultValue;
     }
-    
+
     /**
      * @description Analyzes multiple formulas and retrieves a record with all fields needed by those formulas.
      *              This is useful when you need to query a record once with all required fields for multiple
