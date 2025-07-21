@@ -76,8 +76,6 @@ public with sharing abstract class EvaluatorResolver {
     }
 
     public List<EvaluationResult> evaluate(List<String> inputs, Configuration config) {
-        List<EvaluationResult> results = new List<EvaluationResult>();
-
         config.subscribe(this.eventNotifier);
         eventNotifier.subscribe(OnEvaluationEndEvent.class, new Environment.ClearContext());
         eventNotifier.notify(new OnEvaluationStartEvent(config));
@@ -86,6 +84,7 @@ public with sharing abstract class EvaluatorResolver {
         // it safe to call outside of the loop.
         addCustomContextVariablesToGlobalEnvironment(config);
 
+        List<List<Expr>> allPipedExpressions = new List<List<Expr>>();
         for (String input : inputs) {
             List<Token> tokens = this.scan(input);
             List<Expr> parsedExpressions = this.parse(tokens);
@@ -93,24 +92,42 @@ public with sharing abstract class EvaluatorResolver {
             eventNotifier.notify(new OnAfterParseEvent(parsedExpressions));
 
             List<Expr> pipedExpressions = this.desugarPipe(parsedExpressions);
+            allPipedExpressions.add(pipedExpressions);
+        }
 
-            // We only care about the result of the last interpreted expression.
-            // We assume that the previous results are declarations.
-            Object result = null;
-            List<Expr.FunctionDeclaration> customFunctionDeclarations = new List<Expr.FunctionDeclaration>();
-            for (Expr pipedExpression : pipedExpressions) {
-                if (isFunctionDeclaration(pipedExpression)) {
+        List<Expr.FunctionDeclaration> functionDeclarations = new List<Expr.FunctionDeclaration>();
+        List<Expr> expressionsForEnvironment = new List<Expr>();
+        for (List<Expr> pipedExpressions : allPipedExpressions) {
+            for (Expr expression : pipedExpressions) {
+                Boolean isFunctionDeclaration = isFunctionDeclaration(expression);
+                if (isFunctionDeclaration && inputs.size() > 1) {
+                    // Calling the bulk endpoint does not support function declarations,
+                    throw new UnsupportedOperationException('Function declarations are not supported in bulk evaluations.');
+                }
+
+                if (isFunctionDeclaration) {
                     // If we are dealing with a function declaration we do not need to interpret it.
-                    Expr.FunctionDeclaration fnDeclaration = (Expr.FunctionDeclaration)pipedExpression;
+                    Expr.FunctionDeclaration fnDeclaration = (Expr.FunctionDeclaration)expression;
                     Environment.addGlobalVariable(fnDeclaration.functionName, fnDeclaration);
-                    customFunctionDeclarations.add(fnDeclaration);
+                    functionDeclarations.add(fnDeclaration);
                     continue;
                 }
 
-                Environment anEnvironment = this.prepareEnvironment(new List<Expr> { pipedExpression }, customFunctionDeclarations);
-                result = this.interpret(anEnvironment, pipedExpression);
+                expressionsForEnvironment.add(expression);
             }
+        }
 
+        Environment anEnvironment = this.prepareEnvironment(expressionsForEnvironment, functionDeclarations);
+        List<EvaluationResult> results = new List<EvaluationResult>();
+        for (List<Expr> pipedExpressions : allPipedExpressions) {
+            // We only care about the result of the last interpreted expression
+            // We assume that the previous results are declarations.
+            Object result = null;
+            for (Expr pipedExpression : pipedExpressions) {
+                if (!isFunctionDeclaration(pipedExpression)) {
+                    result = this.interpret(anEnvironment, pipedExpression);
+                }
+            }
             results.add(new EvaluationResult(result, additionalResultData));
         }
 
