@@ -78,12 +78,15 @@ public with sharing abstract class EvaluatorResolver {
     public List<EvaluationResult> evaluate(List<String> inputs, Configuration config) {
         List<EvaluationResult> results = new List<EvaluationResult>();
 
+        config.subscribe(this.eventNotifier);
+        eventNotifier.subscribe(OnEvaluationEndEvent.class, new Environment.ClearContext());
+        eventNotifier.notify(new OnEvaluationStartEvent(config));
+
+        // This deals with the global environment, which is shared across all evaluations, so it
+        // it safe to call outside of the loop.
+        addCustomContextVariablesToGlobalEnvironment(config);
+
         for (String input : inputs) {
-            config.subscribe(this.eventNotifier);
-            eventNotifier.subscribe(OnEvaluationEndEvent.class, new Environment.ClearContext());
-
-            eventNotifier.notify(new OnEvaluationStartEvent(config));
-
             List<Token> tokens = this.scan(input);
             List<Expr> parsedExpressions = this.parse(tokens);
 
@@ -91,9 +94,6 @@ public with sharing abstract class EvaluatorResolver {
 
             List<Expr> pipedExpressions = this.desugarPipe(parsedExpressions);
 
-            // This deals with the global environment, which is shared across all evaluations, so it
-            // it safe to call outside of the loop.
-            addCustomContextVariablesToGlobalEnvironment(config);
             // We only care about the result of the last interpreted expression.
             // We assume that the previous results are declarations.
             Object result = null;
@@ -111,11 +111,10 @@ public with sharing abstract class EvaluatorResolver {
                 result = this.interpret(anEnvironment, pipedExpression);
             }
 
-            eventNotifier.notify(new OnEvaluationEndEvent());
-
             results.add(new EvaluationResult(result, additionalResultData));
         }
 
+        eventNotifier.notify(new OnEvaluationEndEvent());
         return results;
     }
 
