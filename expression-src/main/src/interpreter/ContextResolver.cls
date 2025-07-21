@@ -55,8 +55,11 @@ public with sharing class ContextResolver implements Visitor {
         return this.subQueries;
     }
 
-    public List<SObject> build(Expr expression) {
-        this.resolve(expression);
+    public List<SObject> build(List<Expr> expressions) {
+        for (Expr currentExpression : expressions) {
+            this.resolve(currentExpression);
+        }
+
         if (!this.shouldExecuteQuery) {
             return null;
         }
@@ -97,7 +100,7 @@ public with sharing class ContextResolver implements Visitor {
     public Object visit(Expr.StringLiteral literal) {
         for (Object obj : literal.stringsAndInterpolations) {
             if (obj instanceof Expr) {
-                resolve((Expr) obj);
+                resolve((Expr)obj);
             }
         }
         return null;
@@ -148,7 +151,7 @@ public with sharing class ContextResolver implements Visitor {
                     return null;
                 }
 
-                this.queryContext = (Query) result;
+                this.queryContext = (Query)result;
                 resolve(function.arguments[1]);
                 this.queryContext = previousContext;
 
@@ -204,9 +207,9 @@ public with sharing class ContextResolver implements Visitor {
         // Get the relationship field to query out of the get/merge field contained.
         String relationshipToQuery = '';
         if ((getExpr.objectExpr instanceof Expr.MergeFieldOrScopeVariable)) {
-            relationshipToQuery += ((Expr.MergeFieldOrScopeVariable) getExpr.objectExpr).name.lexeme + '.';
+            relationshipToQuery += ((Expr.MergeFieldOrScopeVariable)getExpr.objectExpr).name.lexeme + '.';
         } else if ((getExpr.objectExpr instanceof Expr.GetExpr)) {
-            relationshipToQuery += (String) this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr) getExpr.objectExpr) + '.';
+            relationshipToQuery += (String)this.resolveExtractReferenceOutOfGetExpression((Expr.GetExpr)getExpr.objectExpr) + '.';
         } else if (isReferencingContextField(getExpr)) {
             return getExpr.field.lexeme;
         } else {
@@ -221,12 +224,12 @@ public with sharing class ContextResolver implements Visitor {
 
     private static Boolean isReferencingContextField(Expr.GetExpr expr) {
         if (expr.objectExpr instanceof Expr.Variable) {
-            return ((Expr.Variable) expr.objectExpr).isContext();
+            return ((Expr.Variable)expr.objectExpr).isContext();
         } else if (expr.objectExpr instanceof Expr.GetExpr) {
             // Recursively check if the parent object is referencing a context field
             // since we can have nested get expressions and what is important is the top level
             // object that is being referenced.
-            return isReferencingContextField((Expr.GetExpr) expr.objectExpr);
+            return isReferencingContextField((Expr.GetExpr)expr.objectExpr);
         }
         return false;
     }
@@ -317,11 +320,11 @@ public with sharing class ContextResolver implements Visitor {
     public Object visit(Expr.MapLiteral mapLiteral) {
         for (Object element : mapLiteral.elements) {
             if (element instanceof Expr.Spread) {
-                this.resolve(((Expr.Spread) element).expression);
+                this.resolve(((Expr.Spread)element).expression);
                 continue;
             }
 
-            Expr.KeyValue keyValue = (Expr.KeyValue) element;
+            Expr.KeyValue keyValue = (Expr.KeyValue)element;
             this.resolve(keyValue.key);
             this.resolve(keyValue.value);
         }
@@ -407,7 +410,7 @@ public with sharing class ContextResolver implements Visitor {
 
         public Boolean equals(Object obj) {
             if (obj instanceof Field) {
-                Field other = (Field) obj;
+                Field other = (Field)obj;
                 return this.name == other.name && this.isRelationship == other.isRelationship;
             }
             return false;
@@ -435,7 +438,7 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         public Set<Id> getIds() {
-            return new Set<Id>{
+            return new Set<Id> {
                 this.id
             };
         }
