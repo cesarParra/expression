@@ -77,36 +77,46 @@ public with sharing abstract class EvaluatorResolver {
 
         eventNotifier.notify(new OnEvaluationStartEvent(config));
 
-        List<Token> tokens = this.scan(input);
-        List<Expr> parsedExpressions = this.parse(tokens);
+        try {
+            List<Token> tokens = this.scan(input);
+            List<Expr> parsedExpressions = this.parse(tokens);
 
-        eventNotifier.notify(new OnAfterParseEvent(parsedExpressions));
+            eventNotifier.notify(new OnAfterParseEvent(parsedExpressions));
 
-        List<Expr> pipedExpressions = this.desugarPipe(parsedExpressions);
+            List<Expr> pipedExpressions = this.desugarPipe(parsedExpressions);
 
-        // This deals with the global environment, which is shared across all evaluations, so it
-        // it safe to call outside of the loop.
-        addCustomContextVariablesToGlobalEnvironment(config);
-        // We only care about the result of the last interpreted expression.
-        // We assume that the previous results are declarations.
-        Object result = null;
-        List<Expr.FunctionDeclaration> customFunctionDeclarations = new List<Expr.FunctionDeclaration>();
-        for (Expr pipedExpression : pipedExpressions) {
-            if (isFunctionDeclaration(pipedExpression)) {
-                // If we are dealing with a function declaration we do not need to interpret it.
-                Expr.FunctionDeclaration fnDeclaration = (Expr.FunctionDeclaration) pipedExpression;
-                Environment.addGlobalVariable(fnDeclaration.functionName, fnDeclaration);
-                customFunctionDeclarations.add(fnDeclaration);
-                continue;
+            // This deals with the global environment, which is shared across all evaluations, so it
+            // it safe to call outside of the loop.
+            addCustomContextVariablesToGlobalEnvironment(config);
+            // We only care about the result of the last interpreted expression.
+            // We assume that the previous results are declarations.
+            Object result = null;
+            List<Expr.FunctionDeclaration> customFunctionDeclarations = new List<Expr.FunctionDeclaration>();
+            for (Expr pipedExpression : pipedExpressions) {
+                if (isFunctionDeclaration(pipedExpression)) {
+                    // If we are dealing with a function declaration we do not need to interpret it.
+                    Expr.FunctionDeclaration fnDeclaration = (Expr.FunctionDeclaration) pipedExpression;
+                    Environment.addGlobalVariable(fnDeclaration.functionName, fnDeclaration);
+                    customFunctionDeclarations.add(fnDeclaration);
+                    continue;
+                }
+
+                Environment anEnvironment = this.prepareEnvironment(pipedExpression, customFunctionDeclarations);
+                result = this.interpret(anEnvironment, pipedExpression);
             }
 
-            Environment anEnvironment = this.prepareEnvironment(pipedExpression, customFunctionDeclarations);
-            result = this.interpret(anEnvironment, pipedExpression);
+            eventNotifier.notify(new OnEvaluationEndEvent());
+
+            return new EvaluationResult(result, additionalResultData);
+        } catch (Exception e) {
+            eventNotifier.notify(new OnEvaluationEndEvent());
+            
+            if (config.suppressErrors) {
+                return new EvaluationResult('', additionalResultData);
+            } else {
+                throw e;
+            }
         }
-
-        eventNotifier.notify(new OnEvaluationEndEvent());
-
-        return new EvaluationResult(result, additionalResultData);
     }
 
     private static void addCustomContextVariablesToGlobalEnvironment(Configuration config) {
