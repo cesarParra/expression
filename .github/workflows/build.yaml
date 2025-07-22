@@ -28,6 +28,10 @@ jobs:
         run: |
           npm install
 
+      - name: Install Cirrus
+        run: |
+          npm install -g cirrus-for-sfdx
+
       - name: Install Salesforce CLI
         run: npm install @salesforce/cli --global
 
@@ -35,7 +39,7 @@ jobs:
         run: echo ${{ secrets.DEV_HUB_AUTH_URL}} | sf org login sfdx-url --alias=devhub --set-default-dev-hub --sfdx-url-stdin -
 
       - name: Create Expression package version
-        run: npm run package:create:expression
+        run: cirrus run package
 
   generate-docs:
     runs-on: ubuntu-latest
