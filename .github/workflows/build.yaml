@@ -57,10 +57,14 @@ jobs:
         run: |
           npm install
 
+      - name: Install Cirrus
+        run: |
+          npm install -g cirrus-for-sfdx
+
       - name: Generate Docs
         run: |
-          npm run docs:generate
-          npm run generate:library:docs
+          cirrus run docs
+          cirrus run generate-library-docs
 
       - name: Commit and Push Changes
         run: |
