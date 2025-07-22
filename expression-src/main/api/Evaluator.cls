@@ -3,6 +3,7 @@
  *              It provides a set of static methods that allow you to evaluate expressions
  *              in a variety of contexts.
  */
+// TODO: Add all overloads to the bulk endpoints
 global with sharing abstract class Evaluator {
     /**
      * @description Evaluates a formula and returns the result.
@@ -17,6 +18,11 @@ global with sharing abstract class Evaluator {
         return run(formula, new Configuration());
     }
 
+    // TODO: Remember to mention the limitation that these functions share a single environment and
+    // that function definitions are not supported in bulk evaluations.
+    // TODO: Try using a "callout" component for the markup to see if ApexDocs supports this.
+    // TODO: Also document that failures are all or nothing, one fails and all fail. At least until error
+    // handling is better supported.
     global static List<Result> run(List<String> expressions) {
         List<EvaluationResult> innerResults = EvaluatorResolver.forRecord(null).evaluate(expressions, new Configuration());
         List<Result> results = new List<Result>();
@@ -25,6 +31,7 @@ global with sharing abstract class Evaluator {
         }
         return results;
     }
+
     /**
      * @description Evaluates a formula and returns the result.
      * @param formula The formula to evaluate.

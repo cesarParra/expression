@@ -41,6 +41,20 @@ private class BulkTest {
         Assert.areEqual(1, Limits.getDmlStatements());
     }
 
-    // TODO: Error handling
-    // TODO: Context sharing (single DML)
+    @IsTest
+    static void everythingFailsIfAnyEvaluationResultsInAnError() {
+        List<String> expressions = new List<String> {
+            '1 + 1',
+            '2 * 3',
+            '4 - 2',
+            '5 / 0' // This will cause a division by zero error
+        };
+
+        try {
+            Evaluator.run(expressions);
+            Assert.fail('Expected an exception due to division by zero');
+        } catch (Exception e) {
+            Assert.isTrue(true, 'Exception was thrown as expected');
+        }
+    }
 }
