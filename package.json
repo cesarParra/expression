@@ -10,7 +10,6 @@
     "start:dev:components": "npm run scratch:create:communities && npm run source:push && npm run permset:assign",
     "start:dev:example:conf": "npm run start:dev:components && sf project deploy start -d unpackaged/examples/expression-conf/main && sf data import tree -p unpackaged/examples/expression-conf/data/data-plan.json",
     "package:create:expression:components": "npm run package:pre && sf package version create -x -c -p 0HoHu000000TNMFKA4 -w 30 && npm run package:post",
-    "generate:library:docs": "node scripts/generate-library-docs.mjs",
     "tw:build": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify",
     "tw:build:watch": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify --watch"
   },
