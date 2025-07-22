@@ -203,6 +203,14 @@
       {
         "title": "IExpressionFunction",
         "href": "/docs/api/miscellaneous/IExpressionFunction"
+      },
+      {
+        "title": "Result",
+        "href": "/docs/api/miscellaneous/Result"
+      },
+      {
+        "title": "Expression_Function__mdt",
+        "href": "/docs/api/custom-objects/Expression_Function__mdt"
       }
     ]
   }

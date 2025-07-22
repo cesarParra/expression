@@ -20,3 +20,4 @@ expression-components/tw/input.css
 **/tsconfig*.json
 **/*.tsbuildinfo
 **/eslint.config.mjs
+docs/

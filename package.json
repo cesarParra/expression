@@ -14,7 +14,6 @@
     "postpackage:create:expression": "node scripts/post-packaging.mjs",
     "package:create:expression:components": "npm run package:pre && sf package version create -x -c -p 0HoHu000000TNMFKA4 -w 30 && npm run package:post",
     "generate:library:docs": "node scripts/generate-library-docs.mjs",
-    "docs:generate": "apexdocs markdown",
     "tw:build": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify",
     "tw:build:watch": "npx tailwindcss -i ./expression-components/tw/input.css -o ./expression-components/main/staticresources/tw/css/main.css --minify --watch"
   },
