@@ -64,7 +64,7 @@ public with sharing abstract class EvaluatorResolver {
         }
 
         // Add condition to filter by the specific record id
-        contextResolver.getQueryContext().queryBuilder.add(Q.condition('Id').isIn(new List<Id>{recordId}));
+        contextResolver.getQueryContext().queryBuilder.add(Q.condition('Id').isIn(new List<Id> { recordId }));
 
         // Execute the query and return the first record (if any)
         List<SObject> records = QDB.getInstance().run(contextResolver.getQueryContext().queryBuilder);
@@ -72,41 +72,67 @@ public with sharing abstract class EvaluatorResolver {
     }
 
     public EvaluationResult evaluate(String input, Configuration config) {
+        return evaluate(new List<String> { input }, config).get(0);
+    }
+
+    public List<EvaluationResult> evaluate(List<String> inputs, Configuration config) {
         config.subscribe(this.eventNotifier);
         eventNotifier.subscribe(OnEvaluationEndEvent.class, new Environment.ClearContext());
-
         eventNotifier.notify(new OnEvaluationStartEvent(config));
-
-        List<Token> tokens = this.scan(input);
-        List<Expr> parsedExpressions = this.parse(tokens);
-
-        eventNotifier.notify(new OnAfterParseEvent(parsedExpressions));
-
-        List<Expr> pipedExpressions = this.desugarPipe(parsedExpressions);
 
         // This deals with the global environment, which is shared across all evaluations, so it
         // it safe to call outside of the loop.
         addCustomContextVariablesToGlobalEnvironment(config);
-        // We only care about the result of the last interpreted expression.
-        // We assume that the previous results are declarations.
-        Object result = null;
-        List<Expr.FunctionDeclaration> customFunctionDeclarations = new List<Expr.FunctionDeclaration>();
-        for (Expr pipedExpression : pipedExpressions) {
-            if (isFunctionDeclaration(pipedExpression)) {
-                // If we are dealing with a function declaration we do not need to interpret it.
-                Expr.FunctionDeclaration fnDeclaration = (Expr.FunctionDeclaration) pipedExpression;
-                Environment.addGlobalVariable(fnDeclaration.functionName, fnDeclaration);
-                customFunctionDeclarations.add(fnDeclaration);
-                continue;
-            }
 
-            Environment anEnvironment = this.prepareEnvironment(pipedExpression, customFunctionDeclarations);
-            result = this.interpret(anEnvironment, pipedExpression);
+        List<List<Expr>> allPipedExpressions = new List<List<Expr>>();
+        for (String input : inputs) {
+            List<Token> tokens = this.scan(input);
+            List<Expr> parsedExpressions = this.parse(tokens);
+
+            eventNotifier.notify(new OnAfterParseEvent(parsedExpressions));
+
+            List<Expr> pipedExpressions = this.desugarPipe(parsedExpressions);
+            allPipedExpressions.add(pipedExpressions);
+        }
+
+        List<Expr.FunctionDeclaration> functionDeclarations = new List<Expr.FunctionDeclaration>();
+        List<Expr> expressionsForEnvironment = new List<Expr>();
+        for (List<Expr> pipedExpressions : allPipedExpressions) {
+            for (Expr expression : pipedExpressions) {
+                Boolean isFunctionDeclaration = isFunctionDeclaration(expression);
+                if (isFunctionDeclaration && inputs.size() > 1) {
+                    // Calling the bulk endpoint does not support function declarations,
+                    throw new UnsupportedOperationException('Function declarations are not supported in bulk evaluations.');
+                }
+
+                if (isFunctionDeclaration) {
+                    // If we are dealing with a function declaration we do not need to interpret it.
+                    Expr.FunctionDeclaration fnDeclaration = (Expr.FunctionDeclaration)expression;
+                    Environment.addGlobalVariable(fnDeclaration.functionName, fnDeclaration);
+                    functionDeclarations.add(fnDeclaration);
+                    continue;
+                }
+
+                expressionsForEnvironment.add(expression);
+            }
+        }
+
+        Environment anEnvironment = this.prepareEnvironment(expressionsForEnvironment, functionDeclarations);
+        List<EvaluationResult> results = new List<EvaluationResult>();
+        for (List<Expr> pipedExpressions : allPipedExpressions) {
+            // We only care about the result of the last interpreted expression
+            // We assume that the previous results are declarations.
+            Object result = null;
+            for (Expr pipedExpression : pipedExpressions) {
+                if (!isFunctionDeclaration(pipedExpression)) {
+                    result = this.interpret(anEnvironment, pipedExpression);
+                }
+            }
+            results.add(new EvaluationResult(result, additionalResultData));
         }
 
         eventNotifier.notify(new OnEvaluationEndEvent());
-
-        return new EvaluationResult(result, additionalResultData);
+        return results;
     }
 
     private static void addCustomContextVariablesToGlobalEnvironment(Configuration config) {
@@ -144,7 +170,7 @@ public with sharing abstract class EvaluatorResolver {
         return pipedExpressions;
     }
 
-    protected abstract Environment prepareEnvironment(Expr pipedExpression, List<Expr.FunctionDeclaration> customFunctionDeclarations);
+    protected abstract Environment prepareEnvironment(List<Expr> pipedExpressions, List<Expr.FunctionDeclaration> customFunctionDeclarations);
 
     private Object interpret(Environment anEnvironment, Expr pipedExpression) {
         Interpreter theInterpreter = new Interpreter(anEnvironment);
@@ -158,9 +184,9 @@ public with sharing abstract class EvaluatorResolver {
             this.recordId = recordId;
         }
 
-        public override Environment prepareEnvironment(Expr expression, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
             ContextResolver ctxInterpreter = new ContextResolver(recordId, customFunctionDeclarations);
-            List<SObject> records = ctxInterpreter.build(expression);
+            List<SObject> records = ctxInterpreter.build(expressions);
             SObject record;
             if (records != null && records.size() > 0) {
                 record = records[0];
@@ -181,9 +207,9 @@ public with sharing abstract class EvaluatorResolver {
             this.recordIds = recordIds;
         }
 
-        public override Environment prepareEnvironment(Expr expression, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
             ContextResolver ctxInterpreter = new ContextResolver(recordIds, customFunctionDeclarations);
-            List<SObject> records = ctxInterpreter.build(expression);
+            List<SObject> records = ctxInterpreter.build(expressions);
             // The environment is created without a record, as we are dealing with a list of records,
             // so it would not be possible to interpret references to record fields. Instead, the @context
             // variable should be used to access the list of records.
@@ -203,7 +229,7 @@ public with sharing abstract class EvaluatorResolver {
             this.record = record;
         }
 
-        public override Environment prepareEnvironment(Expr expression, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
             Environment.addGlobalContextVariable('id', record?.Id);
             Environment.addGlobalContextVariable('context', record);
             return new Environment(record);
@@ -217,7 +243,7 @@ public with sharing abstract class EvaluatorResolver {
             this.records = records;
         }
 
-        public override Environment prepareEnvironment(Expr expression, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
             Set<Id> ids = new Set<Id>();
             for (SObject record : records) {
                 if (record.Id != null) {

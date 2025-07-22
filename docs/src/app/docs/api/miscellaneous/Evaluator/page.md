@@ -18,7 +18,7 @@ expression
 ## Methods
 ### `run(formula)`
 
-Evaluates a formula and returns the result.
+Evaluates an expression and returns the result.
 
 #### Signature
 ```apex
@@ -28,16 +28,54 @@ global static Object run(String formula)
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| formula | String | The formula to evaluate. |
+| formula | String | The expression to evaluate. |
 
 #### Return Type
 **Object**
 
-The result of the formula.
+The result of the expression.
 
 #### Example
 ```apex
 Decimal result = (String)expression.Evaluator.run('1 + 1');
+```
+
+---
+
+### `run(expressions)`
+
+Evaluates multiple expressions at same time. 
+ 
+{% callout %} 
+It is not possible to use function definitions in bulk evaluations. 
+{% /callout %}
+
+#### Signature
+```apex
+global static List<Result> run(List<String> expressions)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| expressions | List&lt;String&gt; | The expressions to evaluate. |
+
+#### Return Type
+**List&lt;Result&gt;**
+
+The results of the expressions. Results are returned in the same order as the expressions.
+
+#### Example
+```apex
+List<String> expressions = new List<String>{
+  '1 + 1',
+  '2 * 2',
+  '3 - 1'
+};
+
+List<expression.Result> results = expression.Evaluator.run(expressions);
+
+System.assertEquals(3, results.size());
 ```
 
 ---
@@ -72,6 +110,46 @@ Decimal result = (String)expression.Evaluator.run(
 
 ---
 
+### `run(expressions, config)`
+
+Evaluates multiple expressions at same time using a configuration object. 
+ 
+{% callout %} 
+It is not possible to use function definitions in bulk evaluations. 
+{% /callout %}
+
+#### Signature
+```apex
+global static List<Result> run(List<String> expressions, Configuration config)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
+
+#### Return Type
+**List&lt;Result&gt;**
+
+The results of the expressions. Results are returned in the same order as the expressions.
+
+#### Example
+```apex
+List<String> expressions = new List<String>{
+  '1 + 1',
+  '2 * 2',
+  '3 - 1'
+};
+
+List<expression.Result> results = expression.Evaluator.run(
+  expressions,
+  new expression.Configuration().printAst()
+  );
+```
+
+---
+
 ### `run(formula, context)`
 
 Evaluates a formula and returns the result.
@@ -96,6 +174,43 @@ The result of the formula.
 ```apex
 Account record = new Account(Name = 'Example');
 String recordName = (String)expression.Evaluator.run('Name', record);
+```
+
+---
+
+### `run(expressions, context)`
+
+Evaluates multiple expressions at same time using a context SObject. 
+ 
+{% callout %} 
+It is not possible to use function definitions in bulk evaluations. 
+{% /callout %}
+
+#### Signature
+```apex
+global static List<Result> run(List<String> expressions, SObject context)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| context | SObject | An SObject that will act as the context for the expressions. Providing this allows you to reference fields on the SObject in the expressions. |
+
+#### Return Type
+**List&lt;Result&gt;**
+
+The results of the expressions. Results are returned in the same order as the expressions.
+
+#### Example
+```apex
+Account record = new Account(Name = 'Example');
+List<String> recordNames = (List<String>)expression.Evaluator.run(
+  new List<String>{'Name', 'Id'},
+  record
+);
+
+System.assertEquals(new List<String>{'Example', record.Id}, recordNames);
 ```
 
 ---
@@ -137,6 +252,49 @@ System.assertEquals(new List<String>{'Example 1', 'Example 2'}, recordNames);
 
 ---
 
+### `run(expressions, context)`
+
+Evaluates multiple expressions at same time using a context list of records. 
+ 
+{% callout %} 
+It is not possible to use function definitions in bulk evaluations. 
+{% /callout %}
+
+#### Signature
+```apex
+global static List<Result> run(List<String> expressions, List<SObject> context)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| context | List&lt;SObject&gt; | A list of records that will act as the context for the expressions. 
+Providing this allows you to reference the records through the `@context` global variable, 
+which will give you a list of records that can be iterated over. |
+
+#### Return Type
+**List&lt;Result&gt;**
+
+The results of the expressions. Results are returned in the same order as the expressions.
+
+#### Example
+```apex
+List<Account> records = new List<Account>{
+   new Account(Name = 'Example 1'),
+   new Account(Name = 'Example 2')
+};
+
+List<String> recordNames = (List<String>)expression.Evaluator.run(
+  new List<String>{'MAP(@context, Name)', 'COUNT(@context)'},
+   records
+);
+
+System.assertEquals(new List<String>{'Example 1', 'Example 2', '2'}, recordNames);
+```
+
+---
+
 ### `run(formula, context, config)`
 
 Evaluates a formula and returns the result.
@@ -166,6 +324,46 @@ String recordName = (String)expression.Evaluator.run(
    record,
    new expression.Configuration().printAst()
 );
+```
+
+---
+
+### `run(expressions, context, config)`
+
+Evaluates multiple expressions at same time using a context SObject. 
+ 
+{% callout %} 
+It is not possible to use function definitions in bulk evaluations. 
+{% /callout %}
+
+#### Signature
+```apex
+global static List<Result> run(List<String> expressions, SObject context, Configuration config)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| context | SObject | An SObject that will act as the context for the expressions. 
+Providing this allows you to reference fields on the SObject in the expressions. |
+| config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
+
+#### Return Type
+**List&lt;Result&gt;**
+
+The results of the expressions. Results are returned in the same order as the expressions.
+
+#### Example
+```apex
+Account record = new Account(Name = 'Example');
+List<String> recordNames = (List<String>)expression.Evaluator.run(
+  new List<String>{'Name', 'Id'},
+  record,
+  new expression.Configuration().printAst()
+);
+
+System.assertEquals(new List<String>{'Example', record.Id}, recordNames);
 ```
 
 ---
@@ -209,6 +407,51 @@ System.assertEquals(new List<String>{'Example 1', 'Example 2'}, recordNames);
 
 ---
 
+### `run(expressions, context, config)`
+
+Evaluates multiple expressions at same time using a context list of records. 
+ 
+{% callout %} 
+It is not possible to use function definitions in bulk evaluations. 
+{% /callout %}
+
+#### Signature
+```apex
+global static List<Result> run(List<String> expressions, List<SObject> context, Configuration config)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| context | List&lt;SObject&gt; | A list of records that will act as the context for the expressions. 
+Providing this allows you to reference the records through the `@context` global variable, 
+which will give you a list of records that can be iterated over. |
+| config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
+
+#### Return Type
+**List&lt;Result&gt;**
+
+The results of the expressions. Results are returned in the same order as the expressions.
+
+#### Example
+```apex
+List<Account> records = new List<Account>{
+   new Account(Name = 'Example 1'),
+   new Account(Name = 'Example 2')
+};
+
+List<String> recordNames = (List<String>)expression.Evaluator.run(
+  new List<String>{'MAP(@context, Name)', 'COUNT(@context)'},
+   records,
+   new expression.Configuration().printAst()
+);
+
+System.assertEquals(new List<String>{'Example 1', 'Example 2', '2'}, recordNames);
+```
+
+---
+
 ### `run(formula, recordId)`
 
 Evaluates a formula and returns the result using a record Id as the context. 
@@ -236,6 +479,46 @@ The result of the formula.
 Account record = new Account(Name = 'Example');
 insert record;
 String recordName = (String)expression.Evaluator.run('Name', record.Id);
+```
+
+---
+
+### `run(expressions, recordId)`
+
+Evaluates multiple expressions at same time using a record Id as the context. 
+This endpoints allow you to reference different fields on the record in different expressions, while 
+only querying the record once. 
+ 
+{% callout %} 
+It is not possible to use function definitions in bulk evaluations. 
+{% /callout %}
+
+#### Signature
+```apex
+global static List<Result> run(List<String> expressions, Id recordId)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| recordId | Id | The Id of the record to use as the context for the expressions. |
+
+#### Return Type
+**List&lt;Result&gt;**
+
+The results of the expressions. Results are returned in the same order as the expressions.
+
+#### Example
+```apex
+Account record = new Account(Name = 'Example');
+insert record;
+List<String> recordNames = (List<String>)expression.Evaluator.run(
+  new List<String>{'Name', 'Id'},
+  record.Id
+);
+
+System.assertEquals(new List<String>{'Example', record.Id}, recordNames);
 ```
 
 ---
@@ -283,6 +566,50 @@ System.assertEquals(new List<String>{'Example 1', 'Example 2'}, recordNames);
 
 ---
 
+### `run(expressions, recordIds)`
+
+Evaluates multiple expressions at same time using a set of record Ids as the context. 
+This endpoints allow you to reference different fields on the records in different expressions, while 
+only querying the records once. 
+ 
+{% callout %} 
+It is not possible to use function definitions in bulk evaluations. 
+{% /callout %}
+
+#### Signature
+```apex
+global static List<Result> run(List<String> expressions, Set<Id> recordIds)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| recordIds | Set&lt;Id&gt; | The Ids of the records to use as the context for the expressions. |
+
+#### Return Type
+**List&lt;Result&gt;**
+
+The results of the expressions. Results are returned in the same order as the expressions.
+
+#### Example
+```apex
+List<Account> records = new List<Account>{
+  new Account(Name = 'Example 1'),
+  new Account(Name = 'Example 2')
+};
+insert records;
+
+List<String> recordNames = (List<String)expression.Evaluator.run(
+ new List<String>{'MAP(@context, Name)', 'COUNT(@context)'},
+ new Set<Id>{records[0].Id, records[1].Id}
+);
+
+System.assertEquals(new List<String>{'Example 1', 'Example 2', '2'}, recordNames);
+```
+
+---
+
 ### `run(formula, recordId, config)`
 
 Evaluates a formula and returns the result using a record Id as the context. 
@@ -315,6 +642,48 @@ String recordName = (String)expression.Evaluator.run(
   record.Id,
   new expression.Configuration().respectSharing(false)
 );
+```
+
+---
+
+### `run(expressions, recordId, config)`
+
+Evaluates multiple expressions at same time using a record Id as the context. 
+This endpoints allow you to reference different fields on the record in different expressions, while 
+only querying the record once. 
+ 
+{% callout %} 
+It is not possible to use function definitions in bulk evaluations. 
+{% /callout %}
+
+#### Signature
+```apex
+global static List<Result> run(List<String> expressions, Id recordId, Configuration config)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| recordId | Id | The Id of the record to use as the context for the expressions. |
+| config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
+
+#### Return Type
+**List&lt;Result&gt;**
+
+The results of the expressions. Results are returned in the same order as the expressions.
+
+#### Example
+```apex
+Account record = new Account(Name = 'Example');
+insert record;
+List<String> recordNames = (List<String>)expression.Evaluator.run(
+  new List<String>{'Name', 'Id'},
+  record.Id,
+  new expression.Configuration().respectSharing(false)
+);
+
+System.assertEquals(new List<String>{'Example', record.Id}, recordNames);
 ```
 
 ---
@@ -361,6 +730,53 @@ List<String> recordNames = (List<String)expression.Evaluator.run(
 );
 
 System.assertEquals(new List<String>{'Example 1', 'Example 2'}, recordNames);
+```
+
+---
+
+### `run(expressions, recordIds, config)`
+
+Evaluates multiple expressions at same time using a set of record Ids as the context. 
+This endpoints allow you to reference different fields on the records in different expressions, while 
+only querying the records once. 
+ 
+{% callout %} 
+It is not possible to use function definitions in bulk evaluations. 
+{% /callout %}
+
+#### Signature
+```apex
+global static List<Result> run(List<String> expressions, Set<Id> recordIds, Configuration config)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| recordIds | Set&lt;Id&gt; | The Ids of the records to use as the context for the expressions. |
+| config | [Configuration](Configuration) | A configuration object that allows you to set options for 
+the evaluation. |
+
+#### Return Type
+**List&lt;Result&gt;**
+
+The results of the expressions. Results are returned in the same order as the expressions.
+
+#### Example
+```apex
+List<Account> records = new List<Account>{
+  new Account(Name = 'Example 1'),
+  new Account(Name = 'Example 2')
+};
+insert records;
+
+List<String> recordNames = (List<String)expression.Evaluator.run(
+ new List<String>{'MAP(@context, Name)', 'COUNT(@context)'},
+ new Set<Id>{records[0].Id, records[1].Id},
+ new expression.Configuration().respectSharing(false)
+);
+
+System.assertEquals(new List<String>{'Example 1', 'Example 2', '2'}, recordNames);
 ```
 
 ---
