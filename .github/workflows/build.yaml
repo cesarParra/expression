@@ -39,7 +39,7 @@ jobs:
         run: echo ${{ secrets.DEV_HUB_AUTH_URL}} | sf org login sfdx-url --alias=devhub --set-default-dev-hub --sfdx-url-stdin -
 
       - name: Create Expression package version
-        run: cirrus run package
+        run: cirrus flow package
 
   generate-docs:
     runs-on: ubuntu-latest
