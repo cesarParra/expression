@@ -8,6 +8,9 @@ deploy = "sf project deploy start"
 assign-perms = "sf org assign permset -n Expression_Admin"
 test = "sf apex test run --test-level RunLocalTests --wait 20"
 docs = "apexdocs markdown"
+prep-package = "node scripts/prepare-for-packaging.mjs"
+package = "sf package version create -x -c -p 0HoHu000000TNMAKA4 -w 60"
+post-package = "node scripts/post-packaging.mjs"
 
 [flow.start-dev]
 description = "Starts a new development environment"
@@ -15,4 +18,12 @@ steps = [
     { type = "create_scratch", org = "Expression" },
     { type = "command", name = "deploy" },
     { type = "command", name = "assign-perms" },
+]
+
+[flow.package]
+description = "Create a managed package version for Expression"
+steps = [
+    { type = "command", name = "prep-package" },
+    { type = "command", name = "package" },
+    { type = "command", name = "post-package" },
 ]
