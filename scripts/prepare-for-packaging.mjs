@@ -15,13 +15,6 @@ if (fs.existsSync(projectJsonPath)) {
 
 const projectJsonPackagingPath = path.resolve(projectJsonPackaging);
 if (fs.existsSync(projectJsonPackagingPath)) {
-  const data = fs.readFileSync(projectJsonPackagingPath, 'utf8');
-  const json = JSON.parse(data);
-
-  // Save the updated file
-  fs.writeFileSync(projectJsonPackagingPath, JSON.stringify(json, null, 2), 'utf8');
-  console.log(`Updated ${projectJsonPackaging}`);
-
   fs.renameSync(projectJsonPackagingPath, projectJsonPath);
   console.log(`Renamed ${projectJsonPackaging} to ${projectJson}`);
 }
