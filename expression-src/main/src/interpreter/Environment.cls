@@ -14,7 +14,24 @@ public with sharing class Environment {
         return allVariables;
     }
 
+    /**
+     * @description A map of global variables that can be accessed from any formula.
+     * These should always yield the same value regardless of the context in which they are used.
+     */
     private static final Map<String, Object> GLOBAL_VARIABLES = new Map<String, Object>();
+
+    /**
+     * @description A map of global context variables that can be accessed from any formula.
+     * These are specific to the context in which they are used, and are reset after each evaluation.
+     */
+    private static final Map<String, Object> GLOBAL_CONTEXT_VARIABLES = new Map<String, Object>();
+
+    private static Map<String, Object> getAllGlobalVariables() {
+        Map<String, Object> allGlobalVariables = new Map<String, Object>();
+        allGlobalVariables.putAll(GLOBAL_VARIABLES);
+        allGlobalVariables.putAll(GLOBAL_CONTEXT_VARIABLES);
+        return allGlobalVariables;
+    }
 
     static {
         GLOBAL_VARIABLES.put('$label', new CustomLabelVariableResolver.CustomLabelResolverWrapper());
@@ -33,11 +50,11 @@ public with sharing class Environment {
 
     public static void addGlobalVariable(String name, Object value) {
         // Check that the name has not already been declared
-        if (GLOBAL_VARIABLES.containsKey(name.toLowerCase())) {
+        if (GLOBAL_CONTEXT_VARIABLES.containsKey(name.toLowerCase())) {
             throw new EnvironmentException('Variable or function with name ' + name + ' already exists');
         }
 
-        GLOBAL_VARIABLES.put(name.toLowerCase(), value);
+        GLOBAL_CONTEXT_VARIABLES.put(name.toLowerCase(), value);
     }
 
     public Boolean hasFunction(String functionName) {
@@ -53,7 +70,7 @@ public with sharing class Environment {
         }
 
         // Otherwise, look in the global variables
-        return (Expr.FunctionDeclaration)GLOBAL_VARIABLES.get(functionName.toLowerCase());
+        return (Expr.FunctionDeclaration)GLOBAL_CONTEXT_VARIABLES.get(functionName.toLowerCase());
     }
 
     /**
@@ -64,7 +81,7 @@ public with sharing class Environment {
      */
     public static void addGlobalContextVariable(String name, Object value) {
         String prefixedName = '@' + name;
-        GLOBAL_VARIABLES.put(prefixedName.toLowerCase(), value);
+        GLOBAL_CONTEXT_VARIABLES.put(prefixedName.toLowerCase(), value);
     }
 
     public Environment() {}
@@ -89,7 +106,7 @@ public with sharing class Environment {
     public Boolean contains(String field) {
         String lowerCaseField = field.toLowerCase();
 
-        if (getVariables().containsKey(lowerCaseField) || GLOBAL_VARIABLES.containsKey(lowerCaseField)) {
+        if (getVariables().containsKey(lowerCaseField) || getAllGlobalVariables().containsKey(lowerCaseField)) {
             return true;
         }
 
@@ -135,8 +152,9 @@ public with sharing class Environment {
         }
 
         // Look in global variables
-        if (GLOBAL_VARIABLES.containsKey(lowerCaseField)) {
-            return GLOBAL_VARIABLES.get(lowerCaseField);
+        Map<String, Object> allGlobalVariables = getAllGlobalVariables();
+        if (allGlobalVariables.containsKey(lowerCaseField)) {
+            return allGlobalVariables.get(lowerCaseField);
         }
 
         if (getContext() == null) {
@@ -180,7 +198,7 @@ public with sharing class Environment {
 
     public class ClearContext implements EvaluatorEventListener {
         public Map<String, Object> handle(EvaluatorEvent event) {
-            GLOBAL_VARIABLES.clear();
+            GLOBAL_CONTEXT_VARIABLES.clear();
             return null;
         }
     }
