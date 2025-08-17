@@ -10,7 +10,7 @@ test = "sf apex test run --test-level RunLocalTests --wait 20"
 docs = "apexdocs markdown"
 generate-library-docs = "node scripts/generate-library-docs.mjs"
 prep-package = "node scripts/prepare-for-packaging.mjs"
-package = "sf package version create -x -c -p 0HoHu000000TNMAKA4 -w 60"
+package = "cirrus package -p Expression -t minor -x -c --promote -w 60"
 post-package = "node scripts/post-packaging.mjs"
 
 [flow.start-dev]
