@@ -8,10 +8,10 @@ deploy = "sf project deploy start"
 assign-perms = "sf org assign permset -n Expression_Admin"
 test = "sf apex test run --test-level RunLocalTests --wait 20"
 docs = "apexdocs markdown"
-generate-library-docs = "node scripts/generate-library-docs.mjs"
-prep-package = "node scripts/prepare-for-packaging.mjs"
+generate-library-docs = "bun scripts/generate-library-docs.mjs"
+prep-package = "bun scripts/prepare-for-packaging.mjs"
 package = "cirrus package -p Expression -t minor -x -c --promote -w 60"
-post-package = "node scripts/post-packaging.mjs"
+post-package = "bun scripts/post-packaging.mjs"
 
 [flow.start-dev]
 description = "Starts a new development environment"

@@ -95,8 +95,23 @@ Available references are:
 
 ## Permission
 
+{% callout type="warning" %}
+Due to limitations with calling `FeatureManagement.checkPermission` from within a managed package, Expression
+checks permissions by querying the `CustomPermission` and `SetupEntityAccess` objects. 
+
+This means that each permission check will consume 2 SOQL queries the first time it is evaluated (checks are
+cached afterwards).
+{% /callout %}
+
 Allows you to reference information about the current user’s custom permission access.
 
 ```
 $Permission.MyCustomPermissionName # Returns true if the user has access to the custom permission, false otherwise.
+```
+
+To reference a custom permission that has a namespace, separate the namespace and the permission name with double
+underscores (`__`):
+
+```
+$Permission.namespace__MyCustomPermissionName # Returns true if the user has access to the custom permission, false otherwise.
 ```
