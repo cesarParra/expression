@@ -221,4 +221,18 @@ private class FunctionDeclarationTest {
             Assert.fail('Should be able to run the evaluator multiple times: ' + e.getMessage());
         }
     }
+
+    @IsTest
+    static void canUseGlobalVariablesWhenRunningEvaluatorMultipleTimes() {
+        insert new Account(Name = 'ACME');
+
+        String expression = '$User.name';
+
+        try {
+            Evaluator.run(expression);
+            Evaluator.run(expression);
+        } catch (Exception e) {
+            Assert.fail('Should be able to run the evaluator multiple times: ' + e.getMessage());
+        }
+    }
 }
