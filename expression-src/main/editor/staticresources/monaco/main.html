@@ -111,7 +111,9 @@
           [/(^#.*$)/, 'comment'],
 
           // strings
-          [/"/, 'string', '@string_double']
+          [/"/, 'string', '@string_double'],
+          [/“/, 'string', '@string_curved_left'],
+          [/”/, 'string', '@string_curved_right']
         ],
 
         string_double: [
@@ -120,6 +122,22 @@
           [/@escapes/, 'string.escape'],
           [/\\./, 'string.escape.invalid'],
           [/"/, 'string', '@pop']
+        ],
+
+        string_curved_left: [
+          [/\$\{/, { token: 'delimiter.bracket', next: '@bracketCounting' }],
+          [/[^\\"$]+/, 'string'],
+          [/@escapes/, 'string.escape'],
+          [/\\./, 'string.escape.invalid'],
+          [/“/, 'string', '@pop']
+        ],
+
+        string_curved_right: [
+          [/\$\{/, { token: 'delimiter.bracket', next: '@bracketCounting' }],
+          [/[^\\"$]+/, 'string'],
+          [/@escapes/, 'string.escape'],
+          [/\\./, 'string.escape.invalid'],
+          [/”/, 'string', '@pop']
         ],
 
         bracketCounting: [
