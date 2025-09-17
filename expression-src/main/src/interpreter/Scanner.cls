@@ -22,7 +22,12 @@ public with sharing class Scanner {
     }
 
     public Scanner(String source) {
-        this.source = source;
+        this.source = normalizeCurvedQuotes(source);
+    }
+
+    private String normalizeCurvedQuotes(String input) {
+        if (input == null) return null;
+        return input.replace('“', '"').replace('”', '"');
     }
 
     public List<Token> scanTokens() {
