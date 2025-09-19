@@ -2,10 +2,31 @@
   <lightning-card>
     <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
       <div class="slds-col slds-text-body_small slds-text-title_bold pl-2">{title}</div>
-      <div class="slds-col">
-        <lightning-button variant="brand-outline" label="Save"
-                          onclick={handleExpressionSaved}
-        ></lightning-button>
+      <div class="slds-col slds-grid slds-grid_align-end slds-gutters_x-small">
+        <template lwc:if={enableValidation}>
+          <div class="slds-col" style="width: 300px;">
+            <lightning-input type="text"
+                             value={recordId}
+                             onchange={handleRecordIdChange}
+                             placeholder="Record Id for validation (optional)"
+                             variant="label-hidden"
+                             class="compact-input"
+            ></lightning-input>
+          </div>
+        </template>
+        <template lwc:if={showValidationButton}>
+          <div class="slds-col">
+            <lightning-button variant="brand" label="Validate"
+                              onclick={handleValidate}
+                              icon-name="utility:play"
+            ></lightning-button>
+          </div>
+        </template>
+        <div class="slds-col">
+          <lightning-button variant="brand-outline" label="Save"
+                            onclick={handleExpressionSaved}
+          ></lightning-button>
+        </div>
       </div>
     </div>
     <div class="pt-1">
@@ -43,6 +64,7 @@
                          href="#"
                          data-name={value.name}
                          onmouseenter={handleMouseEnter}
+                         onclick={handleFunctionClick}
                       >
                         {value.name}
                       </a>
@@ -76,5 +98,36 @@
         </div>
       </div>
     </div>
+    <template lwc:if={showResults}>
+      <hr/>
+      <div class="pt-1">
+        <lightning-tabset>
+          <lightning-tab label="Result">
+            <template for:each={result.payload} for:item="payload">
+              <div key={payload.message}>
+                <lightning-badge label={payload.type}></lightning-badge>
+                <pre class={resultColor}>
+                  <lightning-formatted-rich-text value={payload.message}></lightning-formatted-rich-text>
+                </pre>
+                <hr/>
+              </div>
+            </template>
+          </lightning-tab>
+          <lightning-tab label="Diagnostics">
+            <ul>
+              <li><strong>CPU Time (ms):</strong> {diagnostics.cpuTime}</li>
+              <li><strong>DML Statements:</strong> {diagnostics.dmlStatements}</li>
+              <li><strong>Queries:</strong> {diagnostics.queries}</li>
+              <li><strong>Query Rows:</strong> {diagnostics.queryRows}</li>
+            </ul>
+          </lightning-tab>
+          <lightning-tab label="AST">
+            <pre class={resultColor}>
+              <lightning-formatted-rich-text value={ast}></lightning-formatted-rich-text>
+            </pre>
+          </lightning-tab>
+        </lightning-tabset>
+      </div>
+    </template>
   </lightning-card>
 </template>
