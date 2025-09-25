@@ -161,3 +161,12 @@ pre {
 .border-gray-200 {
     border-color: var(--lwc-colorBorder);
 }
+
+.compact-input {
+    font-size: 0.875rem;
+}
+
+.compact-input input {
+    height: 2.25rem;
+    font-size: 0.875rem;
+}
