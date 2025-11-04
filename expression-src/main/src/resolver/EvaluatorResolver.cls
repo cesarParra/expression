@@ -42,7 +42,7 @@ public with sharing abstract class EvaluatorResolver {
             return null;
         }
 
-        ContextResolver contextResolver = new ContextResolver(recordId, new List<Expr.FunctionDeclaration>(), '@' + DEFAULT_CONTEXT_KEY);
+        ContextResolver contextResolver = new ContextResolver(recordId, new List<Expr.FunctionDeclaration>(), new Set<String> { '@' + DEFAULT_CONTEXT_KEY });
 
         for (String formula : formulas) {
             try {
@@ -191,7 +191,8 @@ public with sharing abstract class EvaluatorResolver {
 
         public override Environment prepareEnvironment(List<Expr> expressions,
             List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
-            ContextResolver ctxInterpreter = new ContextResolver(recordId, customFunctionDeclarations, contextPrefix + DEFAULT_CONTEXT_KEY);
+            ContextResolver ctxInterpreter = new ContextResolver(recordId, customFunctionDeclarations,
+                new Set<String> { contextPrefix + DEFAULT_CONTEXT_KEY });
             List<SObject> records = ctxInterpreter.build(expressions);
             SObject record;
             if (records != null && records.size() > 0) {
@@ -214,7 +215,8 @@ public with sharing abstract class EvaluatorResolver {
         }
 
         public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
-            ContextResolver ctxInterpreter = new ContextResolver(recordIds, customFunctionDeclarations, contextPrefix + DEFAULT_CONTEXT_KEY);
+            ContextResolver ctxInterpreter = new ContextResolver(recordIds, customFunctionDeclarations,
+                new Set<String> { contextPrefix + DEFAULT_CONTEXT_KEY });
             List<SObject> records = ctxInterpreter.build(expressions);
             // The environment is created without a record, as we are dealing with a list of records,
             // so it would not be possible to interpret references to record fields. Instead, the @context
@@ -237,15 +239,35 @@ public with sharing abstract class EvaluatorResolver {
 
         public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
             Environment env = new Environment();
+
+            Map<SObjectType, List<CustomRecordContext>> contextsBySObjectTypes = new Map<SObjectType, List<CustomRecordContext>>();
             for (CustomRecordContext context : this.contexts) {
-                ContextResolver ctxInterpreter = new ContextResolver(context.recordId, customFunctionDeclarations, contextPrefix + context.key);
-                List<SObject> records = ctxInterpreter.build(expressions);
-                SObject record;
-                if (records != null && records.size() > 0) {
-                    record = records[0];
+                SObjectType sObjectType = context.recordId.getSobjectType();
+                if (!contextsBySObjectTypes.containsKey(sObjectType)) {
+                    contextsBySObjectTypes.put(sObjectType, new List<CustomRecordContext>());
+                }
+                contextsBySObjectTypes.get(sObjectType).add(context);
+            }
+
+            for (SObjectType currentType : contextsBySObjectTypes.keySet()) {
+                List<CustomRecordContext> contextsForType = contextsBySObjectTypes.get(currentType);
+                Set<Id> idsForType = new Set<Id>();
+                Set<String> keys = new Set<String>();
+                Map<Id, CustomRecordContext> contextByRecordId = new Map<Id, CustomRecordContext>();
+                for (CustomRecordContext context : contextsForType) {
+                    contextByRecordId.put(context.recordId, context);
+                    idsForType.add(context.recordId);
+                    keys.add(contextPrefix + context.key);
                 }
 
-                Environment.addGlobalContextVariable(contextPrefix, context.key, record);
+                ContextResolver ctxInterpreter = new ContextResolver(idsForType, customFunctionDeclarations, keys);
+                Map<Id, SObject> recordById = new Map<Id, SObject>(ctxInterpreter.build(expressions));
+                for (Id recordId : recordById.keySet()) {
+                    SObject record = recordById.get(recordId);
+                    CustomRecordContext context = contextByRecordId.get(recordId);
+
+                    Environment.addGlobalContextVariable(contextPrefix, context.key, record);
+                }
             }
 
             return env;
