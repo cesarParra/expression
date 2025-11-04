@@ -27,8 +27,8 @@ public with sharing abstract class EvaluatorResolver {
         return new BaseSingleRecordEvaluator(null);
     }
 
-    public static EvaluatorResolver forCustomContext(CustomRecordContext customRecordContext) {
-        return new CustomContextResolverEvaluator(customRecordContext);
+    public static EvaluatorResolver forCustomContexts(List<CustomRecordContext> customRecordContexts) {
+        return new CustomContextResolverEvaluator(customRecordContexts);
     }
 
     /**
@@ -229,22 +229,24 @@ public with sharing abstract class EvaluatorResolver {
     }
 
     private class CustomContextResolverEvaluator extends EvaluatorResolver {
-        private final CustomRecordContext context;
+        private final List<CustomRecordContext> contexts;
 
-        public CustomContextResolverEvaluator(CustomRecordContext context) {
-            this.context = context;
+        public CustomContextResolverEvaluator(List<CustomRecordContext> contexts) {
+            this.contexts = contexts;
         }
 
         public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
-            ContextResolver ctxInterpreter = new ContextResolver(this.context.recordId, customFunctionDeclarations, contextPrefix + this.context.key);
-            List<SObject> records = ctxInterpreter.build(expressions);
-            SObject record;
-            if (records != null && records.size() > 0) {
-                record = records[0];
-            }
-            Environment env = new Environment(record);
+            Environment env = new Environment();
+            for (CustomRecordContext context : this.contexts) {
+                ContextResolver ctxInterpreter = new ContextResolver(context.recordId, customFunctionDeclarations, contextPrefix + context.key);
+                List<SObject> records = ctxInterpreter.build(expressions);
+                SObject record;
+                if (records != null && records.size() > 0) {
+                    record = records[0];
+                }
 
-            Environment.addGlobalContextVariable(contextPrefix, this.context.key, record);
+                Environment.addGlobalContextVariable(contextPrefix, context.key, record);
+            }
 
             return env;
         }

@@ -251,10 +251,28 @@ private class GlobalContextTest {
         Assert.areEqual('Acme', result);
     }
 
-    // TODO: The endpoint with custom record context can also receive a config.
-    // TODO: Endpoint can received a prequeried SObject on top of the ID. If all of the fields have
-    // already been queried, then no need to query again.
+    @IsTest
+    private static void canCreateCustomContextsBasedOnASpecifiedIdInBulk_differentSObjectTypes() {
+        Account accountRecord = new Account(Name = 'Acme', NumberOfEmployees = 50);
+        insert accountRecord;
+
+        Contact contactRecord = new Contact(FirstName = 'John', LastName = 'Doe');
+        insert contactRecord;
+
+        CustomRecordContext accountRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id);
+        CustomRecordContext contactRecordContext = new CustomRecordContext('TargetContact', contactRecord.Id);
+
+        String expressionFormula = '@TargetContact.LastName + TEXT(@TargetAccount.NumberOfEmployees)';
+        Object result = Evaluator.run(expressionFormula,
+            new List<CustomRecordContext> { accountRecordContext, contactRecordContext }, new Configuration());
+
+        Assert.areEqual('Doe50', result);
+        Assert.areEqual(2, Limits.getQueries(), 'Expect one query per SObject type');
+    }
+
     // TODO: Many record contexts for different SObject types -> expect one query per type
     // TODO: Many record contexts for the same SObject type -> expect to be bulk
     // TODO: Validate that the config cannot receive mroe than one custom record context with the same name
+    // TODO: Endpoint can received a prequeried SObject on top of the ID. If all of the fields have
+    // already been queried, then no need to query again.
 }
