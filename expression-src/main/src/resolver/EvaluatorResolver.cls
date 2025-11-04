@@ -121,7 +121,7 @@ public with sharing abstract class EvaluatorResolver {
             }
         }
 
-        Environment anEnvironment = this.prepareEnvironment(expressionsForEnvironment, functionDeclarations);
+        Environment anEnvironment = this.prepareEnvironment(expressionsForEnvironment, functionDeclarations, config.globalContextVariablePrefix);
         List<EvaluationResult> results = new List<EvaluationResult>();
         for (List<Expr> pipedExpressions : allPipedExpressions) {
             // We only care about the result of the last interpreted expression
@@ -144,7 +144,7 @@ public with sharing abstract class EvaluatorResolver {
             return;
         }
         for (String customVariableName : config.customContext.keySet()) {
-            Environment.addGlobalContextVariable(customVariableName, config.customContext.get(customVariableName));
+            Environment.addGlobalContextVariable(config.globalContextVariablePrefix, customVariableName, config.customContext.get(customVariableName));
         }
     }
 
@@ -174,7 +174,7 @@ public with sharing abstract class EvaluatorResolver {
         return pipedExpressions;
     }
 
-    protected abstract Environment prepareEnvironment(List<Expr> pipedExpressions, List<Expr.FunctionDeclaration> customFunctionDeclarations);
+    protected abstract Environment prepareEnvironment(List<Expr> pipedExpressions, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix);
 
     private Object interpret(Environment anEnvironment, Expr pipedExpression) {
         Interpreter theInterpreter = new Interpreter(anEnvironment);
@@ -188,7 +188,8 @@ public with sharing abstract class EvaluatorResolver {
             this.recordId = recordId;
         }
 
-        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+        public override Environment prepareEnvironment(List<Expr> expressions,
+            List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
             ContextResolver ctxInterpreter = new ContextResolver(recordId, customFunctionDeclarations, null);
             List<SObject> records = ctxInterpreter.build(expressions);
             SObject record;
@@ -197,8 +198,8 @@ public with sharing abstract class EvaluatorResolver {
             }
             Environment env = new Environment(record);
 
-            Environment.addGlobalContextVariable('id', recordId);
-            Environment.addGlobalContextVariable('context', record);
+            Environment.addGlobalContextVariable(contextPrefix, 'id', recordId);
+            Environment.addGlobalContextVariable(contextPrefix, 'context', record);
 
             return env;
         }
@@ -211,7 +212,7 @@ public with sharing abstract class EvaluatorResolver {
             this.recordIds = recordIds;
         }
 
-        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
             ContextResolver ctxInterpreter = new ContextResolver(recordIds, customFunctionDeclarations, null);
             List<SObject> records = ctxInterpreter.build(expressions);
             // The environment is created without a record, as we are dealing with a list of records,
@@ -219,8 +220,8 @@ public with sharing abstract class EvaluatorResolver {
             // variable should be used to access the list of records.
             Environment env = new Environment();
 
-            Environment.addGlobalContextVariable('ids', recordIds);
-            Environment.addGlobalContextVariable('context', records);
+            Environment.addGlobalContextVariable(contextPrefix, 'ids', recordIds);
+            Environment.addGlobalContextVariable(contextPrefix, 'context', records);
 
             return env;
         }
@@ -233,8 +234,8 @@ public with sharing abstract class EvaluatorResolver {
             this.context = context;
         }
 
-        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
-            ContextResolver ctxInterpreter = new ContextResolver(this.context.recordId, customFunctionDeclarations, '$' + this.context.key);
+        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
+            ContextResolver ctxInterpreter = new ContextResolver(this.context.recordId, customFunctionDeclarations, contextPrefix + this.context.key);
             List<SObject> records = ctxInterpreter.build(expressions);
             SObject record;
             if (records != null && records.size() > 0) {
@@ -242,8 +243,7 @@ public with sharing abstract class EvaluatorResolver {
             }
             Environment env = new Environment(record);
 
-            // TODO: Make the prefix be something that can be passed through the configuration (and defaults to '@' to maintain backward compatibility)
-            Environment.addGlobalContextVariable('$', this.context.key, record);
+            Environment.addGlobalContextVariable(contextPrefix, this.context.key, record);
 
             return env;
         }
@@ -256,9 +256,9 @@ public with sharing abstract class EvaluatorResolver {
             this.record = record;
         }
 
-        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
-            Environment.addGlobalContextVariable('id', record?.Id);
-            Environment.addGlobalContextVariable('context', record);
+        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
+            Environment.addGlobalContextVariable(contextPrefix, 'id', record?.Id);
+            Environment.addGlobalContextVariable(contextPrefix, 'context', record);
             return new Environment(record);
         }
     }
@@ -270,15 +270,16 @@ public with sharing abstract class EvaluatorResolver {
             this.records = records;
         }
 
-        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+        public override Environment prepareEnvironment(List<Expr> expressions,
+            List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
             Set<Id> ids = new Set<Id>();
             for (SObject record : records) {
                 if (record.Id != null) {
                     ids.add(record.Id);
                 }
             }
-            Environment.addGlobalContextVariable('ids', ids);
-            Environment.addGlobalContextVariable('context', records);
+            Environment.addGlobalContextVariable(contextPrefix, 'ids', ids);
+            Environment.addGlobalContextVariable(contextPrefix, 'context', records);
             return new Environment();
         }
     }

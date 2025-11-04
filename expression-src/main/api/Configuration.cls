@@ -7,6 +7,7 @@ global with sharing class Configuration {
         WITHOUT
     }
 
+    global String globalContextVariablePrefix = '@';
     global SharingMode sharing = SharingMode.WITH;
     global Boolean printAst = false;
     global Map<String, Object> customContext = new Map<String, Object>();
@@ -30,6 +31,11 @@ global with sharing class Configuration {
     global Configuration withCustomContext(Map<String, Object> objectsByStrings) {
         Map<String, Object> objectToSet = objectsByStrings ?? new Map<String, Object>();
         this.customContext = objectToSet;
+        return this;
+    }
+
+    global Configuration withGlobalContextVariablePrefix(String prefix) {
+        this.globalContextVariablePrefix = prefix;
         return this;
     }
 

@@ -229,7 +229,7 @@ private class GlobalContextTest {
 
         CustomRecordContext customRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id);
 
-        String expressionFormula = '$TargetAccount.Name';
+        String expressionFormula = '@TargetAccount.Name';
         Object result = Evaluator.run(expressionFormula, customRecordContext);
 
         Assert.areEqual('Acme', result);
