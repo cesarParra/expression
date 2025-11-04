@@ -342,8 +342,8 @@ global with sharing abstract class Evaluator {
         return results;
     }
 
-    public static Object run(String expression, CustomRecordContext context) {
-        return EvaluatorResolver.forCustomContext(context).evaluate(expression, new Configuration()).resultValue;
+    public static Object run(String expression, CustomRecordContext context, Configuration config) {
+        return EvaluatorResolver.forCustomContext(context).evaluate(expression, config).resultValue;
     }
 
     /**

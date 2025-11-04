@@ -1,7 +1,7 @@
 public with sharing class ContextResolver implements Visitor {
     private Boolean shouldExecuteQuery = false;
     private Query queryContext;
-    private String contextReferenceName = '@context';
+    private final String contextReferenceName;
 
     private final List<Expr.FunctionDeclaration> customFunctionDeclarations;
     private final Query topLevelQuery;
@@ -11,18 +11,14 @@ public with sharing class ContextResolver implements Visitor {
         this.queryContext = new Query(recordId);
         this.topLevelQuery = this.queryContext;
         this.customFunctionDeclarations = customFunctionDeclarations;
-        if (String.isNotBlank(contextReferenceName)) {
-            this.contextReferenceName = contextReferenceName;
-        }
+        this.contextReferenceName = contextReferenceName;
     }
 
     public ContextResolver(Set<Id> recordIds, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextReferenceName) {
         this.queryContext = new Query(recordIds);
         this.topLevelQuery = this.queryContext;
         this.customFunctionDeclarations = customFunctionDeclarations;
-        if (String.isNotBlank(contextReferenceName)) {
-            this.contextReferenceName = contextReferenceName;
-        }
+        this.contextReferenceName = contextReferenceName;
     }
 
     private Object resolve(Expr expr) {

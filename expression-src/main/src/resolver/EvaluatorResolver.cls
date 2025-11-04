@@ -1,4 +1,5 @@
 public with sharing abstract class EvaluatorResolver {
+    private static final String DEFAULT_CONTEXT_KEY = 'context';
     private final Map<String, Object> additionalResultData = new Map<String, Object>();
     private final EvaluatorEventNotifier eventNotifier;
 
@@ -41,7 +42,7 @@ public with sharing abstract class EvaluatorResolver {
             return null;
         }
 
-        ContextResolver contextResolver = new ContextResolver(recordId, new List<Expr.FunctionDeclaration>(), null);
+        ContextResolver contextResolver = new ContextResolver(recordId, new List<Expr.FunctionDeclaration>(), '@' + DEFAULT_CONTEXT_KEY);
 
         for (String formula : formulas) {
             try {
@@ -190,7 +191,7 @@ public with sharing abstract class EvaluatorResolver {
 
         public override Environment prepareEnvironment(List<Expr> expressions,
             List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
-            ContextResolver ctxInterpreter = new ContextResolver(recordId, customFunctionDeclarations, null);
+            ContextResolver ctxInterpreter = new ContextResolver(recordId, customFunctionDeclarations, contextPrefix + DEFAULT_CONTEXT_KEY);
             List<SObject> records = ctxInterpreter.build(expressions);
             SObject record;
             if (records != null && records.size() > 0) {
@@ -213,7 +214,7 @@ public with sharing abstract class EvaluatorResolver {
         }
 
         public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
-            ContextResolver ctxInterpreter = new ContextResolver(recordIds, customFunctionDeclarations, null);
+            ContextResolver ctxInterpreter = new ContextResolver(recordIds, customFunctionDeclarations, contextPrefix + DEFAULT_CONTEXT_KEY);
             List<SObject> records = ctxInterpreter.build(expressions);
             // The environment is created without a record, as we are dealing with a list of records,
             // so it would not be possible to interpret references to record fields. Instead, the @context

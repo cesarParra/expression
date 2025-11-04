@@ -230,7 +230,23 @@ private class GlobalContextTest {
         CustomRecordContext customRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id);
 
         String expressionFormula = '@TargetAccount.Name';
-        Object result = Evaluator.run(expressionFormula, customRecordContext);
+        Object result = Evaluator.run(expressionFormula, customRecordContext, new Configuration());
+
+        Assert.areEqual('Acme', result);
+    }
+
+    @IsTest
+    private static void canChangeTheCustomContextPrefix() {
+        Account accountRecord = new Account(Name = 'Acme');
+        insert accountRecord;
+
+        Configuration config = new Configuration()
+            .withGlobalContextVariablePrefix('$');
+
+        CustomRecordContext customRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id);
+
+        String expressionFormula = '$TargetAccount.Name';
+        Object result = Evaluator.run(expressionFormula, customRecordContext, config);
 
         Assert.areEqual('Acme', result);
     }
