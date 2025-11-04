@@ -26,6 +26,10 @@ public with sharing abstract class EvaluatorResolver {
         return new BaseSingleRecordEvaluator(null);
     }
 
+    public static EvaluatorResolver forCustomContext(CustomRecordContext customRecordContext) {
+        return new CustomContextResolverEvaluator(customRecordContext);
+    }
+
     /**
      * @description Analyzes multiple formulas and retrieves a record with all fields needed by those formulas
      * @param recordId The Id of the record to retrieve
@@ -37,7 +41,7 @@ public with sharing abstract class EvaluatorResolver {
             return null;
         }
 
-        ContextResolver contextResolver = new ContextResolver(recordId, new List<Expr.FunctionDeclaration>());
+        ContextResolver contextResolver = new ContextResolver(recordId, new List<Expr.FunctionDeclaration>(), null);
 
         for (String formula : formulas) {
             try {
@@ -185,7 +189,7 @@ public with sharing abstract class EvaluatorResolver {
         }
 
         public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
-            ContextResolver ctxInterpreter = new ContextResolver(recordId, customFunctionDeclarations);
+            ContextResolver ctxInterpreter = new ContextResolver(recordId, customFunctionDeclarations, null);
             List<SObject> records = ctxInterpreter.build(expressions);
             SObject record;
             if (records != null && records.size() > 0) {
@@ -208,7 +212,7 @@ public with sharing abstract class EvaluatorResolver {
         }
 
         public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
-            ContextResolver ctxInterpreter = new ContextResolver(recordIds, customFunctionDeclarations);
+            ContextResolver ctxInterpreter = new ContextResolver(recordIds, customFunctionDeclarations, null);
             List<SObject> records = ctxInterpreter.build(expressions);
             // The environment is created without a record, as we are dealing with a list of records,
             // so it would not be possible to interpret references to record fields. Instead, the @context
@@ -217,6 +221,29 @@ public with sharing abstract class EvaluatorResolver {
 
             Environment.addGlobalContextVariable('ids', recordIds);
             Environment.addGlobalContextVariable('context', records);
+
+            return env;
+        }
+    }
+
+    private class CustomContextResolverEvaluator extends EvaluatorResolver {
+        private final CustomRecordContext context;
+
+        public CustomContextResolverEvaluator(CustomRecordContext context) {
+            this.context = context;
+        }
+
+        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+            ContextResolver ctxInterpreter = new ContextResolver(this.context.recordId, customFunctionDeclarations, '$' + this.context.key);
+            List<SObject> records = ctxInterpreter.build(expressions);
+            SObject record;
+            if (records != null && records.size() > 0) {
+                record = records[0];
+            }
+            Environment env = new Environment(record);
+
+            // TODO: Make the prefix be something that can be passed through the configuration (and defaults to '@' to maintain backward compatibility)
+            Environment.addGlobalContextVariable('$', this.context.key, record);
 
             return env;
         }

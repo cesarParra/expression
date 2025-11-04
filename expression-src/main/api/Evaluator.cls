@@ -3,7 +3,6 @@
  *              It provides a set of static methods that allow you to evaluate expressions
  *              in a variety of contexts.
  */
-// TODO: Add all overloads to the bulk endpoints
 global with sharing abstract class Evaluator {
     /**
      * @description Evaluates an expression and returns the result.
@@ -296,7 +295,7 @@ global with sharing abstract class Evaluator {
      * @description Evaluates a formula and returns the result using a record Id as the context.
      *              When using this endpoint field references will automatically be resolved
      *              and queried.
-     * @param formula The formula to evaluate.
+     * @param expression The formula to evaluate.
      * @param recordId The Id of the record to use as the context for the formula.
      * @return The result of the formula.
      * @example
@@ -306,8 +305,8 @@ global with sharing abstract class Evaluator {
      * String recordName = (String)expression.Evaluator.run('Name', record.Id);
      * ```
      */
-    global static Object run(String formula, Id recordId) {
-        return run(formula, recordId, new Configuration());
+    global static Object run(String expression, Id recordId) {
+        return run(expression, recordId, new Configuration());
     }
 
     /**
@@ -341,6 +340,10 @@ global with sharing abstract class Evaluator {
             results.add(innerResult.toResult());
         }
         return results;
+    }
+
+    public static Object run(String expression, CustomRecordContext context) {
+        return EvaluatorResolver.forCustomContext(context).evaluate(expression, new Configuration()).resultValue;
     }
 
     /**

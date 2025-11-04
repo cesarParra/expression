@@ -165,8 +165,8 @@ public abstract class Expr {
             return v.visit(this);
         }
 
-        public Boolean isContext() {
-            return this.name.lexeme.toLowerCase() == '@context';
+        public Boolean isContext(String contextReferenceName) {
+            return this.name.lexeme.toLowerCase() == contextReferenceName.toLowerCase();
         }
     }
 

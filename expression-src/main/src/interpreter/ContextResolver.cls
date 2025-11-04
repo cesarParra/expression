@@ -1,21 +1,28 @@
 public with sharing class ContextResolver implements Visitor {
     private Boolean shouldExecuteQuery = false;
     private Query queryContext;
+    private String contextReferenceName = '@context';
 
     private final List<Expr.FunctionDeclaration> customFunctionDeclarations;
     private final Query topLevelQuery;
     private final List<Query> subQueries = new List<Query>();
 
-    public ContextResolver(Id recordId, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+    public ContextResolver(Id recordId, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextReferenceName) {
         this.queryContext = new Query(recordId);
         this.topLevelQuery = this.queryContext;
         this.customFunctionDeclarations = customFunctionDeclarations;
+        if (String.isNotBlank(contextReferenceName)) {
+            this.contextReferenceName = contextReferenceName;
+        }
     }
 
-    public ContextResolver(Set<Id> recordIds, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+    public ContextResolver(Set<Id> recordIds, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextReferenceName) {
         this.queryContext = new Query(recordIds);
         this.topLevelQuery = this.queryContext;
         this.customFunctionDeclarations = customFunctionDeclarations;
+        if (String.isNotBlank(contextReferenceName)) {
+            this.contextReferenceName = contextReferenceName;
+        }
     }
 
     private Object resolve(Expr expr) {
@@ -222,9 +229,9 @@ public with sharing class ContextResolver implements Visitor {
         return relationshipToQuery + getExpr.field.lexeme;
     }
 
-    private static Boolean isReferencingContextField(Expr.GetExpr expr) {
+    private Boolean isReferencingContextField(Expr.GetExpr expr) {
         if (expr.objectExpr instanceof Expr.Variable) {
-            return ((Expr.Variable)expr.objectExpr).isContext();
+            return ((Expr.Variable)expr.objectExpr).isContext(this.contextReferenceName);
         } else if (expr.objectExpr instanceof Expr.GetExpr) {
             // Recursively check if the parent object is referencing a context field
             // since we can have nested get expressions and what is important is the top level
@@ -235,7 +242,7 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.Variable variable) {
-        if (variable.isContext()) {
+        if (variable.isContext(this.contextReferenceName)) {
             // If context is being accessed, then we always want to run the query.
             this.shouldExecuteQuery = true;
 
@@ -483,7 +490,6 @@ public with sharing class ContextResolver implements Visitor {
         public Query(Set<Id> recordIds) {
             this.recordId = new MultipleIds(recordIds);
             this.objectType = this.recordId.getSobjectType();
-            System.debug('Querying for ' + this.objectType);
             this.queryBuilder = new Q(this.objectType);
             this.queryBuilder.selectField('Id');
         }
