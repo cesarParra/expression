@@ -166,8 +166,10 @@ public abstract class Expr {
         }
 
         public Boolean isContext(Set<String> contextReferenceNames) {
+            System.debug('The lexeme is: ' + this.name.lexeme);
             String lowercasedLexeme = this.name.lexeme.toLowerCase();
             for (String contextReferenceName : contextReferenceNames) {
+                System.debug('Comparing to context reference name: ' + contextReferenceName);
                 if (lowercasedLexeme == contextReferenceName.toLowerCase()) {
                     return true;
                 }

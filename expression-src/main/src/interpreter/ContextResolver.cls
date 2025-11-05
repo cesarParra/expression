@@ -1,24 +1,46 @@
 public with sharing class ContextResolver implements Visitor {
     private Boolean shouldExecuteQuery = false;
     private Query queryContext;
-    private final Set<String> contextReferenceNames;
+    private final List<CustomRecordContext> recordContexts;
+    private final String contextPrefix;
 
     private final List<Expr.FunctionDeclaration> customFunctionDeclarations;
     private final Query topLevelQuery;
     private final List<Query> subQueries = new List<Query>();
 
-    public ContextResolver(Id recordId, List<Expr.FunctionDeclaration> customFunctionDeclarations, Set<String> contextReferenceNames) {
-        this.queryContext = new Query(recordId);
+    public ContextResolver(CustomRecordContext recordContext, String contextPrefix, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+        this.recordContexts = new List<CustomRecordContext> { recordContext };
+        this.contextPrefix = contextPrefix;
+        this.queryContext = new Query(recordContext.recordId);
         this.topLevelQuery = this.queryContext;
         this.customFunctionDeclarations = customFunctionDeclarations;
-        this.contextReferenceNames = contextReferenceNames;
     }
 
-    public ContextResolver(Set<Id> recordIds, List<Expr.FunctionDeclaration> customFunctionDeclarations, Set<String> contextReferenceNames) {
+    public ContextResolver(List<CustomRecordContext> recordContexts, String contextPrefix, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+        this.recordContexts = recordContexts;
+        this.contextPrefix = contextPrefix;
+        Set<Id> recordIds = new Set<Id>();
+        for (CustomRecordContext context : recordContexts) {
+            recordIds.add(context.recordId);
+        }
         this.queryContext = new Query(recordIds);
         this.topLevelQuery = this.queryContext;
         this.customFunctionDeclarations = customFunctionDeclarations;
-        this.contextReferenceNames = contextReferenceNames;
+    }
+
+    private Set<String> ContextReferenceNames {
+        get {
+            if (ContextReferenceNames != null) {
+                return ContextReferenceNames;
+            }
+            Set<String> names = new Set<String>();
+            for (CustomRecordContext context : this.recordContexts) {
+                names.add(this.contextPrefix + context.key.toLowerCase());
+            }
+            ContextReferenceNames = names;
+            return names;
+        }
+        private set;
     }
 
     private Object resolve(Expr expr) {
@@ -227,7 +249,7 @@ public with sharing class ContextResolver implements Visitor {
 
     private Boolean isReferencingContextField(Expr.GetExpr expr) {
         if (expr.objectExpr instanceof Expr.Variable) {
-            return ((Expr.Variable)expr.objectExpr).isContext(this.contextReferenceNames);
+            return ((Expr.Variable)expr.objectExpr).isContext(this.ContextReferenceNames);
         } else if (expr.objectExpr instanceof Expr.GetExpr) {
             // Recursively check if the parent object is referencing a context field
             // since we can have nested get expressions and what is important is the top level
@@ -238,7 +260,7 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.Variable variable) {
-        if (variable.isContext(this.contextReferenceNames)) {
+        if (variable.isContext(this.ContextReferenceNames)) {
             // If context is being accessed, then we always want to run the query.
             this.shouldExecuteQuery = true;
 

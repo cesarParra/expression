@@ -288,7 +288,7 @@ private class GlobalContextTest {
         Assert.areEqual(150, result);
         Assert.areEqual(1, Limits.getQueries(), 'Expect one query per SObject type');
     }
-    
+
     // TODO: Endpoint can received a prequeried SObject on top of the ID. If all of the fields have
     // already been queried, then no need to query again.
 }
