@@ -89,6 +89,38 @@ public with sharing class ContextResolver implements Visitor {
             return null;
         }
 
+        Boolean shouldQuery = false;
+        for (Id recordIdToQuery : this.queryContext.recordId.getIds()) {
+            SObject prequeriedRecordForId;
+            for (CustomRecordContext currentContext : this.recordContexts) {
+                if (currentContext.recordId == recordIdToQuery) {
+                    prequeriedRecordForId = currentContext.prequeriedRecord;
+                    break;
+                }
+            }
+
+            if (prequeriedRecordForId == null) {
+                shouldQuery = true;
+                break;
+            }
+
+            Set<String> fieldsToQuery = this.queryContext.queryBuilder.fieldList;
+            if (!CollectionUtils.containsAllIgnoreCase(prequeriedRecordForId.getPopulatedFieldsAsMap().keySet(), fieldsToQuery)) {
+                shouldQuery = true;
+                break;
+            }
+        }
+
+        if (!shouldQuery) {
+            List<SObject> recordsToReturn = new List<SObject>();
+            for (CustomRecordContext currentContext : this.recordContexts) {
+                recordsToReturn.add(currentContext.prequeriedRecord);
+            }
+            return recordsToReturn;
+        }
+
+        // TODO: If there are subqueries, always query
+
         for (Query subquery : this.subQueries) {
             this.queryContext.queryBuilder.addSubquery(subquery.queryBuilder);
         }

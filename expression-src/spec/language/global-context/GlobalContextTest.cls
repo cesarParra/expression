@@ -233,6 +233,7 @@ private class GlobalContextTest {
         Object result = Evaluator.run(expressionFormula, customRecordContext, new Configuration());
 
         Assert.areEqual('Acme', result);
+        Assert.areEqual(1, Limits.getQueries(), 'Expect one query to retrieve the TargetAccount record');
     }
 
     @IsTest
@@ -289,6 +290,17 @@ private class GlobalContextTest {
         Assert.areEqual(1, Limits.getQueries(), 'Expect one query per SObject type');
     }
 
-    // TODO: Endpoint can received a prequeried SObject on top of the ID. If all of the fields have
-    // already been queried, then no need to query again.
+    @IsTest
+    private static void customContextsDoNotQueryWhenSObjectIsProvidedWithAllReferencedFields() {
+        Account accountRecord = new Account(Name = 'Acme');
+        insert accountRecord;
+
+        CustomRecordContext customRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id, accountRecord);
+
+        String expressionFormula = '@TargetAccount.Name';
+        Object result = Evaluator.run(expressionFormula, customRecordContext, new Configuration());
+
+        Assert.areEqual('Acme', result);
+        Assert.areEqual(0, Limits.getQueries(), 'No queries should be consumed');
+    }
 }
