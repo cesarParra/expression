@@ -6,17 +6,4 @@ public with sharing class CollectionUtils {
         }
         return objects;
     }
-
-    public static Boolean containsAllIgnoreCase(Set<String> source, Set<String> toCheck) {
-        Set<String> lowerSource = new Set<String>();
-        for (String s : source) {
-            lowerSource.add(s.toLowerCase());
-        }
-        for (String to : toCheck) {
-            if (!lowerSource.contains(to.toLowerCase())) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

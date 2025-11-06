@@ -303,4 +303,25 @@ private class GlobalContextTest {
         Assert.areEqual('Acme', result);
         Assert.areEqual(0, Limits.getQueries(), 'No queries should be consumed');
     }
+
+    @IsTest
+    private static void customContextsDoNotQueryWhenSObjectIsProvidedWithAllReferencedFields_whenFieldValueIsEmpty() {
+        Account accountRecord = new Account(Name = 'Acme');
+        insert accountRecord;
+
+        Account queriedAccount = [SELECT Id, Name, NumberOfEmployees FROM Account WHERE Id = :accountRecord.Id];
+
+        CustomRecordContext customRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id, queriedAccount);
+
+        // NumberOfEmployees is null, but it should not trigger a query since the field was explicitly queried.
+        String expressionFormula = '@TargetAccount.NumberOfEmployees';
+        Integer queriesBeforeEvaluation = Limits.getQueries();
+        Object result = Evaluator.run(expressionFormula, customRecordContext, new Configuration());
+        Integer queriesAfterEvaluation = Limits.getQueries();
+
+        Integer queriesConsumed = queriesAfterEvaluation - queriesBeforeEvaluation;
+
+        Assert.areEqual(null, result);
+        Assert.areEqual(0, queriesConsumed, 'No queries should be consumed');
+    }
 }

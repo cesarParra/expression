@@ -134,12 +134,26 @@ public with sharing class ContextResolver implements Visitor {
 
             Set<String> fieldsToQuery = this.queryContext.queryBuilder.fieldList;
             // For each record, check if all fields to query are already present in the prequeried record.
-            if (!CollectionUtils.containsAllIgnoreCase(prequeriedRecordForId.getPopulatedFieldsAsMap().keySet(), fieldsToQuery)) {
+            if (!areAllFieldsPresent(fieldsToQuery, prequeriedRecordForId)) {
                 shouldQuery = true;
                 break;
             }
         }
         return shouldQuery;
+    }
+
+    private static Boolean areAllFieldsPresent(Set<String> fieldsToQuery, SObject record) {
+        try {
+            for (String currentField : fieldsToQuery) {
+                if (!record.isSet(currentField)) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public Object visit(Expr.Logical logical) {

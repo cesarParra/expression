@@ -5,7 +5,7 @@
  * @display-icon utility:text
  */
 public with sharing class StringFunctions {
-    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction>{
+    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction> {
         'BEGINS' => new StringFunctions.Begins(),
         'CONTAINS' => new StringFunctions.Contains(),
         'LOWER' => new StringFunctions.Lower(),
@@ -61,7 +61,7 @@ public with sharing class StringFunctions {
                 );
             }
 
-            return ((String) text).startsWith((String) prefix);
+            return ((String)text).startsWith((String)prefix);
         }
 
         public override Arity getArity() {
@@ -89,18 +89,22 @@ public with sharing class StringFunctions {
             // When dealing with text
             if (firstValue instanceof String) {
                 Object substring = evaluate(arguments.get(1));
+                if (substring == null) {
+                    return false;
+                }
+
                 if (!(substring instanceof String)) {
                     throw new FunctionExecutionException(
                         'Error executing "CONTAINS" function: the argument must evaluate to a string value.'
                     );
                 }
 
-                return ((String) firstValue).contains((String) substring);
+                return ((String)firstValue).contains((String)substring);
             }
 
             // When dealing with lists
             Object value = evaluate(arguments.get(1));
-            List<Object> castList = (List<Object>) firstValue;
+            List<Object> castList = (List<Object>)firstValue;
             return castList.contains(value);
         }
 
@@ -126,7 +130,7 @@ public with sharing class StringFunctions {
                 );
             }
 
-            return ((String) text).toLowerCase();
+            return ((String)text).toLowerCase();
         }
 
         public override Arity getArity() {
@@ -169,10 +173,10 @@ public with sharing class StringFunctions {
                         'Error executing "FIND" function: the argument must evaluate to a number value.'
                     );
                 }
-                startIndex = ((Decimal) startIndexValue).intValue();
+                startIndex = ((Decimal)startIndexValue).intValue();
             }
 
-            return ((String) text).indexOf((String) searchText, startIndex);
+            return ((String)text).indexOf((String)searchText, startIndex);
         }
 
         public override Arity getArity() {
@@ -203,12 +207,12 @@ public with sharing class StringFunctions {
                     'Error executing "LEFT" function: the argument must evaluate to a number value.'
                 );
             }
-            String text = (String) textObj;
+            String text = (String)textObj;
 
             if (text.length() <= (Decimal)length) {
                 return text;
             }
-            return ((String) text).substring(0, ((Decimal) length).intValue());
+            return ((String)text).substring(0, ((Decimal)length).intValue());
         }
 
         public override Arity getArity() {
@@ -233,7 +237,7 @@ public with sharing class StringFunctions {
                 );
             }
 
-            return ((String) text).length();
+            return ((String)text).length();
         }
 
         public override Arity getArity() {
@@ -274,9 +278,9 @@ public with sharing class StringFunctions {
             }
 
             if (name == 'LPAD') {
-                return ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length()) + (String) text;
+                return ((String)padString).repeat(((Decimal)length).intValue() - ((String)text).length()) + (String)text;
             } else {
-                return (String) text + ((String) padString).repeat(((Decimal) length).intValue() - ((String) text).length());
+                return (String)text + ((String)padString).repeat(((Decimal)length).intValue() - ((String)text).length());
             }
         }
 
@@ -336,11 +340,11 @@ public with sharing class StringFunctions {
             }
 
             if (val instanceof String) {
-                return ((String) val).reverse();
+                return ((String)val).reverse();
             } else {
                 List<Object> reversedList = new List<Object>();
-                for (Integer i = ((List<Object>) val).size() - 1; i >= 0; i--) {
-                    reversedList.add(((List<Object>) val).get(i));
+                for (Integer i = ((List<Object>)val).size() - 1; i >= 0; i--) {
+                    reversedList.add(((List<Object>)val).get(i));
                 }
                 return reversedList;
             }
@@ -385,7 +389,7 @@ public with sharing class StringFunctions {
                 );
             }
 
-            return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
+            return ((String)text).substring(((Decimal)start).intValue() - 1, ((Decimal)start).intValue() - 1 + ((Decimal)length).intValue());
         }
 
         public override Arity getArity() {
@@ -433,9 +437,9 @@ public with sharing class StringFunctions {
             }
 
             if (length == null) {
-                return ((String) text).substring(((Decimal) start).intValue() - 1);
+                return ((String)text).substring(((Decimal)start).intValue() - 1);
             } else {
-                return ((String) text).substring(((Decimal) start).intValue() - 1, ((Decimal) start).intValue() - 1 + ((Decimal) length).intValue());
+                return ((String)text).substring(((Decimal)start).intValue() - 1, ((Decimal)start).intValue() - 1 + ((Decimal)length).intValue());
             }
         }
 
@@ -472,12 +476,12 @@ public with sharing class StringFunctions {
             }
 
             // If the number is less than 0, force it to 0
-            Integer lengthAsInteger = ((Decimal) length).intValue();
+            Integer lengthAsInteger = ((Decimal)length).intValue();
             if (lengthAsInteger < 0) {
                 lengthAsInteger = 0;
             }
 
-            return ((String) text).right(lengthAsInteger);
+            return ((String)text).right(lengthAsInteger);
         }
 
         public override Arity getArity() {
@@ -509,7 +513,7 @@ public with sharing class StringFunctions {
                         'Error executing "BR" function: the argument must evaluate to a number value.'
                     );
                 }
-                linesToAdd = ((Decimal) linesToAddValue).intValue();
+                linesToAdd = ((Decimal)linesToAddValue).intValue();
             }
 
             if (Request.getCurrent().getQuiddity() == Quiddity.AURA || Request.getCurrent().getQuiddity() == Quiddity.VF) {
@@ -564,11 +568,11 @@ public with sharing class StringFunctions {
             }
 
             // Create the link
-            String link = '<a href="' + (String) url + '"';
+            String link = '<a href="' + (String)url + '"';
             if (target != null) {
-                link += ' target="' + (String) target + '"';
+                link += ' target="' + (String)target + '"';
             }
-            link += '>' + (String) friendlyText + '</a>';
+            link += '>' + (String)friendlyText + '</a>';
 
             return link;
         }
@@ -613,7 +617,7 @@ public with sharing class StringFunctions {
             }
 
             // Replace all occurrences of the old text with the new text
-            return ((String) text).replaceAll((String) oldText, (String) newText);
+            return ((String)text).replaceAll((String)oldText, (String)newText);
         }
 
         public override Arity getArity() {
@@ -658,7 +662,7 @@ public with sharing class StringFunctions {
                 );
             }
 
-            return ((String) value).trim();
+            return ((String)value).trim();
         }
 
         public override Arity getArity() {
@@ -684,7 +688,7 @@ public with sharing class StringFunctions {
                 );
             }
 
-            return ((String) value).toUpperCase();
+            return ((String)value).toUpperCase();
         }
 
         public override Arity getArity() {
@@ -710,7 +714,7 @@ public with sharing class StringFunctions {
                 );
             }
 
-            return Decimal.valueOf((String) value);
+            return Decimal.valueOf((String)value);
         }
 
         public override Arity getArity() {
@@ -745,7 +749,7 @@ public with sharing class StringFunctions {
                 );
             }
 
-            return ((String) value).split((String) delimiter);
+            return ((String)value).split((String)delimiter);
         }
 
         public override Arity getArity() {
@@ -771,7 +775,7 @@ public with sharing class StringFunctions {
                 );
             }
 
-            String[] words = ((String) value).split(' ');
+            String[] words = ((String)value).split(' ');
             String result = '';
             for (Integer i = 0; i < words.size(); i++) {
                 result += words[i].substring(0, 1).toUpperCase() + words[i].substring(1).toLowerCase();
@@ -807,7 +811,7 @@ public with sharing class StringFunctions {
                 );
             }
 
-            return EncodingUtil.urlEncode((String) value, 'UTF-8');
+            return EncodingUtil.urlEncode((String)value, 'UTF-8');
         }
 
         public override Arity getArity() {
@@ -842,7 +846,7 @@ public with sharing class StringFunctions {
                 );
             }
 
-            return matchesPattern((String) text, (String) pattern);
+            return matchesPattern((String)text, (String)pattern);
         }
 
         public override Arity getArity() {

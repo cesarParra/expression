@@ -262,6 +262,9 @@ public with sharing abstract class EvaluatorResolver {
 
                 ContextResolver ctxInterpreter = new ContextResolver(contextsForType, contextPrefix, customFunctionDeclarations);
                 List<SObject> queriedRecords = ctxInterpreter.build(expressions);
+                if (queriedRecords == null || queriedRecords.isEmpty()) {
+                    continue;
+                }
                 Map<Id, SObject> recordById = new Map<Id, SObject>(queriedRecords);
                 for (Id recordId : recordById.keySet()) {
                     SObject record = recordById.get(recordId);
