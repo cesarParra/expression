@@ -350,6 +350,10 @@ global with sharing abstract class Evaluator {
         return EvaluatorResolver.forCustomContexts(contexts).evaluate(expression, config).resultValue;
     }
 
+    public static List<Result> run(List<String> expressions, List<CustomRecordContext> contexts, Configuration config) {
+        return toResults(EvaluatorResolver.forCustomContexts(contexts).evaluate(expressions, config));
+    }
+
     /**
      * @description Evaluates a formula and returns the result using a set of record Ids as the context.
      *              When using this endpoint field references will automatically be resolved

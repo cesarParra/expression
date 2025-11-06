@@ -215,7 +215,8 @@ public with sharing abstract class EvaluatorResolver {
             this.recordIds = recordIds;
         }
 
-        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
+        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations,
+            String contextPrefix) {
             List<CustomRecordContext> recordContexts = new List<CustomRecordContext>();
             for (Id recordId : this.recordIds) {
                 recordContexts.add(new CustomRecordContext(DEFAULT_CONTEXT_KEY, recordId));

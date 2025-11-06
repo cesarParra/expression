@@ -324,4 +324,28 @@ private class GlobalContextTest {
         Assert.areEqual(null, result);
         Assert.areEqual(0, queriesConsumed, 'No queries should be consumed');
     }
+
+    @IsTest
+    private static void canResolveMultipleExpressionsAtTheSameTime() {
+        Account accountRecord1 = new Account(Name = 'Acme', NumberOfEmployees = 100);
+        insert accountRecord1;
+
+        Account accountRecord2 = new Account(Name = 'Salesforce', NumberOfEmployees = 200);
+        insert accountRecord2;
+
+        CustomRecordContext customRecordContext1 = new CustomRecordContext('TargetAccount', accountRecord1.Id);
+        CustomRecordContext customRecordContext2 = new CustomRecordContext('SourceAccount', accountRecord2.Id);
+
+        String expression1 = '@TargetAccount.Name + " & " + @SourceAccount.Name';
+        String expression2 = '@TargetAccount.NumberOfEmployees + @SourceAccount.NumberOfEmployees';
+        List<Result> results = Evaluator.run(new List<String> { expression1, expression2 },
+            new List<CustomRecordContext> { customRecordContext1, customRecordContext2 },
+            new Configuration()
+        );
+
+        Assert.areEqual(2, results.size(), 'Expect two results, one per expression');
+        Assert.areEqual('Acme & Salesforce', results[0].getValue());
+        Assert.areEqual(300, results[1].getValue());
+        Assert.areEqual(1, Limits.getQueries(), 'Expected a single query per SObject type (only Account)');
+    }
 }
