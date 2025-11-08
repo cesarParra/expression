@@ -242,7 +242,8 @@ public with sharing abstract class EvaluatorResolver {
             this.contexts = contexts;
         }
 
-        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations, String contextPrefix) {
+        public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations,
+            String contextPrefix) {
             Environment env = new Environment();
 
             Map<SObjectType, List<CustomRecordContext>> contextsBySObjectTypes = new Map<SObjectType, List<CustomRecordContext>>();

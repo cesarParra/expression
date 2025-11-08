@@ -452,7 +452,7 @@ System.assertEquals(new List<String>{'Example 1', 'Example 2', '2'}, recordNames
 
 ---
 
-### `run(formula, recordId)`
+### `run(expression, recordId)`
 
 Evaluates a formula and returns the result using a record Id as the context. 
 When using this endpoint field references will automatically be resolved 
@@ -460,13 +460,13 @@ and queried.
 
 #### Signature
 ```apex
-global static Object run(String formula, Id recordId)
+global static Object run(String expression, Id recordId)
 ```
 
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| formula | String | The formula to evaluate. |
+| expression | String | The formula to evaluate. |
 | recordId | Id | The Id of the record to use as the context for the formula. |
 
 #### Return Type
