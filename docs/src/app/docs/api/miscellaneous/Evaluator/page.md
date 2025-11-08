@@ -2,7 +2,7 @@
 nextjs:
   metadata:
     title: Evaluator
-    description: Api documentation for the Evaluator class}
+    description: Api documentation for the Evaluator class
 ---
 
 # Evaluator Class

@@ -2,7 +2,7 @@
 nextjs:
   metadata:
     title: Result
-    description: Api documentation for the Result class}
+    description: Api documentation for the Result class
 ---
 
 # Result Class

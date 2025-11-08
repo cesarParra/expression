@@ -2,7 +2,7 @@
 nextjs:
   metadata:
     title: CustomRecordContext
-    description: Api documentation for the CustomRecordContext class}
+    description: Api documentation for the CustomRecordContext class
 ---
 
 # CustomRecordContext Class

@@ -2,7 +2,7 @@
 nextjs:
   metadata:
     title: Configuration
-    description: Api documentation for the Configuration class}
+    description: Api documentation for the Configuration class
 ---
 
 # Configuration Class
