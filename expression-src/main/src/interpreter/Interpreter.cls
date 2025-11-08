@@ -35,7 +35,7 @@ public virtual with sharing class Interpreter implements Visitor {
                 );
             }
 
-            Boolean leftAsBoolean = (Boolean) left;
+            Boolean leftAsBoolean = (Boolean)left;
 
             if (leftAsBoolean) {
                 return true;
@@ -49,7 +49,7 @@ public virtual with sharing class Interpreter implements Visitor {
                 );
             }
 
-            return (Boolean) right;
+            return (Boolean)right;
         } else {
             if (!isBoolean(left)) {
                 throw new Exceptions.RuntimeException(
@@ -58,7 +58,7 @@ public virtual with sharing class Interpreter implements Visitor {
                 );
             }
 
-            Boolean leftAsBoolean = (Boolean) left;
+            Boolean leftAsBoolean = (Boolean)left;
 
             if (!leftAsBoolean) {
                 return false;
@@ -72,7 +72,7 @@ public virtual with sharing class Interpreter implements Visitor {
                 );
             }
 
-            return (Boolean) right;
+            return (Boolean)right;
         }
     }
 
@@ -84,11 +84,11 @@ public virtual with sharing class Interpreter implements Visitor {
             when PLUS {
                 if (left instanceof Decimal && right instanceof Decimal) {
                     // Add numbers
-                    return (Decimal) left + (Decimal) right;
+                    return (Decimal)left + (Decimal)right;
                 }
                 if (left instanceof String && right instanceof String) {
                     // Concatenate strings
-                    return (String) left + (String) right;
+                    return (String)left + (String)right;
                 }
                 throw new Exceptions.RuntimeException(
                     binary.operator, 'Error executing ' + binary.operator.lexeme + ' operator: operands must be numbers or strings.'
@@ -97,7 +97,7 @@ public virtual with sharing class Interpreter implements Visitor {
             when AMPERSAND {
                 if (left instanceof String && right instanceof String) {
                     // Concatenate strings
-                    return (String) left + (String) right;
+                    return (String)left + (String)right;
                 }
                 throw new Exceptions.RuntimeException(
                     binary.operator, 'Error executing ' + binary.operator.lexeme + ' operator: operands must be strings.'
@@ -105,15 +105,15 @@ public virtual with sharing class Interpreter implements Visitor {
             }
             when MINUS {
                 checkNumberOperand(binary.operator, left, right);
-                return (Decimal) left - (Decimal) right;
+                return (Decimal)left - (Decimal)right;
             }
             when STAR {
                 checkNumberOperand(binary.operator, left, right);
-                return (Decimal) left * (Decimal) right;
+                return (Decimal)left * (Decimal)right;
             }
             when SLASH {
                 checkNumberOperand(binary.operator, left, right);
-                return (Decimal) left / (Decimal) right;
+                return (Decimal)left / (Decimal)right;
             }
             when EXPONENT {
                 if (!checkIsDecimal(left) || !checkIsDecimal(right)) {
@@ -126,23 +126,23 @@ public virtual with sharing class Interpreter implements Visitor {
 
                 // This can result in a runtime exception since right might not be an integer,
                 // but any number
-                return ((Decimal) left).pow(Integer.valueOf(right));
+                return ((Decimal)left).pow(Integer.valueOf(right));
             }
             when GREATER {
                 checkNumberOperand(binary.operator, left, right);
-                return (Decimal) left > (Decimal) right;
+                return (Decimal)left > (Decimal)right;
             }
             when GREATER_EQUAL {
                 checkNumberOperand(binary.operator, left, right);
-                return (Decimal) left >= (Decimal) right;
+                return (Decimal)left >= (Decimal)right;
             }
             when LESS {
                 checkNumberOperand(binary.operator, left, right);
-                return (Decimal) left < (Decimal) right;
+                return (Decimal)left < (Decimal)right;
             }
             when LESS_EQUAL {
                 checkNumberOperand(binary.operator, left, right);
-                return (Decimal) left <= (Decimal) right;
+                return (Decimal)left <= (Decimal)right;
             }
             when EQUAL, EQUAL_EQUAL {
                 return left == right;
@@ -168,9 +168,9 @@ public virtual with sharing class Interpreter implements Visitor {
         String stringValue = '';
         for (Object current : literal.stringsAndInterpolations) {
             if (current instanceof String) {
-                stringValue += (String) current;
+                stringValue += (String)current;
             } else if (current instanceof Expr) {
-                Object result = evaluate((Expr) current);
+                Object result = evaluate((Expr)current);
                 stringValue += StringUtils.valueOf(result);
             }
         }
@@ -187,7 +187,7 @@ public virtual with sharing class Interpreter implements Visitor {
                 );
             }
 
-            Environment tempEnvironmentForGet = new Environment((SObject) result);
+            Environment tempEnvironmentForGet = new Environment((SObject)result);
 
             // We might be dealing with either a field reference or with a reference to another parent
             if (tempEnvironmentForGet.contains(getExpr.field.lexeme)) {
@@ -209,7 +209,7 @@ public virtual with sharing class Interpreter implements Visitor {
             }
 
             try {
-                return ((IGlobalVariableResolver) result).get(getExpr.field.lexeme, arguments);
+                return ((IGlobalVariableResolver)result).get(getExpr.field.lexeme, arguments);
             } catch (Exceptions.PositionAwareException e) {
                 throw e;
             } catch (Exception e) {
@@ -226,7 +226,7 @@ public virtual with sharing class Interpreter implements Visitor {
                 );
             }
 
-            Map<Object, Object> castMap = (Map<Object, Object>) result;
+            Map<Object, Object> castMap = (Map<Object, Object>)result;
             if (castMap.containsKey(getExpr.field.lexeme)) {
                 return castMap.get(getExpr.field.lexeme);
             }
@@ -243,7 +243,7 @@ public virtual with sharing class Interpreter implements Visitor {
                 );
             }
 
-            Map<String, Object> castMap = (Map<String, Object>) result;
+            Map<String, Object> castMap = (Map<String, Object>)result;
             if (castMap.containsKey(getExpr.field.lexeme)) {
                 return castMap.get(getExpr.field.lexeme);
             }
@@ -273,15 +273,8 @@ public virtual with sharing class Interpreter implements Visitor {
             return env.get(variable.name.lexeme);
         }
 
-        String errorMessage;
-        if (variable.isContext()) {
-            errorMessage = '@Context is not accessible when no context Id or record was provided.';
-        } else {
-            errorMessage = 'Error executing variable expression: the variable ' +
-                variable.name.lexeme +
-                ' is not defined in the current context.';
-        }
-
+        String errorMessage = 'Error executing variable expression: the variable ' +
+            variable.name.lexeme + ' is not defined in the current context.';
         throw new Exceptions.RuntimeException(
             variable.name,
             errorMessage
@@ -319,7 +312,7 @@ public virtual with sharing class Interpreter implements Visitor {
                     );
                 }
 
-                return !(Boolean) right;
+                return !(Boolean)right;
             }
             when MINUS {
                 if (!checkIsDecimal(right)) {
@@ -329,7 +322,7 @@ public virtual with sharing class Interpreter implements Visitor {
                     );
                 }
 
-                return -(Decimal) right;
+                return -(Decimal)right;
             }
         }
 
@@ -363,16 +356,16 @@ public virtual with sharing class Interpreter implements Visitor {
         for (Expr expr : listLiteral.elements) {
             Object result = evaluate(expr);
             if (result instanceof ListSpreadContents) {
-                resultList.addAll(((ListSpreadContents) result).contents);
+                resultList.addAll(((ListSpreadContents)result).contents);
             } else if (result instanceof AddIfConditional) {
-                AddIfConditional element = (AddIfConditional) result;
+                AddIfConditional element = (AddIfConditional)result;
                 if (element.shouldAdd == false) {
                     continue;
                 }
 
                 // We can safely cast here since the `visit` method will take
                 // care of only returning a ConditionalElement when within a list literal.
-                resultList.add(((ConditionalElement) element).value);
+                resultList.add(((ConditionalElement)element).value);
             } else {
                 resultList.add(result);
             }
@@ -398,7 +391,7 @@ public virtual with sharing class Interpreter implements Visitor {
                 );
             }
 
-            return new ListSpreadContents((List<Object>) result);
+            return new ListSpreadContents((List<Object>)result);
         }
 
         Object result = evaluate(spread.expression);
@@ -409,7 +402,7 @@ public virtual with sharing class Interpreter implements Visitor {
             );
         }
 
-        return new MapSpreadContents((Map<Object, Object>) result);
+        return new MapSpreadContents((Map<Object, Object>)result);
     }
 
     public class ListSpreadContents {
@@ -433,24 +426,24 @@ public virtual with sharing class Interpreter implements Visitor {
         Map<Object, Object> resultMap = new Map<Object, Object>();
         for (Object element : mapLiteral.elements) {
             if (element instanceof Expr.KeyValue) {
-                Expr.KeyValue mapElement = (Expr.KeyValue) element;
+                Expr.KeyValue mapElement = (Expr.KeyValue)element;
                 Object key = evaluate(mapElement.key);
                 Object value = evaluate(mapElement.value);
                 resultMap.put(key, value);
             } else if (element instanceof Expr.Spread) {
-                Object result = evaluate((Expr.Spread) element);
+                Object result = evaluate((Expr.Spread)element);
                 if (result instanceof MapSpreadContents) {
-                    resultMap.putAll(((MapSpreadContents) result).contents);
+                    resultMap.putAll(((MapSpreadContents)result).contents);
                 }
             } else if (element instanceof Expr.AddIfExpr) {
-                Object result = evaluate((Expr.AddIfExpr) element);
-                AddIfConditional conditional = (AddIfConditional) result;
+                Object result = evaluate((Expr.AddIfExpr)element);
+                AddIfConditional conditional = (AddIfConditional)result;
                 if (conditional.shouldAdd == false) {
                     continue;
                 }
                 // We can safely cast here since the `visit` method will take
                 // care of only returning a ConditionalKeyValuePair when within a map literal.
-                ConditionalKeyValuePair conditionalKeyValuePair = (ConditionalKeyValuePair) result;
+                ConditionalKeyValuePair conditionalKeyValuePair = (ConditionalKeyValuePair)result;
                 resultMap.put(conditionalKeyValuePair.key, conditionalKeyValuePair.value);
             }
         }
@@ -543,7 +536,7 @@ public virtual with sharing class Interpreter implements Visitor {
             );
         }
 
-        if ((Boolean) condition) {
+        if ((Boolean)condition) {
             if (ifExpr.isForKeyValuePair()) {
                 return new ConditionalKeyValuePair(
                     evaluate(ifExpr.body),

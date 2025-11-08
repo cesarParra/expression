@@ -60,6 +60,11 @@ private class StringFunctionsTest {
     }
 
     @IsTest
+    private static void containsFunctionReturnsFalseIfTheSecondArgumentIsNull() {
+        Assert.areEqual(false, Evaluator.run('CONTAINS("Hello World", null)'));
+    }
+
+    @IsTest
     private static void lowerFunctionReturnsLowercaseString() {
         Assert.areEqual('hello world', Evaluator.run('LOWER("Hello World")'));
     }
@@ -274,10 +279,10 @@ private class StringFunctionsTest {
     private static void splitFunctionSplitsAString() {
         String formula = 'SPLIT("a,b,c", ",")';
         Object result = Evaluator.run(formula);
-        Assert.areEqual(3, ((List<Object>) result).size());
-        Assert.areEqual('a', ((List<Object>) result)[0]);
-        Assert.areEqual('b', ((List<Object>) result)[1]);
-        Assert.areEqual('c', ((List<Object>) result)[2]);
+        Assert.areEqual(3, ((List<Object>)result).size());
+        Assert.areEqual('a', ((List<Object>)result)[0]);
+        Assert.areEqual('b', ((List<Object>)result)[1]);
+        Assert.areEqual('c', ((List<Object>)result)[2]);
     }
 
     @IsTest

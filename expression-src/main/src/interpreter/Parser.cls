@@ -1,4 +1,5 @@
 public with sharing class Parser {
+    private final Map<List<Token>, List<Expr>> PARSE_CACHE = new Map<List<Token>, List<Expr>>();
     private final List<Token> tokens;
     private Integer current = 0;
 
@@ -7,6 +8,10 @@ public with sharing class Parser {
     }
 
     public List<Expr> parse() {
+        if (PARSE_CACHE.containsKey(tokens)) {
+            return PARSE_CACHE.get(tokens);
+        }
+
         Boolean hasNonFunctionDeclarationExpression = false;
         List<Expr> exprs = new List<Expr>();
         while (!isAtEnd()) {
@@ -21,6 +26,7 @@ public with sharing class Parser {
             exprs.add(currentExpression);
         }
 
+        PARSE_CACHE.put(tokens, exprs);
         return exprs;
     }
 
@@ -94,7 +100,7 @@ public with sharing class Parser {
     private Expr equality() {
         Expr expr = comparison();
 
-        while (match(new List<TokenType>{
+        while (match(new List<TokenType> {
             TokenType.BANG_EQUAL, TokenType.EQUAL, TokenType.EQUAL_EQUAL,
             TokenType.LESS_GREATER
         })) {
@@ -110,7 +116,7 @@ public with sharing class Parser {
         Expr expr = term();
 
         while (match(
-            new List<TokenType>{
+            new List<TokenType> {
                 TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL
             }
         )) {
@@ -125,7 +131,7 @@ public with sharing class Parser {
     private Expr term() {
         Expr expr = factor();
 
-        while (match(new List<TokenType>{
+        while (match(new List<TokenType> {
             TokenType.MINUS, TokenType.PLUS, TokenType.AMPERSAND
         })) {
             Token operator = previous();
@@ -139,7 +145,7 @@ public with sharing class Parser {
     private Expr factor() {
         Expr expr = unary();
 
-        while (match(new List<TokenType>{
+        while (match(new List<TokenType> {
             TokenType.SLASH, TokenType.STAR, TokenType.EXPONENT
         })) {
             Token operator = previous();
@@ -221,7 +227,7 @@ public with sharing class Parser {
     private Expr pipe() {
         Expr expr = primary();
 
-        while (match(new List<TokenType>{
+        while (match(new List<TokenType> {
             TokenType.ARROW
         })) {
             Token operator = previous();
@@ -445,7 +451,7 @@ public with sharing class Parser {
     private Expr extractOrderby() {
         Expr orderByExpr = expression();
         // The expression might be followed by (optionally) the ASC or DESC keyword
-        if (match(new List<TokenType>{
+        if (match(new List<TokenType> {
             TokenType.ASC_KEYWORD, TokenType.DESC_KEYWORD
         })) {
             QOrder.SortOrder qSortOrder = previous().lexeme == 'ASC' ? QOrder.SortOrder.ASCENDING : QOrder.SortOrder.DESCENDING;
@@ -473,13 +479,13 @@ public with sharing class Parser {
     }
 
     private Boolean match(TokenType type) {
-        return match(new List<TokenType>{
+        return match(new List<TokenType> {
             type
         });
     }
 
     private Boolean match2(TokenType type1, TokenType type2) {
-        return match(new List<TokenType>{
+        return match(new List<TokenType> {
             type1, type2
         });
     }

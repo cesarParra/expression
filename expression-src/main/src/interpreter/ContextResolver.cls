@@ -1,21 +1,51 @@
 public with sharing class ContextResolver implements Visitor {
     private Boolean shouldExecuteQuery = false;
     private Query queryContext;
+    private final Map<Id, CustomRecordContext> recordContextByRecordId;
+    private final String contextPrefix;
 
     private final List<Expr.FunctionDeclaration> customFunctionDeclarations;
     private final Query topLevelQuery;
     private final List<Query> subQueries = new List<Query>();
 
-    public ContextResolver(Id recordId, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
-        this.queryContext = new Query(recordId);
+    public ContextResolver(CustomRecordContext recordContext, String contextPrefix, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+        this.recordContextByRecordId = new Map<Id, CustomRecordContext> {
+            recordContext.recordId => recordContext
+        };
+        this.contextPrefix = contextPrefix;
+        this.queryContext = new Query(recordContext.recordId);
         this.topLevelQuery = this.queryContext;
         this.customFunctionDeclarations = customFunctionDeclarations;
     }
 
-    public ContextResolver(Set<Id> recordIds, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+    public ContextResolver(List<CustomRecordContext> recordContextByRecordId, String contextPrefix, List<Expr.FunctionDeclaration> customFunctionDeclarations) {
+        this.recordContextByRecordId = new Map<Id, CustomRecordContext>();
+        for (CustomRecordContext context : recordContextByRecordId) {
+            this.recordContextByRecordId.put(context.recordId, context);
+        }
+        this.contextPrefix = contextPrefix;
+        Set<Id> recordIds = new Set<Id>();
+        for (CustomRecordContext context : recordContextByRecordId) {
+            recordIds.add(context.recordId);
+        }
         this.queryContext = new Query(recordIds);
         this.topLevelQuery = this.queryContext;
         this.customFunctionDeclarations = customFunctionDeclarations;
+    }
+
+    private Set<String> ContextReferenceNames {
+        get {
+            if (ContextReferenceNames != null) {
+                return ContextReferenceNames;
+            }
+            Set<String> names = new Set<String>();
+            for (CustomRecordContext context : this.recordContextByRecordId.values()) {
+                names.add(this.contextPrefix + context.key.toLowerCase());
+            }
+            ContextReferenceNames = names;
+            return names;
+        }
+        private set;
     }
 
     private Object resolve(Expr expr) {
@@ -64,6 +94,15 @@ public with sharing class ContextResolver implements Visitor {
             return null;
         }
 
+        Boolean shouldQuery = shouldQueryBasedOnProvidedPrequeriedRecords();
+        if (!shouldQuery) {
+            List<SObject> recordsToReturn = new List<SObject>();
+            for (CustomRecordContext currentContext : this.recordContextByRecordId.values()) {
+                recordsToReturn.add(currentContext.prequeriedRecord);
+            }
+            return recordsToReturn;
+        }
+
         for (Query subquery : this.subQueries) {
             this.queryContext.queryBuilder.addSubquery(subquery.queryBuilder);
         }
@@ -74,6 +113,47 @@ public with sharing class ContextResolver implements Visitor {
             return null;
         }
         return results;
+    }
+
+    private Boolean shouldQueryBasedOnProvidedPrequeriedRecords() {
+        if (!this.subQueries.isEmpty()) {
+            // If there are subqueries, we always want to run the query to get the subquery data.
+            return true;
+        }
+
+        Boolean shouldQuery = false;
+        for (Id recordIdToQuery : this.queryContext.recordId.getIds()) {
+            CustomRecordContext contextForId = this.recordContextByRecordId.get(recordIdToQuery);
+            SObject prequeriedRecordForId = contextForId.prequeriedRecord;
+
+            if (prequeriedRecordForId == null) {
+                // At least one context was provided without a prequeried record, so we need to query to retrieve it.
+                shouldQuery = true;
+                break;
+            }
+
+            Set<String> fieldsToQuery = this.queryContext.queryBuilder.fieldList;
+            // For each record, check if all fields to query are already present in the prequeried record.
+            if (!areAllFieldsPresent(fieldsToQuery, prequeriedRecordForId)) {
+                shouldQuery = true;
+                break;
+            }
+        }
+        return shouldQuery;
+    }
+
+    private static Boolean areAllFieldsPresent(Set<String> fieldsToQuery, SObject record) {
+        try {
+            for (String currentField : fieldsToQuery) {
+                if (!record.isSet(currentField)) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public Object visit(Expr.Logical logical) {
@@ -222,9 +302,9 @@ public with sharing class ContextResolver implements Visitor {
         return relationshipToQuery + getExpr.field.lexeme;
     }
 
-    private static Boolean isReferencingContextField(Expr.GetExpr expr) {
+    private Boolean isReferencingContextField(Expr.GetExpr expr) {
         if (expr.objectExpr instanceof Expr.Variable) {
-            return ((Expr.Variable)expr.objectExpr).isContext();
+            return ((Expr.Variable)expr.objectExpr).isContext(this.ContextReferenceNames);
         } else if (expr.objectExpr instanceof Expr.GetExpr) {
             // Recursively check if the parent object is referencing a context field
             // since we can have nested get expressions and what is important is the top level
@@ -235,7 +315,7 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.Variable variable) {
-        if (variable.isContext()) {
+        if (variable.isContext(this.ContextReferenceNames)) {
             // If context is being accessed, then we always want to run the query.
             this.shouldExecuteQuery = true;
 
@@ -483,7 +563,6 @@ public with sharing class ContextResolver implements Visitor {
         public Query(Set<Id> recordIds) {
             this.recordId = new MultipleIds(recordIds);
             this.objectType = this.recordId.getSobjectType();
-            System.debug('Querying for ' + this.objectType);
             this.queryBuilder = new Q(this.objectType);
             this.queryBuilder.selectField('Id');
         }

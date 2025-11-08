@@ -2,7 +2,7 @@
 nextjs:
   metadata:
     title: IExpressionFunction
-    description: Api documentation for the IExpressionFunction interface}
+    description: Api documentation for the IExpressionFunction interface
 ---
 
 # IExpressionFunction Interface

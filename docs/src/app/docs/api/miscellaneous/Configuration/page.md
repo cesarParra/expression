@@ -2,7 +2,7 @@
 nextjs:
   metadata:
     title: Configuration
-    description: Api documentation for the Configuration class}
+    description: Api documentation for the Configuration class
 ---
 
 # Configuration Class
@@ -13,6 +13,18 @@ Configuration class for the evaluator.
 expression
 
 ## Fields
+### `globalContextVariablePrefix`
+
+#### Signature
+```apex
+global globalContextVariablePrefix
+```
+
+#### Type
+String
+
+---
+
 ### `sharing`
 
 #### Signature
@@ -100,6 +112,23 @@ global Configuration withCustomContext(Map<String,Object> objectsByStrings)
 | Name | Type | Description |
 |------|------|-------------|
 | objectsByStrings | Map&lt;String,Object&gt; |  |
+
+#### Return Type
+**[Configuration](Configuration)**
+
+---
+
+### `withGlobalContextVariablePrefix(prefix)`
+
+#### Signature
+```apex
+global Configuration withGlobalContextVariablePrefix(String prefix)
+```
+
+#### Parameters
+| Name | Type | Description |
+|------|------|-------------|
+| prefix | String |  |
 
 #### Return Type
 **[Configuration](Configuration)**

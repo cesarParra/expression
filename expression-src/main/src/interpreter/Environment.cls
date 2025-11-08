@@ -75,12 +75,12 @@ public with sharing class Environment {
 
     /**
      * @description Adds a global context variable that can be accessed from any formula.
-     * Prefixes the name with '@'.
+     * @param prefix The prefix to be added to the name of the global context variable.
      * @param name The name of the global context variable.
      * @param value The value to be stored in the global context variable.
      */
-    public static void addGlobalContextVariable(String name, Object value) {
-        String prefixedName = '@' + name;
+    public static void addGlobalContextVariable(String prefix, String name, Object value) {
+        String prefixedName = prefix + name;
         GLOBAL_CONTEXT_VARIABLES.put(prefixedName.toLowerCase(), value);
     }
 

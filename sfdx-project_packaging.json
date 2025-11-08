@@ -1,19 +1,19 @@
 {
   "packageDirectories": [
     {
-      "path": "expression-src",
       "package": "Expression",
       "versionName": "Version 1.36",
-      "versionNumber": "1.40.0.NEXT",
+      "versionNumber": "1.41.0.NEXT",
+      "path": "expression-src",
       "default": false,
       "versionDescription": "Expression core language",
       "ancestorVersion": "HIGHEST"
     },
     {
-      "path": "expression-components",
       "package": "Expression Components",
       "versionName": "Version 1.6",
       "versionNumber": "1.6.0.NEXT",
+      "path": "expression-components",
       "ancestorVersion": "HIGHEST",
       "default": false,
       "dependencies": [
@@ -69,6 +69,7 @@
     "Expression@1.37.0-3": "04tRb000003OmWPIA0",
     "Expression@1.38.0-1": "04tRb000003R4nNIAS",
     "Expression@1.39.0-1": "04tRb000003R51tIAC",
-    "Expression@1.40.0-1": "04tRb000003UxfFIAS"
+    "Expression@1.40.0-1": "04tRb000003UxfFIAS",
+    "Expression@1.41.0-1": "04tRb000003tVPdIAM"
   }
 }

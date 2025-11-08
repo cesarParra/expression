@@ -5,7 +5,7 @@
  * @display-icon utility:check
  */
 public with sharing class LogicalFunctions {
-    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction>{
+    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction> {
         'AND' => new LogicalFunctions.AndFn(),
         'IF' => new LogicalFunctions.IfFn(),
         'NOT' => new LogicalFunctions.NotFn(),
@@ -41,7 +41,7 @@ public with sharing class LogicalFunctions {
                     );
                 }
 
-                if (!(Boolean) evaluated) {
+                if (!(Boolean)evaluated) {
                     return false;
                 }
             }
@@ -50,7 +50,7 @@ public with sharing class LogicalFunctions {
         }
 
         public override Arity getArity() {
-            return Arity.atLeast(2);
+            return Arity.atLeast(1);
         }
     }
 
@@ -73,7 +73,7 @@ public with sharing class LogicalFunctions {
                 );
             }
 
-            if ((Boolean) condition) {
+            if ((Boolean)condition) {
                 // Left
                 return evaluate(arguments.get(1));
             } else {
@@ -106,7 +106,7 @@ public with sharing class LogicalFunctions {
             }
 
             // Return the negated expression
-            return !(Boolean) expression;
+            return !(Boolean)expression;
         }
 
         public override Arity getArity() {
@@ -134,7 +134,7 @@ public with sharing class LogicalFunctions {
                     );
                 }
 
-                if ((Boolean) evaluated) {
+                if ((Boolean)evaluated) {
                     return true;
                 }
             }
@@ -166,7 +166,7 @@ public with sharing class LogicalFunctions {
             // Check if the value is a string
             if (value instanceof String) {
                 // Check if the string is empty
-                if (String.isBlank((String) value)) {
+                if (String.isBlank((String)value)) {
                     return evaluate(arguments.get(1));
                 } else {
                     return value;
@@ -197,7 +197,7 @@ public with sharing class LogicalFunctions {
         public override Object call(List<Expr> arguments) {
             Object value = evaluate(arguments.get(0));
             if ((value instanceof String)) {
-                return String.isBlank((String) value);
+                return String.isBlank((String)value);
             }
 
             return value == null;

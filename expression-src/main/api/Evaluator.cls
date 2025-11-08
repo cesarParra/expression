@@ -3,7 +3,6 @@
  *              It provides a set of static methods that allow you to evaluate expressions
  *              in a variety of contexts.
  */
-// TODO: Add all overloads to the bulk endpoints
 global with sharing abstract class Evaluator {
     /**
      * @description Evaluates an expression and returns the result.
@@ -296,7 +295,7 @@ global with sharing abstract class Evaluator {
      * @description Evaluates a formula and returns the result using a record Id as the context.
      *              When using this endpoint field references will automatically be resolved
      *              and queried.
-     * @param formula The formula to evaluate.
+     * @param expression The formula to evaluate.
      * @param recordId The Id of the record to use as the context for the formula.
      * @return The result of the formula.
      * @example
@@ -306,8 +305,8 @@ global with sharing abstract class Evaluator {
      * String recordName = (String)expression.Evaluator.run('Name', record.Id);
      * ```
      */
-    global static Object run(String formula, Id recordId) {
-        return run(formula, recordId, new Configuration());
+    global static Object run(String expression, Id recordId) {
+        return run(expression, recordId, new Configuration());
     }
 
     /**
@@ -341,6 +340,115 @@ global with sharing abstract class Evaluator {
             results.add(innerResult.toResult());
         }
         return results;
+    }
+
+    /**
+     * @description Evaluates an expression and returns the result using a set of {@link CustomRecordContext} as the context.
+     *              When using this endpoint field references will automatically be resolved
+     *              and queried.
+     *
+     *              The resulting record can be accessed through a global variable named after the
+     *              key specified in the {@link CustomRecordContext}.
+     *
+     *              For example, if you create a {@link CustomRecordContext} with the key `TargetAccount`,
+     *              you can reference fields on that record using `@TargetAccount.FieldName` in your formula.
+     * @param expression The formula to evaluate.
+     * @param context The CustomRecordContext to use as the context for the formula.
+     * @param config A configuration object that allows you to set options for
+     *        the evaluation.
+     * @return The result of the formula.
+     * @example
+     * ```apex
+     * Account accountRecord = new Account(Name = 'Acme');
+     * insert accountRecord;
+     *
+     * CustomRecordContext customRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id);
+     *
+     * String expressionFormula = '@TargetAccount.Name';
+     * Object result = Evaluator.run(expressionFormula, customRecordContext, new Configuration());
+     * ```
+     */
+    global static Object run(String expression, CustomRecordContext context, Configuration config) {
+        return EvaluatorResolver.forCustomContexts(new List<CustomRecordContext> { context }).evaluate(expression, config).resultValue;
+    }
+
+    /**
+     * @description Evaluates an expression using a set of {@link CustomRecordContext} as the context.
+     *
+     * The resulting record can be accessed through a global variable named after the
+     * key specified in each provided {@link CustomRecordContext}.
+     *
+     * For example, if you create one {@link CustomRecordContext} with the key `TargetAccount`,
+     * and another with the key `SourceContact`,
+     * you can reference fields on those records using `@TargetAccount.FieldName` and `@SourceContact.FieldName`
+     * in your expressions.
+     *
+     * @param expression The expression to evaluate.
+     * @param contexts The CustomRecordContexts to use as the context for the expressions.
+     * @param config A configuration object that allows you to set options for
+     *        the evaluation.
+     * @return The results of the expressions. Results are returned in the same order as the expressions.
+     * @example
+     * ```apex
+     * Account accountRecord = new Account(Name = 'Acme', NumberOfEmployees = 50);
+     * insert accountRecord;
+
+     * Contact contactRecord = new Contact(FirstName = 'John', LastName = 'Doe');
+     * insert contactRecord;
+
+     * CustomRecordContext accountRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id);
+     * CustomRecordContext contactRecordContext = new CustomRecordContext('TargetContact', contactRecord.Id);
+
+     * String expressionFormula = '@TargetContact.LastName + TEXT(@TargetAccount.NumberOfEmployees)';
+     * Object result = Evaluator.run(expressionFormula,
+     *     new List<CustomRecordContext> { accountRecordContext, contactRecordContext }, new Configuration());
+     * ```
+     */
+    global static Object run(String expression, List<CustomRecordContext> contexts, Configuration config) {
+        return EvaluatorResolver.forCustomContexts(contexts).evaluate(expression, config).resultValue;
+    }
+
+    /**
+     * @description Evaluates multiple expressions at same time using a set of {@link CustomRecordContext} as the context.
+     * This endpoints allow you to reference different fields on the records in different expressions, while
+     * only querying the records once.
+     *
+     * {% callout %}
+     * It is not possible to use function definitions in bulk evaluations.
+     * {% /callout %}
+     *
+     * @param expressions The expressions to evaluate.
+     * @param contexts The CustomRecordContexts to use as the context for the expressions.
+     * @param config A configuration object that allows you to set options for
+     *        the evaluation.
+     * @return The results of the expressions. Results are returned in the same order as the expressions.
+     * @example
+     * ```apex
+     * Account accountRecord = new Account(Name = 'Acme', NumberOfEmployees = 50);
+     * insert accountRecord;
+     *
+     * Contact contactRecord = new Contact(FirstName = 'John', LastName = 'Doe');
+     * insert contactRecord;
+     *
+     * CustomRecordContext accountRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id);
+     * CustomRecordContext contactRecordContext = new CustomRecordContext('TargetContact', contactRecord.Id);
+     *
+     * List<String> expressions = new List<String>{
+     *   '@TargetAccount.Name',
+     *   '@TargetContact.LastName + TEXT(@TargetAccount.NumberOfEmployees)'
+     * };
+     *
+     * List<expression.Result> results = expression.Evaluator.run(
+     *   expressions,
+     *   new List<CustomRecordContext> { accountRecordContext, contactRecordContext },
+     *   new expression.Configuration()
+     * );
+     *
+     * System.assertEquals(2, results.size());
+     * ```
+     */
+    global static List<Result> run(List<String> expressions, List<CustomRecordContext> contexts, Configuration config) {
+        return toResults(EvaluatorResolver.forCustomContexts(contexts).evaluate(expressions, config));
     }
 
     /**

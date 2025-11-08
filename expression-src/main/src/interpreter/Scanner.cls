@@ -1,4 +1,5 @@
 public with sharing class Scanner {
+    private static final Map<String, List<Token>> SCANNED_TOKENS_CACHE = new Map<String, List<Token>>();
     private final String source;
     private final List<Token> tokens = new List<Token>();
     private Integer start = 0;
@@ -31,12 +32,17 @@ public with sharing class Scanner {
     }
 
     public List<Token> scanTokens() {
+        if (SCANNED_TOKENS_CACHE.containsKey(source)) {
+            return SCANNED_TOKENS_CACHE.get(source);
+        }
+
         while (!isAtEnd()) {
             start = current;
             scanToken();
         }
 
         tokens.add(new Token(TokenType.EOF, '', null, new SourcePosition(line, column, column)));
+        SCANNED_TOKENS_CACHE.put(source, tokens);
         return tokens;
     }
 
