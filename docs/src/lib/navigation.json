@@ -197,6 +197,10 @@
         "href": "/docs/api/miscellaneous/Configuration"
       },
       {
+        "title": "CustomRecordContext",
+        "href": "/docs/api/miscellaneous/CustomRecordContext"
+      },
+      {
         "title": "Evaluator",
         "href": "/docs/api/miscellaneous/Evaluator"
       },
@@ -207,10 +211,6 @@
       {
         "title": "Result",
         "href": "/docs/api/miscellaneous/Result"
-      },
-      {
-        "title": "Expression_Function__mdt",
-        "href": "/docs/api/custom-objects/Expression_Function__mdt"
       }
     ]
   }
