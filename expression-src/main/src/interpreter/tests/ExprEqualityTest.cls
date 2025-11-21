@@ -1,8 +1,27 @@
 @IsTest
 private class ExprEqualityTest {
     @IsTest
-    static void localExpressionsCanBeComparedForEquality() {
-        // TODO
+    static void logicalExpressionsCanBeComparedForEquality_equals() {
+        Expr left = new Expr.Literal(true);
+        Token operator = new Token(TokenType.AMPERSAND, 'AND', null, null);
+        Expr right = new Expr.Literal(false);
+
+        Expr.Logical aLogical = new Expr.Logical(left, operator, right);
+        Expr.Logical anotherLogical = new Expr.Logical(left, operator, right);
+
+        Assert.isTrue(aLogical == anotherLogical);
+    }
+
+    @IsTest
+    static void logicalExpressionsCanBeComparedForEquality_notEquals() {
+        Expr left = new Expr.Literal(true);
+        Token operator = new Token(TokenType.AMPERSAND, 'AND', null, null);
+        Expr right = new Expr.Literal(false);
+
+        Expr.Logical aLogical = new Expr.Logical(left, operator, right);
+        Expr.Logical anotherLogical = new Expr.Logical(left, operator, new Expr.Literal(true));
+
+        Assert.isFalse(aLogical == anotherLogical);
     }
 
     @IsTest
@@ -10,15 +29,21 @@ private class ExprEqualityTest {
         // TODO
     }
 
+    // TODO: Not equals
+
     @IsTest
     static void groupingExpressionsCanBeComparedForEquality() {
         // TODO
     }
 
+    // TODO: Not equals
+
     @IsTest
     static void functionCallExpressionsCanBeComparedForEquality() {
         // TODO
     }
+
+    // TODO: Not equals
 
     @IsTest
     static void literalExpressionsCanBeComparedForEquality_equals() {
@@ -103,4 +128,16 @@ private class ExprEqualityTest {
 
         Assert.isFalse(aMergeField == anotherMergeField);
     }
+
+    @IsTest
+    static void getExpressionsCanBeComparedForEquality() {
+        // TODO
+    }
+
+    // TODO: Unary expressions
+    // TODO: List Literal expressions
+    // TODO: Map literal expressions
+    // TODO: Spread expressions
+    // TODO: AddIfExpressions
+    // TODO: QueryExpressions
 }

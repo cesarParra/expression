@@ -1,3 +1,8 @@
+
+// TODO: One issue with caching
+// is that some can be globally cached (like a raw query)
+// while others depend on the environment
+
 public abstract class Expr {
     public abstract Object accept(Visitor v);
 
@@ -14,6 +19,23 @@ public abstract class Expr {
 
         public override Object accept(Visitor v) {
             return v.visit(this);
+        }
+
+        public Boolean equals(Object other) {
+            if (other instanceof Logical) {
+                Logical otherLogical = (Logical)other;
+                return this.left == otherLogical.left
+                    && this.operator == otherLogical.operator
+                    && this.right == otherLogical.right;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = System.hashCode(left);
+            result = (31 * result) + System.hashCode(operator);
+            result = (31 * result) + System.hashCode(right);
+            return result;
         }
     }
 
@@ -343,6 +365,7 @@ public abstract class Expr {
         }
     }
 
+    // TODO: Remember to cache this specially (this is different than a normal FunctionCall expression).
     public class Query extends Expr {
         public final Token sObjectType;
         // Fields is an expression that must evaluate to a list
