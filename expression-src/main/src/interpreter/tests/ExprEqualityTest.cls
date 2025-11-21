@@ -47,4 +47,34 @@ private class ExprEqualityTest {
         Expr.StringLiteral anotherLiteral = new Expr.StringLiteral(new List<Object> { 'w', 'o', 'r', 'l', 'd' });
         Assert.isFalse(aLiteral == anotherLiteral);
     }
+
+    @IsTest
+    static void variableExpressionsCanBeComparedForEquality_equals() {
+        Expr.Variable aVariable = new Expr.Variable(
+            new Token(TokenType.CUSTOM_VARIABLE, 'var1', null, null),
+            Expr.VariableType.LOCAL
+        );
+
+        Expr.Variable anotherVariable = new Expr.Variable(
+            new Token(TokenType.CUSTOM_VARIABLE, 'var1', null, null),
+            Expr.VariableType.LOCAL
+        );
+
+        Assert.isTrue(aVariable == anotherVariable);
+    }
+
+    @IsTest
+    static void variableExpressionsCanBeComparedForEquality_notEquals() {
+        Expr.Variable aVariable = new Expr.Variable(
+            new Token(TokenType.CUSTOM_VARIABLE, 'var1', null, null),
+            Expr.VariableType.LOCAL
+        );
+
+        Expr.Variable anotherVariable = new Expr.Variable(
+            new Token(TokenType.CUSTOM_VARIABLE, 'var2', null, null),
+            Expr.VariableType.LOCAL
+        );
+
+        Assert.isFalse(aVariable == anotherVariable);
+    }
 }

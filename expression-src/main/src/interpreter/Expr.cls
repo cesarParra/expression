@@ -200,6 +200,20 @@ public abstract class Expr {
             }
             return false;
         }
+
+        public Boolean equals(Object other) {
+            if (other instanceof Variable) {
+                Variable otherVariable = (Variable)other;
+                return this.name == otherVariable.name && this.type == otherVariable.type;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = System.hashCode(name);
+            result = (31 * result) + System.hashCode(type);
+            return result;
+        }
     }
 
     public class MergeFieldOrScopeVariable extends Expr {
