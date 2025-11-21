@@ -53,6 +53,23 @@ public abstract class Expr {
         public override Object accept(Visitor v) {
             return v.visit(this);
         }
+
+        public Boolean equals(Object other) {
+            if (other instanceof Binary) {
+                Binary otherBinary = (Binary)other;
+                return this.left == otherBinary.left
+                    && this.operator == otherBinary.operator
+                    && this.right == otherBinary.right;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = System.hashCode(left);
+            result = (31 * result) + System.hashCode(operator);
+            result = (31 * result) + System.hashCode(right);
+            return result;
+        }
     }
 
     public class Grouping extends Expr {

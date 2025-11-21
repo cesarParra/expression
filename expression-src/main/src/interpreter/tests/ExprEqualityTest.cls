@@ -25,11 +25,28 @@ private class ExprEqualityTest {
     }
 
     @IsTest
-    static void binaryExpressionsCanBeComparedForEquality() {
-        // TODO
+    static void binaryExpressionsCanBeComparedForEquality_equals() {
+        Expr left = new Expr.Literal(5);
+        Token operator = new Token(TokenType.PLUS, '+', null, null);
+        Expr right = new Expr.Literal(3);
+
+        Expr.Binary aBinary = new Expr.Binary(left, operator, right);
+        Expr.Binary anotherBinary = new Expr.Binary(left, operator, right);
+
+        Assert.isTrue(aBinary == anotherBinary);
     }
 
-    // TODO: Not equals
+    @IsTest
+    static void binaryExpressionsCanBeComparedForEquality_notEquals() {
+        Expr left = new Expr.Literal(5);
+        Token operator = new Token(TokenType.PLUS, '+', null, null);
+        Expr right = new Expr.Literal(3);
+
+        Expr.Binary aBinary = new Expr.Binary(left, operator, right);
+        Expr.Binary anotherBinary = new Expr.Binary(left, operator, new Expr.Literal(4));
+
+        Assert.isFalse(aBinary == anotherBinary);
+    }
 
     @IsTest
     static void groupingExpressionsCanBeComparedForEquality() {
