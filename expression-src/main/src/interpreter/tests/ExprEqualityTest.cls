@@ -33,4 +33,18 @@ private class ExprEqualityTest {
         Expr.Literal anotherLiteral = new Expr.Literal(43);
         Assert.isFalse(aLiteral == anotherLiteral);
     }
+
+    @IsTest
+    static void stringLiteralsCanBeComparedForEquality_equals() {
+        Expr.StringLiteral aLiteral = new Expr.StringLiteral(new List<Object> { 'h', 'e', 'l', 'l', 'o' });
+        Expr.StringLiteral anotherLiteral = new Expr.StringLiteral(new List<Object> { 'h', 'e', 'l', 'l', 'o' });
+        Assert.isTrue(aLiteral == anotherLiteral);
+    }
+
+    @IsTest
+    static void stringLiteralsCanBeComparedForEquality_notEquals() {
+        Expr.StringLiteral aLiteral = new Expr.StringLiteral(new List<Object> { 'h', 'e', 'l', 'l', 'o' });
+        Expr.StringLiteral anotherLiteral = new Expr.StringLiteral(new List<Object> { 'w', 'o', 'r', 'l', 'd' });
+        Assert.isFalse(aLiteral == anotherLiteral);
+    }
 }

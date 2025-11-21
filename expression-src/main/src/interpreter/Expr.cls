@@ -142,8 +142,7 @@ public abstract class Expr {
         }
 
         public override Integer hashCode() {
-            Integer result = value != null ? System.hashCode(value) : 0;
-            return result;
+            return value != null ? System.hashCode(value) : 0;
         }
     }
 
@@ -158,6 +157,19 @@ public abstract class Expr {
 
         public override Object accept(Visitor v) {
             return v.visit(this);
+        }
+
+        public Boolean equals(Object other) {
+            if (other instanceof StringLiteral) {
+                StringLiteral otherLiteral = (StringLiteral)other;
+                return this.stringsAndInterpolations == otherLiteral.stringsAndInterpolations ||
+                    (this.stringsAndInterpolations != null && this.stringsAndInterpolations.equals(otherLiteral.stringsAndInterpolations));
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            return System.hashCode(stringsAndInterpolations);
         }
     }
 
