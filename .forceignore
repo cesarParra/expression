@@ -21,3 +21,5 @@ expression-components/tw/input.css
 **/*.tsbuildinfo
 **/eslint.config.mjs
 docs/
+
+**/graphql.config.yml

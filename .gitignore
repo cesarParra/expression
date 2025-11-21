@@ -54,3 +54,5 @@ $RECYCLE.BIN/
 target/
 **/tsconfig*.json
 **/*.tsbuildinfo
+
+**/graphql.config.yml
