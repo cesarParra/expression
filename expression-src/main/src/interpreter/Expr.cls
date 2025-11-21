@@ -170,6 +170,21 @@ public abstract class Expr {
         public override Object accept(Visitor v) {
             return v.visit(this);
         }
+
+        public Boolean equals(Object other) {
+            if (other instanceof FunctionCall) {
+                FunctionCall otherFunctionCall = (FunctionCall)other;
+                return this.functionToken == otherFunctionCall.functionToken
+                    && this.arguments == otherFunctionCall.arguments;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = System.hashCode(functionToken);
+            result = (31 * result) + System.hashCode(arguments);
+            return result;
+        }
     }
 
     public class Literal extends Expr {

@@ -67,10 +67,26 @@ private class ExprEqualityTest {
 
     @IsTest
     static void functionCallExpressionsCanBeComparedForEquality() {
-        // TODO
+        Token functionToken = new Token(TokenType.FUNCTION_KEYWORD, 'myFunction', null, null);
+        List<Expr> arguments = new List<Expr> { new Expr.Literal(1), new Expr.Literal(2) };
+
+        Expr.FunctionCall aFunctionCall = new Expr.FunctionCall(functionToken, arguments);
+        Expr.FunctionCall anotherFunctionCall = new Expr.FunctionCall(functionToken, arguments);
+
+        Assert.isTrue(aFunctionCall == anotherFunctionCall);
     }
 
-    // TODO: Not equals
+    @IsTest
+    static void functionCallExpressionsCanBeComparedForEquality_notEquals() {
+        Token functionToken = new Token(TokenType.FUNCTION_KEYWORD, 'myFunction', null, null);
+        List<Expr> arguments = new List<Expr> { new Expr.Literal(1), new Expr.Literal(2) };
+        List<Expr> differentArguments = new List<Expr> { new Expr.Literal(3), new Expr.Literal(4) };
+
+        Expr.FunctionCall aFunctionCall = new Expr.FunctionCall(functionToken, arguments);
+        Expr.FunctionCall anotherFunctionCall = new Expr.FunctionCall(functionToken, differentArguments);
+
+        Assert.isFalse(aFunctionCall == anotherFunctionCall);
+    }
 
     @IsTest
     static void literalExpressionsCanBeComparedForEquality_equals() {
