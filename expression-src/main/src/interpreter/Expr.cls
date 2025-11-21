@@ -226,6 +226,18 @@ public abstract class Expr {
         public override Object accept(Visitor v) {
             return v.visit(this);
         }
+
+        public Boolean equals(Object other) {
+            if (other instanceof MergeFieldOrScopeVariable) {
+                MergeFieldOrScopeVariable otherVariable = (MergeFieldOrScopeVariable)other;
+                return this.name == otherVariable.name;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            return System.hashCode(name);
+        }
     }
 
     public class GetExpr extends Expr {

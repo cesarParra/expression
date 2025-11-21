@@ -77,4 +77,30 @@ private class ExprEqualityTest {
 
         Assert.isFalse(aVariable == anotherVariable);
     }
+
+    @IsTest
+    static void mergeFieldOrScopeVariableExpressionsCanBeComparedForEquality_equals() {
+        Expr.MergeFieldOrScopeVariable aMergeField = new Expr.MergeFieldOrScopeVariable(
+            new Token(TokenType.IDENTIFIER, 'Field1', null, null)
+        );
+
+        Expr.MergeFieldOrScopeVariable anotherMergeField = new Expr.MergeFieldOrScopeVariable(
+            new Token(TokenType.IDENTIFIER, 'Field1', null, null)
+        );
+
+        Assert.isTrue(aMergeField == anotherMergeField);
+    }
+
+    @IsTest
+    static void mergeFieldOrScopeVariableExpressionsCanBeComparedForEquality_notEquals() {
+        Expr.MergeFieldOrScopeVariable aMergeField = new Expr.MergeFieldOrScopeVariable(
+            new Token(TokenType.IDENTIFIER, 'Field1', null, null)
+        );
+
+        Expr.MergeFieldOrScopeVariable anotherMergeField = new Expr.MergeFieldOrScopeVariable(
+            new Token(TokenType.IDENTIFIER, 'Field2', null, null)
+        );
+
+        Assert.isFalse(aMergeField == anotherMergeField);
+    }
 }
