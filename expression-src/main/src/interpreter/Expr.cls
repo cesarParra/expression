@@ -320,6 +320,23 @@ public abstract class Expr {
         public override Object accept(Visitor v) {
             return v.visit(this);
         }
+
+        public Boolean equals(Object other) {
+            if (other instanceof GetExpr) {
+                GetExpr otherGetExpr = (GetExpr)other;
+                return this.objectExpr == otherGetExpr.objectExpr
+                    && this.field == otherGetExpr.field
+                    && this.arguments == otherGetExpr.arguments;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = System.hashCode(objectExpr);
+            result = (31 * result) + System.hashCode(field);
+            result = (31 * result) + System.hashCode(arguments);
+            return result;
+        }
     }
 
     public class Unary extends Expr {
@@ -334,6 +351,21 @@ public abstract class Expr {
         public override Object accept(Visitor v) {
             return v.visit(this);
         }
+
+        public Boolean equals(Object other) {
+            if (other instanceof Unary) {
+                Unary otherUnary = (Unary)other;
+                return this.operator == otherUnary.operator
+                    && this.right == otherUnary.right;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = System.hashCode(operator);
+            result = (31 * result) + System.hashCode(right);
+            return result;
+        }
     }
 
     public class ListLiteral extends Expr {
@@ -345,6 +377,19 @@ public abstract class Expr {
 
         public override Object accept(Visitor v) {
             return v.visit(this);
+        }
+
+        public Boolean equals(Object other) {
+            if (other instanceof ListLiteral) {
+                ListLiteral otherListLiteral = (ListLiteral)other;
+                return this.elements == otherListLiteral.elements ||
+                    (this.elements != null && this.elements.equals(otherListLiteral.elements));
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            return System.hashCode(elements);
         }
     }
 
@@ -369,6 +414,19 @@ public abstract class Expr {
         public override Object accept(Visitor v) {
             return v.visit(this);
         }
+
+        public Boolean equals(Object other) {
+            if (other instanceof MapLiteral) {
+                MapLiteral otherMapLiteral = (MapLiteral)other;
+                return this.elements == otherMapLiteral.elements ||
+                    (this.elements != null && this.elements.equals(otherMapLiteral.elements));
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            return System.hashCode(elements);
+        }
     }
 
     public class Spread extends Expr {
@@ -382,6 +440,21 @@ public abstract class Expr {
 
         public override Object accept(Visitor v) {
             return v.visit(this);
+        }
+
+        public Boolean equals(Object other) {
+            if (other instanceof Spread) {
+                Spread otherSpread = (Spread)other;
+                return this.spreadToken == otherSpread.spreadToken
+                    && this.expression == otherSpread.expression;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = System.hashCode(spreadToken);
+            result = (31 * result) + System.hashCode(expression);
+            return result;
         }
     }
 
@@ -406,6 +479,25 @@ public abstract class Expr {
 
         public Boolean isForKeyValuePair() {
             return valueExpr != null;
+        }
+
+        public Boolean equals(Object other) {
+            if (other instanceof AddIfExpr) {
+                AddIfExpr otherAddIf = (AddIfExpr)other;
+                return this.ifToken == otherAddIf.ifToken
+                    && this.condition == otherAddIf.condition
+                    && this.body == otherAddIf.body
+                    && this.valueExpr == otherAddIf.valueExpr;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = System.hashCode(ifToken);
+            result = (31 * result) + System.hashCode(condition);
+            result = (31 * result) + System.hashCode(body);
+            result = (31 * result) + System.hashCode(valueExpr);
+            return result;
         }
     }
 
@@ -434,6 +526,29 @@ public abstract class Expr {
 
         public override Object accept(Visitor v) {
             return v.visit(this);
+        }
+
+        public Boolean equals(Object other) {
+            if (other instanceof Query) {
+                Query otherQuery = (Query)other;
+                return this.sObjectType == otherQuery.sObjectType
+                    && this.fieldsExpression == otherQuery.fieldsExpression
+                    && this.orderBy == otherQuery.orderBy
+                    && this.limitExpr == otherQuery.limitExpr
+                    && this.whereExpr == otherQuery.whereExpr
+                    && this.offsetExpr == otherQuery.offsetExpr;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = System.hashCode(sObjectType);
+            result = (31 * result) + System.hashCode(fieldsExpression);
+            result = (31 * result) + System.hashCode(orderBy);
+            result = (31 * result) + System.hashCode(limitExpr);
+            result = (31 * result) + System.hashCode(whereExpr);
+            result = (31 * result) + System.hashCode(offsetExpr);
+            return result;
         }
     }
 }
