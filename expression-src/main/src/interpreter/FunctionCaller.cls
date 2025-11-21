@@ -1,9 +1,17 @@
 public abstract class FunctionCaller {
+    private static final Map<Environment, Map<Expr.FunctionCall, Object>> functionCallCache =
+        new Map<Environment, Map<Expr.FunctionCall, Object>>();
+
     private final Expr.FunctionCall function;
     protected abstract Object call(Interpreter interpreter);
 
     public FunctionCaller(Expr.FunctionCall function) {
         this.function = function;
+    }
+
+    public static Object exec(Interpreter interpreter, Expr.FunctionCall function) {
+        FunctionCaller functionCaller = find(function, interpreter.getEnvironment());
+        return functionCaller.call(interpreter);
     }
 
     private static FunctionCaller find(Expr.FunctionCall function, Environment env) {
@@ -19,11 +27,6 @@ public abstract class FunctionCaller {
         }
 
         return new NotFoundFunctionCaller(function);
-    }
-
-    public static Object exec(Interpreter interpreter, Expr.FunctionCall function) {
-        FunctionCaller functionCaller = find(function, interpreter.getEnvironment());
-        return functionCaller.call(interpreter);
     }
 
     private class FunctionDeclarationCaller extends FunctionCaller {
@@ -61,14 +64,28 @@ public abstract class FunctionCaller {
         }
 
         public override Object call(Interpreter interpreter) {
+            Environment env = interpreter.getEnvironment();
+            Map<Expr.FunctionCall, Object> cachedFunctions = functionCallCache.get(env) ?? new Map<Expr.FunctionCall, Object>();
+            if (cachedFunctions.containsKey(function)) {
+                return cachedFunctions.get(function);
+            }
+
             // Check if the function is in the list of supported functions
             StandardFunction fn = StandardFunction.getByName(function.functionName);
             fn.setInterpreter(interpreter);
             ArityEvaluator.check(fn, function);
 
             try {
-                // TODO: Attempt to cache and return from cache if it exists.
-                return fn.call(function.arguments);
+                System.debug('Executing standard library function: ' + function.functionName);
+                System.debug('With arguments: ' + function.arguments);
+                System.debug('----');
+                Object result = fn.call(function.arguments);
+
+                // Add to cache
+                cachedFunctions.put(function, result);
+                functionCallCache.put(env, cachedFunctions);
+
+                return result;
             } catch (Exceptions.PositionAwareException e) {
                 throw e;
             } catch (Exception e) {

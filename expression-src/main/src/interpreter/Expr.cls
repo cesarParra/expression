@@ -543,11 +543,11 @@ public abstract class Expr {
 
         public override Integer hashCode() {
             Integer result = System.hashCode(sObjectType);
-            result = (31 * result) + System.hashCode(fieldsExpression);
-            result = (31 * result) + System.hashCode(orderBy);
-            result = (31 * result) + System.hashCode(limitExpr);
-            result = (31 * result) + System.hashCode(whereExpr);
-            result = (31 * result) + System.hashCode(offsetExpr);
+            result = (31 * result) + (fieldsExpression != null ? System.hashCode(fieldsExpression) : 0);
+            result = (31 * result) + (orderBy != null ? System.hashCode(orderBy) : 0);
+            result = (31 * result) + (limitExpr != null ? System.hashCode(limitExpr) : 0);
+            result = (31 * result) + (whereExpr != null ? System.hashCode(whereExpr) : 0);
+            result = (31 * result) + (offsetExpr != null ? System.hashCode(offsetExpr) : 0);
             return result;
         }
     }
