@@ -49,11 +49,21 @@ private class ExprEqualityTest {
     }
 
     @IsTest
-    static void groupingExpressionsCanBeComparedForEquality() {
-        // TODO
+    static void groupingExpressionsCanBeComparedForEquality_equals() {
+        Expr anyExpression = new Expr.Literal(10);
+        Expr.Grouping aGrouping = new Expr.Grouping(anyExpression);
+        Expr.Grouping anotherGrouping = new Expr.Grouping(anyExpression);
+        Assert.isTrue(aGrouping == anotherGrouping);
     }
 
-    // TODO: Not equals
+    @IsTest
+    static void groupingExpressionsCanBeComparedForEquality_notEquals() {
+        Expr aExpression = new Expr.Literal(10);
+        Expr anotherExpression = new Expr.Literal(20);
+        Expr.Grouping aGrouping = new Expr.Grouping(aExpression);
+        Expr.Grouping anotherGrouping = new Expr.Grouping(anotherExpression);
+        Assert.isFalse(aGrouping == anotherGrouping);
+    }
 
     @IsTest
     static void functionCallExpressionsCanBeComparedForEquality() {

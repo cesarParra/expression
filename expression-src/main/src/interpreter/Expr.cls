@@ -82,6 +82,18 @@ public abstract class Expr {
         public override Object accept(Visitor v) {
             return v.visit(this);
         }
+
+        public Boolean equals(Object other) {
+            if (other instanceof Grouping) {
+                Grouping otherGrouping = (Grouping)other;
+                return this.expression == otherGrouping.expression;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            return System.hashCode(expression);
+        }
     }
 
     public class FunctionDeclaration extends Expr implements IAritySupport {
