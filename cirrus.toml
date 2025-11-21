@@ -12,6 +12,7 @@ generate-library-docs = "bun scripts/generate-library-docs.mjs"
 prep-package = "bun scripts/prepare-for-packaging.mjs"
 run-package = "cirrus package create -p Expression -t minor -x -c --promote -w 60"
 post-package = "bun scripts/post-packaging.mjs"
+import-data = "sf data import tree -p unpackaged/examples/expression-conf/data/data-plan.json"
 
 [flow.start-dev]
 description = "Starts a new development environment"
@@ -19,6 +20,7 @@ steps = [
     { type = "create_scratch", org = "Expression" },
     { type = "command", name = "deploy" },
     { type = "command", name = "assign-perms" },
+    { type = "command", name = "import-data" },
 ]
 
 [flow.package]
