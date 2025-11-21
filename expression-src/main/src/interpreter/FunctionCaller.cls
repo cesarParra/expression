@@ -18,7 +18,6 @@ public abstract class FunctionCaller {
             return new CustomMetadataFunctionCaller(function, fn);
         }
 
-
         return new NotFoundFunctionCaller(function);
     }
 
@@ -68,6 +67,7 @@ public abstract class FunctionCaller {
             ArityEvaluator.check(fn, function);
 
             try {
+                // TODO: Attempt to cache and return from cache if it exists.
                 return fn.call(function.arguments);
             } catch (Exceptions.PositionAwareException e) {
                 throw e;
@@ -87,6 +87,7 @@ public abstract class FunctionCaller {
             this.fn = fn;
         }
 
+        // TODO: Maybe the CMT can have a custom field(checkbox) that defines if it is safe to cache or not.
         public override Object call(Interpreter interpreter) {
             List<Object> arguments = new List<Object>();
             for (Expr argument : function.arguments) {

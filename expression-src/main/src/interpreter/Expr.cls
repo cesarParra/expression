@@ -131,6 +131,20 @@ public abstract class Expr {
         public override Object accept(Visitor v) {
             return v.visit(this);
         }
+
+        public Boolean equals(Object other) {
+            if (other instanceof Literal) {
+                Literal otherLiteral = (Literal)other;
+                return this.value == otherLiteral.value ||
+                    (this.value != null && this.value.equals(otherLiteral.value));
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = value != null ? System.hashCode(value) : 0;
+            return result;
+        }
     }
 
     public class StringLiteral extends Expr {
