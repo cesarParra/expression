@@ -18,6 +18,7 @@ public with sharing class Scanner {
         keywords.put('asc', TokenType.ASC_KEYWORD);
         keywords.put('desc', TokenType.DESC_KEYWORD);
         keywords.put('fun', TokenType.FUNCTION_KEYWORD);
+        keywords.put('nocache', TokenType.NOCACHE_KEYWORD);
         keywords.put('addif', TokenType.ADD_IF_KEYWORD);
     }
 
@@ -25,7 +26,7 @@ public with sharing class Scanner {
         this.source = normalizeCurvedQuotes(source);
     }
 
-    private static String normalizeCurvedQuotes(String input) {
+    private String normalizeCurvedQuotes(String input) {
         if (input == null) return null;
         return input.replace('“', '"').replace('”', '"');
     }

@@ -92,6 +92,9 @@ The Expression language will cache the result of a function call, so if a functi
 same
 arguments and is within the same context, the result will be cached and the function will not be re-evaluated.
 
+This can be usedful when you have an evaluation that is expensive to compute, such as a `Query` call, and you want to
+reuse the result multiple times within the same expression.
+
 ```
 fun foo(n) => Query(Account(where: Name = n)[Name]);
 
@@ -100,6 +103,17 @@ fun foo(n) => Query(Account(where: Name = n)[Name]);
 
 In this example, the `foo` function will only be evaluated once for the `ACME` account, and the result will be reused
 for the second call. This means that a single query will be consumed from the Salesforce limits.
+
+### Disabling Caching
+
+Function caching can be disabled by using the `nocache` keyword after the `fun` keyword. This will force the function to
+be re-evaluated every time it is called, even if the arguments are the same.
+
+```
+fun nocache foo(n) => Query(Account(where: Name = n)[Name]);
+
+[...foo("ACME"), ...foo("ACME")]
+```
 
 ## Considerations
 

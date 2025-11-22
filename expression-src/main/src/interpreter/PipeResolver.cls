@@ -3,7 +3,7 @@
  */
 public with sharing class PipeResolver implements Visitor {
     public Expr resolve(Expr expr) {
-        return (Expr)expr.accept(this);
+        return (Expr) expr.accept(this);
     }
 
     public Object visit(Expr.Logical logical) {
@@ -27,7 +27,7 @@ public with sharing class PipeResolver implements Visitor {
             }
 
             // Add the left side as the first argument to the function call
-            Expr.FunctionCall function = (Expr.FunctionCall)binary.right;
+            Expr.FunctionCall function = (Expr.FunctionCall) binary.right;
             if (function.arguments.isEmpty()) {
                 function.arguments.add(binary.left);
             } else {
@@ -119,16 +119,16 @@ public with sharing class PipeResolver implements Visitor {
         List<Object> newElements = new List<Object>();
         for (Object element : mapLiteral.elements) {
             if (element instanceof Expr.Spread) {
-                newElements.add(resolve((Expr)element));
+                newElements.add(resolve((Expr) element));
                 continue;
             }
 
             if (element instanceof Expr.AddIfExpr) {
-                newElements.add(resolve((Expr)element));
+                newElements.add(resolve((Expr) element));
                 continue;
             }
 
-            Expr.KeyValue keyValue = (Expr.KeyValue)element;
+            Expr.KeyValue keyValue = (Expr.KeyValue) element;
             Expr.KeyValue newKeyValue = new Expr.KeyValue(
                 resolve(keyValue.key),
                 resolve(keyValue.value)
@@ -186,7 +186,8 @@ public with sharing class PipeResolver implements Visitor {
         return new Expr.FunctionDeclaration(
             functionDeclaration.name,
             functionDeclaration.parameters,
-            resolvedBody
+            resolvedBody,
+            functionDeclaration.skipCache
         );
     }
 
