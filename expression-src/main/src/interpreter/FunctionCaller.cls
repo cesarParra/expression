@@ -76,9 +76,6 @@ public abstract class FunctionCaller {
             ArityEvaluator.check(fn, function);
 
             try {
-                System.debug('Executing standard library function: ' + function.functionName);
-                System.debug('With arguments: ' + function.arguments);
-                System.debug('----');
                 Object result = fn.call(function.arguments);
 
                 // Add to cache

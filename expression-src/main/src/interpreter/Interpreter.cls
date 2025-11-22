@@ -351,6 +351,13 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
+        // TODO: This is an issue when I have an line spread inside of an array
+        // Example
+//        [
+//            ...[1, 2],
+//        ...[1, 2]
+//        ]
+
         inListLiteral = true;
         List<Object> resultList = new List<Object>();
         for (Expr expr : listLiteral.elements) {
