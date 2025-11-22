@@ -1,8 +1,3 @@
-
-// TODO: One issue with caching
-// is that some can be globally cached (like a raw query)
-// while others depend on the environment
-
 public abstract class Expr {
     public abstract Object accept(Visitor v);
 

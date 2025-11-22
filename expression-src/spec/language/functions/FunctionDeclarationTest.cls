@@ -200,7 +200,7 @@ private class FunctionDeclarationTest {
             '[...foo("ACME"), ...foo("ACME")]';
         Test.stopTest();
 
-        Evaluator.run(expression, new Configuration().disableFunctionResultCaching());
+        Evaluator.run(expression, new Configuration().disableStandardFunctionResultCaching());
 
         Assert.areEqual(2, Limits.getQueries(), 'Two queries should have been consumed, ' +
             'since the function was called with the "nocache" keyword');

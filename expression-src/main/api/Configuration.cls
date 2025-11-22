@@ -11,7 +11,7 @@ global with sharing class Configuration {
     global SharingMode sharing = SharingMode.WITH;
     global Boolean printAst = false;
     global Map<String, Object> customContext = new Map<String, Object>();
-    global Boolean cacheFunctionResults = true;
+    global Boolean cacheStandardFunctionResults = true;
     public Boolean withDiagnostics = false;
 
     global Configuration respectSharing(Boolean respect) {
@@ -29,8 +29,8 @@ global with sharing class Configuration {
         return this;
     }
 
-    global Configuration disableFunctionResultCaching() {
-        cacheFunctionResults = false;
+    global Configuration disableStandardFunctionResultCaching() {
+        cacheStandardFunctionResults = false;
         return this;
     }
 
