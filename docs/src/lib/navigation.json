@@ -32,6 +32,10 @@
         "href": "/docs/configuring-the-evaluation"
       },
       {
+        "title": "Caching",
+        "href": "/docs/caching"
+      },
+      {
         "title": "Debugging",
         "href": "/docs/debugging"
       }

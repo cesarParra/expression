@@ -11,8 +11,8 @@ private class ApexFfiTest {
     }
 
     private class MockFunctionRepository extends CustomFunctionRepository {
-        public override IExpressionFunction getByName(String functionName) {
-            return new MockFunction();
+        public override CustomMetadataExpressionFunction getByName(String functionName) {
+            return new CustomMetadataExpressionFunction(new MockFunction(), false);
         }
     }
 
@@ -23,6 +23,48 @@ private class ApexFfiTest {
                 concatenated += String.valueOf(arg);
             }
             return concatenated;
+        }
+    }
+
+    @IsTest
+    private static void canControlCacheOfCustomFunctions_withCache() {
+        CustomFunctionRepository mockRepository = new MockFunctionWithQueryRepository(true);
+        CustomFunctionRepository.mockInstance = mockRepository;
+
+        // This custom function executes a query and should cache the result.
+        Object firstResult = Evaluator.run('MOCKFUNCTIONWITHQUERY()');
+        Object secondResult = Evaluator.run('MOCKFUNCTIONWITHQUERY()');
+        Assert.areEqual(firstResult, secondResult);
+        Assert.areEqual(1, Limits.getQueries());
+    }
+
+    @IsTest
+    private static void canControlCacheOfCustomFunctions_withoutCache() {
+        CustomFunctionRepository mockRepository = new MockFunctionWithQueryRepository(false);
+        CustomFunctionRepository.mockInstance = mockRepository;
+
+        // This custom function executes a query and should NOT cache the result.
+        Object firstResult = Evaluator.run('MOCKFUNCTIONWITHQUERY()');
+        Object secondResult = Evaluator.run('MOCKFUNCTIONWITHQUERY()');
+        Assert.areEqual(firstResult, secondResult);
+        Assert.areEqual(2, Limits.getQueries());
+    }
+
+    private class MockFunctionWithQueryRepository extends CustomFunctionRepository {
+        private final Boolean shouldCache;
+
+        public MockFunctionWithQueryRepository(Boolean shouldCache) {
+            this.shouldCache = shouldCache;
+        }
+
+        public override CustomMetadataExpressionFunction getByName(String functionName) {
+            return new CustomMetadataExpressionFunction(new MockFunctionWithQuery(), shouldCache);
+        }
+    }
+
+    private class MockFunctionWithQuery implements IExpressionFunction {
+        public Object execute(List<Object> args) {
+            return [SELECT Id FROM Account LIMIT 1];
         }
     }
 
@@ -57,7 +99,7 @@ private class ApexFfiTest {
 
     private class FakeExpressionFunctionRunner extends QDB {
         public override List<SObject> run(Q query) {
-            return new List<Expression_Function__mdt>{
+            return new List<Expression_Function__mdt> {
                 new Expression_Function__mdt(
                     Apex_Class__c = ApexFfiTest.FakeFunction.class.getName()
                 )
@@ -81,7 +123,7 @@ private class ApexFfiTest {
                 return 'Test';
             }
 
-            String arg = (String) args[0];
+            String arg = (String)args[0];
             return 'Hello ' + arg;
         }
     }

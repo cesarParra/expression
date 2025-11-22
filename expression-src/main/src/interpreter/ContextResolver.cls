@@ -252,7 +252,8 @@ public with sharing class ContextResolver implements Visitor {
         }
 
         // See if the function exists as a Custom Metadata function
-        IExpressionFunction customMetadataFunction = CustomFunctionRepository.getInstance().getByName(function.functionName);
+        CustomMetadataExpressionFunction customMetadataFunction =
+            CustomFunctionRepository.getInstance().getByName(function.functionName);
         if (customMetadataFunction != null) {
             // Resolve arguments
             for (Expr argument : function.arguments) {

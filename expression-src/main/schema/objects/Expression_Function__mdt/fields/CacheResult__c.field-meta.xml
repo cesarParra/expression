@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CacheResult__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Whether the result of evaluating this function should be cached or not. If cached, after the function is called the first time, the first result will be returned for any subsequent calls.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Whether the result of evaluating this function should be cached or not. If cached, after the function is called the first time, the first result will be returned for any subsequent calls.</inlineHelpText>
+    <label>Cache Result</label>
+    <type>Checkbox</type>
+</CustomField>

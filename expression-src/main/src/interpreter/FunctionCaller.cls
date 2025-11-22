@@ -6,6 +6,11 @@ public abstract class FunctionCaller {
         this.function = function;
     }
 
+    public static Object exec(Interpreter interpreter, Expr.FunctionCall function) {
+        FunctionCaller functionCaller = find(function, interpreter.getEnvironment());
+        return functionCaller.call(interpreter);
+    }
+
     private static FunctionCaller find(Expr.FunctionCall function, Environment env) {
         if (env.hasFunction(function.functionName)) {
             return new FunctionDeclarationCaller(function);
@@ -13,18 +18,12 @@ public abstract class FunctionCaller {
             return new StandardLibraryFunctionCaller(function);
         }
 
-        IExpressionFunction fn = CustomFunctionRepository.getInstance().getByName(function.functionName);
+        CustomMetadataExpressionFunction fn = CustomFunctionRepository.getInstance().getByName(function.functionName);
         if (fn != null) {
             return new CustomMetadataFunctionCaller(function, fn);
         }
 
-
         return new NotFoundFunctionCaller(function);
-    }
-
-    public static Object exec(Interpreter interpreter, Expr.FunctionCall function) {
-        FunctionCaller functionCaller = find(function, interpreter.getEnvironment());
-        return functionCaller.call(interpreter);
     }
 
     private class FunctionDeclarationCaller extends FunctionCaller {
@@ -62,13 +61,20 @@ public abstract class FunctionCaller {
         }
 
         public override Object call(Interpreter interpreter) {
+            Environment env = interpreter.getEnvironment();
+            if (EnvironmentCache.isFunctionCallCached(env, function)) {
+                return EnvironmentCache.getCachedFunctionCall(env, function);
+            }
+
             // Check if the function is in the list of supported functions
             StandardFunction fn = StandardFunction.getByName(function.functionName);
             fn.setInterpreter(interpreter);
             ArityEvaluator.check(fn, function);
 
             try {
-                return fn.call(function.arguments);
+                Object result = fn.call(function.arguments);
+                EnvironmentCache.cacheStandardFunctionCall(env, function, result);
+                return result;
             } catch (Exceptions.PositionAwareException e) {
                 throw e;
             } catch (Exception e) {
@@ -81,20 +87,27 @@ public abstract class FunctionCaller {
     }
 
     private class CustomMetadataFunctionCaller extends FunctionCaller {
-        private final IExpressionFunction fn;
-        public CustomMetadataFunctionCaller(Expr.FunctionCall function, IExpressionFunction fn) {
+        private final CustomMetadataExpressionFunction functionRecord;
+        public CustomMetadataFunctionCaller(Expr.FunctionCall function, CustomMetadataExpressionFunction functionRecord) {
             super(function);
-            this.fn = fn;
+            this.functionRecord = functionRecord;
         }
 
         public override Object call(Interpreter interpreter) {
+            Environment env = interpreter.getEnvironment();
+            if (EnvironmentCache.isFunctionCallCached(env, function)) {
+                return EnvironmentCache.getCachedFunctionCall(env, function);
+            }
+
             List<Object> arguments = new List<Object>();
             for (Expr argument : function.arguments) {
                 arguments.add(interpreter.interpret(argument));
             }
 
             try {
-                return fn.execute(arguments);
+                Object result = functionRecord.function.execute(arguments);
+                EnvironmentCache.cacheCustomMetadataFunctionCall(functionRecord.shouldCache, env, function, result);
+                return result;
             } catch (Exceptions.PositionAwareException e) {
                 throw e;
             } catch (Exception e) {
