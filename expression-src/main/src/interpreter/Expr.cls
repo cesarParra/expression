@@ -501,7 +501,29 @@ public abstract class Expr {
         }
     }
 
-    // TODO: Remember to cache this specially (this is different than a normal FunctionCall expression).
+    private static Map<Environment, Map<Query, Object>> queryCacheByEnvironment = new Map<Environment, Map<Query, Object>>();
+
+    public static void cacheQueryResult(Environment env, Query query, Object result) {
+        if (!queryCacheByEnvironment.containsKey(env)) {
+            queryCacheByEnvironment.put(env, new Map<Query, Object>());
+        }
+        queryCacheByEnvironment.get(env).put(query, result);
+    }
+
+    public static Boolean isQueryResultCached(Environment env, Query query) {
+        if (!queryCacheByEnvironment.containsKey(env)) {
+            return false;
+        }
+        return queryCacheByEnvironment.get(env).containsKey(query);
+    }
+
+    public static Object getCachedQueryResult(Environment env, Query query) {
+        if (!queryCacheByEnvironment.containsKey(env)) {
+            return null;
+        }
+        return queryCacheByEnvironment.get(env).get(query);
+    }
+
     public class Query extends Expr {
         public final Token sObjectType;
         // Fields is an expression that must evaluate to a list

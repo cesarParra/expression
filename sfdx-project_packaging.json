@@ -31,7 +31,7 @@
   "name": "Expression",
   "namespace": "expression",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "60.0",
+  "sourceApiVersion": "65.0",
   "packageAliases": {
     "Expression": "0HoHu000000TNMAKA4",
     "Expression Components": "0HoHu000000TNMFKA4",

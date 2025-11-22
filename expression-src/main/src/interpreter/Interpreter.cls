@@ -462,8 +462,14 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public virtual Object visit(Expr.Query query) {
+        if (Expr.isQueryResultCached(this.env, query)) {
+            return Expr.getCachedQueryResult(this.env, query);
+        }
+
         Q querier = new QueryInterpreter(this.env).evaluateToQuery(query);
-        return QDB.getInstance().run(querier);
+        Object result = QDB.getInstance().run(querier);
+        Expr.cacheQueryResult(this.env, query, result);
+        return result;
     }
 
     public Object visit(Expr.FunctionDeclaration functionDeclaration) {

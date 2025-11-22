@@ -3,9 +3,9 @@ private class QueryTest {
     private class FluentDataBuilder {
         private final List<SObject> registeredRecords = new List<SObject>();
 
-        public SObject first { get {return registeredRecords[0];} }
+        public SObject first { get { return registeredRecords[0]; } }
 
-        public List<SObject> all { get {return registeredRecords;} }
+        public List<SObject> all { get { return registeredRecords; } }
 
         private FluentDataBuilder andGivenAn(ITestDataBuilder builder) {
             registeredRecords.add(builder.registerNewForInsert());
@@ -47,7 +47,7 @@ private class QueryTest {
         given10Accounts();
 
         String expr = 'QUERY(Account)';
-        List<SObject> result = (List<SObject>) Evaluator.run(expr);
+        List<SObject> result = (List<SObject>)Evaluator.run(expr);
 
         Assert.areEqual(10, result.size());
     }
@@ -57,7 +57,7 @@ private class QueryTest {
         given10Accounts();
 
         String expr = 'QUERY(Account())';
-        List<SObject> result = (List<SObject>) Evaluator.run(expr);
+        List<SObject> result = (List<SObject>)Evaluator.run(expr);
 
         Assert.areEqual(10, result.size());
     }
@@ -67,7 +67,7 @@ private class QueryTest {
         List<Account> accounts = given10Accounts();
 
         String expr = 'QUERY(Account[Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(accounts.size(), result.size());
         for (Integer i = 0; i < accounts.size(); i++) {
@@ -87,7 +87,7 @@ private class QueryTest {
         List<Account> accounts = given10Accounts();
 
         String expr = 'QUERY(Account["Id", "Name"])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(accounts.size(), result.size());
         for (Integer i = 0; i < accounts.size(); i++) {
@@ -104,10 +104,10 @@ private class QueryTest {
 
     @IsTest
     static void canQueryForRelationshipFields() {
-        Account account = (Account) givenAn(AccountTestRecord.any().withAChildContact()).inTheDatabase().first;
+        Account account = (Account)givenAn(AccountTestRecord.any().withAChildContact()).inTheDatabase().first;
 
         String expr = 'QUERY(Contact [Id, Account.Name])';
-        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+        List<Contact> result = (List<Contact>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(account.Name, result[0].Account.Name);
@@ -120,7 +120,7 @@ private class QueryTest {
             .inTheDatabase();
 
         String expr = 'QUERY(Account(OrderBy: Name) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         // Order by is ascending by default
         Assert.areEqual(2, result.size());
@@ -135,7 +135,7 @@ private class QueryTest {
             .inTheDatabase();
 
         String expr = 'QUERY(Contact(orderBy: Account.Name) [Id, Account.Name])';
-        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+        List<Contact> result = (List<Contact>)Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
         Assert.areEqual('ATest', result[0].Account.Name);
@@ -149,7 +149,7 @@ private class QueryTest {
             .inTheDatabase();
 
         String expr = 'QUERY(Account(orderBy: Name ASC) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
         Assert.areEqual('A Account', result[0].Name);
@@ -163,7 +163,7 @@ private class QueryTest {
             .inTheDatabase();
 
         String expr = 'QUERY(Account(orderBy: Name DESC) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
         Assert.areEqual('Z Account', result[0].Name);
@@ -181,7 +181,7 @@ private class QueryTest {
         ).inTheDatabase().all;
 
         String expr = 'QUERY(Account(orderBy: [Name, BillingCity]) [Id, Name, BillingCity])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(3, result.size());
         Assert.areEqual(accountsInDatabase[1].Id, result[0].Id);
@@ -200,7 +200,7 @@ private class QueryTest {
         ).inTheDatabase().all;
 
         String expr = 'QUERY(Account(orderBy: [Name ASC, BillingCity DESC]) [Id, Name, BillingCity])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(3, result.size());
         Assert.areEqual(accountsInDatabase[2].Id, result[0].Id);
@@ -230,7 +230,7 @@ private class QueryTest {
         given10Accounts();
 
         String expr = 'QUERY(Account(limit: 5) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(5, result.size());
     }
@@ -250,7 +250,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(orderBy: Name DESC, limit: 5) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(5, result.size());
         Assert.areEqual('Test 9', result[0].Name);
@@ -269,7 +269,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: Name = "Test 5") [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Test 5', result[0].Name);
@@ -290,7 +290,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: Name == "Test 5") [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Test 5', result[0].Name);
@@ -305,7 +305,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees > 5) [Id, Name, NumberOfEmployees])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(4, result.size());
         Assert.areEqual('Test 6', result[0].Name);
@@ -323,7 +323,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees >= 5) [Id, Name, NumberOfEmployees])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(5, result.size());
         Assert.areEqual('Test 5', result[0].Name);
@@ -342,7 +342,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees < 5) [Id, Name, NumberOfEmployees])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(5, result.size());
         Assert.areEqual('Test 0', result[0].Name);
@@ -361,7 +361,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees <= 5) [Id, Name, NumberOfEmployees])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(6, result.size());
         Assert.areEqual('Test 0', result[0].Name);
@@ -381,7 +381,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees != 5) [Id, Name, NumberOfEmployees])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(9, result.size());
         Assert.areEqual('Test 0', result[0].Name);
@@ -404,7 +404,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees <> 5) [Id, Name, NumberOfEmployees])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(9, result.size());
         Assert.areEqual('Test 0', result[0].Name);
@@ -443,7 +443,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: LIKE(Name, "Test 5%")) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Test 5 - 6', result[0].Name);
@@ -462,7 +462,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: LIKE(Name, "_est 5 - 6")) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Test 5 - 6', result[0].Name);
@@ -479,7 +479,7 @@ private class QueryTest {
         ).inTheDatabase().all;
 
         String expr = 'QUERY(Account(where: IsIn(Id,  ["' + accountsInDatabase[0].Id + '", "' + accountsInDatabase[1].Id + '"])) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
         Assert.areEqual('Test 1', result[0].Name);
@@ -515,7 +515,7 @@ private class QueryTest {
         ).inTheDatabase().all;
 
         String expr = 'QUERY(Account(where: IsNotIn(Id,  ["' + accountsInDatabase[0].Id + '", "' + accountsInDatabase[1].Id + '"])) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Test 3', result[0].Name);
@@ -545,7 +545,7 @@ private class QueryTest {
             .inTheDatabase();
 
         String expr = 'QUERY(Account(where: Name -> ISIN(["Test"])) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Test', result[0].Name);
@@ -557,7 +557,7 @@ private class QueryTest {
             .inTheDatabase();
 
         String expr = 'QUERY(Account(where: ISNULL(Name)) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(0, result.size());
     }
@@ -574,7 +574,7 @@ private class QueryTest {
             .inTheDatabase();
 
         String expr = 'QUERY(Account(where: ISNOTNULL(Name)) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
     }
@@ -593,13 +593,13 @@ private class QueryTest {
 
         String expr = 'QUERY(Account(where: Id = @ContextAcc.Id) [Id, Name])';
         Configuration config = new Configuration().withCustomContext(
-            new Map<String, Object>{
-                'ContextAcc' => new Map<String, Object>{
+            new Map<String, Object> {
+                'ContextAcc' => new Map<String, Object> {
                     'Id' => recordId
                 }
             }
         );
-        List<Account> result = (List<Account>) Evaluator.run(expr, config);
+        List<Account> result = (List<Account>)Evaluator.run(expr, config);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Test', result[0].Name);
@@ -615,7 +615,7 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(offset: 5, orderBy: Name) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(5, result.size());
         Assert.areEqual('Test 5', result[0].Name);
@@ -637,7 +637,7 @@ private class QueryTest {
         insert someAccount;
 
         String expr = 'QUERY(Account(where: Name = "Test" && Id = "' + someAccount.Id + '") [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
@@ -649,7 +649,7 @@ private class QueryTest {
             .inTheDatabase();
 
         String expr = 'QUERY(Account(where: Name = "Test" && NumberOfEmployees = 5 && AnnualRevenue = 1000) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
     }
@@ -672,7 +672,7 @@ private class QueryTest {
         insert someAccount;
 
         String expr = 'QUERY(Account(where: AND(Name = "Test", Id = "' + someAccount.Id + '")) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
@@ -684,7 +684,7 @@ private class QueryTest {
         insert someAccount;
 
         String expr = 'QUERY(Account(where: AND(Name = "Test", AND(NumberOfEmployees = 5, AnnualRevenue = 1000))) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
@@ -708,7 +708,7 @@ private class QueryTest {
         insert someAccount;
 
         String expr = 'QUERY(Account(where: Name = "Test" || Id = "' + someAccount.Id + '") [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
@@ -730,12 +730,12 @@ private class QueryTest {
     static void supportsMultipleOrConditionsThroughDoublePipeOperator() {
         Account account1 = new Account(Name = 'Test 1');
         Account account2 = new Account(Name = 'Test 2');
-        insert new List<Account>{
+        insert new List<Account> {
             account1, account2
         };
 
         String expr = 'QUERY(Account(where: Name = "Test 1" || Name = "Test 2" || Name = "Test 3"))';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
         Set<Id> resultIds = new Map<Id, SObject>(result).keySet();
@@ -749,7 +749,7 @@ private class QueryTest {
         insert someAccount;
 
         String expr = 'QUERY(Account(where: OR(Name = "Test", Id = "' + someAccount.Id + '")) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
@@ -767,12 +767,12 @@ private class QueryTest {
         Account account2 = new Account(Name = 'Test 2');
         Account account3 = new Account(Name = 'Test 3', NumberOfEmployees = 5);
         Account account4 = new Account(Name = 'Test 4');
-        insert new List<Account>{
+        insert new List<Account> {
             account1, account2, account3, account4
         };
 
         String expr = 'QUERY(Account(where: Name = "Test 1" || (Name = "Test 3" && NumberOfEmployees = 5) || Name = "Test 4"))';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(3, result.size());
         Set<Id> resultIds = new Map<Id, SObject>(result).keySet();
@@ -787,7 +787,7 @@ private class QueryTest {
         Account account2 = new Account(Name = 'Test 2');
         Account account3 = new Account(Name = 'Test 3');
         Account account4 = new Account(Name = 'Test 4');
-        insert new List<Account>{
+        insert new List<Account> {
             account1, account2, account3, account4
         };
 
@@ -802,7 +802,7 @@ private class QueryTest {
             '                )\n' +
             '    )\n' +
             ')';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(2, result.size());
         Set<Id> resultIds = new Map<Id, SObject>(result).keySet();
@@ -840,7 +840,7 @@ private class QueryTest {
         insert someAccount;
 
         String expr = 'QUERY(Account(where: AnnualRevenue = -1000) [Id, Name])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(someAccount.Id, result[0].Id);
@@ -857,7 +857,7 @@ private class QueryTest {
         givenAn(AccountTestRecord.any().withAChildContact()).inTheDatabase();
 
         String expr = 'QUERY(Account[Id, Query(Contacts)])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(1, result[0].Contacts.size());
@@ -868,7 +868,7 @@ private class QueryTest {
         givenAn(AccountTestRecord.any().withChildContacts(2)).inTheDatabase();
 
         String expr = 'QUERY(Account[Id, Query(Contacts(limit: 1))])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(1, result[0].Contacts.size());
@@ -883,7 +883,7 @@ private class QueryTest {
             .inTheDatabase();
 
         String expr = 'QUERY(Account[Id, Query(Contacts(where: LastName = "Test 1"))])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(1, result[0].Contacts.size());
@@ -894,7 +894,7 @@ private class QueryTest {
         givenAn(AccountTestRecord.any().withAChildContact()).inTheDatabase();
 
         String expr = 'QUERY(Account[Id, Query(Contacts[Id, LastName])])';
-        List<Account> result = (List<Account>) Evaluator.run(expr);
+        List<Account> result = (List<Account>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual(1, result[0].Contacts.size());
@@ -909,7 +909,7 @@ private class QueryTest {
             .inTheDatabase();
 
         String expr = 'QUERY(Event(where: StartDateTime > DATETIMEVALUE("2020-01-01 00:00:00")) [Id, StartDateTime])';
-        List<Event> result = (List<Event>) Evaluator.run(expr);
+        List<Event> result = (List<Event>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
     }
@@ -921,7 +921,7 @@ private class QueryTest {
             .inTheDatabase();
 
         String expr = 'QUERY(Event(where: StartDateTime < NOW()) [Id, StartDateTime])';
-        List<Event> result = (List<Event>) Evaluator.run(expr);
+        List<Event> result = (List<Event>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
     }
@@ -933,7 +933,7 @@ private class QueryTest {
         ).inTheDatabase();
 
         String expr = 'QUERY(Contact(where: Birthdate > DATE(2020, 1, 1)) [Id, Birthdate])';
-        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+        List<Contact> result = (List<Contact>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
     }
@@ -945,7 +945,7 @@ private class QueryTest {
         ).inTheDatabase();
 
         String expr = 'QUERY(Contact(where: Birthdate > DATEVALUE("2020-01-01")) [Id, Birthdate])';
-        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+        List<Contact> result = (List<Contact>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
     }
@@ -957,7 +957,7 @@ private class QueryTest {
         ).inTheDatabase();
 
         String expr = 'QUERY(Contact(where: Birthdate < TODAY()) [Id, Birthdate])';
-        List<Contact> result = (List<Contact>) Evaluator.run(expr);
+        List<Contact> result = (List<Contact>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
     }
@@ -975,7 +975,7 @@ private class QueryTest {
             '    },\n' +
             '    Query(Account(where: AnnualRevenue > $averageAnnualRevenue)[Name]) -> MAP(Name)\n' +
             ')';
-        List<Object> result = (List<Object>) Evaluator.run(expr);
+        List<Object> result = (List<Object>)Evaluator.run(expr);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Account 3', result[0]);
@@ -993,7 +993,7 @@ private class QueryTest {
             '\n' +
             'fooQuery(1000)';
 
-        List<Account> result = (List<Account>) Evaluator.run(expression);
+        List<Account> result = (List<Account>)Evaluator.run(expression);
 
         Assert.areEqual(2, result.size());
         Assert.areEqual('Account 2', result[0].Name);
@@ -1012,7 +1012,7 @@ private class QueryTest {
             '\n' +
             'fooQuery("Account 2")';
 
-        List<Account> result = (List<Account>) Evaluator.run(expression);
+        List<Account> result = (List<Account>)Evaluator.run(expression);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Account 2', result[0].Name);
@@ -1030,7 +1030,7 @@ private class QueryTest {
             '\n' +
             'fooQuery("Account 2")';
 
-        List<Account> result = (List<Account>) Evaluator.run(expression);
+        List<Account> result = (List<Account>)Evaluator.run(expression);
 
         Assert.areEqual(1, result.size());
         Assert.areEqual('Account 2', result[0].Name);
@@ -1048,7 +1048,7 @@ private class QueryTest {
             '\n' +
             'fooQuery("Account 2")';
 
-        List<Account> result = (List<Account>) Evaluator.run(expression);
+        List<Account> result = (List<Account>)Evaluator.run(expression);
 
         Assert.areEqual(2, result.size());
         Assert.areEqual('Account 1', result[0].Name);
@@ -1067,7 +1067,7 @@ private class QueryTest {
             '\n' +
             'fooQuery(2)';
 
-        List<Account> result = (List<Account>) Evaluator.run(expression);
+        List<Account> result = (List<Account>)Evaluator.run(expression);
 
         Assert.areEqual(2, result.size());
         Assert.areEqual('Account 1', result[0].Name);
@@ -1086,10 +1086,25 @@ private class QueryTest {
             '\n' +
             'fooQuery(1)';
 
-        List<Account> result = (List<Account>) Evaluator.run(expression);
+        List<Account> result = (List<Account>)Evaluator.run(expression);
 
         Assert.areEqual(2, result.size());
         Assert.areEqual('Account 2', result[0].Name);
         Assert.areEqual('Account 3', result[1].Name);
+    }
+
+    @IsTest
+    static void identicalQueriesAreCached() {
+        FluentDataBuilder dataBuilder = given();
+        for (Integer i = 0; i < 10; i++) {
+            dataBuilder.andGivenAn(AccountTestRecord.build().named('Test ' + i).withNumberOfEmployees(i));
+        }
+        dataBuilder.inTheDatabase();
+
+        String expr = 'QUERY(Account(where: NumberOfEmployees > 5) [Id, Name, NumberOfEmployees])';
+        Evaluator.run(expr);
+        Evaluator.run(expr);
+
+        Assert.areEqual(1, Limits.getQueries());
     }
 }
