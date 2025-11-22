@@ -477,8 +477,7 @@ public virtual with sharing class Interpreter implements Visitor {
             return functionDeclaration;
         }
 
-        // Declarations should not be called
-        // by the EvaluatorResolver.
+        // Declarations should not be called by the EvaluatorResolver.
         // Reaching this point means a declaration exists within another expression and not at the top level,
         // which is not valid.
         throw new Exceptions.RuntimeException(

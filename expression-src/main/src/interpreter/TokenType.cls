@@ -34,7 +34,7 @@ public enum TokenType {
     ASC_KEYWORD, DESC_KEYWORD, ADD_IF_KEYWORD,
 
     // ----------------- Functions ----------------------
-    FUNCTION_KEYWORD, FAT_ARROW, SEMICOLON, NOCACHE_KEYWORD,
+    FUNCTION_KEYWORD, FAT_ARROW, SEMICOLON,
 
     // ----------------- EOF ----------------------
     EOF
