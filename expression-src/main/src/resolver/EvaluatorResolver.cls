@@ -86,6 +86,11 @@ public with sharing abstract class EvaluatorResolver {
         eventNotifier.subscribe(OnEvaluationEndEvent.class, new Environment.ClearContext());
         eventNotifier.notify(new OnEvaluationStartEvent(config));
 
+        // Disable cache if disabled in the congif
+        if (!config.cacheFunctionResults) {
+            EnvironmentCache.disableCache();
+        }
+
         // This deals with the global environment, which is shared across all evaluations, so it
         // it safe to call outside of the loop.
         addCustomContextVariablesToGlobalEnvironment(config);

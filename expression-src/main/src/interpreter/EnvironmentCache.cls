@@ -1,14 +1,24 @@
 public with sharing class EnvironmentCache {
+    private static Boolean isCacheDisabled = false;
+
     private static final Map<Environment, Map<Expr.FunctionCall, Object>> functionCallCache =
         new Map<Environment, Map<Expr.FunctionCall, Object>>();
     private static final Map<Environment, Map<Expr.Query, Object>> queryCacheByEnvironment =
         new Map<Environment, Map<Expr.Query, Object>>();
+
+    public static void disableCache() {
+        isCacheDisabled = true;
+    }
 
     public static void cacheFunctionCall(
         Environment env,
         Expr.FunctionCall function,
         Object result
     ) {
+        if (isCacheDisabled) {
+            return;
+        }
+
         Map<Expr.FunctionCall, Object> cachedFunctions = functionCallCache.get(env) ?? new Map<Expr.FunctionCall, Object>();
         cachedFunctions.put(function, result);
         functionCallCache.put(env, cachedFunctions);
@@ -18,6 +28,10 @@ public with sharing class EnvironmentCache {
         Environment env,
         Expr.FunctionCall function
     ) {
+        if (isCacheDisabled) {
+            return false;
+        }
+
         Map<Expr.FunctionCall, Object> cachedFunctions = functionCallCache.get(env);
         return cachedFunctions != null && cachedFunctions.containsKey(function);
     }
@@ -26,6 +40,10 @@ public with sharing class EnvironmentCache {
         Environment env,
         Expr.FunctionCall function
     ) {
+        if (isCacheDisabled) {
+            return null;
+        }
+
         Map<Expr.FunctionCall, Object> cachedFunctions = functionCallCache.get(env);
         if (cachedFunctions != null) {
             return cachedFunctions.get(function);
@@ -34,6 +52,10 @@ public with sharing class EnvironmentCache {
     }
 
     public static void cacheQueryResult(Environment env, Expr.Query query, Object result) {
+        if (isCacheDisabled) {
+            return;
+        }
+
         if (!queryCacheByEnvironment.containsKey(env)) {
             queryCacheByEnvironment.put(env, new Map<Expr.Query, Object>());
         }
@@ -41,6 +63,10 @@ public with sharing class EnvironmentCache {
     }
 
     public static Boolean isQueryResultCached(Environment env, Expr.Query query) {
+        if (isCacheDisabled) {
+            return false;
+        }
+
         if (!queryCacheByEnvironment.containsKey(env)) {
             return false;
         }
@@ -48,6 +74,10 @@ public with sharing class EnvironmentCache {
     }
 
     public static Object getCachedQueryResult(Environment env, Expr.Query query) {
+        if (isCacheDisabled) {
+            return null;
+        }
+
         if (!queryCacheByEnvironment.containsKey(env)) {
             return null;
         }

@@ -190,22 +190,21 @@ private class FunctionDeclarationTest {
             'since the function was called with different arguments');
     }
 
-    // TODO: Should we deprecate the `nocache` keyword?
-//    @IsTest
-//    static void functionsAreNotCachedWhenTheNoCacheKeywordIsUsed() {
-//        insert new Account(Name = 'ACME');
-//
-//        Test.startTest();
-//        String expression = 'fun nocache foo(n) => Query(Account(where: Name = n));\n' +
-//            '\n' +
-//            '[...foo("ACME"), ...foo("ACME")]';
-//        Test.stopTest();
-//
-//        Evaluator.run(expression);
-//
-//        Assert.areEqual(2, Limits.getQueries(), 'Two queries should have been consumed, ' +
-//            'since the function was called with the "nocache" keyword');
-//    }
+    @IsTest
+    static void functionsAreNotCachedWhenTheNoCacheKeywordIsUsed() {
+        insert new Account(Name = 'ACME');
+
+        Test.startTest();
+        String expression = 'fun nocache foo(n) => Query(Account(where: Name = n));\n' +
+            '\n' +
+            '[...foo("ACME"), ...foo("ACME")]';
+        Test.stopTest();
+
+        Evaluator.run(expression, new Configuration().disableFunctionResultCaching());
+
+        Assert.areEqual(2, Limits.getQueries(), 'Two queries should have been consumed, ' +
+            'since the function was called with the "nocache" keyword');
+    }
 
     @IsTest
     static void canRunEvaluatorMultipleTimesWhenUsingFunctions() {
