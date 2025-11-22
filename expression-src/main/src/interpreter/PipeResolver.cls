@@ -60,7 +60,16 @@ public with sharing class PipeResolver implements Visitor {
     }
 
     public Object visit(Expr.StringLiteral literal) {
-        return literal;
+        List<Object> newStringsAndInterpolations = new List<Object>();
+        for (Object current : literal.stringsAndInterpolations) {
+            if (current instanceof String) {
+                newStringsAndInterpolations.add(current);
+            } else if (current instanceof Expr) {
+                newStringsAndInterpolations.add(resolve((Expr)current));
+            }
+        }
+        Expr.StringLiteral newLiteral = new Expr.StringLiteral(newStringsAndInterpolations);
+        return newLiteral;
     }
 
     public Object visit(Expr.Unary unary) {
