@@ -1,15 +1,25 @@
 public virtual with sharing class Interpreter implements Visitor {
     private final Environment env;
 
-    private Boolean inListLiteral = false;
-    private Boolean isInMapLiteral = false;
+    private Integer inListLiteralCounter = 0;
+    private Integer inMapLiteralCounter = 0;
+    private final Boolean inListLiteral {
+        get {
+            return inListLiteralCounter > 0;
+        }
+    }
+    private final Boolean isInMapLiteral {
+        get {
+            return inMapLiteralCounter > 0;
+        }
+    }
 
     public Interpreter(Environment env) {
         this.env = env;
     }
 
-    public void setIsInListLiteral(Boolean inListLiteral) {
-        this.inListLiteral = inListLiteral;
+    public void setIsInListLiteral() {
+        this.inListLiteralCounter++;
     }
 
     public Object interpret(Expr expression) {
@@ -351,14 +361,7 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
-        // TODO: This is an issue when I have an line spread inside of an array
-        // Example
-//        [
-//            ...[1, 2],
-//        ...[1, 2]
-//        ]
-
-        inListLiteral = true;
+        inListLiteralCounter++;
         List<Object> resultList = new List<Object>();
         for (Expr expr : listLiteral.elements) {
             Object result = evaluate(expr);
@@ -377,7 +380,7 @@ public virtual with sharing class Interpreter implements Visitor {
                 resultList.add(result);
             }
         }
-        inListLiteral = false;
+        inListLiteralCounter--;
         return resultList;
     }
 
@@ -429,7 +432,7 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public Object visit(Expr.MapLiteral mapLiteral) {
-        isInMapLiteral = true;
+        inMapLiteralCounter++;
         Map<Object, Object> resultMap = new Map<Object, Object>();
         for (Object element : mapLiteral.elements) {
             if (element instanceof Expr.KeyValue) {
@@ -454,7 +457,7 @@ public virtual with sharing class Interpreter implements Visitor {
                 resultMap.put(conditionalKeyValuePair.key, conditionalKeyValuePair.value);
             }
         }
-        isInMapLiteral = false;
+        inMapLiteralCounter--;
         return resultMap;
     }
 

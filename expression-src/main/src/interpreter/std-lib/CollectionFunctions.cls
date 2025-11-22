@@ -66,7 +66,7 @@ public with sharing class CollectionFunctions {
      */
     private class ListFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
-            interpreter.setIsInListLiteral(true);
+            interpreter.setIsInListLiteral();
 
             List<Object> result = new List<Object>();
             for (Expr argument : arguments) {
