@@ -10,17 +10,18 @@ public virtual with sharing class CustomFunctionRepository {
         return new CustomFunctionRepository();
     }
 
-    public virtual IExpressionFunction getByName(String functionName) {
+    public virtual CustomMetadataExpressionFunction getByName(String functionName) {
         List<Expression_Function__mdt> customFunctions = queryForCustomFunctions(functionName);
 
         if (customFunctions.isEmpty()) {
             return null;
         }
 
-        String className = customFunctions[0].Apex_Class__c;
+        Expression_Function__mdt record = customFunctions[0];
+        String className = record.Apex_Class__c;
         Object objectInstance = Type.forName(className).newInstance();
         if (objectInstance instanceof IExpressionFunction) {
-            return (IExpressionFunction) objectInstance;
+            return new CustomMetadataExpressionFunction((IExpressionFunction) objectInstance, record.CacheResult__c ?? false);
         } else {
             throw new CustomFunctionException(
                 'Error executing ' + functionName + ' function: The class ' +
@@ -31,7 +32,7 @@ public virtual with sharing class CustomFunctionRepository {
 
     private static List<Expression_Function__mdt> queryForCustomFunctions(String functionName) {
         Q query = new Q(Expression_Function__mdt.SObjectType)
-            .selectField('Apex_Class__c')
+            .selectFields(new Set<String> { 'Apex_Class__c', 'CacheResult__c' } )
             .add(Q.condition('DeveloperName').equalsTo(functionName));
         return QDB.getInstance().run(query);
     }

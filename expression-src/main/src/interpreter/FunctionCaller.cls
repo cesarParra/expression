@@ -18,7 +18,7 @@ public abstract class FunctionCaller {
             return new StandardLibraryFunctionCaller(function);
         }
 
-        IExpressionFunction fn = CustomFunctionRepository.getInstance().getByName(function.functionName);
+        CustomMetadataExpressionFunction fn = CustomFunctionRepository.getInstance().getByName(function.functionName);
         if (fn != null) {
             return new CustomMetadataFunctionCaller(function, fn);
         }
@@ -73,7 +73,7 @@ public abstract class FunctionCaller {
 
             try {
                 Object result = fn.call(function.arguments);
-                EnvironmentCache.cacheFunctionCall(env, function, result);
+                EnvironmentCache.cacheStandardFunctionCall(env, function, result);
                 return result;
             } catch (Exceptions.PositionAwareException e) {
                 throw e;
@@ -87,21 +87,27 @@ public abstract class FunctionCaller {
     }
 
     private class CustomMetadataFunctionCaller extends FunctionCaller {
-        private final IExpressionFunction fn;
-        public CustomMetadataFunctionCaller(Expr.FunctionCall function, IExpressionFunction fn) {
+        private final CustomMetadataExpressionFunction functionRecord;
+        public CustomMetadataFunctionCaller(Expr.FunctionCall function, CustomMetadataExpressionFunction functionRecord) {
             super(function);
-            this.fn = fn;
+            this.functionRecord = functionRecord;
         }
 
-        // TODO: Maybe the CMT can have a custom field(checkbox) that defines if it is safe to cache or not.
         public override Object call(Interpreter interpreter) {
+            Environment env = interpreter.getEnvironment();
+            if (EnvironmentCache.isFunctionCallCached(env, function)) {
+                return EnvironmentCache.getCachedFunctionCall(env, function);
+            }
+
             List<Object> arguments = new List<Object>();
             for (Expr argument : function.arguments) {
                 arguments.add(interpreter.interpret(argument));
             }
 
             try {
-                return fn.execute(arguments);
+                Object result = functionRecord.function.execute(arguments);
+                EnvironmentCache.cacheCustomMetadataFunctionCall(functionRecord.shouldCache, env, function, result);
+                return result;
             } catch (Exceptions.PositionAwareException e) {
                 throw e;
             } catch (Exception e) {

@@ -1,5 +1,5 @@
 public with sharing class EnvironmentCache {
-    private static Boolean isCacheDisabled = false;
+    private static Boolean isStandardFunctionCacheDisabled = false;
 
     private static final Map<Environment, Map<Expr.FunctionCall, Object>> functionCallCache =
         new Map<Environment, Map<Expr.FunctionCall, Object>>();
@@ -7,15 +7,33 @@ public with sharing class EnvironmentCache {
         new Map<Environment, Map<Expr.Query, Object>>();
 
     public static void disableCache() {
-        isCacheDisabled = true;
+        isStandardFunctionCacheDisabled = true;
     }
 
-    public static void cacheFunctionCall(
+    public static void cacheStandardFunctionCall(
         Environment env,
         Expr.FunctionCall function,
         Object result
     ) {
-        if (isCacheDisabled) {
+        cacheFunctionCall(isStandardFunctionCacheDisabled, env, function, result);
+    }
+
+    public static void cacheCustomMetadataFunctionCall(
+        Boolean shouldCacheConfiguration,
+        Environment env,
+        Expr.FunctionCall function,
+        Object result
+    ) {
+        cacheFunctionCall(shouldCacheConfiguration, env, function, result);
+    }
+
+    private static void cacheFunctionCall(
+        Boolean shouldCache,
+        Environment env,
+        Expr.FunctionCall function,
+        Object result
+    ) {
+        if (!shouldCache) {
             return;
         }
 
@@ -28,10 +46,6 @@ public with sharing class EnvironmentCache {
         Environment env,
         Expr.FunctionCall function
     ) {
-        if (isCacheDisabled) {
-            return false;
-        }
-
         Map<Expr.FunctionCall, Object> cachedFunctions = functionCallCache.get(env);
         return cachedFunctions != null && cachedFunctions.containsKey(function);
     }
@@ -40,10 +54,6 @@ public with sharing class EnvironmentCache {
         Environment env,
         Expr.FunctionCall function
     ) {
-        if (isCacheDisabled) {
-            return null;
-        }
-
         Map<Expr.FunctionCall, Object> cachedFunctions = functionCallCache.get(env);
         if (cachedFunctions != null) {
             return cachedFunctions.get(function);
@@ -52,7 +62,7 @@ public with sharing class EnvironmentCache {
     }
 
     public static void cacheQueryResult(Environment env, Expr.Query query, Object result) {
-        if (isCacheDisabled) {
+        if (isStandardFunctionCacheDisabled) {
             return;
         }
 
@@ -63,10 +73,6 @@ public with sharing class EnvironmentCache {
     }
 
     public static Boolean isQueryResultCached(Environment env, Expr.Query query) {
-        if (isCacheDisabled) {
-            return false;
-        }
-
         if (!queryCacheByEnvironment.containsKey(env)) {
             return false;
         }
@@ -74,10 +80,6 @@ public with sharing class EnvironmentCache {
     }
 
     public static Object getCachedQueryResult(Environment env, Expr.Query query) {
-        if (isCacheDisabled) {
-            return null;
-        }
-
         if (!queryCacheByEnvironment.containsKey(env)) {
             return null;
         }
