@@ -1,7 +1,4 @@
 public abstract class FunctionCaller {
-    private static final Map<Environment, Map<Expr.FunctionCall, Object>> functionCallCache =
-        new Map<Environment, Map<Expr.FunctionCall, Object>>();
-
     private final Expr.FunctionCall function;
     protected abstract Object call(Interpreter interpreter);
 
@@ -65,9 +62,8 @@ public abstract class FunctionCaller {
 
         public override Object call(Interpreter interpreter) {
             Environment env = interpreter.getEnvironment();
-            Map<Expr.FunctionCall, Object> cachedFunctions = functionCallCache.get(env) ?? new Map<Expr.FunctionCall, Object>();
-            if (cachedFunctions.containsKey(function)) {
-                return cachedFunctions.get(function);
+            if (EnvironmentCache.isFunctionCallCached(env, function)) {
+                return EnvironmentCache.getCachedFunctionCall(env, function);
             }
 
             // Check if the function is in the list of supported functions
@@ -77,11 +73,7 @@ public abstract class FunctionCaller {
 
             try {
                 Object result = fn.call(function.arguments);
-
-                // Add to cache
-                cachedFunctions.put(function, result);
-                functionCallCache.put(env, cachedFunctions);
-
+                EnvironmentCache.cacheFunctionCall(env, function, result);
                 return result;
             } catch (Exceptions.PositionAwareException e) {
                 throw e;

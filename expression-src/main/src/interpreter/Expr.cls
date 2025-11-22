@@ -65,9 +65,9 @@ public abstract class Expr {
         }
 
         public override Integer hashCode() {
-            Integer result = System.hashCode(left);
-            result = (31 * result) + System.hashCode(operator);
-            result = (31 * result) + System.hashCode(right);
+            Integer result = left != null ? System.hashCode(left) : 0;
+            result = (31 * result) + (operator != null ? System.hashCode(operator) : 0);
+            result = (31 * result) + (right != null ? System.hashCode(right) : 0);
             return result;
         }
     }
@@ -499,29 +499,6 @@ public abstract class Expr {
             result = (31 * result) + System.hashCode(valueExpr);
             return result;
         }
-    }
-
-    private static Map<Environment, Map<Query, Object>> queryCacheByEnvironment = new Map<Environment, Map<Query, Object>>();
-
-    public static void cacheQueryResult(Environment env, Query query, Object result) {
-        if (!queryCacheByEnvironment.containsKey(env)) {
-            queryCacheByEnvironment.put(env, new Map<Query, Object>());
-        }
-        queryCacheByEnvironment.get(env).put(query, result);
-    }
-
-    public static Boolean isQueryResultCached(Environment env, Query query) {
-        if (!queryCacheByEnvironment.containsKey(env)) {
-            return false;
-        }
-        return queryCacheByEnvironment.get(env).containsKey(query);
-    }
-
-    public static Object getCachedQueryResult(Environment env, Query query) {
-        if (!queryCacheByEnvironment.containsKey(env)) {
-            return null;
-        }
-        return queryCacheByEnvironment.get(env).get(query);
     }
 
     public class Query extends Expr {
