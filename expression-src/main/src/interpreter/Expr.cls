@@ -1,6 +1,38 @@
 public abstract class Expr {
     public abstract Object accept(Visitor v);
 
+    public class PipelineFunction extends Expr {
+        public final Expr left;
+        public final Expr body;
+        public Boolean hasInnerCapture = false;
+
+        public PipelineFunction(Expr left, Expr body) {
+            this.left = left;
+            this.body = body;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+
+        public PipelineFunction withInnerCapture(Boolean hasInnerCapture) {
+            this.hasInnerCapture = hasInnerCapture;
+            return this;
+        }
+    }
+
+    public class Capture extends Expr {
+        public final Token captureToken;
+
+        public Capture(Token captureToken) {
+            this.captureToken = captureToken;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
+
     public class Logical extends Expr {
         public final Expr left;
         public final Token operator;

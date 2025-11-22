@@ -3,7 +3,7 @@
  */
 public with sharing class PipeResolver implements Visitor {
     public Expr resolve(Expr expr) {
-        return (Expr) expr.accept(this);
+        return (Expr)expr.accept(this);
     }
 
     public Object visit(Expr.Logical logical) {
@@ -18,23 +18,27 @@ public with sharing class PipeResolver implements Visitor {
 
     public Object visit(Expr.Binary binary) {
         if (binary.operator?.type == TokenType.ARROW) {
-            // Check that the right side is a function call
-            if (!(binary.right instanceof Expr.FunctionCall)) {
-                throw new Exceptions.RuntimeException(
-                    binary.operator,
-                    'Right side of pipe must be a function call'
-                );
-            }
+//            // Check that the right side is a function call
+//            if (!(binary.right instanceof Expr.FunctionCall)) {
+//                throw new Exceptions.RuntimeException(
+//                    binary.operator,
+//                    'Right side of pipe must be a function call'
+//                );
+//            }
 
-            // Add the left side as the first argument to the function call
-            Expr.FunctionCall function = (Expr.FunctionCall) binary.right;
-            if (function.arguments.isEmpty()) {
-                function.arguments.add(binary.left);
-            } else {
-                function.arguments.add(0, binary.left);
-            }
+//            // Add the left side as the first argument to the function call
+//            Expr.FunctionCall function = (Expr.FunctionCall)binary.right;
+//            if (function.arguments.isEmpty()) {
+//                function.arguments.add(binary.left);
+//            } else {
+//                function.arguments.add(0, binary.left);
+//            }
 
-            return visit(function);
+            //return visit(function);
+
+            Expr.PipelineFunction pipelineFunction = new Expr.PipelineFunction(binary.left, binary.right);
+
+            return visit(pipelineFunction);
         }
 
         Expr.Binary newBinary = new Expr.Binary(
@@ -119,16 +123,16 @@ public with sharing class PipeResolver implements Visitor {
         List<Object> newElements = new List<Object>();
         for (Object element : mapLiteral.elements) {
             if (element instanceof Expr.Spread) {
-                newElements.add(resolve((Expr) element));
+                newElements.add(resolve((Expr)element));
                 continue;
             }
 
             if (element instanceof Expr.AddIfExpr) {
-                newElements.add(resolve((Expr) element));
+                newElements.add(resolve((Expr)element));
                 continue;
             }
 
-            Expr.KeyValue keyValue = (Expr.KeyValue) element;
+            Expr.KeyValue keyValue = (Expr.KeyValue)element;
             Expr.KeyValue newKeyValue = new Expr.KeyValue(
                 resolve(keyValue.key),
                 resolve(keyValue.value)
@@ -202,5 +206,31 @@ public with sharing class PipeResolver implements Visitor {
             resolve(ifExpr.body),
             valueExpr
         );
+    }
+
+    private Boolean lookingForCapture = false;
+    private Boolean captureFound = false;
+    public Object visit(Expr.PipelineFunction pipelineFn) {
+        lookingForCapture = true;
+        Expr left = resolve(pipelineFn.left);
+        System.debug('resoving... ' + pipelineFn.body);
+        Expr resolvedBody = resolve(pipelineFn.body);
+        lookingForCapture = false;
+        Expr.PipelineFunction toReturn = new Expr.PipelineFunction(left, resolvedBody).withInnerCapture(captureFound);
+        captureFound = false;
+        return toReturn;
+    }
+
+    public Object visit(Expr.Capture captureExpr) {
+        if (lookingForCapture) {
+            captureFound = true;
+        } else {
+            // Throw because we should never enccounter a counter expression outside of a pipeline function
+            throw new Exceptions.RuntimeException(
+                captureExpr.captureToken,
+                'Capture expressions can only be used inside pipeline functions.'
+            );
+        }
+        return new Expr.Capture(captureExpr.captureToken);
     }
 }

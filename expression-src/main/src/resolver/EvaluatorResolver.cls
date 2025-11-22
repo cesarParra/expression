@@ -119,8 +119,11 @@ public with sharing abstract class EvaluatorResolver {
                 if (isFunctionDeclaration) {
                     // If we are dealing with a function declaration we do not need to interpret it.
                     Expr.FunctionDeclaration fnDeclaration = (Expr.FunctionDeclaration)expression;
-                    Environment.addGlobalVariable(fnDeclaration.functionName, fnDeclaration);
-                    functionDeclarations.add(fnDeclaration);
+                    if (!fnDeclaration.isAnonymous) {
+                        Environment.addGlobalVariable(fnDeclaration.functionName, fnDeclaration);
+                        functionDeclarations.add(fnDeclaration);
+                    }
+
                     continue;
                 }
 

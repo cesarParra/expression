@@ -2,17 +2,17 @@ public with sharing class PriceComponents {
     private final List<PriceComponent> components;
 
     public PriceComponents(List<PriceComponent> components) {
-        System.debug('PriceComponents: ' + components);
         this.components = components;
     }
 
-    public PriceComponent getListPrice() {
+    public List<PriceComponent> getListPrices() {
+        List<PriceComponent> result = new List<PriceComponent>();
         for (PriceComponent current : components) {
             if (current.pricingType == PriceComponent.Type.LIST_PRICE) {
-                return current;
+                result.add(current);
             }
         }
-        return null;
+        return result;
     }
 
     public List<PriceComponent> getSurcharges() {

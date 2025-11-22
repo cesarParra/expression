@@ -43,7 +43,7 @@ public with sharing class Exceptions {
 
     public class RuntimeException extends PositionAwareException {
         public RuntimeException(Token atToken, String message) {
-            super(atToken.position, message);
+            super(atToken?.position ?? new SourcePosition(1, 1, 1), message);
         }
 
         public override String toString() {

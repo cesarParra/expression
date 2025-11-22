@@ -437,6 +437,11 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.PipelineFunction pipelineFn) {
+        resolve(pipelineFn.body);
+        return null;
+    }
+
     private final Map<SObjectType, Fields> cachedFieldsBySObjectType = new Map<SObjectType, Fields>();
     private Fields getFields() {
         if (cachedFieldsBySObjectType.containsKey(this.queryContext.objectType)) {
@@ -586,5 +591,9 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     private class NotSupportedGetResolutionException extends Exception {
+    }
+
+    public Object visit(Expr.Capture captureExpr) {
+        return null;
     }
 }

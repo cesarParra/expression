@@ -7,12 +7,11 @@ public with sharing class SalesOrderLinePricingService {
         // Main SOL using the Product Id as well as the List Price
         Sales_Order_Line__c salesOrderLine = new Sales_Order_Line__c();
         salesOrderLine.Product__c = productId;
-        salesOrderLine.Amount__c = components.getListPrice()?.amount;
-        salesOrderLine.Source_Price_Component__c = components.getListPrice()?.recordId;
+        PriceComponent listPrice = components.getListPrices().size() > 0 ? components.getListPrices()[0] : null;
+        salesOrderLine.Amount__c = listPrice?.amount ?? 0;
+        salesOrderLine.Source_Price_Component__c = listPrice?.recordId;
         salesOrderLine.Type__c = 'Charge';
         lines.add(salesOrderLine);
-
-        System.debug('salesOrderLine: ' + salesOrderLine);
 
         Configuration config = new Configuration().respectSharing(false);
         // Surcharges
@@ -27,8 +26,6 @@ public with sharing class SalesOrderLinePricingService {
             lineForSurcharge.Amount__c = surcharge.amount;
             lineForSurcharge.Source_Price_Component__c = surcharge.recordId;
             lineForSurcharge.Type__c = 'Charge';
-
-            System.debug('lineForSurcharge: ' + lineForSurcharge);
 
             lines.add(lineForSurcharge);
         }
@@ -45,8 +42,6 @@ public with sharing class SalesOrderLinePricingService {
             discountLine.Amount__c = (discount.amount) * -1;
             discountLine.Source_Price_Component__c = discount.recordId;
             discountLine.Type__c = 'Discount';
-
-            System.debug('discountLine: ' + discountLine);
 
             lines.add(discountLine);
         }

@@ -86,6 +86,39 @@ public virtual with sharing class Interpreter implements Visitor {
         }
     }
 
+    // TODO: This should be a stack to support nested pipeline functions
+    // TODO: But remember that something can be captured more than once within the body of the pipeline function
+    private Expr toCapture;
+    public Object visit(Expr.PipelineFunction pipelineFn) {
+        if (pipelineFn.hasInnerCapture) {
+            toCapture = pipelineFn.left;
+            return evaluate(pipelineFn.body);
+        } else {
+            // If there is no capture and we are dealing with a function, then we
+            // substitute the first argument with the left side of the pipeline
+            if ((pipelineFn.body instanceof Expr.FunctionCall)) {
+                Expr.FunctionCall function = (Expr.FunctionCall)pipelineFn.body;
+                if (function.arguments.isEmpty()) {
+                    function.arguments.add(pipelineFn.left);
+                } else {
+                    function.arguments.add(0, pipelineFn.left);
+                }
+
+                return evaluate(function);
+            } else {
+                // Otherwise, we just eat the left side and evaluate the right side
+                return evaluate(pipelineFn.body);
+            }
+        }
+    }
+
+    public Object visit(Expr.Capture captureExpr) {
+        // TODO: Throw if there is nothing to capture
+        Object captureEvaluation = evaluate(toCapture);
+        toCapture = null;
+        return captureEvaluation;
+    }
+
     public virtual Object visit(Expr.Binary binary) {
         Object left = evaluate(binary.left);
         Object right = evaluate(binary.right);
