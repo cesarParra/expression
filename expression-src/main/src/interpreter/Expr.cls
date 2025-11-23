@@ -545,4 +545,40 @@ public abstract class Expr {
             return result;
         }
     }
+
+    // TODO: Equals and hashCode
+    public class PipelineFunction extends Expr {
+        public final Token pipeToken;
+        public final Expr left;
+        public final Expr body;
+        public Boolean hasInnerCapture = false;
+
+        public PipelineFunction(Token pipeToken, Expr left, Expr body) {
+            this.pipeToken = pipeToken;
+            this.left = left;
+            this.body = body;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+
+        public PipelineFunction withInnerCapture(Boolean hasInnerCapture) {
+            this.hasInnerCapture = hasInnerCapture;
+            return this;
+        }
+    }
+
+    // TODO: Equals and hashCode
+    public class Capture extends Expr {
+        public final Token captureToken;
+
+        public Capture(Token captureToken) {
+            this.captureToken = captureToken;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+    }
 }

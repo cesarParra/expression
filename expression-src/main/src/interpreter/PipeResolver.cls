@@ -3,7 +3,7 @@
  */
 public with sharing class PipeResolver implements Visitor {
     public Expr resolve(Expr expr) {
-        return (Expr) expr.accept(this);
+        return (Expr)expr.accept(this);
     }
 
     public Object visit(Expr.Logical logical) {
@@ -18,23 +18,11 @@ public with sharing class PipeResolver implements Visitor {
 
     public Object visit(Expr.Binary binary) {
         if (binary.operator?.type == TokenType.ARROW) {
-            // Check that the right side is a function call
-            if (!(binary.right instanceof Expr.FunctionCall)) {
-                throw new Exceptions.RuntimeException(
-                    binary.operator,
-                    'Right side of pipe must be a function call'
-                );
-            }
+            Expr.PipelineFunction pipelineFunction = new Expr.PipelineFunction(
+                binary.operator, binary.left, binary.right
+            );
 
-            // Add the left side as the first argument to the function call
-            Expr.FunctionCall function = (Expr.FunctionCall) binary.right;
-            if (function.arguments.isEmpty()) {
-                function.arguments.add(binary.left);
-            } else {
-                function.arguments.add(0, binary.left);
-            }
-
-            return visit(function);
+            return visit(pipelineFunction);
         }
 
         Expr.Binary newBinary = new Expr.Binary(
@@ -56,7 +44,16 @@ public with sharing class PipeResolver implements Visitor {
     }
 
     public Object visit(Expr.StringLiteral literal) {
-        return literal;
+        List<Object> newStringsAndInterpolations = new List<Object>();
+        for (Object current : literal.stringsAndInterpolations) {
+            if (current instanceof String) {
+                newStringsAndInterpolations.add(current);
+            } else if (current instanceof Expr) {
+                newStringsAndInterpolations.add(resolve((Expr)current));
+            }
+        }
+        Expr.StringLiteral newLiteral = new Expr.StringLiteral(newStringsAndInterpolations);
+        return newLiteral;
     }
 
     public Object visit(Expr.Unary unary) {
@@ -119,16 +116,16 @@ public with sharing class PipeResolver implements Visitor {
         List<Object> newElements = new List<Object>();
         for (Object element : mapLiteral.elements) {
             if (element instanceof Expr.Spread) {
-                newElements.add(resolve((Expr) element));
+                newElements.add(resolve((Expr)element));
                 continue;
             }
 
             if (element instanceof Expr.AddIfExpr) {
-                newElements.add(resolve((Expr) element));
+                newElements.add(resolve((Expr)element));
                 continue;
             }
 
-            Expr.KeyValue keyValue = (Expr.KeyValue) element;
+            Expr.KeyValue keyValue = (Expr.KeyValue)element;
             Expr.KeyValue newKeyValue = new Expr.KeyValue(
                 resolve(keyValue.key),
                 resolve(keyValue.value)
@@ -202,5 +199,20 @@ public with sharing class PipeResolver implements Visitor {
             resolve(ifExpr.body),
             valueExpr
         );
+    }
+
+    public Object visit(Expr.PipelineFunction pipelineFunction) {
+        // TODO: Capture support.
+
+        Expr left = resolve(pipelineFunction.left);
+        Expr resolvedBody = resolve(pipelineFunction.body);
+        return new Expr.PipelineFunction(pipelineFunction.pipeToken, left, resolvedBody)
+            .withInnerCapture(false); // <--  TODO Capture not supported yet
+    }
+
+    public Object visit(Expr.Capture capture) {
+        // TODO: Capture support.
+
+        return capture;
     }
 }

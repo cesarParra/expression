@@ -70,7 +70,21 @@ public with sharing class Parser {
             consume(TokenType.SEMICOLON, 'Expect \';\' after function body.');
             return new Expr.FunctionDeclaration(name, parameters, body, skipCache);
         }
-        return orCheck();
+        return pipe();
+    }
+
+    private Expr pipe() {
+        Expr expr = orCheck();
+
+        while (match(new List<TokenType> {
+            TokenType.ARROW
+        })) {
+            Token operator = previous();
+            Expr right = orCheck();
+            expr = new Expr.Binary(expr, operator, right);
+        }
+
+        return expr;
     }
 
     private Expr orCheck() {
@@ -205,7 +219,7 @@ public with sharing class Parser {
     }
 
     private Expr getExpr() {
-        Expr expr = pipe();
+        Expr expr = primary();
 
         while (true) {
             if (match(TokenType.DOT)) {
@@ -219,20 +233,6 @@ public with sharing class Parser {
             } else {
                 break;
             }
-        }
-
-        return expr;
-    }
-
-    private Expr pipe() {
-        Expr expr = primary();
-
-        while (match(new List<TokenType> {
-            TokenType.ARROW
-        })) {
-            Token operator = previous();
-            Expr right = primary();
-            expr = new Expr.Binary(expr, operator, right);
         }
 
         return expr;
@@ -253,6 +253,10 @@ public with sharing class Parser {
 
         if (match(TokenType.QUERY_KEYWORD)) {
             return parseQuery();
+        }
+
+        if (match(TokenType.CAPTURE)) {
+            return new Expr.Capture(previous());
         }
 
         if (match(TokenType.STRING_LITERAL_START)) {

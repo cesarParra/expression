@@ -357,7 +357,22 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public virtual Object visit(Expr.FunctionCall function) {
+        attemptCapture(function);
         return FunctionCaller.exec(this, function);
+    }
+
+    protected void attemptCapture(Expr.FunctionCall function) {
+        if (this.pendingCapture != null) {
+            // If there is a pipeline capture pending, then the first function
+            // call we encounter should use that as its first argument.
+            if (function.arguments.isEmpty()) {
+                function.arguments.add(pendingCapture);
+            } else {
+                function.arguments.add(0, pendingCapture);
+            }
+
+            pendingCapture = null;
+        }
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
@@ -566,5 +581,21 @@ public virtual with sharing class Interpreter implements Visitor {
         }
 
         return new ShouldNotAdd();
+    }
+
+    private Expr pendingCapture;
+    public Object visit(Expr.PipelineFunction pipelineFunction) {
+        // TODO: Add support for inner capture
+
+        this.pendingCapture = pipelineFunction.left;
+        return evaluate(pipelineFunction.body);
+    }
+
+    public Object visit(Expr.Capture capture) {
+        // TODO: Implement
+        throw new Exceptions.RuntimeException(
+            capture.captureToken,
+            'Error executing capture expression: capture expressions are not yet supported.'
+        );
     }
 }

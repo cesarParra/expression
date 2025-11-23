@@ -1,21 +1,21 @@
 public with sharing class AstPrinter implements Visitor, EvaluatorEventListener {
     public Map<String, Object> handle(EvaluatorEvent event) {
-        OnAfterParseEvent parseEvent = (OnAfterParseEvent) event;
+        OnAfterParseEvent parseEvent = (OnAfterParseEvent)event;
         List<Object> toPrint = new List<Object>();
         for (Expr expression : parseEvent.expressions) {
             toPrint.add(expression.accept(this));
         }
 
         System.debug(JSON.serializePretty(toPrint));
-        return new Map<String, Object>{
+        return new Map<String, Object> {
             'ast' => toPrint
         };
     }
 
     public Object visit(Expr.Logical logical) {
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'Logical',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'left' => logical.left.accept(this),
                 'operator' => logical.operator.lexeme,
                 'right' => logical.right.accept(this)
@@ -25,9 +25,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     }
 
     public Object visit(Expr.Binary binary) {
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'Binary',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'left' => binary.left.accept(this),
                 'operator' => binary.operator?.lexeme,
                 'right' => binary.right.accept(this)
@@ -37,9 +37,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     }
 
     public Object visit(Expr.Grouping grouping) {
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'Grouping',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'expression' => grouping.expression.accept(this)
             }
         };
@@ -47,9 +47,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     }
 
     public Object visit(Expr.Literal literal) {
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'Literal',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'value' => literal.value
             }
         };
@@ -62,12 +62,12 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
             if (current instanceof String) {
                 stringsAndInterpolations.add(current);
             } else if (current instanceof Expr) {
-                stringsAndInterpolations.add(((Expr) current).accept(this));
+                stringsAndInterpolations.add(((Expr)current).accept(this));
             }
         }
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'StringLiteral',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'value' => stringsAndInterpolations
             }
         };
@@ -75,9 +75,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     }
 
     public Object visit(Expr.Variable variable) {
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'Variable',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'name' => variable.name.lexeme
             }
         };
@@ -85,9 +85,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     }
 
     public Object visit(Expr.MergeFieldOrScopeVariable mergeField) {
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'MergeField',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'name' => mergeField.name.lexeme
             }
         };
@@ -95,9 +95,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     }
 
     public Object visit(Expr.Unary unary) {
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'Unary',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'operator' => unary.operator.lexeme,
                 'right' => unary.right.accept(this)
             }
@@ -110,9 +110,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         for (Expr expr : getExpr.arguments) {
             arguments.add(expr.accept(this));
         }
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'Get',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'object' => getExpr.objectExpr.accept(this),
                 'field' => getExpr.field.lexeme,
                 'arguments' => arguments
@@ -126,9 +126,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         for (Expr expr : function.arguments) {
             arguments.add(expr.accept(this));
         }
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'FunctionCall',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'name' => function.functionName,
                 'arguments' => arguments
             }
@@ -141,9 +141,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         for (Expr expr : listLiteral.elements) {
             elements.add(expr.accept(this));
         }
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'ListLiteral',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'elements' => elements
             }
         };
@@ -154,22 +154,22 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         List<Object> elements = new List<Object>();
         for (Object current : mapLiteral.elements) {
             if (current instanceof Expr.KeyValue) {
-                Object key = ((Expr.KeyValue) current).key.accept(this);
-                Object value = ((Expr.KeyValue) current).value.accept(this);
-                Map<String, Object> keyValue = new Map<String, Object>{
+                Object key = ((Expr.KeyValue)current).key.accept(this);
+                Object value = ((Expr.KeyValue)current).value.accept(this);
+                Map<String, Object> keyValue = new Map<String, Object> {
                     'key' => key,
                     'value' => value
                 };
                 elements.add(keyValue);
             } else if (current instanceof Expr.Spread) {
-                elements.add(((Expr.Spread) current).accept(this));
+                elements.add(((Expr.Spread)current).accept(this));
             } else if (current instanceof Expr.AddIfExpr) {
-                elements.add(((Expr.AddIfExpr) current).accept(this));
+                elements.add(((Expr.AddIfExpr)current).accept(this));
             }
         }
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'MapLiteral',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'elements' => elements
             }
         };
@@ -177,9 +177,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     }
 
     public Object visit(Expr.Spread spread) {
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'Spread',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'expression' => spread.expression.accept(this)
             }
         };
@@ -191,9 +191,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
         for (Expr orderBy : query.orderBy) {
             orderBys.add(orderBy.accept(this));
         }
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'Query',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'select' => query.sObjectType.lexeme,
                 'fields' => query.fieldsExpression?.accept(this),
                 'where' => query.whereExpr?.accept(this),
@@ -205,9 +205,9 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     }
 
     public Object visit(Expr.FunctionDeclaration functionDeclaration) {
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'FunctionDeclaration',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'name' => functionDeclaration.name?.lexeme ?? '[[anonymous]]',
                 'parameters' => tokensToString(functionDeclaration.parameters),
                 'body' => functionDeclaration.body.accept(this)
@@ -217,13 +217,29 @@ public with sharing class AstPrinter implements Visitor, EvaluatorEventListener 
     }
 
     public Object visit(Expr.AddIfExpr ifExpr) {
-        Map<String, Object> toPrint = new Map<String, Object>{
+        Map<String, Object> toPrint = new Map<String, Object> {
             'type' => 'AddIfExpr',
-            'body' => new Map<String, Object>{
+            'body' => new Map<String, Object> {
                 'condition' => ifExpr.condition.accept(this),
                 'body' => ifExpr.body.accept(this),
                 'value' => ifExpr.valueExpr?.accept(this) ?? null
             }
+        };
+        return toPrint;
+    }
+
+    public Object visit(Expr.PipelineFunction pipelineFn) {
+        Map<String, Object> toPrint = new Map<String, Object> {
+            'type' => 'PipelineFunction',
+            'body' => pipelineFn.body.accept(this)
+        };
+        return toPrint;
+    }
+
+    public Object visit(Expr.Capture captureExpr) {
+        Map<String, Object> toPrint = new Map<String, Object> {
+            'type' => 'Capture',
+            'body' => 'capture'
         };
         return toPrint;
     }
