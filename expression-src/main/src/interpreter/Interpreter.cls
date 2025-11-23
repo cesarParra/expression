@@ -362,17 +362,30 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     protected void attemptCapture(Expr.FunctionCall function) {
-        if (this.pendingCapture != null) {
-            // If there is a pipeline capture pending, then the first function
-            // call we encounter should use that as its first argument.
-            if (function.arguments.isEmpty()) {
-                function.arguments.add(pendingCapture);
-            } else {
-                function.arguments.add(0, pendingCapture);
-            }
-
-            pendingCapture = null;
+//        if (pendingCaptures.isEmpty()) {
+//            return;
+//        }
+        if (pendingCapture == null || pendingCapture.isExplicit == true) {
+            return;
         }
+
+//        PendingCapture pendingCapture = (PendingCapture)pendingCaptures.peek();
+//        if (pendingCapture.isExplicit) {
+//            return;
+//        }
+
+        // If there is a pipeline capture pending, then the first function
+        // call we encounter should use that as its first argument.
+        if (function.arguments.isEmpty()) {
+            function.arguments.add(pendingCapture.expression);
+        } else {
+            function.arguments.add(0, pendingCapture.expression);
+        }
+
+        pendingCapture = null;
+
+        // Clear the pending capture since we've used it.
+//        pendingCaptures.pop();
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
@@ -583,19 +596,93 @@ public virtual with sharing class Interpreter implements Visitor {
         return new ShouldNotAdd();
     }
 
-    private Expr pendingCapture;
-    public Object visit(Expr.PipelineFunction pipelineFunction) {
-        // TODO: Add support for inner capture
+    // TODO: This is giving me issues:
+//    FirstName + " " + LastName
+//    -> UPPER()
+//    -> "Initial: " + LEFT(_, 1) + RIGHT("test", 1)
+//    -> REVERSE()
+//    -> REVERSE()
 
-        this.pendingCapture = pipelineFunction.left;
-        return evaluate(pipelineFunction.body);
+    //private final Stack pendingCaptures = new Stack();
+    private PendingCapture pendingCapture;
+    public Object visit(Expr.PipelineFunction pipelineFunction) {
+//        this.pendingCaptures.push(new PendingCapture(
+//            pipelineFunction.hasExplicitCapture,
+//            pipelineFunction.left
+//        ));
+
+        if (pipelineFunction.hasExplicitCapture) {
+            this.pendingCapture = explicit(evaluate(pipelineFunction.left));
+        } else {
+            this.pendingCapture = implicit(pipelineFunction.left);
+        }
+
+        Object toReturn = evaluate(pipelineFunction.body);
+//        if (!pendingCaptures.isEmpty()) {
+//            pendingCaptures.pop();
+//        }
+        return toReturn;
     }
 
     public Object visit(Expr.Capture capture) {
-        // TODO: Implement
-        throw new Exceptions.RuntimeException(
-            capture.captureToken,
-            'Error executing capture expression: capture expressions are not yet supported.'
-        );
+//        System.debug('visiting capture');
+//        if (pendingCaptures.isEmpty()) {
+//            throw new Exceptions.RuntimeException(
+//                capture.captureToken,
+//                'Capture expressions can only be used inside pipeline functions.'
+//            );
+//        }
+//        PendingCapture pendingCapture = (PendingCapture)pendingCaptures.peek();
+//        return evaluate(pendingCapture.expression);
+
+        if (this.pendingCapture == null) {
+            throw new Exceptions.RuntimeException(
+                capture.captureToken,
+                'Capture expressions can only be used inside pipeline functions.'
+            );
+        }
+
+        if (pendingCapture.isExplicit == false) {
+            throw new Exceptions.RuntimeException(
+                capture.captureToken,
+                'Implicit captures ("_") can only be used once per pipeline function, as the first argument of the function call.'
+            );
+        }
+
+        return this.pendingCapture.result;
+    }
+
+    private class PendingCapture {
+        // An explicit capture is when the right-hand side of the pipeline has a
+        // capture ("_") expression.
+        // An implicit capture is when the first function to the right of the pipeline
+        // should use the left-hand side of the pipeline as its first argument.
+        private Boolean isExplicit;
+        private Expr expression;
+        private Object result;
+
+//        public PendingCapture(Boolean isExplicit, Expr expression) {
+//            this.isExplicit = isExplicit;
+//            this.expression = expression;
+//        }
+
+//        public PendingCapture(Boolean isExplicit, Object result) {
+//            this.isExplicit = isExplicit;
+//            this.result = result;
+//        }
+    }
+
+    private static PendingCapture explicit(Object result) {
+        PendingCapture capture = new PendingCapture();
+        capture.isExplicit = true;
+        capture.result = result;
+        return capture;
+    }
+
+    private static PendingCapture implicit(Expr expression) {
+        PendingCapture capture = new PendingCapture();
+        capture.isExplicit = false;
+        capture.expression = expression;
+        return capture;
     }
 }

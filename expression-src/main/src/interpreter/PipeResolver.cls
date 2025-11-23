@@ -201,17 +201,28 @@ public with sharing class PipeResolver implements Visitor {
         );
     }
 
+    Boolean lookingForCapture = false;
+    Boolean captureFound = false;
     public Object visit(Expr.PipelineFunction pipelineFunction) {
-        // TODO: Capture support.
-
         Expr left = resolve(pipelineFunction.left);
+        lookingForCapture = true;
         Expr resolvedBody = resolve(pipelineFunction.body);
-        return new Expr.PipelineFunction(pipelineFunction.pipeToken, left, resolvedBody)
-            .withInnerCapture(false); // <--  TODO Capture not supported yet
+        lookingForCapture = false;
+        Object toReturn = new Expr.PipelineFunction(pipelineFunction.pipeToken, left, resolvedBody)
+            .withInnerCapture(captureFound);
+        captureFound = false;
+        return toReturn;
     }
 
     public Object visit(Expr.Capture capture) {
-        // TODO: Capture support.
+        if (lookingForCapture) {
+            captureFound = true;
+        } else {
+            throw new Exceptions.RuntimeException(
+                capture.captureToken,
+                'Capture expressions can only be used inside pipeline functions.'
+            );
+        }
 
         return capture;
     }

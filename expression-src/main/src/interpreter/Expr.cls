@@ -550,7 +550,7 @@ public abstract class Expr {
         public final Token pipeToken;
         public final Expr left;
         public final Expr body;
-        public Boolean hasInnerCapture = false;
+        public Boolean hasExplicitCapture = false;
 
         public PipelineFunction(Token pipeToken, Expr left, Expr body) {
             this.pipeToken = pipeToken;
@@ -563,7 +563,7 @@ public abstract class Expr {
         }
 
         public PipelineFunction withInnerCapture(Boolean hasInnerCapture) {
-            this.hasInnerCapture = hasInnerCapture;
+            this.hasExplicitCapture = hasInnerCapture;
             return this;
         }
 
@@ -573,7 +573,7 @@ public abstract class Expr {
                 return this.pipeToken == otherPipelineFunction.pipeToken
                     && this.left == otherPipelineFunction.left
                     && this.body == otherPipelineFunction.body
-                    && this.hasInnerCapture == otherPipelineFunction.hasInnerCapture;
+                    && this.hasExplicitCapture == otherPipelineFunction.hasExplicitCapture;
             }
             return false;
         }
@@ -582,7 +582,7 @@ public abstract class Expr {
             Integer result = System.hashCode(pipeToken);
             result = (31 * result) + System.hashCode(left);
             result = (31 * result) + System.hashCode(body);
-            result = (31 * result) + System.hashCode(hasInnerCapture);
+            result = (31 * result) + System.hashCode(hasExplicitCapture);
             return result;
         }
     }
