@@ -362,17 +362,9 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     protected void attemptCapture(Expr.FunctionCall function) {
-//        if (pendingCaptures.isEmpty()) {
-//            return;
-//        }
         if (pendingCapture == null || pendingCapture.isExplicit == true) {
             return;
         }
-
-//        PendingCapture pendingCapture = (PendingCapture)pendingCaptures.peek();
-//        if (pendingCapture.isExplicit) {
-//            return;
-//        }
 
         // If there is a pipeline capture pending, then the first function
         // call we encounter should use that as its first argument.
@@ -382,10 +374,9 @@ public virtual with sharing class Interpreter implements Visitor {
             function.arguments.add(0, pendingCapture.expression);
         }
 
+        // Once captured, we clear the pending capture to avoid any additional
+        // functions to the right-hand side of the pipeline to try and use it.
         pendingCapture = null;
-
-        // Clear the pending capture since we've used it.
-//        pendingCaptures.pop();
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
@@ -596,45 +587,27 @@ public virtual with sharing class Interpreter implements Visitor {
         return new ShouldNotAdd();
     }
 
-    // TODO: This is giving me issues:
-//    FirstName + " " + LastName
-//    -> UPPER()
-//    -> "Initial: " + LEFT(_, 1) + RIGHT("test", 1)
-//    -> REVERSE()
-//    -> REVERSE()
-
-    //private final Stack pendingCaptures = new Stack();
     private PendingCapture pendingCapture;
     public Object visit(Expr.PipelineFunction pipelineFunction) {
-//        this.pendingCaptures.push(new PendingCapture(
-//            pipelineFunction.hasExplicitCapture,
-//            pipelineFunction.left
-//        ));
-
         if (pipelineFunction.hasExplicitCapture) {
+            // When dealing with an explicit capture, we immediately evaluate
+            // the left-hand side of the pipeline, and store it for it to be used
+            // whenever a capture ("_") expression is encountered within the right-hand side (body).
             this.pendingCapture = explicit(evaluate(pipelineFunction.left));
         } else {
+            // If there is no capture on the right-hand side of the pipeline,
+            // then it acts as syntactic sugar for passing the left-hand side
+            // as the first argument to the function call on the right-hand side.
+            // Thus, it does not get evaluated, but rather stored as an expression
+            // for it to be evaluated during function call argument resolution.
             this.pendingCapture = implicit(pipelineFunction.left);
         }
 
         Object toReturn = evaluate(pipelineFunction.body);
-//        if (!pendingCaptures.isEmpty()) {
-//            pendingCaptures.pop();
-//        }
         return toReturn;
     }
 
     public Object visit(Expr.Capture capture) {
-//        System.debug('visiting capture');
-//        if (pendingCaptures.isEmpty()) {
-//            throw new Exceptions.RuntimeException(
-//                capture.captureToken,
-//                'Capture expressions can only be used inside pipeline functions.'
-//            );
-//        }
-//        PendingCapture pendingCapture = (PendingCapture)pendingCaptures.peek();
-//        return evaluate(pendingCapture.expression);
-
         if (this.pendingCapture == null) {
             throw new Exceptions.RuntimeException(
                 capture.captureToken,
@@ -643,9 +616,11 @@ public virtual with sharing class Interpreter implements Visitor {
         }
 
         if (pendingCapture.isExplicit == false) {
-            throw new Exceptions.RuntimeException(
-                capture.captureToken,
-                'Implicit captures ("_") can only be used once per pipeline function, as the first argument of the function call.'
+            // This should be unreachable, since the PipelineFunction visitor
+            // should have populated the pending capture as explicit.
+            throw new Exceptions.UnknownException(
+                capture.captureToken.position,
+                'Internal error: expected an explicit pending capture.'
             );
         }
 
@@ -653,23 +628,11 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     private class PendingCapture {
-        // An explicit capture is when the right-hand side of the pipeline has a
-        // capture ("_") expression.
-        // An implicit capture is when the first function to the right of the pipeline
-        // should use the left-hand side of the pipeline as its first argument.
         private Boolean isExplicit;
+        // Populated when isExplicit is false
         private Expr expression;
+        // Populated when isExplicit is true
         private Object result;
-
-//        public PendingCapture(Boolean isExplicit, Expr expression) {
-//            this.isExplicit = isExplicit;
-//            this.expression = expression;
-//        }
-
-//        public PendingCapture(Boolean isExplicit, Object result) {
-//            this.isExplicit = isExplicit;
-//            this.result = result;
-//        }
     }
 
     private static PendingCapture explicit(Object result) {

@@ -54,4 +54,18 @@ public with sharing class Exceptions {
             return 'Runtime';
         }
     }
+
+    public class UnknownException extends PositionAwareException {
+        public UnknownException(SourcePosition position, String message) {
+            super(position, message);
+        }
+
+        public override String toString() {
+            return super.toString();
+        }
+
+        public override String getType() {
+            return 'Unknown';
+        }
+    }
 }
