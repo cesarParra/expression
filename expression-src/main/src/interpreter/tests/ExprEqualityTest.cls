@@ -415,4 +415,50 @@ private class ExprEqualityTest {
 
         Assert.isFalse(aQuery == anotherQuery);
     }
+
+    @IsTest
+    static void pipepineFunctionExpressionsCanBeComparedForEquality_equals() {
+        Token functionToken = new Token(TokenType.ARROW, '->', null, null);
+        Expr left = new Expr.Literal('input');
+        Expr right = new Expr.Literal('output');
+
+        Expr.PipelineFunction aPipelineFunction = new Expr.PipelineFunction(functionToken, left, right);
+        Expr.PipelineFunction anotherPipelineFunction = new Expr.PipelineFunction(functionToken, left, right);
+
+        Assert.isTrue(aPipelineFunction == anotherPipelineFunction);
+    }
+
+    @IsTest
+    static void pipepineFunctionExpressionsCanBeComparedForEquality_notEquals() {
+        Token functionToken = new Token(TokenType.ARROW, '->', null, null);
+        Expr left = new Expr.Literal('input');
+        Expr right = new Expr.Literal('output');
+        Expr differentRight = new Expr.Literal('differentOutput');
+
+        Expr.PipelineFunction aPipelineFunction = new Expr.PipelineFunction(functionToken, left, right);
+        Expr.PipelineFunction anotherPipelineFunction = new Expr.PipelineFunction(functionToken, left, differentRight);
+
+        Assert.isFalse(aPipelineFunction == anotherPipelineFunction);
+    }
+
+    @IsTest
+    static void captureExpressionsCanBeComparedForEquality_equals() {
+        Token captureToken = new Token(TokenType.CAPTURE, 'capture', null, null);
+
+        Expr.Capture aCapture = new Expr.Capture(captureToken);
+        Expr.Capture anotherCapture = new Expr.Capture(captureToken);
+
+        Assert.isTrue(aCapture == anotherCapture);
+    }
+
+    @IsTest
+    static void captureExpressionsCanBeComparedForEquality_notEquals() {
+        Token captureToken = new Token(TokenType.CAPTURE, 'capture', null, null);
+        Token differentCaptureToken = new Token(TokenType.CAPTURE, 'differentCapture', null, null);
+
+        Expr.Capture aCapture = new Expr.Capture(captureToken);
+        Expr.Capture anotherCapture = new Expr.Capture(differentCaptureToken);
+
+        Assert.isFalse(aCapture == anotherCapture);
+    }
 }

@@ -546,7 +546,6 @@ public abstract class Expr {
         }
     }
 
-    // TODO: Equals and hashCode
     public class PipelineFunction extends Expr {
         public final Token pipeToken;
         public final Expr left;
@@ -567,9 +566,27 @@ public abstract class Expr {
             this.hasInnerCapture = hasInnerCapture;
             return this;
         }
+
+        public Boolean equals(Object other) {
+            if (other instanceof PipelineFunction) {
+                PipelineFunction otherPipelineFunction = (PipelineFunction)other;
+                return this.pipeToken == otherPipelineFunction.pipeToken
+                    && this.left == otherPipelineFunction.left
+                    && this.body == otherPipelineFunction.body
+                    && this.hasInnerCapture == otherPipelineFunction.hasInnerCapture;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = System.hashCode(pipeToken);
+            result = (31 * result) + System.hashCode(left);
+            result = (31 * result) + System.hashCode(body);
+            result = (31 * result) + System.hashCode(hasInnerCapture);
+            return result;
+        }
     }
 
-    // TODO: Equals and hashCode
     public class Capture extends Expr {
         public final Token captureToken;
 
@@ -579,6 +596,18 @@ public abstract class Expr {
 
         public override Object accept(Visitor v) {
             return v.visit(this);
+        }
+
+        public Boolean equals(Object other) {
+            if (other instanceof Capture) {
+                Capture otherCapture = (Capture)other;
+                return this.captureToken == otherCapture.captureToken;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            return System.hashCode(captureToken);
         }
     }
 }
