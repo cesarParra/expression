@@ -3,7 +3,7 @@
     {
       "package": "Expression",
       "versionName": "Version 1.36",
-      "versionNumber": "1.42.0.NEXT",
+      "versionNumber": "1.43.0.NEXT",
       "path": "expression-src",
       "default": false,
       "versionDescription": "Expression core language",
@@ -71,6 +71,7 @@
     "Expression@1.39.0-1": "04tRb000003R51tIAC",
     "Expression@1.40.0-1": "04tRb000003UxfFIAS",
     "Expression@1.41.0-1": "04tRb000003tVPdIAM",
-    "Expression@1.42.0-1": "04tRb000003xe4XIAQ"
+    "Expression@1.42.0-1": "04tRb000003xe4XIAQ",
+    "Expression@1.43.0-1": "04tRb000003xzXCIAY"
   }
 }
