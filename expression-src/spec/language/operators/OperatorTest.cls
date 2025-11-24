@@ -271,4 +271,49 @@ private class OperatorTest {
         Assert.areEqual(3, ((List<Object>)result)[0]);
         Assert.areEqual(4, ((List<Object>)result)[1]);
     }
+
+    @IsTest
+    private static void canCapturePipedValues() {
+        Object result = Evaluator.run(
+            'RANGE(1, 10)\n' +
+                '-> WHERE(_, $current > 4)\n' +
+                '-> SUM()'
+        );
+        Assert.areEqual(45, result);
+    }
+
+    @IsTest
+    private static void canSpreadACapturedValue() {
+        Object result = Evaluator.run(
+            'RANGE(1, 5)\n' +
+                '-> WHERE(_, $current > 2)\n' +
+                '-> [..._]'
+        );
+        List<Object> resultList = (List<Object>)result;
+        Assert.areEqual(3, resultList.size());
+        Assert.areEqual(3, resultList[0]);
+        Assert.areEqual(4, resultList[1]);
+        Assert.areEqual(5, resultList[2]);
+    }
+
+    @IsTest
+    private static void canUseACapturedValueSeveralTimes() {
+        Object result = Evaluator.run(
+            'RANGE(1, 3)\n' +
+                '-> WHERE(_, $current > 1)\n' +
+                '-> SUM(_) + SIZE(_)'
+        );
+        Assert.areEqual(7, result);
+    }
+
+    @IsTest
+    private static void canUseASpreadValueInANonFunctionCall() {
+        Object result = Evaluator.run(
+            'RANGE(1, 3)\n' +
+                '-> WHERE(_, $current > 1)\n' +
+                '-> 10 + SIZE(_)'
+        );
+
+        Assert.areEqual(12, result);
+    }
 }
