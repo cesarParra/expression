@@ -545,4 +545,69 @@ public abstract class Expr {
             return result;
         }
     }
+
+    public class PipelineFunction extends Expr {
+        public final Token pipeToken;
+        public final Expr left;
+        public final Expr body;
+        public Boolean hasExplicitCapture = false;
+
+        public PipelineFunction(Token pipeToken, Expr left, Expr body) {
+            this.pipeToken = pipeToken;
+            this.left = left;
+            this.body = body;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+
+        public PipelineFunction withInnerCapture(Boolean hasInnerCapture) {
+            this.hasExplicitCapture = hasInnerCapture;
+            return this;
+        }
+
+        public Boolean equals(Object other) {
+            if (other instanceof PipelineFunction) {
+                PipelineFunction otherPipelineFunction = (PipelineFunction)other;
+                return this.pipeToken == otherPipelineFunction.pipeToken
+                    && this.left == otherPipelineFunction.left
+                    && this.body == otherPipelineFunction.body
+                    && this.hasExplicitCapture == otherPipelineFunction.hasExplicitCapture;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            Integer result = System.hashCode(pipeToken);
+            result = (31 * result) + System.hashCode(left);
+            result = (31 * result) + System.hashCode(body);
+            result = (31 * result) + System.hashCode(hasExplicitCapture);
+            return result;
+        }
+    }
+
+    public class Capture extends Expr {
+        public final Token captureToken;
+
+        public Capture(Token captureToken) {
+            this.captureToken = captureToken;
+        }
+
+        public override Object accept(Visitor v) {
+            return v.visit(this);
+        }
+
+        public Boolean equals(Object other) {
+            if (other instanceof Capture) {
+                Capture otherCapture = (Capture)other;
+                return this.captureToken == otherCapture.captureToken;
+            }
+            return false;
+        }
+
+        public override Integer hashCode() {
+            return System.hashCode(captureToken);
+        }
+    }
 }

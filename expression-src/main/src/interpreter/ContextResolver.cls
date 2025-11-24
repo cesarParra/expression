@@ -437,6 +437,16 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    public Object visit(Expr.PipelineFunction pipelineFunction) {
+        resolve(pipelineFunction.left);
+        resolve(pipelineFunction.body);
+        return null;
+    }
+
+    public Object visit(Expr.Capture capture) {
+        return null;
+    }
+
     private final Map<SObjectType, Fields> cachedFieldsBySObjectType = new Map<SObjectType, Fields>();
     private Fields getFields() {
         if (cachedFieldsBySObjectType.containsKey(this.queryContext.objectType)) {

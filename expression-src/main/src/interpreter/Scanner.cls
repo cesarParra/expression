@@ -26,7 +26,7 @@ public with sharing class Scanner {
         this.source = normalizeCurvedQuotes(source);
     }
 
-    private String normalizeCurvedQuotes(String input) {
+    private static String normalizeCurvedQuotes(String input) {
         if (input == null) return null;
         return input.replace('“', '"').replace('”', '"');
     }
@@ -89,6 +89,9 @@ public with sharing class Scanner {
             }
             when ';' {
                 addToken(TokenType.SEMICOLON);
+            }
+            when '_' {
+                addToken(TokenType.CAPTURE);
             }
 
             // One or more character tokens

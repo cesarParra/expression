@@ -27,16 +27,16 @@ public with sharing class QueryInterpreter extends Interpreter {
                     'Expected a list of fields or an expression that evaluates to a list of fields.');
             }
 
-            for (Object field : (List<Object>) evaluatedFieldsExpression) {
+            for (Object field : (List<Object>)evaluatedFieldsExpression) {
                 if (!(field instanceof String) && !(field instanceof Q)) {
                     throw new Exceptions.RuntimeException(query.sObjectType,
                         'Each field must evaluate to a string, a merge field or a sub query.');
                 }
 
                 if (field instanceof Q) {
-                    querier.addSubquery((Q) field);
+                    querier.addSubquery((Q)field);
                 } else {
-                    querier.selectField((String) field);
+                    querier.selectField((String)field);
                 }
             }
         }
@@ -45,9 +45,9 @@ public with sharing class QueryInterpreter extends Interpreter {
             // Each Order by will be a binary expression, containing
             // an expression that evaluates to the field name to order by
             // and the QOrder.SortOrder for the direction.
-            Expr.Binary orderBy = (Expr.Binary) orderByExpr;
+            Expr.Binary orderBy = (Expr.Binary)orderByExpr;
             Object orderByResult = evaluate(orderBy.left);
-            QOrder.SortOrder sortOrder = (QOrder.SortOrder) evaluate(orderBy.right);
+            QOrder.SortOrder sortOrder = (QOrder.SortOrder)evaluate(orderBy.right);
 
             // Must evaluate to a string (or a merge field, which resolves as a string in this interpreter)
             if (!(orderByResult instanceof String)) {
@@ -55,7 +55,7 @@ public with sharing class QueryInterpreter extends Interpreter {
                     'Expected a string or an expression that evaluates to a string or merge field for the order by clause.');
             }
 
-            querier.add(Q.orderBy((String) orderByResult).withDirection(sortOrder));
+            querier.add(Q.orderBy((String)orderByResult).withDirection(sortOrder));
         }
 
         if (query.limitExpr != null) {
@@ -66,7 +66,7 @@ public with sharing class QueryInterpreter extends Interpreter {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected an integer or an expression that evaluates to an number for the limit clause.');
             }
-            querier.addLimit(((Decimal) limitResult).intValue());
+            querier.addLimit(((Decimal)limitResult).intValue());
         }
 
         if (query.whereExpr != null) {
@@ -78,7 +78,7 @@ public with sharing class QueryInterpreter extends Interpreter {
             }
             isWhereContext = false;
 
-            querier.add((QICondition) whereResult);
+            querier.add((QICondition)whereResult);
         }
 
         if (query.offsetExpr != null) {
@@ -89,7 +89,7 @@ public with sharing class QueryInterpreter extends Interpreter {
                 throw new Exceptions.RuntimeException(query.sObjectType,
                     'Expected an integer or an expression that evaluates to an number for the offset clause.');
             }
-            querier.addOffset(((Decimal) offsetResult).intValue());
+            querier.addOffset(((Decimal)offsetResult).intValue());
         }
 
         return querier;
@@ -115,9 +115,9 @@ public with sharing class QueryInterpreter extends Interpreter {
                         'Expected a condition or an expression that evaluates to a condition for the right side of the AND operator.');
                 }
 
-                List<QICondition> conditions = new List<QICondition>{
-                    (QICondition) left,
-                    (QICondition) right
+                List<QICondition> conditions = new List<QICondition> {
+                    (QICondition)left,
+                    (QICondition)right
                 };
                 return new QAndGroup(conditions);
             }
@@ -131,9 +131,9 @@ public with sharing class QueryInterpreter extends Interpreter {
                         'Expected a condition or an expression that evaluates to a condition for the right side of the OR operator.');
                 }
 
-                List<QICondition> conditions = new List<QICondition>{
-                    (QICondition) left,
-                    (QICondition) right
+                List<QICondition> conditions = new List<QICondition> {
+                    (QICondition)left,
+                    (QICondition)right
                 };
                 return new QOrGroup(conditions);
             }
@@ -158,22 +158,22 @@ public with sharing class QueryInterpreter extends Interpreter {
 
         switch on binary.operator.type {
             when EQUAL, EQUAL_EQUAL {
-                return Q.condition((String) left).equalsTo(right);
+                return Q.condition((String)left).equalsTo(right);
             }
             when GREATER {
-                return Q.condition((String) left).isGreaterThan(right);
+                return Q.condition((String)left).isGreaterThan(right);
             }
             when GREATER_EQUAL {
-                return Q.condition((String) left).isGreaterOrEquals(right);
+                return Q.condition((String)left).isGreaterOrEquals(right);
             }
             when LESS {
-                return Q.condition((String) left).isLessThan(right);
+                return Q.condition((String)left).isLessThan(right);
             }
             when LESS_EQUAL {
-                return Q.condition((String) left).isLessOrEquals(right);
+                return Q.condition((String)left).isLessOrEquals(right);
             }
             when BANG_EQUAL, LESS_GREATER {
-                return Q.condition((String) left).notEqualsTo(right);
+                return Q.condition((String)left).notEqualsTo(right);
             }
             when else {
                 throw new Exceptions.RuntimeException(binary.operator,
@@ -221,8 +221,10 @@ public with sharing class QueryInterpreter extends Interpreter {
                 'Functions are not supported in a Query context outside of a where clause.');
         }
 
+        attemptCapture(function);
+
         Map<String, StandardFunction> dateAndTimeFunctions = new DateAndTimeFunctions.DateAndTimeFunctionsProvider().getFunctions();
-        Map<String, StandardFunction> supportedWhereFunctions = new Map<String, StandardFunction>{
+        Map<String, StandardFunction> supportedWhereFunctions = new Map<String, StandardFunction> {
             'LIKE' => new LikeFn(),
             'ISIN' => new IsInFn(),
             'ISNOTIN' => new IsNotInFn(),
@@ -273,7 +275,7 @@ public with sharing class QueryInterpreter extends Interpreter {
                 );
             }
 
-            return Q.condition((String) text).isLike((String) pattern);
+            return Q.condition((String)text).isLike((String)pattern);
         }
 
         public override Arity getArity() {
@@ -302,13 +304,13 @@ public with sharing class QueryInterpreter extends Interpreter {
             }
 
             // Empty lists are not accepted, as they will never match anything
-            if (((List<Object>) values).isEmpty()) {
+            if (((List<Object>)values).isEmpty()) {
                 throw new FunctionExecutionException(
                     'Error executing "ISIN" function: the second argument must evaluate to a non-empty list of values.'
                 );
             }
 
-            return Q.condition((String) field).isIn((List<Object>) values);
+            return Q.condition((String)field).isIn((List<Object>)values);
         }
 
         public override Arity getArity() {
@@ -337,13 +339,13 @@ public with sharing class QueryInterpreter extends Interpreter {
             }
 
             // Empty lists are not accepted, as they will never match anything
-            if (((List<Object>) values).isEmpty()) {
+            if (((List<Object>)values).isEmpty()) {
                 throw new FunctionExecutionException(
                     'Error executing "ISNOTIN" function: the second argument must evaluate to a non-empty list of values.'
                 );
             }
 
-            return Q.condition((String) field).isNotIn((List<Object>) values);
+            return Q.condition((String)field).isNotIn((List<Object>)values);
         }
 
         public override Arity getArity() {
@@ -362,7 +364,7 @@ public with sharing class QueryInterpreter extends Interpreter {
                 );
             }
 
-            return Q.condition((String) field).isNull();
+            return Q.condition((String)field).isNull();
         }
 
         public override Arity getArity() {
@@ -381,7 +383,7 @@ public with sharing class QueryInterpreter extends Interpreter {
                 );
             }
 
-            return Q.condition((String) field).isNotNull();
+            return Q.condition((String)field).isNotNull();
         }
 
         public override Arity getArity() {
@@ -399,7 +401,7 @@ public with sharing class QueryInterpreter extends Interpreter {
                         'Error executing "AND" function: all arguments must evaluate to conditions.'
                     );
                 }
-                conditions.add((QICondition) evaluatedArgument);
+                conditions.add((QICondition)evaluatedArgument);
             }
 
             return new QAndGroup(conditions);
@@ -420,7 +422,7 @@ public with sharing class QueryInterpreter extends Interpreter {
                         'Error executing "OR" function: all arguments must evaluate to conditions.'
                     );
                 }
-                conditions.add((QICondition) evaluatedArgument);
+                conditions.add((QICondition)evaluatedArgument);
             }
 
             return new QOrGroup(conditions);

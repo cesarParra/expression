@@ -357,7 +357,26 @@ public virtual with sharing class Interpreter implements Visitor {
     }
 
     public virtual Object visit(Expr.FunctionCall function) {
+        attemptCapture(function);
         return FunctionCaller.exec(this, function);
+    }
+
+    protected void attemptCapture(Expr.FunctionCall function) {
+        if (pendingCapture == null || pendingCapture.isExplicit == true) {
+            return;
+        }
+
+        // If there is a pipeline capture pending, then the first function
+        // call we encounter should use that as its first argument.
+        if (function.arguments.isEmpty()) {
+            function.arguments.add(pendingCapture.expression);
+        } else {
+            function.arguments.add(0, pendingCapture.expression);
+        }
+
+        // Once captured, we clear the pending capture to avoid any additional
+        // functions to the right-hand side of the pipeline to try and use it.
+        pendingCapture = null;
     }
 
     public Object visit(Expr.ListLiteral listLiteral) {
@@ -566,5 +585,67 @@ public virtual with sharing class Interpreter implements Visitor {
         }
 
         return new ShouldNotAdd();
+    }
+
+    private PendingCapture pendingCapture;
+    public Object visit(Expr.PipelineFunction pipelineFunction) {
+        if (pipelineFunction.hasExplicitCapture) {
+            // When dealing with an explicit capture, we immediately evaluate
+            // the left-hand side of the pipeline, and store it for it to be used
+            // whenever a capture ("_") expression is encountered within the right-hand side (body).
+            this.pendingCapture = explicit(evaluate(pipelineFunction.left));
+        } else {
+            // If there is no capture on the right-hand side of the pipeline,
+            // then it acts as syntactic sugar for passing the left-hand side
+            // as the first argument to the function call on the right-hand side.
+            // Thus, it does not get evaluated, but rather stored as an expression
+            // for it to be evaluated during function call argument resolution.
+            this.pendingCapture = implicit(pipelineFunction.left);
+        }
+
+        Object toReturn = evaluate(pipelineFunction.body);
+        return toReturn;
+    }
+
+    public Object visit(Expr.Capture capture) {
+        if (this.pendingCapture == null) {
+            throw new Exceptions.RuntimeException(
+                capture.captureToken,
+                'Capture expressions can only be used inside pipeline functions.'
+            );
+        }
+
+        if (pendingCapture.isExplicit == false) {
+            // This should be unreachable, since the PipelineFunction visitor
+            // should have populated the pending capture as explicit.
+            throw new Exceptions.UnknownException(
+                capture.captureToken.position,
+                'Internal error: expected an explicit pending capture.'
+            );
+        }
+
+        return this.pendingCapture.result;
+    }
+
+    private class PendingCapture {
+        private Boolean isExplicit;
+        // Populated when isExplicit is false
+        private Expr expression;
+        // Populated when isExplicit is true
+        private Object result;
+    }
+
+    private static PendingCapture explicit(Object result) {
+        PendingCapture capture = new PendingCapture();
+        capture.isExplicit = true;
+        capture.result = result;
+        return capture;
+    }
+
+    private static PendingCapture implicit(Expr expression) {
+        PendingCapture capture = new PendingCapture();
+        capture.isExplicit = false;
+        capture.expression = expression;
+        return capture;
     }
 }
