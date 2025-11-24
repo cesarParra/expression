@@ -10,7 +10,7 @@ nextjs:
 
 You can reference custom labels using the `$Label` global variable.
 
-{% callout type="warning" %}
+{% callout type="warning" title="Be Aware.." %}
 A namespace needs to be provided when referencing a label. To use the current namespace
 (or no namespace at all), use the letter `c`.
 {% /callout %}
@@ -95,9 +95,9 @@ Available references are:
 
 ## Permission
 
-{% callout type="warning" %}
+{% callout type="warning" title="Usage Warning" %}
 Due to limitations with calling `FeatureManagement.checkPermission` from within a managed package, Expression
-checks permissions by querying the `CustomPermission` and `SetupEntityAccess` objects. 
+checks permissions by querying the `CustomPermission` and `SetupEntityAccess` objects.
 
 This means that each permission check will consume 2 SOQL queries the first time it is evaluated (checks are
 cached afterwards).
@@ -114,4 +114,27 @@ underscores (`__`):
 
 ```
 $Permission.namespace__MyCustomPermissionName # Returns true if the user has access to the custom permission, false otherwise.
+```
+
+## Setup
+
+{% callout type="warning" title="Usage Warning" %}
+Using this endpoint consumes SOQL queries.
+{% /callout %}
+
+A global merge field type to use when referencing a custom setting of type “hierarchy.”
+
+Use it to access hierarchical custom settings and their field values using dot notation. For example, $
+Setup.App_Prefs__c.Show_Help_Content__c.
+
+Hierarchical custom settings allow values at any of three different levels:
+
+- Organization, the default value for everyone
+- Profile, which overrides the Organization value
+- User, which overrides both Organization and Profile values
+
+The correct value is automatically determined for the field based on the running user’s current context.
+
+```
+$Setup.CustomSettingName__c.CustomFieldName__c
 ```
