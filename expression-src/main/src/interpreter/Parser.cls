@@ -183,7 +183,7 @@ public with sharing class Parser {
     private Expr spread() {
         if (match(TokenType.SPREAD)) {
             Token spreadToken = previous();
-            Expr right = getExpr();
+            Expr right = addIfExpr();
             return new Expr.Spread(
                 spreadToken,
                 right
