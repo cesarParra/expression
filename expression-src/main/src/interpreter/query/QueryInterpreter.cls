@@ -221,8 +221,6 @@ public with sharing class QueryInterpreter extends Interpreter {
                 'Functions are not supported in a Query context outside of a where clause.');
         }
 
-        attemptCapture(function);
-
         Map<String, StandardFunction> dateAndTimeFunctions = new DateAndTimeFunctions.DateAndTimeFunctionsProvider().getFunctions();
         Map<String, StandardFunction> supportedWhereFunctions = new Map<String, StandardFunction> {
             'LIKE' => new LikeFn(),

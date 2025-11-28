@@ -66,6 +66,18 @@ public with sharing class PipeResolver implements Visitor {
     }
 
     public Object visit(Expr.FunctionCall function) {
+        if (this.shouldImplicitlyCapture) {
+            // If there is a pipeline capture pending, then the first function
+            // call we encounter should use that as its first argument.
+            if (function.arguments.isEmpty()) {
+                function.arguments.add(this.waitingForCapture);
+            } else {
+                function.arguments.add(0, this.waitingForCapture);
+            }
+
+            this.resetCaptureFlagsAndState();
+        }
+
         List<Expr> newArguments = new List<Expr>();
         for (Expr argument : function.arguments) {
             newArguments.add(resolve(argument));
@@ -201,29 +213,52 @@ public with sharing class PipeResolver implements Visitor {
         );
     }
 
-    Boolean lookingForCapture = false;
+    Boolean lookingForExplicitCapture = false;
+    Boolean shouldImplicitlyCapture = false;
     Boolean captureFound = false;
+    Expr waitingForCapture;
     public Object visit(Expr.PipelineFunction pipelineFunction) {
         Expr left = resolve(pipelineFunction.left);
-        lookingForCapture = true;
+        this.waitingForCapture = left;
+
+        // We now do an initial pass of the right-hand side, looking for a capture expression.
+        this.lookingForExplicitCapture = true;
         Expr resolvedBody = resolve(pipelineFunction.body);
-        lookingForCapture = false;
-        Object toReturn = new Expr.PipelineFunction(pipelineFunction.pipeToken, left, resolvedBody)
-            .withInnerCapture(captureFound);
-        captureFound = false;
-        return toReturn;
+        this.lookingForExplicitCapture = false;
+
+        if (this.captureFound) {
+            // If a capture was found, we are done. Reset all flags and return the resolved body.
+            this.resetCaptureFlagsAndState();
+            return resolvedBody;
+        } else {
+            // If no capture was found, we flag the need for an implicit capture.
+            // And resolve again, expecting that the first function parameter will be replaced with the left expression.
+            this.shouldImplicitlyCapture = true;
+            resolvedBody = resolve(pipelineFunction.body);
+
+            // Reset all flags and return the resolved body.
+            this.resetCaptureFlagsAndState();
+            return resolvedBody;
+        }
+    }
+
+    void resetCaptureFlagsAndState() {
+        this.lookingForExplicitCapture = false;
+        this.shouldImplicitlyCapture = false;
+        this.captureFound = false;
+        this.waitingForCapture = null;
     }
 
     public Object visit(Expr.Capture capture) {
-        if (lookingForCapture) {
-            captureFound = true;
-        } else {
-            throw new Exceptions.RuntimeException(
-                capture.captureToken,
-                'Capture expressions can only be used inside pipeline functions.'
-            );
+        if (this.lookingForExplicitCapture) {
+            this.captureFound = true;
+            return this.waitingForCapture;
         }
 
-        return capture;
+        // If we reach here, it means a capture expression was used outside of a pipeline function.
+        throw new Exceptions.RuntimeException(
+            capture.captureToken,
+            'Capture expressions can only be used inside pipeline functions.'
+        );
     }
 }

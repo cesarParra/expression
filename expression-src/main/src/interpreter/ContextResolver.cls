@@ -438,13 +438,11 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.PipelineFunction pipelineFunction) {
-        resolve(pipelineFunction.left);
-        resolve(pipelineFunction.body);
-        return null;
+        throw new UnsupportedOperationException('Pipeline functions should first be desugared before being resolved.');
     }
 
     public Object visit(Expr.Capture capture) {
-        return null;
+        throw new UnsupportedOperationException('Capture expressions should first be desugared before being resolved.');
     }
 
     private final Map<SObjectType, Fields> cachedFieldsBySObjectType = new Map<SObjectType, Fields>();
