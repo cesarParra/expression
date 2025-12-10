@@ -139,20 +139,72 @@ public virtual with sharing class Interpreter implements Visitor {
                 return ((Decimal)left).pow(Integer.valueOf(right));
             }
             when GREATER {
-                checkNumberOperand(binary.operator, left, right);
-                return (Decimal)left > (Decimal)right;
+                // Check for numbers
+                if (left instanceof Decimal && right instanceof Decimal) {
+                    return (Decimal)left > (Decimal)right;
+                }
+
+                if (left instanceof Date && right instanceof Date) {
+                    return (Date)left > (Date)right;
+                }
+
+                if (left instanceof Datetime && right instanceof Datetime) {
+                    return (Datetime)left > (Datetime)right;
+                }
+
+                throw new Exceptions.RuntimeException(
+                    binary.operator,
+                    'Error executing ' + binary.operator.lexeme + ' operator: operands must be numbers, dates, or datetimes.'
+                );
             }
             when GREATER_EQUAL {
-                checkNumberOperand(binary.operator, left, right);
-                return (Decimal)left >= (Decimal)right;
+                if (left instanceof Decimal && right instanceof Decimal) {
+                    return (Decimal)left >= (Decimal)right;
+                }
+
+                if (left instanceof Date && right instanceof Date) {
+                    return (Date)left >= (Date)right;
+                }
+
+                if (left instanceof Datetime && right instanceof Datetime) {
+                    return (Datetime)left >= (Datetime)right;
+                }
+
+                throw new Exceptions.RuntimeException(
+                    binary.operator,
+                    'Error executing ' + binary.operator.lexeme + ' operator: operands must be numbers, dates, or datetimes.'
+                );
             }
             when LESS {
-                checkNumberOperand(binary.operator, left, right);
-                return (Decimal)left < (Decimal)right;
+                if (left instanceof Decimal && right instanceof Decimal) {
+                    return (Decimal)left < (Decimal)right;
+                }
+
+                if (left instanceof Date && right instanceof Date) {
+                    return (Date)left < (Date)right;
+                }
+
+                if (left instanceof Datetime && right instanceof Datetime) {
+                    return (Datetime)left < (Datetime)right;
+                }
+
+                throw new Exceptions.RuntimeException(
+                    binary.operator,
+                    'Error executing ' + binary.operator.lexeme + ' operator: operands must be numbers, dates, or datetimes.'
+                );
             }
             when LESS_EQUAL {
-                checkNumberOperand(binary.operator, left, right);
-                return (Decimal)left <= (Decimal)right;
+                if (left instanceof Decimal && right instanceof Decimal) {
+                    return (Decimal)left <= (Decimal)right;
+                }
+
+                if (left instanceof Date && right instanceof Date) {
+                    return (Date)left <= (Date)right;
+                }
+
+                if (left instanceof Datetime && right instanceof Datetime) {
+                    return (Datetime)left <= (Datetime)right;
+                }
             }
             when EQUAL, EQUAL_EQUAL {
                 return left == right;
@@ -567,7 +619,7 @@ public virtual with sharing class Interpreter implements Visitor {
 
         return new ShouldNotAdd();
     }
-    
+
     public Object visit(Expr.PipelineFunction pipelineFunction) {
         throw new Exceptions.UnknownException(
             'Pipelines should first be desugared by the PipeResolver before reaching the Interpreter.'
