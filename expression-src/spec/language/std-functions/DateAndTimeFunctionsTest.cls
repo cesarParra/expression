@@ -12,6 +12,11 @@ private class DateAndTimeFunctionsTest {
     }
 
     @IsTest
+    private static void addDaysFunctionAddsDays() {
+        Assert.areEqual(Date.newInstance(2015, 1, 2), Evaluator.run('ADDDAYS(DATE(2015, 1, 1), 1)'));
+    }
+
+    @IsTest
     private static void addMonthsFunctionAddsMonths() {
         Assert.areEqual(Date.newInstance(2015, 2, 1), Evaluator.run('ADDMONTHS(DATE(2015, 1, 1), 1)'));
     }

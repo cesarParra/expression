@@ -5,7 +5,8 @@
  * @display-icon utility:date_input
  */
 public with sharing class DateAndTimeFunctions {
-    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction>{
+    private static final Map<String, StandardFunction> FUNCTIONS = new Map<String, StandardFunction> {
+        'ADDDAYS' => new DateAndTimeFunctions.AddDaysFn(),
         'ADDMONTHS' => new DateAndTimeFunctions.AddMonthsFn(),
         'DATE' => new DateAndTimeFunctions.DateFn(),
         'DATETIME' => new DateAndTimeFunctions.DatetimeFn(),
@@ -45,6 +46,38 @@ public with sharing class DateAndTimeFunctions {
     }
 
     /**
+     * @description Returns a date that is a specified number of days before or after a given date.
+     *
+     * Accepts 2 arguments: the date and the number of days to add.
+     * @function ADDDAYS
+     * @example
+     * ADDDAYS(DATE(2020, 1, 1), 1) // 2020-01-02
+     */
+    private class AddDaysFn extends StandardFunction {
+        public override Object call(List<Expr> arguments) {
+            Object startDate = evaluate(arguments.get(0));
+            if (!(startDate instanceof Date)) {
+                throw new FunctionExecutionException(
+                    'Error executing "ADDDAYS" function: the argument must evaluate to a date value.'
+                );
+            }
+
+            Object daysToAdd = evaluate(arguments.get(1));
+            if (!(daysToAdd instanceof Decimal)) {
+                throw new FunctionExecutionException(
+                    'Error executing "ADDDAYS" function: the argument must evaluate to a number value.'
+                );
+            }
+
+            return ((Date)startDate).addDays(((Decimal)daysToAdd).intValue());
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(2);
+        }
+    }
+
+    /**
      * @description Returns a date that is a specified number of months before or after a given date.
      *
      * Accepts 2 arguments: the date and the number of months to add.
@@ -68,7 +101,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return ((Date) startMonth).addMonths(((Decimal) monthsToAdd).intValue());
+            return ((Date)startMonth).addMonths(((Decimal)monthsToAdd).intValue());
         }
 
         public override Arity getArity() {
@@ -192,7 +225,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return ((Date) dateValue).day();
+            return ((Date)dateValue).day();
         }
 
         public override Arity getArity() {
@@ -217,7 +250,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return ((Date) dateValue).dayOfYear();
+            return ((Date)dateValue).dayOfYear();
         }
 
         public override Arity getArity() {
@@ -262,9 +295,9 @@ public with sharing class DateAndTimeFunctions {
             }
 
             if (expression instanceof String) {
-                return Date.valueOf((String) expression);
+                return Date.valueOf((String)expression);
             } else {
-                return ((Datetime) expression).date();
+                return ((Datetime)expression).date();
             }
         }
 
@@ -290,7 +323,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return Datetime.valueOf((String) expression);
+            return Datetime.valueOf((String)expression);
         }
 
         public override Arity getArity() {
@@ -334,13 +367,13 @@ public with sharing class DateAndTimeFunctions {
             }
 
             if (type == TimeType.MILLISECOND) {
-                return ((Time) timeValue).millisecond();
+                return ((Time)timeValue).millisecond();
             } else if (type == TimeType.MINUTE) {
-                return ((Time) timeValue).minute();
+                return ((Time)timeValue).minute();
             } else if (type == TimeType.SECOND) {
-                return ((Time) timeValue).second();
+                return ((Time)timeValue).second();
             } else {
-                return ((Time) timeValue).hour();
+                return ((Time)timeValue).hour();
             }
         }
 
@@ -424,7 +457,7 @@ public with sharing class DateAndTimeFunctions {
 
             if (dateTimeOrText instanceof String) {
                 // A received string should be in the format of HH:mm:ss.SSS
-                String[] parts = ((String) dateTimeOrText).split(':');
+                String[] parts = ((String)dateTimeOrText).split(':');
                 if (parts.size() != 3) {
                     throw new FunctionExecutionException(
                         'Error executing "TIMEVALUE" function: the argument must evaluate to a string in the format of HH:mm:ss.SSS.'
@@ -446,7 +479,7 @@ public with sharing class DateAndTimeFunctions {
                     return Time.newInstance(hours, minutes, seconds, 0);
                 }
             } else {
-                return ((Datetime) dateTimeOrText).time();
+                return ((Datetime)dateTimeOrText).time();
             }
         }
 
@@ -490,7 +523,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return Integer.valueOf(Datetime.newInstanceGmt((Date) dateValue, Time.newInstance(0, 0, 0, 0)).format('w'));
+            return Integer.valueOf(Datetime.newInstanceGmt((Date)dateValue, Time.newInstance(0, 0, 0, 0)).format('w'));
         }
 
         public override Arity getArity() {
@@ -515,7 +548,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return Integer.valueOf(Datetime.newInstanceGmt((Date) dateValue, Time.newInstance(0, 0, 0, 0)).format('Y'));
+            return Integer.valueOf(Datetime.newInstanceGmt((Date)dateValue, Time.newInstance(0, 0, 0, 0)).format('Y'));
         }
 
         public override Arity getArity() {
@@ -540,7 +573,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return ((Date) dateValue).year();
+            return ((Date)dateValue).year();
         }
 
         public override Arity getArity() {
@@ -565,7 +598,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            Long timeStamp = ((Decimal) unixTime).longValue() * 1000;
+            Long timeStamp = ((Decimal)unixTime).longValue() * 1000;
             Datetime gmtDatetime = Datetime.newInstance(timeStamp);
             return gmtDatetime;
         }
@@ -597,14 +630,14 @@ public with sharing class DateAndTimeFunctions {
 
             if (dateOrDateTimeOrTime instanceof Date) {
                 // Convert to datetime first
-                Datetime gmtDatetime = Datetime.newInstanceGmt((Date) dateOrDateTimeOrTime, Time.newInstance(0, 0, 0, 0));
+                Datetime gmtDatetime = Datetime.newInstanceGmt((Date)dateOrDateTimeOrTime, Time.newInstance(0, 0, 0, 0));
                 return gmtDatetime.getTime() / 1000;
             } else if (dateOrDateTimeOrTime instanceof Datetime) {
-                Datetime gmtDateTime = Datetime.newInstanceGmt(((Datetime) dateOrDateTimeOrTime).date(), ((Datetime) dateOrDateTimeOrTime).time());
+                Datetime gmtDateTime = Datetime.newInstanceGmt(((Datetime)dateOrDateTimeOrTime).date(), ((Datetime)dateOrDateTimeOrTime).time());
                 return gmtDateTime.getTime() / 1000;
             } else {
                 // Calculate the number of seconds in the day for a given time
-                return ((Time) dateOrDateTimeOrTime).hour() * 3600 + ((Time) dateOrDateTimeOrTime).minute() * 60 + ((Time) dateOrDateTimeOrTime).second();
+                return ((Time)dateOrDateTimeOrTime).hour() * 3600 + ((Time)dateOrDateTimeOrTime).minute() * 60 + ((Time)dateOrDateTimeOrTime).second();
             }
         }
 
@@ -631,7 +664,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            Date dateObj = (Date) dateValue;
+            Date dateObj = (Date)dateValue;
 
             return Integer.valueOf(Datetime.newInstanceGmt(
                 dateObj.year(),
@@ -668,7 +701,7 @@ public with sharing class DateAndTimeFunctions {
             // Expects either 2 Times or 2 DateTimes
             Object startVal = evaluate(arguments.get(0));
             if (startVal instanceof Time) {
-                Time startTime = (Time) startVal;
+                Time startTime = (Time)startVal;
                 // Check that the second value is also a Time
                 Object endVal = evaluate(arguments.get(1));
                 if (!(endVal instanceof Time)) {
@@ -677,12 +710,12 @@ public with sharing class DateAndTimeFunctions {
                     );
                 }
 
-                Time endTime = (Time) endVal;
+                Time endTime = (Time)endVal;
                 // Convert both times to date times
                 startDateTime = Datetime.newInstanceGmt(Date.newInstance(0, 1, 1), startTime);
                 endDateTime = Datetime.newInstanceGmt(Date.newInstance(0, 1, 1), endTime);
             } else if (startVal instanceof Datetime) {
-                startDateTime = (Datetime) startVal;
+                startDateTime = (Datetime)startVal;
                 // Check that the second value is also a Datetime
                 Object endVal = evaluate(arguments.get(1));
                 if (!(endVal instanceof Datetime)) {
@@ -691,7 +724,7 @@ public with sharing class DateAndTimeFunctions {
                     );
                 }
 
-                endDateTime = (Datetime) endVal;
+                endDateTime = (Datetime)endVal;
             } else {
                 throw new FunctionExecutionException(
                     'Error executing "FORMATDURATION" function: the first argument must evaluate to a time or datetime value.'
@@ -700,9 +733,9 @@ public with sharing class DateAndTimeFunctions {
 
             // Calculate the difference between the two
             Long differenceInMs = Math.abs(endDateTime.getTime() - startDateTime.getTime());
-            Integer hours = (Integer) Math.floor(differenceInMs / 1000 / 60 / 60);
-            Integer minutes = (Integer) Math.floor((differenceInMs - hours * 1000 * 60 * 60) / 1000 / 60);
-            Integer seconds = (Integer) Math.floor((differenceInMs - hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000);
+            Integer hours = (Integer)Math.floor(differenceInMs / 1000 / 60 / 60);
+            Integer minutes = (Integer)Math.floor((differenceInMs - hours * 1000 * 60 * 60) / 1000 / 60);
+            Integer seconds = (Integer)Math.floor((differenceInMs - hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000);
 
             // Format in HH:MM:SS
             // Use StringUtils.leftPad if necessary
@@ -736,7 +769,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return ((Date) dateValue).month();
+            return ((Date)dateValue).month();
         }
 
         public override Arity getArity() {
@@ -770,7 +803,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return ((Datetime) dateTimeValue).format((String) formatValue);
+            return ((Datetime)dateTimeValue).format((String)formatValue);
         }
 
         public override Arity getArity() {
@@ -796,7 +829,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return Datetime.newInstance((Date) dateValue, Time.newInstance(0, 0, 0, 0));
+            return Datetime.newInstance((Date)dateValue, Time.newInstance(0, 0, 0, 0));
         }
 
         public override Arity getArity() {
@@ -830,7 +863,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return ((Date) dateValue).daysBetween((Date) dateValue2);
+            return ((Date)dateValue).daysBetween((Date)dateValue2);
         }
 
         public override Arity getArity() {
