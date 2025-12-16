@@ -1,5 +1,55 @@
 export const data = [
   {
+    "category": "Data",
+    "values": [
+      {
+        "name": "LET",
+        "autoCompleteValue": "LET(",
+        "description": "Allows you to define custom variables that can be used in the expression.<br/>Accepts 2 arguments: a map of variables to define and the expression to evaluate.<br/>The map keys should be the variable names prefixed with `$`.",
+        "examples": [
+          "LET({ \"$a\": 1, \"$b\": 2 }, $a + $b) // 3"
+        ],
+        "icon": "utility:data_mapping"
+      },
+      {
+        "name": "PARSEJSON",
+        "autoCompleteValue": "PARSEJSON(",
+        "description": "Parses a JSON string into a usable map/object structure.<br/>Accepts 1 argument: the JSON string to parse.",
+        "examples": [
+          "PARSEJSON(Contact.Custom_JSON_Field__c) // Parses JSON from a field"
+        ],
+        "icon": "utility:data_mapping"
+      },
+      {
+        "name": "PRINT",
+        "autoCompleteValue": "PRINT(",
+        "description": "Allows you to print a value to the playground console.<br/>Accepts 1 argument: the value to print.",
+        "examples": [
+          "PRINT(\"Hello World\")"
+        ],
+        "icon": "utility:data_mapping"
+      },
+      {
+        "name": "RAWQUERY",
+        "autoCompleteValue": "RAWQUERY(",
+        "description": "Allows you to run a raw query against the database.<br/>Accepts 1 argument: the query to run.",
+        "examples": [
+          "RAWQUERY(\"SELECT Id, Name FROM Account LIMIT 10\")"
+        ],
+        "icon": "utility:data_mapping"
+      },
+      {
+        "name": "TRANSFORM",
+        "autoCompleteValue": "TRANSFORM(",
+        "description": "Transforms any input using the provided expression.<br/>Provides a special variable `$source` in the inner expression that contains the original input.<br/><br/>Accepts 2 arguments: the input to transform and the expression to evaluate.",
+        "examples": [
+          "TRANSFORM(\"Hello World\", UPPER($source)) // \"HELLO WORLD\""
+        ],
+        "icon": "utility:data_mapping"
+      }
+    ]
+  },
+  {
     "category": "Collection",
     "values": [
       {
@@ -311,58 +361,17 @@ export const data = [
     ]
   },
   {
-    "category": "Data",
-    "values": [
-      {
-        "name": "LET",
-        "autoCompleteValue": "LET(",
-        "description": "Allows you to define custom variables that can be used in the expression.<br/>Accepts 2 arguments: a map of variables to define and the expression to evaluate.<br/>The map keys should be the variable names prefixed with `$`.",
-        "examples": [
-          "LET({ \"$a\": 1, \"$b\": 2 }, $a + $b) // 3"
-        ],
-        "icon": "utility:data_mapping"
-      },
-      {
-        "name": "PARSEJSON",
-        "autoCompleteValue": "PARSEJSON(",
-        "description": "Parses a JSON string into a usable map/object structure.<br/>Accepts 1 argument: the JSON string to parse.",
-        "examples": [
-          "PARSEJSON(Contact.Custom_JSON_Field__c) // Parses JSON from a field"
-        ],
-        "icon": "utility:data_mapping"
-      },
-      {
-        "name": "PRINT",
-        "autoCompleteValue": "PRINT(",
-        "description": "Allows you to print a value to the playground console.<br/>Accepts 1 argument: the value to print.",
-        "examples": [
-          "PRINT(\"Hello World\")"
-        ],
-        "icon": "utility:data_mapping"
-      },
-      {
-        "name": "RAWQUERY",
-        "autoCompleteValue": "RAWQUERY(",
-        "description": "Allows you to run a raw query against the database.<br/>Accepts 1 argument: the query to run.",
-        "examples": [
-          "RAWQUERY(\"SELECT Id, Name FROM Account LIMIT 10\")"
-        ],
-        "icon": "utility:data_mapping"
-      },
-      {
-        "name": "TRANSFORM",
-        "autoCompleteValue": "TRANSFORM(",
-        "description": "Transforms any input using the provided expression.<br/>Provides a special variable `$source` in the inner expression that contains the original input.<br/><br/>Accepts 2 arguments: the input to transform and the expression to evaluate.",
-        "examples": [
-          "TRANSFORM(\"Hello World\", UPPER($source)) // \"HELLO WORLD\""
-        ],
-        "icon": "utility:data_mapping"
-      }
-    ]
-  },
-  {
     "category": "Date and Time",
     "values": [
+      {
+        "name": "ADDDAYS",
+        "autoCompleteValue": "ADDDAYS(",
+        "description": "Returns a date that is a specified number of days before or after a given date.<br/><br/>Accepts 2 arguments: the date and the number of days to add.",
+        "examples": [
+          "ADDDAYS(DATE(2020, 1, 1), 1) // 2020-01-02"
+        ],
+        "icon": "utility:date_input"
+      },
       {
         "name": "ADDMONTHS",
         "autoCompleteValue": "ADDMONTHS(",
@@ -700,92 +709,6 @@ export const data = [
     ]
   },
   {
-    "category": "Math",
-    "values": [
-      {
-        "name": "ABS",
-        "autoCompleteValue": "ABS(",
-        "description": "Returns the absolute value of a number.<br/><br/>Accepts 1 argument: the number to evaluate.",
-        "examples": [
-          "ABS(-1) // 1"
-        ],
-        "icon": "utility:advanced_function"
-      },
-      {
-        "name": "CEILING",
-        "autoCompleteValue": "CEILING(",
-        "description": "Returns the smallest integer greater than or equal to the specified number.<br/><br/>Accepts 1 argument: the number to evaluate.",
-        "examples": [
-          "CEILING(1.5) // 2"
-        ],
-        "icon": "utility:advanced_function"
-      },
-      {
-        "name": "FLOOR",
-        "autoCompleteValue": "FLOOR(",
-        "description": "Returns the largest integer less than or equal to the specified number.<br/><br/>Accepts 1 argument: the number to evaluate.",
-        "examples": [
-          "FLOOR(1.5) // 1"
-        ],
-        "icon": "utility:advanced_function"
-      },
-      {
-        "name": "FORMATNUMBER",
-        "autoCompleteValue": "FORMATNUMBER(",
-        "description": "Formats a number with comma as thousand separator.<br/><br/>Accepts 1 or 2 arguments: the number to format and optionally the number of decimal places.",
-        "examples": [
-          "FORMATNUMBER(20000.53) // \"20,000.53\"\nFORMATNUMBER(20000.53, 1) // \"20,000.5\""
-        ],
-        "icon": "utility:advanced_function"
-      },
-      {
-        "name": "MAX",
-        "autoCompleteValue": "MAX(",
-        "description": "Returns the largest value in a list of numbers.<br/><br/>Accepts either a list of numbers as a single argument, or multiple numerical arguments.",
-        "examples": [
-          "MAX(1, 2, 3) // 3\nMAX([1, 2, 3]) // 3"
-        ],
-        "icon": "utility:advanced_function"
-      },
-      {
-        "name": "MIN",
-        "autoCompleteValue": "MIN(",
-        "description": "Returns the smallest value in a list of numbers.<br/><br/>Accepts either a list of numbers as a single argument, or multiple numerical arguments.",
-        "examples": [
-          "MIN(1, 2, 3) // 1\nMIN([1, 2, 3]) // 1"
-        ],
-        "icon": "utility:advanced_function"
-      },
-      {
-        "name": "MOD",
-        "autoCompleteValue": "MOD(",
-        "description": "Returns the remainder of one number divided by another.<br/><br/>Accepts 2 arguments: the dividend and the divisor.",
-        "examples": [
-          "MOD(5, 2) // 1"
-        ],
-        "icon": "utility:advanced_function"
-      },
-      {
-        "name": "ROUND",
-        "autoCompleteValue": "ROUND(",
-        "description": "Returns a rounded number. Optionally specify the number of decimal places to round to.<br/><br/>Accepts 1 or 2 arguments: the number to round and optionally the number of decimal places to round to.",
-        "examples": [
-          "ROUND(1.234) // 1\nROUND(1.234, 2) // 1.23"
-        ],
-        "icon": "utility:advanced_function"
-      },
-      {
-        "name": "TRUNC",
-        "autoCompleteValue": "TRUNC(",
-        "description": "Returns a truncated number. Optionally specify the number of decimal places to truncate to.<br/><br/>Accepts 1 or 2 arguments: the number to truncate and optionally the number of decimal places to truncate to.",
-        "examples": [
-          "TRUNC(1.234) // 1\nTRUNC(1.234, 2) // 1.23"
-        ],
-        "icon": "utility:advanced_function"
-      }
-    ]
-  },
-  {
     "category": "String",
     "values": [
       {
@@ -994,6 +917,92 @@ export const data = [
           "VALUE(\"123\") // 123"
         ],
         "icon": "utility:text"
+      }
+    ]
+  },
+  {
+    "category": "Math",
+    "values": [
+      {
+        "name": "ABS",
+        "autoCompleteValue": "ABS(",
+        "description": "Returns the absolute value of a number.<br/><br/>Accepts 1 argument: the number to evaluate.",
+        "examples": [
+          "ABS(-1) // 1"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "CEILING",
+        "autoCompleteValue": "CEILING(",
+        "description": "Returns the smallest integer greater than or equal to the specified number.<br/><br/>Accepts 1 argument: the number to evaluate.",
+        "examples": [
+          "CEILING(1.5) // 2"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "FLOOR",
+        "autoCompleteValue": "FLOOR(",
+        "description": "Returns the largest integer less than or equal to the specified number.<br/><br/>Accepts 1 argument: the number to evaluate.",
+        "examples": [
+          "FLOOR(1.5) // 1"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "FORMATNUMBER",
+        "autoCompleteValue": "FORMATNUMBER(",
+        "description": "Formats a number with comma as thousand separator.<br/><br/>Accepts 1 or 2 arguments: the number to format and optionally the number of decimal places.",
+        "examples": [
+          "FORMATNUMBER(20000.53) // \"20,000.53\"\nFORMATNUMBER(20000.53, 1) // \"20,000.5\""
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "MAX",
+        "autoCompleteValue": "MAX(",
+        "description": "Returns the largest value in a list of numbers.<br/><br/>Accepts either a list of numbers as a single argument, or multiple numerical arguments.",
+        "examples": [
+          "MAX(1, 2, 3) // 3\nMAX([1, 2, 3]) // 3"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "MIN",
+        "autoCompleteValue": "MIN(",
+        "description": "Returns the smallest value in a list of numbers.<br/><br/>Accepts either a list of numbers as a single argument, or multiple numerical arguments.",
+        "examples": [
+          "MIN(1, 2, 3) // 1\nMIN([1, 2, 3]) // 1"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "MOD",
+        "autoCompleteValue": "MOD(",
+        "description": "Returns the remainder of one number divided by another.<br/><br/>Accepts 2 arguments: the dividend and the divisor.",
+        "examples": [
+          "MOD(5, 2) // 1"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "ROUND",
+        "autoCompleteValue": "ROUND(",
+        "description": "Returns a rounded number. Optionally specify the number of decimal places to round to.<br/><br/>Accepts 1 or 2 arguments: the number to round and optionally the number of decimal places to round to.",
+        "examples": [
+          "ROUND(1.234) // 1\nROUND(1.234, 2) // 1.23"
+        ],
+        "icon": "utility:advanced_function"
+      },
+      {
+        "name": "TRUNC",
+        "autoCompleteValue": "TRUNC(",
+        "description": "Returns a truncated number. Optionally specify the number of decimal places to truncate to.<br/><br/>Accepts 1 or 2 arguments: the number to truncate and optionally the number of decimal places to truncate to.",
+        "examples": [
+          "TRUNC(1.234) // 1\nTRUNC(1.234, 2) // 1.23"
+        ],
+        "icon": "utility:advanced_function"
       }
     ]
   }

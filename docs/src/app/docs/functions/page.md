@@ -6,6 +6,56 @@ nextjs:
     description: Functions overview.
 ---
 
+## Data
+
+### LET
+
+Allows you to define custom variables that can be used in the expression.
+Accepts 2 arguments: a map of variables to define and the expression to evaluate.
+The map keys should be the variable names prefixed with `$`.
+
+```
+LET({ "$a": 1, "$b": 2 }, $a + $b) // 3
+```
+
+### PARSEJSON
+
+Parses a JSON string into a usable map/object structure.
+Accepts 1 argument: the JSON string to parse.
+
+```
+PARSEJSON(Contact.Custom_JSON_Field__c) // Parses JSON from a field
+```
+
+### PRINT
+
+Allows you to print a value to the playground console.
+Accepts 1 argument: the value to print.
+
+```
+PRINT("Hello World")
+```
+
+### RAWQUERY
+
+Allows you to run a raw query against the database.
+Accepts 1 argument: the query to run.
+
+```
+RAWQUERY("SELECT Id, Name FROM Account LIMIT 10")
+```
+
+### TRANSFORM
+
+Transforms any input using the provided expression.
+Provides a special variable `$source` in the inner expression that contains the original input.
+
+Accepts 2 arguments: the input to transform and the expression to evaluate.
+
+```
+TRANSFORM("Hello World", UPPER($source)) // "HELLO WORLD"
+```
+
 ## Collection
 
 ### AGGREGATEGROUPS
@@ -351,57 +401,17 @@ Accepts 2 arguments: List of objects and an expression to evaluate.
 WHERE([1, 2, 3], $current > 1)
 ```
 
-## Data
-
-### LET
-
-Allows you to define custom variables that can be used in the expression.
-Accepts 2 arguments: a map of variables to define and the expression to evaluate.
-The map keys should be the variable names prefixed with `$`.
-
-```
-LET({ "$a": 1, "$b": 2 }, $a + $b) // 3
-```
-
-### PARSEJSON
-
-Parses a JSON string into a usable map/object structure.
-Accepts 1 argument: the JSON string to parse.
-
-```
-PARSEJSON(Contact.Custom_JSON_Field__c) // Parses JSON from a field
-```
-
-### PRINT
-
-Allows you to print a value to the playground console.
-Accepts 1 argument: the value to print.
-
-```
-PRINT("Hello World")
-```
-
-### RAWQUERY
-
-Allows you to run a raw query against the database.
-Accepts 1 argument: the query to run.
-
-```
-RAWQUERY("SELECT Id, Name FROM Account LIMIT 10")
-```
-
-### TRANSFORM
-
-Transforms any input using the provided expression.
-Provides a special variable `$source` in the inner expression that contains the original input.
-
-Accepts 2 arguments: the input to transform and the expression to evaluate.
-
-```
-TRANSFORM("Hello World", UPPER($source)) // "HELLO WORLD"
-```
-
 ## Date and Time
+
+### ADDDAYS
+
+Returns a date that is a specified number of days before or after a given date.
+
+Accepts 2 arguments: the date and the number of days to add.
+
+```
+ADDDAYS(DATE(2020, 1, 1), 1) // 2020-01-02
+```
 
 ### ADDMONTHS
 
@@ -785,103 +795,6 @@ OR(true, false, true) // true
 OR(false, false, false) // false
 ```
 
-## Math
-
-### ABS
-
-Returns the absolute value of a number.
-
-Accepts 1 argument: the number to evaluate.
-
-```
-ABS(-1) // 1
-```
-
-### CEILING
-
-Returns the smallest integer greater than or equal to the specified number.
-
-Accepts 1 argument: the number to evaluate.
-
-```
-CEILING(1.5) // 2
-```
-
-### FLOOR
-
-Returns the largest integer less than or equal to the specified number.
-
-Accepts 1 argument: the number to evaluate.
-
-```
-FLOOR(1.5) // 1
-```
-
-### FORMATNUMBER
-
-Formats a number with comma as thousand separator.
-
-Accepts 1 or 2 arguments: the number to format and optionally the number of decimal places.
-
-```
-FORMATNUMBER(20000.53) // "20,000.53"
-FORMATNUMBER(20000.53, 1) // "20,000.5"
-```
-
-### MAX
-
-Returns the largest value in a list of numbers.
-
-Accepts either a list of numbers as a single argument, or multiple numerical arguments.
-
-```
-MAX(1, 2, 3) // 3
-MAX([1, 2, 3]) // 3
-```
-
-### MIN
-
-Returns the smallest value in a list of numbers.
-
-Accepts either a list of numbers as a single argument, or multiple numerical arguments.
-
-```
-MIN(1, 2, 3) // 1
-MIN([1, 2, 3]) // 1
-```
-
-### MOD
-
-Returns the remainder of one number divided by another.
-
-Accepts 2 arguments: the dividend and the divisor.
-
-```
-MOD(5, 2) // 1
-```
-
-### ROUND
-
-Returns a rounded number. Optionally specify the number of decimal places to round to.
-
-Accepts 1 or 2 arguments: the number to round and optionally the number of decimal places to round to.
-
-```
-ROUND(1.234) // 1
-ROUND(1.234, 2) // 1.23
-```
-
-### TRUNC
-
-Returns a truncated number. Optionally specify the number of decimal places to truncate to.
-
-Accepts 1 or 2 arguments: the number to truncate and optionally the number of decimal places to truncate to.
-
-```
-TRUNC(1.234) // 1
-TRUNC(1.234, 2) // 1.23
-```
-
 ## String
 
 ### BEGINS
@@ -1142,5 +1055,102 @@ Accepts 1 argument: the text to convert.
 
 ```
 VALUE("123") // 123
+```
+
+## Math
+
+### ABS
+
+Returns the absolute value of a number.
+
+Accepts 1 argument: the number to evaluate.
+
+```
+ABS(-1) // 1
+```
+
+### CEILING
+
+Returns the smallest integer greater than or equal to the specified number.
+
+Accepts 1 argument: the number to evaluate.
+
+```
+CEILING(1.5) // 2
+```
+
+### FLOOR
+
+Returns the largest integer less than or equal to the specified number.
+
+Accepts 1 argument: the number to evaluate.
+
+```
+FLOOR(1.5) // 1
+```
+
+### FORMATNUMBER
+
+Formats a number with comma as thousand separator.
+
+Accepts 1 or 2 arguments: the number to format and optionally the number of decimal places.
+
+```
+FORMATNUMBER(20000.53) // "20,000.53"
+FORMATNUMBER(20000.53, 1) // "20,000.5"
+```
+
+### MAX
+
+Returns the largest value in a list of numbers.
+
+Accepts either a list of numbers as a single argument, or multiple numerical arguments.
+
+```
+MAX(1, 2, 3) // 3
+MAX([1, 2, 3]) // 3
+```
+
+### MIN
+
+Returns the smallest value in a list of numbers.
+
+Accepts either a list of numbers as a single argument, or multiple numerical arguments.
+
+```
+MIN(1, 2, 3) // 1
+MIN([1, 2, 3]) // 1
+```
+
+### MOD
+
+Returns the remainder of one number divided by another.
+
+Accepts 2 arguments: the dividend and the divisor.
+
+```
+MOD(5, 2) // 1
+```
+
+### ROUND
+
+Returns a rounded number. Optionally specify the number of decimal places to round to.
+
+Accepts 1 or 2 arguments: the number to round and optionally the number of decimal places to round to.
+
+```
+ROUND(1.234) // 1
+ROUND(1.234, 2) // 1.23
+```
+
+### TRUNC
+
+Returns a truncated number. Optionally specify the number of decimal places to truncate to.
+
+Accepts 1 or 2 arguments: the number to truncate and optionally the number of decimal places to truncate to.
+
+```
+TRUNC(1.234) // 1
+TRUNC(1.234, 2) // 1.23
 ```
 
