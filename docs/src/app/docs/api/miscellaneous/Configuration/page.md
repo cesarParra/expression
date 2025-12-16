@@ -59,6 +59,18 @@ global customContext
 #### Type
 Map&lt;String,Object&gt;
 
+---
+
+### `cacheStandardFunctionResults`
+
+#### Signature
+```apex
+global cacheStandardFunctionResults
+```
+
+#### Type
+Boolean
+
 ## Methods
 ### `respectSharing(respect)`
 
@@ -94,6 +106,18 @@ global Configuration printAst()
 #### Signature
 ```apex
 global Configuration withDiagnostics()
+```
+
+#### Return Type
+**[Configuration](Configuration)**
+
+---
+
+### `disableStandardFunctionResultCaching()`
+
+#### Signature
+```apex
+global Configuration disableStandardFunctionResultCaching()
 ```
 
 #### Return Type
