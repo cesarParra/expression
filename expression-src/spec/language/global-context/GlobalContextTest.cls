@@ -237,6 +237,37 @@ private class GlobalContextTest {
     }
 
     @IsTest
+    private static void canReferenceCustomRecordContextFieldsInQueries() {
+        Account accountRecord = new Account(Name = 'Acme');
+        insert accountRecord;
+
+        CustomRecordContext customRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id);
+
+        String expressionFormula = 'QUERY(Account(where: Id = @TargetAccount.Id)[Name])';
+        Object result = Evaluator.run(expressionFormula, customRecordContext, new Configuration());
+
+        List<Object> queryResults = (List<Object>)result;
+        Assert.areEqual(1, queryResults.size(), 'Expect one record returned from the query');
+    }
+
+    @IsTest
+    private static void canReferenceCustomRecordContextFieldsInQueries_differentSObjects() {
+        Account accountRecord = new Account(Name = 'John');
+        insert accountRecord;
+
+        Contact someContact = new Contact(FirstName = 'John', LastName = 'Doe', AccountId = accountRecord.Id);
+        insert someContact;
+
+        CustomRecordContext customRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id);
+
+        String expressionFormula = 'QUERY(Contact(where: FirstName = @TargetAccount.Name)[FirstName])';
+        Object result = Evaluator.run(expressionFormula, customRecordContext, new Configuration());
+
+        List<Object> queryResults = (List<Object>)result;
+        Assert.areEqual(1, queryResults.size(), 'Expect one record returned from the query');
+    }
+
+    @IsTest
     private static void canChangeTheCustomContextPrefix() {
         Account accountRecord = new Account(Name = 'Acme');
         insert accountRecord;
