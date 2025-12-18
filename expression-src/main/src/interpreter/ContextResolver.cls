@@ -341,6 +341,12 @@ public with sharing class ContextResolver implements Visitor {
     }
 
     public Object visit(Expr.MergeFieldOrScopeVariable mergeField) {
+        if (this.queryStackDepth > 0) {
+            // Merge fields are not supported within query expressions, since they
+            // are used to build the query itself.
+            return null;
+        }
+
         String fieldName = mergeField.name.lexeme.toLowerCase();
         // Check if it is ignored within a function scope
         if (ignoredScopedVariables.contains(fieldName)) {
@@ -422,9 +428,32 @@ public with sharing class ContextResolver implements Visitor {
         return null;
     }
 
+    private Integer queryStackDepth = 0;
     public Object visit(Expr.Query query) {
-        // Nothing to resolve when inside of a Query expression.
-        // A query expression essentially starts an isolated context.
+        this.queryStackDepth++;
+        if (query.fieldsExpression != null) {
+            resolve(query.fieldsExpression);
+        }
+
+        if (query.orderBy != null) {
+            for (Expr orderByExpr : query.orderBy) {
+                resolve(orderByExpr);
+            }
+        }
+
+        if (query.limitExpr != null) {
+            resolve(query.limitExpr);
+        }
+
+        if (query.whereExpr != null) {
+            resolve(query.whereExpr);
+        }
+
+        if (query.offsetExpr != null) {
+            resolve(query.offsetExpr);
+        }
+
+        this.queryStackDepth--;
         return null;
     }
 
