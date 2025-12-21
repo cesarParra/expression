@@ -11,6 +11,10 @@
     {
       "path": "src-pull",
       "default": true
+    },
+    {
+      "path": "unpackaged",
+      "default": false
     }
   ],
   "name": "Expression",

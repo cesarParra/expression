@@ -18,6 +18,7 @@
       <sourceFolder url="file://$MODULE_DIR$/expression-src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src-pull" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/unpackaged/examples/expression-conf/main" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/unpackaged" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.sf" />
       <excludeFolder url="file://$MODULE_DIR$/.sfdx" />
       <excludeFolder url="file://$MODULE_DIR$/docs/out" />
