@@ -272,7 +272,7 @@ public with sharing class ContextResolver implements Visitor {
                 // References to @Context fields will always go to the top level query
                 // as they are part of the global contextual context tied to the record Id
                 // from which the Evaluation was started.
-                addFieldToQuery(this.topLevelQuery, referenceName.toLowerCase());
+                return addFieldToQuery(this.topLevelQuery, referenceName.toLowerCase());
             } else {
                 this.queryContext.queryBuilder.selectField(referenceName);
             }
@@ -320,7 +320,7 @@ public with sharing class ContextResolver implements Visitor {
             // If context is being accessed, then we always want to run the query.
             this.shouldExecuteQuery = true;
 
-            // recordId migh be null when this is being run from within a subquery.
+            // recordId might be null when this is being run from within a subquery.
             // If so, return early.
             if (this.queryContext.recordId == null) {
                 return null;
