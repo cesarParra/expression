@@ -13,7 +13,7 @@
       "default": true
     },
     {
-      "path": "unpackaged",
+      "path": "unpackaged/integration-tests",
       "default": false
     }
   ],

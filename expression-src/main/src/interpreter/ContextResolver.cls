@@ -272,11 +272,6 @@ public with sharing class ContextResolver implements Visitor {
                 // References to @Context fields will always go to the top level query
                 // as they are part of the global contextual context tied to the record Id
                 // from which the Evaluation was started.
-
-                // TODO Add UT:
-                //  @Context.Contacts
-                //  -> WHERE(FirstName = "Georgina")
-
                 return addFieldToQuery(this.topLevelQuery, referenceName.toLowerCase());
             } else {
                 this.queryContext.queryBuilder.selectField(referenceName);

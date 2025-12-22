@@ -1,6 +1,23 @@
 @IsTest
 private class IntegrationTest {
     @IsTest
+    static void usingChildRelationships() {
+        Account anyAccount = new Account(Name = 'Sample Account');
+        insert anyAccount;
+        Contact firstContact = new Contact(FirstName = 'First', LastName = 'Contact', AccountId = anyAccount.Id);
+        Contact secondContact = new Contact(FirstName = 'Second', LastName = 'Contact', AccountId = anyAccount.Id);
+        insert new List<Contact> { firstContact, secondContact };
+
+        String expressionPiped = '@Context.Contacts -> WHERE(FirstName = "First") -> SIZE() = 1';
+        Boolean pipedResult = (Boolean)Evaluator.run(expressionPiped, anyAccount.Id);
+        Assert.isTrue(pipedResult, 'There should be exactly one contact with the first name "First".');
+
+        String expressionNested = 'SIZE(WHERE(@Context.Contacts, FirstName = "First")) = 1';
+        Boolean nestedResult = (Boolean)Evaluator.run(expressionNested, anyAccount.Id);
+        Assert.isTrue(nestedResult, 'There should be exactly one contact with the first name "First".');
+    }
+
+    @IsTest
     static void hasPurchasedSomethingInThePast() {
         List<CustomRecordContext> contexts = getContexts();
 
