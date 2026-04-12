@@ -28,6 +28,7 @@ private class QueryTest {
 
     private static List<Account> given10Accounts() {
         List<Account> accounts = SObjectTestDataBuilder.of(Account.SObjectType)
+            .with(Account.Name, 'Test')
             .registerNewForInsert(10);
         SObjectTestDataBuilder.commitRecords();
         return accounts;
