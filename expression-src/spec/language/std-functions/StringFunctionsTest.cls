@@ -232,12 +232,14 @@ private class StringFunctionsTest {
 
     @IsTest
     private static void textConvertsDateValues() {
-        Assert.areEqual('1/1/2015', Evaluator.run('TEXT(DATE(2015, 1, 1))'));
+        String expected = Date.newInstance(2015, 1, 1).format();
+        Assert.areEqual(expected, Evaluator.run('TEXT(DATE(2015, 1, 1))'));
     }
 
     @IsTest
     private static void textConvertsDateTimeValues() {
-        Assert.areEqual('1/1/2015, 12:00 AM', Evaluator.run('TEXT(DATETIMEVALUE("2015-01-01 00:00:00"))'));
+        String expected = Datetime.valueOf('2015-01-01 00:00:00').format();
+        Assert.areEqual(expected, Evaluator.run('TEXT(DATETIMEVALUE("2015-01-01 00:00:00"))'));
     }
 
     @IsTest
