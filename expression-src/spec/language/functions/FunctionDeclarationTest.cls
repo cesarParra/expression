@@ -162,48 +162,66 @@ private class FunctionDeclarationTest {
     static void functionsAreCachedWhenTheyAreCalledWithTheSameEnvironment() {
         insert new Account(Name = 'ACME');
 
+        String expression =
+                'fun foo(n) => Query(Account(where: Name = n));\n' +
+                        '\n' +
+                        '[...foo("ACME"), ...foo("ACME")]';
+
         Test.startTest();
-        String expression = 'fun foo(n) => Query(Account(where: Name = n));\n' +
-            '\n' +
-            '[...foo("ACME"), ...foo("ACME")]';
+        Integer queriesBefore = Limits.getQueries();
+        Evaluator.run(expression);
+        Integer queriesAfter = Limits.getQueries();
         Test.stopTest();
 
-        Evaluator.run(expression);
-
-        Assert.areEqual(1, Limits.getQueries(), 'Only one query should have been consumed, ' +
-            'since the function was called with the same argument');
+        Assert.areEqual(
+                1,
+                queriesAfter - queriesBefore,
+                'Exactly one SOQL query should be executed during Evaluator.run().'
+        );
     }
 
     @IsTest
     static void functionsAreNotCachedWhenTheyAreCalledWithDifferentEnvironments() {
         insert new Account(Name = 'ACME');
 
+        String expression =
+                'fun foo(n) => Query(Account(where: Name = n));\n' +
+                        '\n' +
+                        '[...foo("ACME"), ...foo("Salesforce")]';
+
         Test.startTest();
-        String expression = 'fun foo(n) => Query(Account(where: Name = n));\n' +
-            '\n' +
-            '[...foo("ACME"), ...foo("Salesforce")]';
+        Integer queriesBefore = Limits.getQueries();
+        Evaluator.run(expression);
+        Integer queriesAfter = Limits.getQueries();
         Test.stopTest();
 
-        Evaluator.run(expression);
-
-        Assert.areEqual(2, Limits.getQueries(), 'Two queries should have been consumed, ' +
-            'since the function was called with different arguments');
+        Assert.areEqual(
+                2,
+                queriesAfter - queriesBefore,
+                'Two queries should have been consumed, since the function was called with different arguments'
+        );
     }
 
     @IsTest
     static void functionsAreNotCachedWhenTheNoCacheKeywordIsUsed() {
         insert new Account(Name = 'ACME');
 
+        String expression =
+                'fun nocache foo(n) => Query(Account(where: Name = n));\n' +
+                        '\n' +
+                        '[...foo("ACME"), ...foo("ACME")]';
+
         Test.startTest();
-        String expression = 'fun nocache foo(n) => Query(Account(where: Name = n));\n' +
-            '\n' +
-            '[...foo("ACME"), ...foo("ACME")]';
+        Integer queriesBefore = Limits.getQueries();
+        Evaluator.run(expression);
+        Integer queriesAfter = Limits.getQueries();
         Test.stopTest();
 
-        Evaluator.run(expression, new Configuration().disableStandardFunctionResultCaching());
-
-        Assert.areEqual(2, Limits.getQueries(), 'Two queries should have been consumed, ' +
-            'since the function was called with the "nocache" keyword');
+        Assert.areEqual(
+                2,
+                queriesAfter - queriesBefore,
+                'Two queries should have been consumed, since the function was called with the "nocache" keyword'
+        );
     }
 
     @IsTest
