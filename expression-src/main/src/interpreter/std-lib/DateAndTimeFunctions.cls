@@ -519,15 +519,58 @@ public with sharing class DateAndTimeFunctions {
             Object dateValue = evaluate(arguments.get(0));
             if (!(dateValue instanceof Date)) {
                 throw new FunctionExecutionException(
-                    'Error executing "ISOWEEK" function: the argument must evaluate to a date value.'
+                        'Error executing "ISOWEEK" function: the argument must evaluate to a date value.'
                 );
             }
 
-            return Integer.valueOf(Datetime.newInstanceGmt((Date)dateValue, Time.newInstance(0, 0, 0, 0)).format('w'));
+            return getIsoWeekNumber((Date) dateValue);
         }
 
         public override Arity getArity() {
             return Arity.exactly(1);
+        }
+
+        // --- ISO WEEK IMPLEMENTATION ---
+
+        private Integer getIsoWeekNumber(Date inputDate) {
+            Integer isoWeekday = getIsoWeekday(inputDate); // Monday=1 ... Sunday=7
+            Integer week = floorDiv(inputDate.dayOfYear() - isoWeekday + 10, 7);
+
+            if (week < 1) {
+                return getIsoWeeksInYear(inputDate.year() - 1);
+            }
+
+            Integer weeksInYear = getIsoWeeksInYear(inputDate.year());
+            if (week > weeksInYear) {
+                return 1;
+            }
+
+            return week;
+        }
+
+        private Integer getIsoWeeksInYear(Integer year) {
+            // Dec 28 is always in the last ISO week
+            Date dec28 = Date.newInstance(year, 12, 28);
+            Integer isoWeekday = getIsoWeekday(dec28);
+            return floorDiv(dec28.dayOfYear() - isoWeekday + 10, 7);
+        }
+
+        private Integer getIsoWeekday(Date inputDate) {
+            // 1900-01-01 was Monday
+            Integer diff = Date.newInstance(1900, 1, 1).daysBetween(inputDate);
+            Integer mod = Math.mod(diff, 7);
+            if (mod < 0) {
+                mod += 7;
+            }
+            return mod + 1;
+        }
+
+        private Integer floorDiv(Integer a, Integer b) {
+            Integer result = a / b;
+            if (a < 0 && Math.mod(a, b) != 0) {
+                result--;
+            }
+            return result;
         }
     }
 

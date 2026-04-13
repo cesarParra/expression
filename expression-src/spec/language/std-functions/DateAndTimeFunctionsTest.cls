@@ -84,6 +84,20 @@ private class DateAndTimeFunctionsTest {
     private static void isoweekFunctionReturnsTheIsoWeek() {
         Assert.areEqual(1, Evaluator.run('ISOWEEK(DATE(2015, 1, 1))'));
         Assert.areEqual(52, Evaluator.run('ISOWEEK(DATE(2015, 12, 27))'));
+
+        // --- START OF YEAR EDGE CASES ---
+        Assert.areEqual(53, Evaluator.run('ISOWEEK(DATE(2016, 1, 1))')); // belongs to 2015
+        Assert.areEqual(1,  Evaluator.run('ISOWEEK(DATE(2016, 1, 4))')); // first ISO week
+
+        Assert.areEqual(52, Evaluator.run('ISOWEEK(DATE(2017, 1, 1))')); // Sunday → previous year
+        Assert.areEqual(1,  Evaluator.run('ISOWEEK(DATE(2017, 1, 2))')); // Monday → week 1
+
+        // --- END OF YEAR EDGE CASES ---
+        Assert.areEqual(53, Evaluator.run('ISOWEEK(DATE(2015, 12, 31))')); // 53-week year
+        Assert.areEqual(1, Evaluator.run('ISOWEEK(DATE(2014, 12, 31))'));  // 2014-12-31 = Wednesday
+
+        Assert.areEqual(1,  Evaluator.run('ISOWEEK(DATE(2018, 12, 31))')); // next ISO year
+        Assert.areEqual(1,  Evaluator.run('ISOWEEK(DATE(2019, 12, 30))')); // next ISO year
     }
 
     @IsTest
