@@ -56,3 +56,5 @@ target/
 **/*.tsbuildinfo
 
 **/graphql.config.yml
+
+.sf-zed
