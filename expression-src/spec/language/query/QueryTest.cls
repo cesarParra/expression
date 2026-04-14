@@ -28,6 +28,7 @@ private class QueryTest {
 
     private static List<Account> given10Accounts() {
         List<Account> accounts = SObjectTestDataBuilder.of(Account.SObjectType)
+            .with(Account.Name, 'Test')
             .registerNewForInsert(10);
         SObjectTestDataBuilder.commitRecords();
         return accounts;
@@ -1102,9 +1103,14 @@ private class QueryTest {
         dataBuilder.inTheDatabase();
 
         String expr = 'QUERY(Account(where: NumberOfEmployees > 5) [Id, Name, NumberOfEmployees])';
-        Evaluator.run(expr);
-        Evaluator.run(expr);
 
-        Assert.areEqual(1, Limits.getQueries());
+        Test.startTest();
+        Integer queriesBefore = Limits.getQueries();
+        Evaluator.run(expr);
+        Evaluator.run(expr);
+        Integer queriesAfter = Limits.getQueries();
+        Test.stopTest();
+
+        Assert.areEqual(1, queriesAfter - queriesBefore);
     }
 }
