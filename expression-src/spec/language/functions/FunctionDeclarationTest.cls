@@ -213,7 +213,7 @@ private class FunctionDeclarationTest {
 
         Test.startTest();
         Integer queriesBefore = Limits.getQueries();
-        Evaluator.run(expression);
+        Evaluator.run(expression, new Configuration().disableStandardFunctionResultCaching());
         Integer queriesAfter = Limits.getQueries();
         Test.stopTest();
 
