@@ -230,10 +230,15 @@ private class GlobalContextTest {
         CustomRecordContext customRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id);
 
         String expressionFormula = '@TargetAccount.Name';
+
+        Test.startTest();
+        Integer queriesBefore = Limits.getQueries();
         Object result = Evaluator.run(expressionFormula, customRecordContext, new Configuration());
+        Integer queriesAfter = Limits.getQueries();
+        Test.stopTest();
 
         Assert.areEqual('Acme', result);
-        Assert.areEqual(1, Limits.getQueries(), 'Expect one query to retrieve the TargetAccount record');
+        Assert.areEqual(1, queriesAfter - queriesBefore, 'Expect one query to retrieve the TargetAccount record');
     }
 
     @IsTest
@@ -295,11 +300,16 @@ private class GlobalContextTest {
         CustomRecordContext contactRecordContext = new CustomRecordContext('TargetContact', contactRecord.Id);
 
         String expressionFormula = '@TargetContact.LastName + TEXT(@TargetAccount.NumberOfEmployees)';
+
+        Test.startTest();
+        Integer queriesBefore = Limits.getQueries();
         Object result = Evaluator.run(expressionFormula,
             new List<CustomRecordContext> { accountRecordContext, contactRecordContext }, new Configuration());
+        Integer queriesAfter = Limits.getQueries();
+        Test.stopTest();
 
         Assert.areEqual('Doe50', result);
-        Assert.areEqual(2, Limits.getQueries(), 'Expect one query per SObject type');
+        Assert.areEqual(2, queriesAfter - queriesBefore, 'Expect one query per SObject type');
     }
 
     @IsTest
@@ -314,11 +324,16 @@ private class GlobalContextTest {
         CustomRecordContext contactRecordContext = new CustomRecordContext('SecondAccount', accountRecord2.Id);
 
         String expressionFormula = '@FirstAccount.NumberOfEmployees + @SecondAccount.NumberOfEmployees';
+
+        Test.startTest();
+        Integer queriesBefore = Limits.getQueries();
         Object result = Evaluator.run(expressionFormula,
             new List<CustomRecordContext> { accountRecordContext, contactRecordContext }, new Configuration());
+        Integer queriesAfter = Limits.getQueries();
+        Test.stopTest();
 
         Assert.areEqual(150, result);
-        Assert.areEqual(1, Limits.getQueries(), 'Expect one query per SObject type');
+        Assert.areEqual(1, queriesAfter - queriesBefore, 'Expect one query per SObject type');
     }
 
     @IsTest
@@ -329,10 +344,15 @@ private class GlobalContextTest {
         CustomRecordContext customRecordContext = new CustomRecordContext('TargetAccount', accountRecord.Id, accountRecord);
 
         String expressionFormula = '@TargetAccount.Name';
+
+        Test.startTest();
+        Integer queriesBefore = Limits.getQueries();
         Object result = Evaluator.run(expressionFormula, customRecordContext, new Configuration());
+        Integer queriesAfter = Limits.getQueries();
+        Test.stopTest();
 
         Assert.areEqual('Acme', result);
-        Assert.areEqual(0, Limits.getQueries(), 'No queries should be consumed');
+        Assert.areEqual(0, queriesAfter - queriesBefore, 'No queries should be consumed');
     }
 
     @IsTest
@@ -369,14 +389,19 @@ private class GlobalContextTest {
 
         String expression1 = '@TargetAccount.Name + " & " + @SourceAccount.Name';
         String expression2 = '@TargetAccount.NumberOfEmployees + @SourceAccount.NumberOfEmployees';
+
+        Test.startTest();
+        Integer queriesBefore = Limits.getQueries();
         List<Result> results = Evaluator.run(new List<String> { expression1, expression2 },
             new List<CustomRecordContext> { customRecordContext1, customRecordContext2 },
             new Configuration()
         );
+        Integer queriesAfter = Limits.getQueries();
+        Test.stopTest();
 
         Assert.areEqual(2, results.size(), 'Expect two results, one per expression');
         Assert.areEqual('Acme & Salesforce', results[0].getValue());
         Assert.areEqual(300, results[1].getValue());
-        Assert.areEqual(1, Limits.getQueries(), 'Expected a single query per SObject type (only Account)');
+        Assert.areEqual(1, queriesAfter - queriesBefore, 'Expected a single query per SObject type (only Account)');
     }
 }
