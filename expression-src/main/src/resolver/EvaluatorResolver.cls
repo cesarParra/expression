@@ -87,7 +87,9 @@ public with sharing abstract class EvaluatorResolver {
         eventNotifier.notify(new OnEvaluationStartEvent(config));
 
         // Disable cache if disabled in the congif
-        if (!config.cacheStandardFunctionResults) {
+        if (config.cacheStandardFunctionResults) {
+            EnvironmentCache.enableCache();
+        } else {
             EnvironmentCache.disableCache();
         }
 

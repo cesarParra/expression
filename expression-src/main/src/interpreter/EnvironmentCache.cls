@@ -10,12 +10,16 @@ public with sharing class EnvironmentCache {
         isStandardFunctionCacheDisabled = true;
     }
 
+    public static void enableCache() {
+        isStandardFunctionCacheDisabled = false;
+    }
+
     public static void cacheStandardFunctionCall(
         Environment env,
         Expr.FunctionCall function,
         Object result
     ) {
-        cacheFunctionCall(isStandardFunctionCacheDisabled, env, function, result);
+        cacheFunctionCall(!isStandardFunctionCacheDisabled, env, function, result);
     }
 
     public static void cacheCustomMetadataFunctionCall(
