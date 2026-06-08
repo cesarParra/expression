@@ -26,6 +26,16 @@ public with sharing class Environment {
      */
     private static final Map<String, Object> GLOBAL_CONTEXT_VARIABLES = new Map<String, Object>();
 
+    /**
+     * @description A snapshot of the global context variables (e.g. custom `@` variables) as they
+     * were when this Environment was constructed. Context variables live in the static
+     * GLOBAL_CONTEXT_VARIABLES map, which is reset after each evaluation, so they are not part of
+     * the instance state otherwise. Capturing a copy here makes them part of the Environment's
+     * identity (see equals/hashCode), so result caches keyed by Environment do not incorrectly
+     * reuse results across evaluations that differ only by their context variable values.
+     */
+    private final Map<String, Object> contextSnapshot = new Map<String, Object>(GLOBAL_CONTEXT_VARIABLES);
+
     private static Map<String, Object> getAllGlobalVariables() {
         Map<String, Object> allGlobalVariables = new Map<String, Object>();
         allGlobalVariables.putAll(GLOBAL_VARIABLES);
@@ -190,11 +200,17 @@ public with sharing class Environment {
 
     public Boolean equals(Object obj) {
         Environment other = (Environment)obj;
-        return parentEnvironment == other.parentEnvironment && context == other.context && variables.equals(other.variables);
+        return parentEnvironment == other.parentEnvironment &&
+            context == other.context &&
+            variables.equals(other.variables) &&
+            contextSnapshot.equals(other.contextSnapshot);
     }
 
     public override Integer hashCode() {
-        return (parentEnvironment != null ? parentEnvironment.hashCode() : 0) ^ (context != null ? context.hashCode() : 0) ^ variables.hashCode();
+        return (parentEnvironment != null ? parentEnvironment.hashCode() : 0) ^
+            (context != null ? context.hashCode() : 0) ^
+            variables.hashCode() ^
+            contextSnapshot.hashCode();
     }
 
     public class ClearContext implements EvaluatorEventListener {

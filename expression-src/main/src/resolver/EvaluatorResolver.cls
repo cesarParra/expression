@@ -206,12 +206,12 @@ public with sharing abstract class EvaluatorResolver {
             if (records != null && records.size() > 0) {
                 record = records[0];
             }
-            Environment env = new Environment(record);
-
+            // Register the global context variables before constructing the Environment so that
+            // the Environment's context snapshot (used as part of its cache-key identity) is complete.
             Environment.addGlobalContextVariable(contextPrefix, 'id', recordId);
             Environment.addGlobalContextVariable(contextPrefix, 'context', record);
 
-            return env;
+            return new Environment(record);
         }
     }
 
@@ -230,15 +230,15 @@ public with sharing abstract class EvaluatorResolver {
             }
             ContextResolver ctxInterpreter = new ContextResolver(recordContexts, contextPrefix, customFunctionDeclarations);
             List<SObject> records = ctxInterpreter.build(expressions);
-            // The environment is created without a record, as we are dealing with a list of records,
-            // so it would not be possible to interpret references to record fields. Instead, the @context
-            // variable should be used to access the list of records.
-            Environment env = new Environment();
-
+            // Register the global context variables before constructing the Environment so that
+            // the Environment's context snapshot (used as part of its cache-key identity) is complete.
             Environment.addGlobalContextVariable(contextPrefix, 'ids', recordIds);
             Environment.addGlobalContextVariable(contextPrefix, 'context', records);
 
-            return env;
+            // The environment is created without a record, as we are dealing with a list of records,
+            // so it would not be possible to interpret references to record fields. Instead, the @context
+            // variable should be used to access the list of records.
+            return new Environment();
         }
     }
 
@@ -251,8 +251,6 @@ public with sharing abstract class EvaluatorResolver {
 
         public override Environment prepareEnvironment(List<Expr> expressions, List<Expr.FunctionDeclaration> customFunctionDeclarations,
             String contextPrefix) {
-            Environment env = new Environment();
-
             Map<SObjectType, List<CustomRecordContext>> contextsBySObjectTypes = new Map<SObjectType, List<CustomRecordContext>>();
             for (CustomRecordContext context : this.contexts) {
                 SObjectType sObjectType = context.recordId.getSobjectType();
@@ -288,7 +286,9 @@ public with sharing abstract class EvaluatorResolver {
                 }
             }
 
-            return env;
+            // Construct the Environment after all global context variables have been registered so
+            // that its context snapshot (used as part of its cache-key identity) is complete.
+            return new Environment();
         }
     }
 
