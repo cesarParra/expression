@@ -82,4 +82,39 @@ private class DataFunctionsTest {
         Assert.areEqual('HTML', skills[2]);
     }
 
+    @IsTest
+    private static void toJsonSerializesAList() {
+        String formula = 'TOJSON([1, "two", true])';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual('[1,"two",true]', result);
+    }
+
+    @IsTest
+    private static void toJsonSerializesAListOfListsBuiltByMap() {
+        List<Account> accounts = new List<Account>{
+            new Account(Name = 'First', NumberOfEmployees = 1),
+            new Account(Name = 'Second', NumberOfEmployees = 2)
+        };
+        insert accounts;
+
+        String formula = 'QUERY(Account(orderBy: Name)[Name, NumberOfEmployees]) -> MAP([Name, NumberOfEmployees]) -> TOJSON()';
+        Object result = Evaluator.run(formula);
+
+        Assert.areEqual('[["First",1],["Second",2]]', result);
+    }
+
+    @IsTest
+    private static void toJsonSerializesAnEmptyList() {
+        String formula = '[] -> TOJSON()';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual('[]', result);
+    }
+
+    @IsTest
+    private static void toJsonRoundTripsThroughParseJson() {
+        String formula = 'GET(PARSEJSON(TOJSON({"name": "John"})), "name")';
+        Object result = Evaluator.run(formula);
+        Assert.areEqual('John', result);
+    }
+
 }

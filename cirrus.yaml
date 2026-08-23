@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=https://cesarparra.github.io/cirrus/schema/v1/cirrus.schema.json
+#
+# Every verb this repo has, and what each one needs before it can run.
+#
+# Commands are not run through a shell: `&&`, pipes and $VARIABLES would reach the program as
+# arguments. A sequence is a flow.
+
+schemaVersion: 1
+
+defaultOrg: Expression
+
+orgs:
+  Expression:
+    definitionFile: config/dev-communities.json
+
+commands:
+  ls:
+    run: sf org list --skip-connection-status
+
+  deploy:
+    run: sf project deploy start
+
+  assign-perms:
+    run: sf org assign permset -n Expression_Admin
+
+  test:
+    run: sf apex test run --test-level RunLocalTests --wait 20
+
+  docs:
+    run: apexdocs markdown
+
+  generate-library-docs:
+    description: Rebuild the function reference and the editor's autocomplete list from the ApexDoc.
+    run: bun scripts/generate-library-docs.mjs
+
+  prep-package:
+    run: bun scripts/prepare-for-packaging.mjs
+
+  run-package:
+    run: cirrus package create -p Expression -t minor -x -c --promote -w 60
+
+  post-package:
+    run: bun scripts/post-packaging.mjs
+
+  deploy-conference-community:
+    run: sf project deploy start -d unpackaged/examples/expression-conf/main
+
+  import-data:
+    run: sf data import tree -p unpackaged/examples/expression-conf/data/data-plan.json
+
+flows:
+  start-dev:
+    description: Starts a new development environment
+    steps:
+      - createScratch: Expression
+      - command: deploy
+      - command: assign-perms
+      - command: deploy-conference-community
+      - command: import-data
+
+  package:
+    description: Create a managed package version for Expression
+    steps:
+      - command: prep-package
+      - command: run-package
+      - command: post-package
