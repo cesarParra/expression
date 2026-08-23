@@ -10,7 +10,8 @@ public with sharing class DataFunctions {
         'LET' => new LET(),
         'RAWQUERY' => new RawQuery(),
         'PRINT' => new PrintFn(),
-        'PARSEJSON' => new ParseJsonFn()
+        'PARSEJSON' => new ParseJsonFn(),
+        'TOJSON' => new ToJsonFn()
     };
 
     public class DataFunctionsProvider implements FunctionProvider {
@@ -197,6 +198,44 @@ public with sharing class DataFunctions {
             }
 
             return resultList;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    /**
+     * @description Serializes any value into a JSON string. The inverse of `PARSEJSON`.
+     * Accepts 1 argument: the value to serialize.
+     * @function TOJSON
+     * @example TOJSON([1, "two", true]) // "[1,\"two\",true]"
+     * @example Contacts -> MAP([Name, Email]) -> TOJSON() // A table of values, as JSON
+     */
+    private class ToJsonFn extends StandardFunction {
+        public override Object call(List<Expr> arguments) {
+            return JSON.serialize(serializable(evaluate(arguments.get(0))));
+        }
+
+        // A map literal evaluates to a Map<Object, Object>, whose keys JSON.serialize refuses.
+        private Object serializable(Object value) {
+            if (value instanceof Map<Object, Object>) {
+                Map<String, Object> withStringKeys = new Map<String, Object>();
+                for (Object key : ((Map<Object, Object>) value).keySet()) {
+                    withStringKeys.put(String.valueOf(key), serializable(((Map<Object, Object>) value).get(key)));
+                }
+                return withStringKeys;
+            }
+
+            if (value instanceof List<Object>) {
+                List<Object> serialized = new List<Object>();
+                for (Object item : (List<Object>) value) {
+                    serialized.add(serializable(item));
+                }
+                return serialized;
+            }
+
+            return value;
         }
 
         public override Arity getArity() {
