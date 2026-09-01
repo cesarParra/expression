@@ -821,20 +821,22 @@ public with sharing class DateAndTimeFunctions {
     }
 
     /**
-     * @description Formats a DateTime into a string using the provided format.
+     * @description Formats a Date or DateTime into a string using the provided format.
      *
-     * Accepts 2 arguments: the DateTime to format and the format string.
+     * Accepts 2 arguments: the Date or DateTime to format and the format string.
      * @function DATETIMEFORMAT
      * @example
      * DATETIMEFORMAT(DATETIMEVALUE("2020-01-01 12:00:00"), "yyyy-MM-dd") // 2020-01-01
      */
     private class DateTimeFormatFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
-            // Expect a DateTime
+            // Expect a Date or a DateTime. Note that in Apex a Date passes an `instanceof Datetime`
+            // check, but a Datetime does not pass `instanceof Date`, so the Date check must come first.
             Object dateTimeValue = evaluate(arguments.get(0));
-            if (!(dateTimeValue instanceof Datetime)) {
+            Boolean isDate = dateTimeValue instanceof Date;
+            if (!isDate && !(dateTimeValue instanceof Datetime)) {
                 throw new FunctionExecutionException(
-                    'Error executing "DATETIMEFORMAT" function: the argument must evaluate to a datetime value.'
+                    'Error executing "DATETIMEFORMAT" function: the first argument must evaluate to a date or datetime value.'
                 );
             }
 
@@ -842,8 +844,17 @@ public with sharing class DateAndTimeFunctions {
             Object formatValue = evaluate(arguments.get(1));
             if (!(formatValue instanceof String)) {
                 throw new FunctionExecutionException(
-                    'Error executing "DATETIMEFORMAT" function: the argument must evaluate to a string value.'
+                    'Error executing "DATETIMEFORMAT" function: the second argument must evaluate to a string value.'
                 );
+            }
+
+            if (isDate) {
+                // A Date has no time or timezone of its own. Widening it to a Datetime and formatting
+                // with Datetime.format() would treat it as midnight GMT and render it in the running
+                // user's timezone, shifting the calendar day. Anchor it in GMT and format in GMT so
+                // the date is rendered exactly as-is.
+                Datetime midnightGmt = Datetime.newInstanceGmt((Date)dateTimeValue, Time.newInstance(0, 0, 0, 0));
+                return midnightGmt.formatGmt((String)formatValue);
             }
 
             return ((Datetime)dateTimeValue).format((String)formatValue);
