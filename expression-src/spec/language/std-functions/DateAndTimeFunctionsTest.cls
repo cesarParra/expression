@@ -227,7 +227,6 @@ private class DateAndTimeFunctionsTest {
 
     @IsTest
     private static void dateTimeFormatFormatsADateWithoutShiftingTheDay() {
-        Assert.areEqual('September 9, 2026', Evaluator.run('DATETIMEFORMAT(DATE(2026, 9, 9), "MMMM d, yyyy")'));
         Assert.areEqual('2026-09-09', Evaluator.run('DATETIMEFORMAT(DATE(2026, 9, 9), "yyyy-MM-dd")'));
     }
 

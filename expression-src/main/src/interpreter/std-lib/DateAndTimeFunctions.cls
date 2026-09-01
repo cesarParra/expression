@@ -45,6 +45,12 @@ public with sharing class DateAndTimeFunctions {
         MILLISECOND, MINUTE, SECOND, HOUR_FN
     }
 
+    // A bare Date carries no time or timezone, so anchor it at GMT midnight. Callers must read it
+    // back in GMT (formatGmt/getTime) or the calendar day shifts for users west of GMT.
+    private static Datetime gmtMidnight(Date value) {
+        return Datetime.newInstanceGmt(value, Time.newInstance(0, 0, 0, 0));
+    }
+
     /**
      * @description Returns a date that is a specified number of days before or after a given date.
      *
@@ -591,7 +597,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return Integer.valueOf(Datetime.newInstanceGmt((Date)dateValue, Time.newInstance(0, 0, 0, 0)).format('Y'));
+            return Integer.valueOf(gmtMidnight((Date)dateValue).format('Y'));
         }
 
         public override Arity getArity() {
@@ -673,7 +679,7 @@ public with sharing class DateAndTimeFunctions {
 
             if (dateOrDateTimeOrTime instanceof Date) {
                 // Convert to datetime first
-                Datetime gmtDatetime = Datetime.newInstanceGmt((Date)dateOrDateTimeOrTime, Time.newInstance(0, 0, 0, 0));
+                Datetime gmtDatetime = gmtMidnight((Date)dateOrDateTimeOrTime);
                 return gmtDatetime.getTime() / 1000;
             } else if (dateOrDateTimeOrTime instanceof Datetime) {
                 Datetime gmtDateTime = Datetime.newInstanceGmt(((Datetime)dateOrDateTimeOrTime).date(), ((Datetime)dateOrDateTimeOrTime).time());
@@ -707,16 +713,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            Date dateObj = (Date)dateValue;
-
-            return Integer.valueOf(Datetime.newInstanceGmt(
-                dateObj.year(),
-                dateObj.month(),
-                dateObj.day(),
-                0,
-                0,
-                0
-            ).format('u'));
+            return Integer.valueOf(gmtMidnight((Date)dateValue).format('u'));
         }
 
         public override Arity getArity() {
@@ -830,8 +827,7 @@ public with sharing class DateAndTimeFunctions {
      */
     private class DateTimeFormatFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
-            // Expect a Date or a DateTime. Note that in Apex a Date passes an `instanceof Datetime`
-            // check, but a Datetime does not pass `instanceof Date`, so the Date check must come first.
+            // A Date also passes `instanceof Datetime` in Apex, so check for Date first.
             Object dateTimeValue = evaluate(arguments.get(0));
             Boolean isDate = dateTimeValue instanceof Date;
             if (!isDate && !(dateTimeValue instanceof Datetime)) {
@@ -849,12 +845,8 @@ public with sharing class DateAndTimeFunctions {
             }
 
             if (isDate) {
-                // A Date has no time or timezone of its own. Widening it to a Datetime and formatting
-                // with Datetime.format() would treat it as midnight GMT and render it in the running
-                // user's timezone, shifting the calendar day. Anchor it in GMT and format in GMT so
-                // the date is rendered exactly as-is.
-                Datetime midnightGmt = Datetime.newInstanceGmt((Date)dateTimeValue, Time.newInstance(0, 0, 0, 0));
-                return midnightGmt.formatGmt((String)formatValue);
+                // Format in GMT to match the anchor, so the calendar day is rendered as-is.
+                return gmtMidnight((Date)dateTimeValue).formatGmt((String)formatValue);
             }
 
             return ((Datetime)dateTimeValue).format((String)formatValue);
