@@ -226,6 +226,11 @@ private class DateAndTimeFunctionsTest {
     }
 
     @IsTest
+    private static void dateTimeFormatFormatsADateWithoutShiftingTheDay() {
+        Assert.areEqual('2026-09-09', Evaluator.run('DATETIMEFORMAT(DATE(2026, 9, 9), "yyyy-MM-dd")'));
+    }
+
+    @IsTest
     private static void dateToDateTimeConvertsADateToADateTime() {
         String formula = 'DATETODATETIME(DATEVALUE("2015-01-01"))';
         Object result = Evaluator.run(formula);

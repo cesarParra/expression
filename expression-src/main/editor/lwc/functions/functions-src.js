@@ -411,7 +411,7 @@ export const data = [
       {
         "name": "DATETIMEFORMAT",
         "autoCompleteValue": "DATETIMEFORMAT(",
-        "description": "Formats a DateTime into a string using the provided format.<br/><br/>Accepts 2 arguments: the DateTime to format and the format string.",
+        "description": "Formats a Date or DateTime into a string using the provided format.<br/><br/>Accepts 2 arguments: the Date or DateTime to format and the format string.",
         "examples": [
           "DATETIMEFORMAT(DATETIMEVALUE(\"2020-01-01 12:00:00\"), \"yyyy-MM-dd\") // 2020-01-01"
         ],

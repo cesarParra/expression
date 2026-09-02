@@ -45,6 +45,12 @@ public with sharing class DateAndTimeFunctions {
         MILLISECOND, MINUTE, SECOND, HOUR_FN
     }
 
+    // A bare Date carries no time or timezone, so anchor it at GMT midnight. Callers must read it
+    // back in GMT (formatGmt/getTime) or the calendar day shifts for users west of GMT.
+    private static Datetime gmtMidnight(Date value) {
+        return Datetime.newInstanceGmt(value, Time.newInstance(0, 0, 0, 0));
+    }
+
     /**
      * @description Returns a date that is a specified number of days before or after a given date.
      *
@@ -591,7 +597,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            return Integer.valueOf(Datetime.newInstanceGmt((Date)dateValue, Time.newInstance(0, 0, 0, 0)).format('Y'));
+            return Integer.valueOf(gmtMidnight((Date)dateValue).format('Y'));
         }
 
         public override Arity getArity() {
@@ -673,7 +679,7 @@ public with sharing class DateAndTimeFunctions {
 
             if (dateOrDateTimeOrTime instanceof Date) {
                 // Convert to datetime first
-                Datetime gmtDatetime = Datetime.newInstanceGmt((Date)dateOrDateTimeOrTime, Time.newInstance(0, 0, 0, 0));
+                Datetime gmtDatetime = gmtMidnight((Date)dateOrDateTimeOrTime);
                 return gmtDatetime.getTime() / 1000;
             } else if (dateOrDateTimeOrTime instanceof Datetime) {
                 Datetime gmtDateTime = Datetime.newInstanceGmt(((Datetime)dateOrDateTimeOrTime).date(), ((Datetime)dateOrDateTimeOrTime).time());
@@ -707,16 +713,7 @@ public with sharing class DateAndTimeFunctions {
                 );
             }
 
-            Date dateObj = (Date)dateValue;
-
-            return Integer.valueOf(Datetime.newInstanceGmt(
-                dateObj.year(),
-                dateObj.month(),
-                dateObj.day(),
-                0,
-                0,
-                0
-            ).format('u'));
+            return Integer.valueOf(gmtMidnight((Date)dateValue).format('u'));
         }
 
         public override Arity getArity() {
@@ -821,20 +818,21 @@ public with sharing class DateAndTimeFunctions {
     }
 
     /**
-     * @description Formats a DateTime into a string using the provided format.
+     * @description Formats a Date or DateTime into a string using the provided format.
      *
-     * Accepts 2 arguments: the DateTime to format and the format string.
+     * Accepts 2 arguments: the Date or DateTime to format and the format string.
      * @function DATETIMEFORMAT
      * @example
      * DATETIMEFORMAT(DATETIMEVALUE("2020-01-01 12:00:00"), "yyyy-MM-dd") // 2020-01-01
      */
     private class DateTimeFormatFn extends StandardFunction {
         public override Object call(List<Expr> arguments) {
-            // Expect a DateTime
+            // A Date also passes `instanceof Datetime` in Apex, so check for Date first.
             Object dateTimeValue = evaluate(arguments.get(0));
-            if (!(dateTimeValue instanceof Datetime)) {
+            Boolean isDate = dateTimeValue instanceof Date;
+            if (!isDate && !(dateTimeValue instanceof Datetime)) {
                 throw new FunctionExecutionException(
-                    'Error executing "DATETIMEFORMAT" function: the argument must evaluate to a datetime value.'
+                    'Error executing "DATETIMEFORMAT" function: the first argument must evaluate to a date or datetime value.'
                 );
             }
 
@@ -842,8 +840,13 @@ public with sharing class DateAndTimeFunctions {
             Object formatValue = evaluate(arguments.get(1));
             if (!(formatValue instanceof String)) {
                 throw new FunctionExecutionException(
-                    'Error executing "DATETIMEFORMAT" function: the argument must evaluate to a string value.'
+                    'Error executing "DATETIMEFORMAT" function: the second argument must evaluate to a string value.'
                 );
+            }
+
+            if (isDate) {
+                // Format in GMT to match the anchor, so the calendar day is rendered as-is.
+                return gmtMidnight((Date)dateTimeValue).formatGmt((String)formatValue);
             }
 
             return ((Datetime)dateTimeValue).format((String)formatValue);

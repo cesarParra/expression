@@ -454,9 +454,9 @@ DATETIME(2020, 1, 1, 12, 0, 0) // 2020-01-01 12:00:00
 
 ### DATETIMEFORMAT
 
-Formats a DateTime into a string using the provided format.
+Formats a Date or DateTime into a string using the provided format.
 
-Accepts 2 arguments: the DateTime to format and the format string.
+Accepts 2 arguments: the Date or DateTime to format and the format string.
 
 ```
 DATETIMEFORMAT(DATETIMEVALUE("2020-01-01 12:00:00"), "yyyy-MM-dd") // 2020-01-01
