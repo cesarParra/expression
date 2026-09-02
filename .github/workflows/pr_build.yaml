@@ -1,9 +1,13 @@
 name: PR Build
 
+# `pull_request`, not `pull_request_target`. The latter reads its workflow definition and its
+# checkout from the base branch, so changes to this file only take effect after merging to main,
+# and the job tests main rather than the pull request's code. Forks get no secrets and cannot run
+# this, which is correct.
 on:
-  pull_request_target:
+  pull_request:
     branches: [ main ]
-    types: [ opened, reopened, synchronize, closed ]
+    types: [ opened, reopened, synchronize ]
 
 concurrency:
   group: ${{ github.ref }}
@@ -52,4 +56,5 @@ jobs:
           fi
 
       - name: Clean up scratch org
+        if: always()
         run: sf org scratch delete --target-org=scratch-org --no-prompt
