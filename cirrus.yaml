@@ -31,16 +31,20 @@ commands:
 
   generate-library-docs:
     description: Rebuild the function reference and the editor's autocomplete list from the ApexDoc.
-    run: bun scripts/generate-library-docs.mjs
+    run: node scripts/generate-library-docs.mjs
 
   prep-package:
-    run: bun scripts/prepare-for-packaging.mjs
+    run: node scripts/prepare-for-packaging.mjs
 
   run-package:
     run: cirrus package create -p Expression -t minor -x -c --promote -w 60
 
   post-package:
-    run: bun scripts/post-packaging.mjs
+    run: node scripts/post-packaging.mjs
+
+  update-docs-package-id:
+    description: Point the docs install instructions at the package version that was just created.
+    run: node scripts/update-docs-package-id.mjs
 
   deploy-conference-community:
     run: sf project deploy start -d unpackaged/examples/expression-conf/main
@@ -64,3 +68,4 @@ flows:
       - command: prep-package
       - command: run-package
       - command: post-package
+      - command: update-docs-package-id
