@@ -36,6 +36,16 @@ Object result = expression.Evaluator.run('Name', account.Id);
 Assert.areEqual('ACME', result);
 ```
 
+A null Id is accepted, and evaluates without a context record, exactly as though none had been
+provided. This lets a caller that may or may not have a record hand over what it has without
+branching first. Merge fields still have nothing to resolve against, so a formula that references
+one fails; a formula that references none evaluates normally.
+
+```apex
+Object result = expression.Evaluator.run('1 + 1', (Id)null);
+Assert.areEqual(2, result);
+```
+
 Finally, you can use evaluate formulas providing an SObject as context. This can save you a
 query if you already have the SObject in memory.
 

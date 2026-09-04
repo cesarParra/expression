@@ -8,7 +8,7 @@ public with sharing abstract class EvaluatorResolver {
     }
 
     public static EvaluatorResolver forId(Id recordId) {
-        return new SingleIdContextResolverEvaluator(recordId);
+        return recordId == null ? withoutContext() : new SingleIdContextResolverEvaluator(recordId);
     }
 
     public static EvaluatorResolver forIds(Set<Id> ids) {

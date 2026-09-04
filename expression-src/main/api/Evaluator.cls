@@ -296,7 +296,7 @@ global with sharing abstract class Evaluator {
      *              When using this endpoint field references will automatically be resolved
      *              and queried.
      * @param expression The formula to evaluate.
-     * @param recordId The Id of the record to use as the context for the formula.
+     * @param recordId The Id of the record to use as the context for the formula. A null recordId evaluates without a context record, as though none had been provided.
      * @return The result of the formula.
      * @example
      * ```apex
@@ -319,7 +319,7 @@ global with sharing abstract class Evaluator {
      * {% /callout %}
      *
      * @param expressions The expressions to evaluate.
-     * @param recordId The Id of the record to use as the context for the expressions.
+     * @param recordId The Id of the record to use as the context for the expressions. A null recordId evaluates without a context record, as though none had been provided.
      * @return The results of the expressions. Results are returned in the same order as the expressions.
      * @example
      * ```apex
@@ -518,7 +518,7 @@ global with sharing abstract class Evaluator {
      *              When using this endpoint field references will automatically be resolved
      *              and queried.
      * @param formula The formula to evaluate.
-     * @param recordId The Id of the record to use as the context for the formula.
+     * @param recordId The Id of the record to use as the context for the formula. A null recordId evaluates without a context record, as though none had been provided.
      * @param config A configuration object that allows you to set options for the evaluation.
      * @return The result of the formula.
      * @example
@@ -546,7 +546,7 @@ global with sharing abstract class Evaluator {
      * {% /callout %}
      *
      * @param expressions The expressions to evaluate.
-     * @param recordId The Id of the record to use as the context for the expressions.
+     * @param recordId The Id of the record to use as the context for the expressions. A null recordId evaluates without a context record, as though none had been provided.
      * @param config A configuration object that allows you to set options for the evaluation.
      * @return The results of the expressions. Results are returned in the same order as the expressions.
      * @example
