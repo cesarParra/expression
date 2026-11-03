@@ -314,6 +314,15 @@ export const data = [
     "category": "Data",
     "values": [
       {
+        "name": "DISPLAY",
+        "autoCompleteValue": "DISPLAY(",
+        "description": "Formats a field's value the way Salesforce displays it to the running user: currency<br/>with its symbol and scale, numbers and percents with their scale, and dates and datetimes in the<br/>user's locale and time zone. Any value that does not come straight from a field is returned unchanged.<br/><br/>Accepts 1 argument: the field to display.",
+        "examples": [
+          "DISPLAY(Amount) // \"$1,234.50\"\nDISPLAY(CloseDate) // \"3/17/2027\""
+        ],
+        "icon": "utility:data_mapping"
+      },
+      {
         "name": "LET",
         "autoCompleteValue": "LET(",
         "description": "Allows you to define custom variables that can be used in the expression.<br/>Accepts 2 arguments: a map of variables to define and the expression to evaluate.<br/>The map keys should be the variable names prefixed with `$`.",
