@@ -57,7 +57,7 @@ global customContext
 ```
 
 #### Type
-Map&lt;String,Object&gt;
+Map<String,Object>
 
 ---
 
@@ -135,7 +135,7 @@ global Configuration withCustomContext(Map<String,Object> objectsByStrings)
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| objectsByStrings | Map&lt;String,Object&gt; |  |
+| objectsByStrings | Map<String,Object> |  |
 
 #### Return Type
 **[Configuration](Configuration)**

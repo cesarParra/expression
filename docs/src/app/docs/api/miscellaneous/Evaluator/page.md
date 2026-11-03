@@ -58,10 +58,10 @@ global static List<Result> run(List<String> expressions)
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| expressions | List<String> | The expressions to evaluate. |
 
 #### Return Type
-**List&lt;Result&gt;**
+**List<Result>**
 
 The results of the expressions. Results are returned in the same order as the expressions.
 
@@ -126,11 +126,11 @@ global static List<Result> run(List<String> expressions, Configuration config)
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| expressions | List<String> | The expressions to evaluate. |
 | config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
 
 #### Return Type
-**List&lt;Result&gt;**
+**List<Result>**
 
 The results of the expressions. Results are returned in the same order as the expressions.
 
@@ -194,11 +194,11 @@ global static List<Result> run(List<String> expressions, SObject context)
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| expressions | List<String> | The expressions to evaluate. |
 | context | SObject | An SObject that will act as the context for the expressions. Providing this allows you to reference fields on the SObject in the expressions. |
 
 #### Return Type
-**List&lt;Result&gt;**
+**List<Result>**
 
 The results of the expressions. Results are returned in the same order as the expressions.
 
@@ -228,7 +228,7 @@ global static Object run(String expression, List<SObject> context)
 | Name | Type | Description |
 |------|------|-------------|
 | expression | String | The expression to evaluate. |
-| context | List&lt;SObject&gt; | A list of records that will act as the context for the expression. Providing this allows you to reference the records through the `@context` global variable, which will give you a list of records that can be iterated over. |
+| context | List<SObject> | A list of records that will act as the context for the expression. Providing this allows you to reference the records through the `@context` global variable, which will give you a list of records that can be iterated over. |
 
 #### Return Type
 **Object**
@@ -268,13 +268,13 @@ global static List<Result> run(List<String> expressions, List<SObject> context)
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| expressions | List&lt;String&gt; | The expressions to evaluate. |
-| context | List&lt;SObject&gt; | A list of records that will act as the context for the expressions. 
+| expressions | List<String> | The expressions to evaluate. |
+| context | List<SObject> | A list of records that will act as the context for the expressions. 
 Providing this allows you to reference the records through the `@context` global variable, 
 which will give you a list of records that can be iterated over. |
 
 #### Return Type
-**List&lt;Result&gt;**
+**List<Result>**
 
 The results of the expressions. Results are returned in the same order as the expressions.
 
@@ -344,13 +344,13 @@ global static List<Result> run(List<String> expressions, SObject context, Config
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| expressions | List&lt;String&gt; | The expressions to evaluate. |
+| expressions | List<String> | The expressions to evaluate. |
 | context | SObject | An SObject that will act as the context for the expressions. 
 Providing this allows you to reference fields on the SObject in the expressions. |
 | config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
 
 #### Return Type
-**List&lt;Result&gt;**
+**List<Result>**
 
 The results of the expressions. Results are returned in the same order as the expressions.
 
@@ -381,7 +381,7 @@ global static Object run(String formula, List<SObject> context, Configuration co
 | Name | Type | Description |
 |------|------|-------------|
 | formula | String | The expression to evaluate. |
-| context | List&lt;SObject&gt; | A list of records that will act as the context for the formula. Providing this allows you to reference the records through the `@context` global variable, which will give you a list of records that can be iterated over. |
+| context | List<SObject> | A list of records that will act as the context for the formula. Providing this allows you to reference the records through the `@context` global variable, which will give you a list of records that can be iterated over. |
 | config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
 
 #### Return Type
@@ -423,14 +423,14 @@ global static List<Result> run(List<String> expressions, List<SObject> context, 
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| expressions | List&lt;String&gt; | The expressions to evaluate. |
-| context | List&lt;SObject&gt; | A list of records that will act as the context for the expressions. 
+| expressions | List<String> | The expressions to evaluate. |
+| context | List<SObject> | A list of records that will act as the context for the expressions. 
 Providing this allows you to reference the records through the `@context` global variable, 
 which will give you a list of records that can be iterated over. |
 | config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
 
 #### Return Type
-**List&lt;Result&gt;**
+**List<Result>**
 
 The results of the expressions. Results are returned in the same order as the expressions.
 
@@ -467,7 +467,7 @@ global static Object run(String expression, Id recordId)
 | Name | Type | Description |
 |------|------|-------------|
 | expression | String | The formula to evaluate. |
-| recordId | Id | The Id of the record to use as the context for the formula. |
+| recordId | Id | The Id of the record to use as the context for the formula. A null recordId evaluates without a context record, as though none had been provided. |
 
 #### Return Type
 **Object**
@@ -501,11 +501,11 @@ global static List<Result> run(List<String> expressions, Id recordId)
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| expressions | List&lt;String&gt; | The expressions to evaluate. |
-| recordId | Id | The Id of the record to use as the context for the expressions. |
+| expressions | List<String> | The expressions to evaluate. |
+| recordId | Id | The Id of the record to use as the context for the expressions. A null recordId evaluates without a context record, as though none had been provided. |
 
 #### Return Type
-**List&lt;Result&gt;**
+**List<Result>**
 
 The results of the expressions. Results are returned in the same order as the expressions.
 
@@ -587,7 +587,7 @@ global static Object run(String expression, List<CustomRecordContext> contexts, 
 | Name | Type | Description |
 |------|------|-------------|
 | expression | String | The expression to evaluate. |
-| contexts | List&lt;CustomRecordContext&gt; | The CustomRecordContexts to use as the context for the expressions. |
+| contexts | List<CustomRecordContext> | The CustomRecordContexts to use as the context for the expressions. |
 | config | [Configuration](Configuration) | A configuration object that allows you to set options for 
 the evaluation. |
 
@@ -632,13 +632,13 @@ global static List<Result> run(List<String> expressions, List<CustomRecordContex
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| expressions | List&lt;String&gt; | The expressions to evaluate. |
-| contexts | List&lt;CustomRecordContext&gt; | The CustomRecordContexts to use as the context for the expressions. |
+| expressions | List<String> | The expressions to evaluate. |
+| contexts | List<CustomRecordContext> | The CustomRecordContexts to use as the context for the expressions. |
 | config | [Configuration](Configuration) | A configuration object that allows you to set options for 
 the evaluation. |
 
 #### Return Type
-**List&lt;Result&gt;**
+**List<Result>**
 
 The results of the expressions. Results are returned in the same order as the expressions.
 
@@ -687,7 +687,7 @@ global static Object run(String formula, Set<Id> recordIds)
 | Name | Type | Description |
 |------|------|-------------|
 | formula | String | The formula to evaluate. |
-| recordIds | Set&lt;Id&gt; | The Ids of the records to use as the context for the formula. |
+| recordIds | Set<Id> | The Ids of the records to use as the context for the formula. |
 
 #### Return Type
 **Object**
@@ -730,11 +730,11 @@ global static List<Result> run(List<String> expressions, Set<Id> recordIds)
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| expressions | List&lt;String&gt; | The expressions to evaluate. |
-| recordIds | Set&lt;Id&gt; | The Ids of the records to use as the context for the expressions. |
+| expressions | List<String> | The expressions to evaluate. |
+| recordIds | Set<Id> | The Ids of the records to use as the context for the expressions. |
 
 #### Return Type
-**List&lt;Result&gt;**
+**List<Result>**
 
 The results of the expressions. Results are returned in the same order as the expressions.
 
@@ -771,7 +771,7 @@ global static Object run(String formula, Id recordId, Configuration config)
 | Name | Type | Description |
 |------|------|-------------|
 | formula | String | The formula to evaluate. |
-| recordId | Id | The Id of the record to use as the context for the formula. |
+| recordId | Id | The Id of the record to use as the context for the formula. A null recordId evaluates without a context record, as though none had been provided. |
 | config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
 
 #### Return Type
@@ -810,12 +810,12 @@ global static List<Result> run(List<String> expressions, Id recordId, Configurat
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| expressions | List&lt;String&gt; | The expressions to evaluate. |
-| recordId | Id | The Id of the record to use as the context for the expressions. |
+| expressions | List<String> | The expressions to evaluate. |
+| recordId | Id | The Id of the record to use as the context for the expressions. A null recordId evaluates without a context record, as though none had been provided. |
 | config | [Configuration](Configuration) | A configuration object that allows you to set options for the evaluation. |
 
 #### Return Type
-**List&lt;Result&gt;**
+**List<Result>**
 
 The results of the expressions. Results are returned in the same order as the expressions.
 
@@ -852,7 +852,7 @@ global static Object run(String formula, Set<Id> recordIds, Configuration config
 | Name | Type | Description |
 |------|------|-------------|
 | formula | String | The formula to evaluate. |
-| recordIds | Set&lt;Id&gt; | The Ids of the records to use as the context for the formula. |
+| recordIds | Set<Id> | The Ids of the records to use as the context for the formula. |
 | config | [Configuration](Configuration) | A configuration object that allows you to set options for 
 the evaluation. |
 
@@ -898,13 +898,13 @@ global static List<Result> run(List<String> expressions, Set<Id> recordIds, Conf
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| expressions | List&lt;String&gt; | The expressions to evaluate. |
-| recordIds | Set&lt;Id&gt; | The Ids of the records to use as the context for the expressions. |
+| expressions | List<String> | The expressions to evaluate. |
+| recordIds | Set<Id> | The Ids of the records to use as the context for the expressions. |
 | config | [Configuration](Configuration) | A configuration object that allows you to set options for 
 the evaluation. |
 
 #### Return Type
-**List&lt;Result&gt;**
+**List<Result>**
 
 The results of the expressions. Results are returned in the same order as the expressions.
 
@@ -942,7 +942,7 @@ global static SObject retrieveRecordForFormulas(Id recordId, List<String> formul
 | Name | Type | Description |
 |------|------|-------------|
 | recordId | Id | The Id of the record to retrieve |
-| formulas | List&lt;String&gt; | List of formulas to analyze |
+| formulas | List<String> | List of formulas to analyze |
 
 #### Return Type
 **SObject**

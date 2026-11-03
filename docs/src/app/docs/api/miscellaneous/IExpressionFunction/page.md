@@ -25,7 +25,7 @@ global Object execute(List<Object> args)
 #### Parameters
 | Name | Type | Description |
 |------|------|-------------|
-| args | List&lt;Object&gt; | The arguments passed to the function, if any. |
+| args | List<Object> | The arguments passed to the function, if any. |
 
 #### Return Type
 **Object**
