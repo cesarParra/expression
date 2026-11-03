@@ -353,6 +353,19 @@ WHERE([1, 2, 3], $current > 1)
 
 ## Data
 
+### DISPLAY
+
+Formats a field's value the way Salesforce displays it to the running user: currency
+with its symbol and scale, numbers and percents with their scale, and dates and datetimes in the
+user's locale and time zone. Any value that does not come straight from a field is returned unchanged.
+
+Accepts 1 argument: the field to display.
+
+```
+DISPLAY(Amount) // "$1,234.50"
+DISPLAY(CloseDate) // "3/17/2027"
+```
+
 ### LET
 
 Allows you to define custom variables that can be used in the expression.

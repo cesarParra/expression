@@ -11,7 +11,8 @@ public with sharing class DataFunctions {
         'RAWQUERY' => new RawQuery(),
         'PRINT' => new PrintFn(),
         'PARSEJSON' => new ParseJsonFn(),
-        'TOJSON' => new ToJsonFn()
+        'TOJSON' => new ToJsonFn(),
+        'DISPLAY' => new DisplayFn()
     };
 
     public class DataFunctionsProvider implements FunctionProvider {
@@ -236,6 +237,97 @@ public with sharing class DataFunctions {
             }
 
             return value;
+        }
+
+        public override Arity getArity() {
+            return Arity.exactly(1);
+        }
+    }
+
+    /**
+     * @description Formats a field's value the way Salesforce displays it to the running user: currency
+     * with its symbol and scale, numbers and percents with their scale, and dates and datetimes in the
+     * user's locale and time zone. Any value that does not come straight from a field is returned unchanged.
+     *
+     * Accepts 1 argument: the field to display.
+     * @function DISPLAY
+     * @example
+     * DISPLAY(Amount) // "$1,234.50"
+     * DISPLAY(CloseDate) // "3/17/2027"
+     */
+    private class DisplayFn extends StandardFunction {
+        public override Object call(List<Expr> arguments) {
+            Object value = evaluate(arguments.get(0));
+            SObject record = recordHolding(arguments.get(0));
+            String fieldName = fieldNameOf(arguments.get(0));
+            if (value == null || record == null) {
+                return value;
+            }
+
+            SObjectField field = record.getSObjectType().getDescribe().fields.getMap().get(fieldName);
+            if (field == null) {
+                return value;
+            }
+
+            DescribeFieldResult describe = field.getDescribe();
+            switch on describe.getType() {
+                when CURRENCY {
+                    return currencySymbol(record) + formatFixed((Decimal) value, describe.getScale());
+                }
+                when PERCENT {
+                    return formatFixed((Decimal) value, describe.getScale()) + '%';
+                }
+                when DOUBLE, INTEGER, LONG {
+                    return formatFixed((Decimal) value, describe.getScale());
+                }
+                when DATE {
+                    return ((Date) value).format();
+                }
+                when DATETIME {
+                    return ((Datetime) value).format();
+                }
+                when else {
+                    return value;
+                }
+            }
+        }
+
+        private SObject recordHolding(Expr argument) {
+            if (argument instanceof Expr.MergeFieldOrScopeVariable) {
+                return interpreter.getEnvironment().getContext();
+            }
+            if (argument instanceof Expr.GetExpr) {
+                Object parent = evaluate(((Expr.GetExpr) argument).objectExpr);
+                return parent instanceof SObject ? (SObject) parent : null;
+            }
+            return null;
+        }
+
+        private String fieldNameOf(Expr argument) {
+            if (argument instanceof Expr.MergeFieldOrScopeVariable) {
+                return ((Expr.MergeFieldOrScopeVariable) argument).name.lexeme;
+            }
+            return argument instanceof Expr.GetExpr ? ((Expr.GetExpr) argument).field.lexeme : null;
+        }
+
+        // ponytail: common ISO codes only; any other currency shows its code, as Salesforce does in multi-currency orgs.
+        private String currencySymbol(SObject record) {
+            String isoCode = (String) record.getPopulatedFieldsAsMap().get('CurrencyIsoCode') ?? UserInfo.getDefaultCurrency();
+            Map<String, String> symbols = new Map<String, String>{
+                'USD' => '$', 'EUR' => '€', 'GBP' => '£', 'JPY' => '¥', 'CNY' => '¥', 'INR' => '₹',
+                'CAD' => 'CA$', 'AUD' => 'A$', 'MXN' => 'MX$', 'BRL' => 'R$', 'CHF' => 'CHF '
+            };
+            return symbols.get(isoCode) ?? isoCode + ' ';
+        }
+
+        // Decimal.format() drops trailing zeros, so the fraction is appended from the scaled value.
+        private String formatFixed(Decimal value, Integer scale) {
+            Decimal absolute = value.setScale(scale, RoundingMode.HALF_UP).abs();
+            String text = absolute.round(System.RoundingMode.DOWN).format();
+            if (scale > 0) {
+                text += (1.5).format().substring(1, 2) + absolute.toPlainString().substringAfter('.');
+            }
+            return (value.setScale(scale, RoundingMode.HALF_UP) < 0 ? '-' : '') + text;
         }
 
         public override Arity getArity() {

@@ -27,7 +27,7 @@ commands:
     run: sf apex test run --test-level RunLocalTests --wait 20
 
   docs:
-    run: apexdocs markdown
+    run: npx apexdocs markdown
 
   generate-library-docs:
     description: Rebuild the function reference and the editor's autocomplete list from the ApexDoc.

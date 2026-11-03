@@ -2,7 +2,7 @@ public with sharing class Environment {
     private final Environment parentEnvironment;
     private final SObject context;
 
-    private SObject getContext() {
+    public SObject getContext() {
         return context ?? parentEnvironment?.getContext();
     }
 
